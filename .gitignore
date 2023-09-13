@@ -1,0 +1,8 @@
+*.pyc
+*.log
+dist/*
+build/*
+private/*
+docs/build/*
+docs/make.bat
+docs/Makefile

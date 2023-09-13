@@ -1,0 +1,47 @@
+[tool.poetry]
+name = "norfab"
+version = "0.1.0"
+description = "Network Fabric - NorFab - module for communication networks automations"
+authors = ["Denis Mulyalin <d.mulyalin@gmail.com>"]
+maintainers = ["Denis Mulyalin <d.mulyalin@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+homepage = "https://github.com/dmulyalin/norfab"
+repository = "https://github.com/dmulyalin/norfab"
+documentation = "https://norfab.readthedocs.io/"
+keywords = ["Network", "Automation", "DevOps"]
+classifiers = [
+    "Topic :: Utilities",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: POSIX :: Linux",
+]
+
+[tool.poetry.dependencies]
+# mandatory dependencies
+python = ">=3.7,<4.0"
+nornir = ">=3.3.0,<4.0.0"
+nornir-salt = { version = ">=0.20.0", extras = ['prodminminion'] }
+pydantic = ">=2.3.0,<3.0.0"
+picle = "0.2.0"
+pyyaml = "6.0.1"
+pyzmq = "25.1.1"
+rich = "13.5.2"
+
+[tool.poetry.dev-dependencies]
+black = "22.3.*"
+pytest = { version = ">=7.1", markers = "python_version >= '3.7'" }
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+nf = 'norfab.utils:cli_tool'
+
+[tool.poetry.extras]
+
+
