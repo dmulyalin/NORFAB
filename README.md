@@ -17,7 +17,7 @@ Most of the software to manage network devices falls into one of the two categor
 - heavyweight platforms running on dedicated infrastructure
 - lightweight scripts or tools developed and run locally
 
-NORFAB goal is to be both - software you can run equally from your laptop or on a 
+NORFAB goal is to be both - software you can run equally well from your laptop or on a 
 server, centralized or fully distributed, lightweight and feature reach. Capable of 
 doing any use cases without the need to throw gazillion of dollars and man hours at 
 it. Always ready to serve the purpose of making engineers life better and fulfilling 
