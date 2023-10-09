@@ -1,7 +1,7 @@
 __version__ = "0.1.0"
 
 import argparse
-from norfab.plugins.clients.picle_shell_client import start_picle_shell
+from norfab.clients.picle_shell_client import start_picle_shell
 
 
 def cli_tool():

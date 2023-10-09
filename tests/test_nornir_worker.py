@@ -17,9 +17,9 @@ def nfclient():
 
 class TestNornirWorker:
 
-    def test_show_nornir_invenotry(self, nfclient):
+    def test_get_nornir_invenotry(self, nfclient):
         request = json.dumps(
-            {"jid": None, "task": "show_nornir_inventory", "kwargs": {}, "args": []}
+            {"jid": None, "task": "get_nornir_inventory", "kwargs": {}, "args": []}
         ).encode(encoding="utf-8")
         
         reply = nfclient.send(b"nornir", request)
@@ -28,3 +28,16 @@ class TestNornirWorker:
         pprint.pprint(ret)
     
         assert all(k in ret for k in ["hosts", "groups", "defaults"])
+        
+    def test_get_nornir_hosts(self, nfclient):
+        request = json.dumps(
+            {"jid": None, "task": "get_nornir_hosts", "kwargs": {}, "args": []}
+        ).encode(encoding="utf-8")
+        
+        reply = nfclient.send(b"nornir", request)
+        
+        ret = json.loads(reply[0])
+        pprint.pprint(ret)
+    
+        assert isinstance(ret, list), "Did not return a list of hosts"
+        assert len(ret) > 0, "Host list is empty"

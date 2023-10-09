@@ -9,7 +9,7 @@ import logging
 from multiprocessing import Process, Event
 from norfab.core.broker import MajorDomoBroker
 from norfab.core.client import MajorDomoClient
-from norfab.plugins.services.nornir_worker import NornirWorker
+from norfab.services.nornir_worker import NornirWorker
 
 logging.basicConfig(
     format="%(asctime)s.%(msecs)d [%(name)s:%(lineno)d %(levelname)s] -- %(message)s",

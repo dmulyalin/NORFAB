@@ -43,7 +43,7 @@ class TestBrokerUtils:
         pprint.pprint(ret)        
         
         for k, v in {
-            'address': 'tcp://0.0.0.0:5555',
+               'address': 'tcp://0.0.0.0:5555',
                'heartbeat interval': 2500,
                'heartbeat liveness': 3,
                'services count': 1,

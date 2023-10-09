@@ -1,0 +1,9 @@
+hosts: 
+  csr1000v-3:
+    hostname: sandbox-iosxe-3-recomm-1.cisco.com
+    platform: cisco_ios
+    username: developer
+    password: lastorangerestoreball8876
+groups: {}
+defaults: {}
+        

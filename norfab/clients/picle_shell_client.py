@@ -36,6 +36,9 @@ logging.basicConfig(
 
 log = logging.getLogger(__name__)
 
+# ---------------------------------------------------------------------------------------------
+# HELPER FUNCTIONS
+# ---------------------------------------------------------------------------------------------
 
 def print_table(data: list[dict], headers: list = None, title: str = None):
     headers = headers or list(data[0].keys())
@@ -57,15 +60,26 @@ def print_stats(data: dict):
     for k, v in data.items():
         print(f" {k}: {v}")
         
-
+# ---------------------------------------------------------------------------------------------
+# SHELL SHOW COMMANDS MODELS
+# ---------------------------------------------------------------------------------------------
 
 class NornirShowCommandsModel(BaseModel):
-    inventory: Callable = Field("show_nornir_inventory", description="show current version")
-
+    inventory: Callable = Field("get_nornir_inventory", description="show Nornir version")
+    hosts: Callable = Field("get_nornir_hosts", description="show Nornir hosts")
+    
     @staticmethod
-    def show_nornir_inventory():
+    def get_nornir_inventory():
         request = json.dumps(
-            {"jid": None, "task": "show_nornir_inventory", "kwargs": {}, "args": []}
+            {"jid": None, "task": "get_nornir_inventory", "kwargs": {}, "args": []}
+        ).encode(encoding="utf-8")
+        reply = GLOBAL["client"].send(b"nornir", request)
+        return json.dumps(json.loads(reply[0]), indent=4)
+            
+    @staticmethod
+    def get_nornir_hosts():
+        request = json.dumps(
+            {"jid": None, "task": "get_nornir_hosts", "kwargs": {}, "args": []}
         ).encode(encoding="utf-8")
         reply = GLOBAL["client"].send(b"nornir", request)
         return json.dumps(json.loads(reply[0]), indent=4)
@@ -115,11 +129,60 @@ class ShowCommandsModel(BaseModel):
             }
         )
 
+# ---------------------------------------------------------------------------------------------
+# SHELL NORNIR SERVICE MODELS
+# ---------------------------------------------------------------------------------------------
+
+class NrCliPlugins(str, Enum):
+    netmiko = 'netmiko'
+    napalm = 'napalm'
+    pyats = 'pyats'
+    scrapli = 'scrapli'
+
+class NrCfgPlugins(str, Enum):
+    netmiko = 'netmiko'
+    napalm = 'napalm'
+    pyats = 'pyats'
+    scrapli = 'scrapli'
+    
+class filters(BaseModel):
+    FB: StrictStr = Field(None, description="Filter hosts using Glob Pattern")
+    FL: List[StrictStr] = Field(None, description="Filter hosts using list of hosts' names")
+    hosts: Optional[Union[StrictStr, List[StrictStr]]] = Field(None, description="Select hostnames to run this task for")
+
+    @staticmethod
+    def source_hosts():
+        return NornirShowCommandsModel.get_nornir_hosts()
+
+class model_nr_cli(filters):
+    commands: Optional[Union[StrictStr, List[StrictStr]]] = Field(None, description="List of commands to collect form devices")
+    plugin: NrCliPlugins = Field("netmiko", description="Connection plugin name")
         
+    @staticmethod
+    def run(*args, **kwargs):
+        print(f"Called salt nornir cli, args {args}, kwargs: {kwargs}")
+
+    class PicleConfig:
+        subshell = True
+        prompt = "nf[nornir-cli]#"    
+        
+class NornirServiceCommands(BaseModel):
+    
+    cli: model_nr_cli = Field(None, description="Send CLI commands to devices")
+    
+    class PicleConfig:
+        subshell = True
+        prompt = "nf[nornir]#"    
+        
+        
+# ---------------------------------------------------------------------------------------------
+# MAIN SHELL MODEL
+# ---------------------------------------------------------------------------------------------
             
 class NorFabShell(BaseModel):
     show: ShowCommandsModel = Field(None, description="show commands")
-
+    nornir: NornirServiceCommands = Field(None, description="Nornir service")
+    
     class PicleConfig:
         subshell = True
         prompt = "nf#"
@@ -133,7 +196,12 @@ class NorFabShell(BaseModel):
         pass
 
 
+# ---------------------------------------------------------------------------------------------
+# SHELL ENTRY POINT
+# ---------------------------------------------------------------------------------------------
+
 def start_picle_shell():
+    # initiate NorFab
     nf = NorFab()
     GLOBAL["client"] = nf.start()
     

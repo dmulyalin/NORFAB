@@ -25,7 +25,13 @@ class NornirWorker(MajorDomoWorker):
         "options": {
             "hosts": {
                 "csr1000v-1": {
-                    "hostname": "sandbox-iosxe-recomm-1.cisco.com",
+                    "hostname": "sandbox-iosxe-1-recomm-1.cisco.com",
+                    "platform": "cisco_ios",
+                    "username": "developer",
+                    "password": "lastorangerestoreball8876",
+                },
+                "csr1000v-2": {
+                    "hostname": "sandbox-iosxe-2-recomm-1.cisco.com",
                     "platform": "cisco_ios",
                     "username": "developer",
                     "password": "lastorangerestoreball8876",
@@ -59,8 +65,10 @@ class NornirWorker(MajorDomoWorker):
             data = json.loads(request[0])
             task = data["task"]
             
-            if task == "show_nornir_inventory":
+            if task == "get_nornir_inventory":
                 reply = self.nr.inventory.dict()
+            elif task == "get_nornir_hosts":
+                reply = list(self.nr.inventory.hosts)
             else:
                 reply = f"Worker {self.name} unsupported task: '{task}'"
                 
