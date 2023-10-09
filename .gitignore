@@ -1,5 +1,6 @@
 *.pyc
 *.log
+*.bkp
 dist/*
 build/*
 private/*
