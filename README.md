@@ -24,7 +24,7 @@ it. ALways ready to serve the purpose of making engineers life better.
 
 # Architecture
 
-**TLDR** Micro services
+**TLDR** Micro Services
 
 ![architecture][architecture]
 
@@ -34,18 +34,18 @@ Key components include
 - Clients
 - Services
 
-Services expose functionality and clients consume services via broker.
+*Services* expose functionality consumed by *Clients* via *Broker*.
 
 # Built-in Broker
 
-NORFAB comes with modified version MDP 
-([Majordomo Protocol Broker](https://rfc.zeromq.org/spec/7/)) included.
+NORFAB comes with modified version of MDP
+([Majordomo Protocol](https://rfc.zeromq.org/spec/7/)) broker.
 
 # Built-in Clients
 
-- Python API Client to provide an abstraction and base layer for building other clients software
-- PICLE client for interactive command line shell interface targeted to be used by humans
-- REST API client based on FastAPI
+- Python API Client to provide foundation layer for building other clients
+- PICLE Client for interactive command line shell interface targeted to be used by humans
+- REST API Client based on FastAPI
 
 # Built-in Services
 
