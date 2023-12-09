@@ -17,6 +17,7 @@ import zmq
 
 from . import MDP
 from .zhelpers import dump
+from .inventory import NorFabInventory
 
 # logging.basicConfig(
 #     format="%(asctime)s.%(msecs)d [%(name)s:%(lineno)d %(levelname)s] -- %(message)s",
@@ -33,11 +34,12 @@ class Service(object):
     name = None  # Service name
     requests = None  # List of client requests
     waiting = None  # List of waiting workers
-
+    
     def __init__(self, name):
         self.name = name
         self.requests = []
         self.waiting = []
+        self.known = set()
 
 
 class Worker(object):
@@ -62,8 +64,8 @@ class MajorDomoBroker(object):
 
     # We'd normally pull these from config data
     INTERNAL_SERVICE_PREFIX = b"mmi."
-    HEARTBEAT_LIVENESS = 3  # 3-5 is reasonable
-    HEARTBEAT_INTERVAL = 2500  # msecs
+    HEARTBEAT_LIVENESS = 6  # 3-5 is reasonable
+    HEARTBEAT_INTERVAL = 5000  # msecs
     HEARTBEAT_EXPIRY = HEARTBEAT_INTERVAL * HEARTBEAT_LIVENESS
 
     # ---------------------------------------------------------------------
@@ -79,7 +81,9 @@ class MajorDomoBroker(object):
 
     # ---------------------------------------------------------------------
 
-    def __init__(self, exit_event=None):
+    inventory = None  # NorFab inventory object
+
+    def __init__(self, exit_event=None, inventory: NorFabInventory = None):
         """Initialize broker state."""
         self.services = {}
         self.workers = {}
@@ -91,11 +95,18 @@ class MajorDomoBroker(object):
         self.poller = zmq.Poller()
         self.poller.register(self.socket, zmq.POLLIN)
         self.exit_event = exit_event
+        self.inventory = inventory
 
     # ---------------------------------------------------------------------
 
     def mediate(self):
-        """Main broker work happens here"""
+        """
+        Main broker work happens here
+        
+        Client send mesages of this frame format:
+        
+        
+        """
         while True:
             try:
                 items = self.poller.poll(self.HEARTBEAT_INTERVAL)
@@ -138,12 +149,13 @@ class MajorDomoBroker(object):
         """Process a request coming from a client."""
         assert len(msg) >= 2  # Service name + body
         service = msg.pop(0)
+        target_worker = msg.pop(0)
         # Set reply return address to client sender
         msg = [sender, b""] + msg
         if service.startswith(self.INTERNAL_SERVICE_PREFIX):
             self.service_internal(service, msg)
         else:
-            self.dispatch(self.require_service(service), msg)
+            self.dispatch(self.require_service(service), target_worker, msg)
 
     def process_worker(self, sender, msg):
         """Process message sent to us by a worker."""
@@ -186,6 +198,29 @@ class MajorDomoBroker(object):
 
         elif MDP.W_DISCONNECT == command:
             self.delete_worker(worker, False)
+
+        elif MDP.W_INVENTORY_REQUEST == command:
+            assert len(msg) == 1  # received worker name
+            if worker_ready:
+                worker_name = msg.pop(0).decode("utf-8")
+                msg = [
+                    worker.address,
+                    b"",
+                    MDP.W_WORKER,
+                    MDP.W_INVENTORY_REPLY,
+                    json.dumps(None).encode("utf-8"),
+                ]
+                try:
+                    msg[-1] = json.dumps(self.inventory.workers[worker_name]).encode(
+                        "utf-8"
+                    )
+                except KeyError:
+                    log.error(f"No inventory data found for '{worker_name}' worker")
+                self.socket.send_multipart(msg)
+                self.worker_waiting(worker)
+            else:
+                self.delete_worker(worker, True)
+
         else:
             log.error(f"invalid message: {msg}")
 
@@ -197,7 +232,7 @@ class MajorDomoBroker(object):
 
         if worker.service is not None:
             worker.service.waiting.remove(worker)
-        self.workers.pop(worker.identity)
+        self.workers.pop(worker.identity, None)
 
     def require_worker(self, address):
         """Finds the worker (creates if necessary)."""
@@ -207,7 +242,7 @@ class MajorDomoBroker(object):
         if worker is None:
             worker = Worker(identity, address, self.HEARTBEAT_EXPIRY)
             self.workers[identity] = worker
-            log.debug(f"registering new worker: {identity}")
+            log.info(f"registered new worker: {address}")
 
         return worker
 
@@ -218,6 +253,7 @@ class MajorDomoBroker(object):
         if service is None:
             service = Service(name)
             self.services[name] = service
+            log.debug(f"registered new service: {name}")
 
         return service
 
@@ -236,14 +272,20 @@ class MajorDomoBroker(object):
         try:
             data = json.loads(msg[-1])
         except Exception as e:
-            msg[-1] = str(e).encode(encoding="utf-8")
+            log.exception(f"Failed to JSON decode message data for {service}:\n{e}")
+            msg[-1] = str(e).encode("utf-8")
         else:
-            if b"mmi.broker_utils" == service:
+            if service == b"mmi.broker_utils":
                 msg[-1] = self.broker_utils(data)
+            elif service == b"mmi.service":
+                name = data["service_name"]
+                msg[-1] = b"200" if name.encode("utf-8") in self.services else b"404"
             else:
-                msg[-1] = {"error": f"Broker unsupported service: '{service.decode('utf-8')}'"}
+                msg[-1] = {
+                    "error": f"Broker unsupported service: '{service.decode('utf-8')}'"
+                }
                 msg[-1] = json.dumps(msg[-1]).encode("utf-8")
-                
+
         # insert the protocol header and service name after the routing envelope ([client, ''])
         msg = msg[:2] + [MDP.C_CLIENT, service] + msg[2:]
         log.debug(f"sending message to client: {msg}")
@@ -265,7 +307,9 @@ class MajorDomoBroker(object):
         while self.waiting:
             w = self.waiting[0]
             if w.expiry < time.time():
-                log.info(f"deleting expired worker: '{w.identity}'")
+                log.info(
+                    f"deleting expired worker: '{w.address}', identity '{w.identity}'"
+                )
                 self.delete_worker(w, False)
                 self.waiting.pop(0)
             else:
@@ -277,19 +321,46 @@ class MajorDomoBroker(object):
         self.waiting.append(worker)
         worker.service.waiting.append(worker)
         worker.expiry = time.time() + 1e-3 * self.HEARTBEAT_EXPIRY
-        self.dispatch(worker.service, None)
+        self.dispatch(service=worker.service, target_worker="any", msg=None)
 
-    def dispatch(self, service, msg):
-        """Dispatch requests to waiting workers as possible"""
-        assert service is not None
+    def dispatch(self, service, target_worker, msg):
+        """
+        Dispatch requests to waiting workers as possible
+        
+        :param service: service object
+        :param target_worker: string indicating workers addresses to dispatch to
+        :param msg: string with work request content
+        """
+        assert service is not None, "service name is None, must be a string"
+        
         if msg is not None:  # Queue message if any
-            service.requests.append(msg)
+            service.requests.append((target_worker, msg,))
         self.purge_workers()
-        while service.waiting and service.requests:
-            msg = service.requests.pop(0)
-            worker = service.waiting.pop(0)
-            self.waiting.remove(worker)
-            self.send_to_worker(worker, MDP.W_REQUEST, None, msg)
+        
+        # iterate over requests and try sending them to workers
+        while service.requests:
+            target_worker, msg = service.requests.pop(0)
+            # anycast - send to any available worker
+            if target_worker == b"any":
+                if service.waiting: # check if has waiting workers
+                    worker = service.waiting.pop(0)
+                    self.waiting.remove(worker)
+                    self.send_to_worker(worker, MDP.W_REQUEST, None, msg)
+                else:
+                    service.requests.append((target_worker, msg,))                     
+            # unicast - send to specific worker by its address/name
+            elif hexlify(target_worker) in self.workers:
+                worker = self.workers[hexlify(target_worker)]
+                service.waiting.remove(worker)
+                self.waiting.remove(worker)
+                self.send_to_worker(worker, MDP.W_REQUEST, None, msg)
+            # reply back to client with error message
+            else:
+                message = f"{service.name} service no target worker {target_worker}"
+                log.error(message)
+                msg = [msg[0], b"", MDP.C_CLIENT, service.name, message.encode("utf-8")]
+                self.socket.send_multipart(msg)
+
 
     def send_to_worker(self, worker, command, option, msg=None):
         """Send message to worker.
@@ -319,10 +390,10 @@ class MajorDomoBroker(object):
             if self.workers:
                 ret = [
                     {
-                        "name": w.address.decode(encoding="utf-8"),
-                        "identity": k.decode(encoding="utf-8"),
-                        "service": w.service.name.decode(encoding="utf-8"),
-                        "status": "active"
+                        "name": w.address.decode("utf-8"),
+                        "identity": k.decode("utf-8"),
+                        "service": w.service.name.decode("utf-8"),
+                        "status": "active",
                     }
                     for k, w in self.workers.items()
                 ]
@@ -337,8 +408,8 @@ class MajorDomoBroker(object):
                 "workers count": len(self.workers),
                 "services count": len(self.services),
             }
-        
-        return json.dumps(ret).encode(encoding="utf-8")
+
+        return json.dumps(ret).encode("utf-8")
 
 
 def main():

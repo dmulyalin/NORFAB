@@ -9,6 +9,8 @@ Based on Java example by Arkadiusz Orzechowski
 import logging
 import time
 import zmq
+import json
+import traceback
 
 from .zhelpers import dump
 from . import MDP
@@ -66,7 +68,6 @@ class MajorDomoWorker(object):
         self.worker.linger = 0
         self.worker.connect(self.broker)
         self.poller.register(self.worker, zmq.POLLIN)
-        log.info(f"{self.name} - connecting to broker at '{self.broker}'")
 
         # Register service with broker
         self.send_to_broker(MDP.W_READY, self.service, [])
@@ -74,6 +75,8 @@ class MajorDomoWorker(object):
         # If liveness hits zero, queue is considered disconnected
         self.liveness = self.HEARTBEAT_LIVENESS
         self.heartbeat_at = time.time() + 1e-3 * self.heartbeat
+
+        log.info(f"{self.name} - connected to broker at '{self.broker}'")
 
     def send_to_broker(self, command, option=None, msg=None):
         """Send message to broker.
@@ -141,6 +144,12 @@ class MajorDomoWorker(object):
                     pass
                 elif command == MDP.W_DISCONNECT:
                     self.reconnect_to_broker()
+                elif command == MDP.W_INVENTORY_REPLY:
+                    assert len(msg) == 1
+                    self.expect_reply = (
+                        False  # reset back to False to re-init while loop
+                    )
+                    return msg.pop(0)
                 else:
                     log.error(f"{self.name} - invalid input message: {msg}")
 
@@ -166,9 +175,59 @@ class MajorDomoWorker(object):
                 self.destroy()
                 break
 
-        log.info(f"{self.name} - interrupt received, killing worker")
+        log.info(f"interrupt received, killing worker {self.name} ")
         return None
+
+    def load_inventory(self):
+        """
+        Function to load inventory from broker for this worker name.
+        """
+        log.debug(
+            f"{self.name} - sending 'MDP.W_INVENTORY' to broker requesting inventory data"
+        )
+        self.send_to_broker(
+            MDP.W_INVENTORY_REQUEST, option=self.name.encode(encoding="utf-8")
+        )
+        log.debug(
+            f"Worker '{self.name}' received inventory data from broker at '{self.broker}'"
+        )
+
+        return json.loads(self.recv())
 
     def destroy(self):
         # context.destroy depends on pyzmq >= 2.1.10
         self.ctx.destroy(0)
+
+    def work(self):
+        """
+        Main worker loop to receive tasks and return results
+        """
+        reply = None
+        while True:
+            request = self.recv(reply)
+            if request is None:
+                break  # Worker was interrupted
+
+            data = json.loads(request[0])
+            task = data.pop("task")
+            args = data.pop("args", [])
+            kwargs = data.pop("kwargs", {})
+
+            log.debug(
+                f"worker received task '{task}' from {self.reply_to}, data: {data}, args: '{args}', kwargs: '{kwargs}'"
+            )
+
+            try:
+                if getattr(self, task, None):
+                    if callable(getattr(self, task)):
+                        reply = getattr(self, task)(*args, **kwargs)
+                    else:
+                        reply = f"Worker {self.name} '{task}' not a callable function"
+                else:
+                    reply = f"Worker {self.name} unsupported task: '{task}'"
+            except:
+                reply = f"Worker experienced error:\n{traceback.format_exc()}"
+                log.exception("Worker experienced error:\n")
+
+            # need to return reply as a list
+            reply = [json.dumps(reply).encode("utf-8")]

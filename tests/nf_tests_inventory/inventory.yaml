@@ -1,0 +1,25 @@
+# broker settings
+broker:
+  endpoint: "tcp://127.0.0.1:5555"
+  
+# workers inventory section
+workers:
+  nornir-*:
+    - nornir/common.yaml  
+  nornir-worker-1*:
+    - nornir/nornir-worker-1.yaml
+  nornir-worker-2:
+    - nornir/nornir-worker-2.yaml
+    - nornir/nornir-worker-2-extra.yaml
+  nornir-worker-3:
+    - nornir/nornir-worker-3-non-existing-data.yaml
+
+# list what entities we want to start on this node
+topology:
+  broker: True
+  services:
+    - nornir
+  workers:
+    - nornir-worker-1.1
+    - nornir-worker-1.2
+    - nornir-worker-2

@@ -1,0 +1,47 @@
+name: clos
+
+topology:
+  nodes:
+    ceos-spine-1:
+      kind: ceos
+      image: ceosimage:4.30.0F
+      mgmt-ipv4: 172.100.100.10
+      ports:
+        - 2200:22
+    ceos-spine-2: 
+      kind: ceos
+      image: ceosimage:4.30.0F
+      mgmt-ipv4: 172.100.100.11
+      ports:
+        - 2201:22
+    ceos-leaf-1: 
+      kind: ceos
+      image: ceosimage:4.30.0F
+      mgmt-ipv4: 172.100.100.12
+      ports:
+        - 2202:22
+    ceos-leaf-2: 
+      kind: ceos
+      image: ceosimage:4.30.0F
+      mgmt-ipv4: 172.100.100.13
+      ports:
+        - 2203:22
+    ceos-leaf-3: 
+      kind: ceos
+      image: ceosimage:4.30.0F
+      mgmt-ipv4: 172.100.100.14
+      ports:
+        - 2204:22
+        
+  links:
+    - endpoints: ["ceos-spine-1:eth1", "ceos-spine-2:eth1"]
+    - endpoints: ["ceos-spine-1:eth2", "ceos-leaf-1:eth1"]
+    - endpoints: ["ceos-spine-2:eth2", "ceos-leaf-1:eth2"]
+    - endpoints: ["ceos-spine-1:eth3", "ceos-leaf-2:eth1"]
+    - endpoints: ["ceos-spine-2:eth3", "ceos-leaf-2:eth2"]
+    - endpoints: ["ceos-spine-1:eth4", "ceos-leaf-3:eth1"]
+    - endpoints: ["ceos-spine-2:eth4", "ceos-leaf-3:eth2"]
+    
+mgmt:
+  network: clos_mgmt                  # management network name
+  ipv4-subnet: 172.100.100.0/24       # ipv4 range

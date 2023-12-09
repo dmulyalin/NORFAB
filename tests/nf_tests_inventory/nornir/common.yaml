@@ -1,13 +1,14 @@
 service: nornir
+broker_endpoint: "tcp://127.0.0.1:5555"
 runner:
   plugin: RetryRunner
   options: 
     num_workers: 100
     num_connectors: 10
-    connect_retry: 3
+    connect_retry: 1
     connect_backoff: 1000
     connect_splay: 100
-    task_retry: 3
+    task_retry: 1
     task_backoff: 1000
     task_splay: 100
     reconnect_on_fail: True

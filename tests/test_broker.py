@@ -1,6 +1,7 @@
 import pytest 
 import pprint
 import json
+import time
 
 from norfab.core.nfapi import NorFab
 
@@ -10,8 +11,10 @@ def nfclient():
     Fixture to start NorFab and return client object,
     once tests done destroys NorFab
     """
-    nf = NorFab()
-    yield nf.start() # return nf client  
+    nf = NorFab(inventory="./inventory/inventory.yaml")
+    client = nf.start()
+    time.sleep(3) # wait for workers to start 
+    yield  client # return nf client  
     nf.destroy() # teardown    
 
 
@@ -43,7 +46,7 @@ class TestBrokerUtils:
         pprint.pprint(ret)        
         
         for k, v in {
-               'address': 'tcp://0.0.0.0:5555',
+               'address': 'tcp://127.0.0.1:5555',
                'heartbeat interval': 2500,
                'heartbeat liveness': 3,
                'services count': 1,

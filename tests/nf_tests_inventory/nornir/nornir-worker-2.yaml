@@ -1,0 +1,26 @@
+hosts: 
+  ceos-leaf-1:
+    hostname: 192.168.1.130
+    platform: arista_eos
+    username: admin
+    password: admin
+    port: 2202
+  ceos-leaf-2:
+    hostname: 192.168.1.130
+    platform: arista_eos
+    username: admin
+    password: admin
+    port: 2203
+  ceos-leaf-3:
+    hostname: 192.168.1.130
+    platform: arista_eos
+    username: admin
+    password: admin
+    port: 2204
+groups: 
+  foo:
+    port: 22
+  valueoverwrite:
+    port: 555
+defaults: {}
+        

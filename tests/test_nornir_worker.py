@@ -1,6 +1,7 @@
 import pytest 
 import pprint
 import json
+import time
 
 from norfab.core.nfapi import NorFab
 
@@ -10,9 +11,11 @@ def nfclient():
     Fixture to start NorFab and return client object,
     once tests done destroys NorFab
     """
-    nf = NorFab()
-    yield nf.start() # return nf client  
-    nf.destroy() # teardown    
+    nf = NorFab(inventory="./inventory/inventory.yaml")
+    client = nf.start()
+    time.sleep(3) # wait for workers to start 
+    yield client # return nf client  
+    nf.destroy() # teardown      
 
 
 class TestNornirWorker:
@@ -27,7 +30,8 @@ class TestNornirWorker:
         ret = json.loads(reply[0])
         pprint.pprint(ret)
     
-        assert all(k in ret for k in ["hosts", "groups", "defaults"])
+        for worker_name, data in ret.items():
+            assert all(k in data for k in ["hosts", "groups", "defaults"]), f"{worker_name} inventory incomplete"
         
     def test_get_nornir_hosts(self, nfclient):
         request = json.dumps(
@@ -39,5 +43,10 @@ class TestNornirWorker:
         ret = json.loads(reply[0])
         pprint.pprint(ret)
     
-        assert isinstance(ret, list), "Did not return a list of hosts"
-        assert len(ret) > 0, "Host list is empty"
+        for worker_name, data in ret.items():
+            assert isinstance(data, list), "{worker_name} did not return a list of hosts"
+            assert len(data) > 0, "{worker_name} host list is empty"
+            
+
+    
+        
