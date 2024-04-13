@@ -6,13 +6,13 @@ C_CLIENT = b"MDPC01"
 W_WORKER = b"MDPW01"
 
 #  MDP/Server commands, as strings
-W_READY = b"\001"
-W_REQUEST = b"\002"
-W_REPLY = b"\003"
-W_HEARTBEAT = b"\004"
-W_DISCONNECT = b"\005"
-W_INVENTORY_REQUEST = b"\006"  # worker inventory request
-W_INVENTORY_REPLY = b"\007"  # broker inventory reply to worker
+W_READY = b"WORKER READY"
+W_REQUEST = b"WORKER REQUEST"
+W_REPLY = b"WORKER REPLY"
+W_HEARTBEAT = b"WORKER HEARTBEAT"
+W_DISCONNECT = b"WORKER DISCONNECT"
+W_INVENTORY_REQUEST = b"WORKER INVENTORY REQUEST"  # worker inventory request
+W_INVENTORY_REPLY = b"WORKER INVENTORY REPLY"  # broker inventory reply to worker
 
 commands = [
     None,

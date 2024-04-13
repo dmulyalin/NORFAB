@@ -17,9 +17,7 @@ workers:
 # list what entities we want to start on this node
 topology:
   broker: True
-  services:
-    - nornir
   workers:
-    - nornir-worker-1.1
-    - nornir-worker-1.2
-    - nornir-worker-2
+    - nornir-worker-1
+#    - nornir-worker-1.2
+#    - nornir-worker-2

@@ -26,10 +26,10 @@ python = ">=3.7,<4.0"
 nornir = ">=3.3.0,<4.0.0"
 nornir-salt = { version = ">=0.20.0", extras = ['prodminminion'] }
 pydantic = ">=2.3.0,<3.0.0"
-picle = "0.2.0"
+picle = "0.5.*"
 pyyaml = "6.0.1"
 pyzmq = "25.1.1"
-rich = "13.5.2"
+rich = ">=13.0.0,<=14.0.0"
 
 [tool.poetry.dev-dependencies]
 black = "22.3.*"

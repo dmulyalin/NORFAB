@@ -10,3 +10,4 @@ docs/Makefile
 *.dtmp
 *.req
 *.rep
+*__norfab__*

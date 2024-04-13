@@ -1,54 +1,31 @@
-import pytest 
 import pprint
 import json
 import time
-
-from norfab.core.nfapi import NorFab
-
-@pytest.fixture(scope="class")
-def nfclient():
-    """
-    Fixture to start NorFab and return client object,
-    once tests done destroys NorFab
-    """
-    nf = NorFab(inventory="./inventory/inventory.yaml")
-    client = nf.start()
-    time.sleep(3) # wait for workers to start 
-    yield  client # return nf client  
-    nf.destroy() # teardown    
-
+from uuid import uuid4
 
 class TestBrokerUtils:
 
-    def test_show_workers(self, nfclient):
-        request = json.dumps(
-            {"jid": None, "task": "show_workers", "kwargs": {}, "args": []}
-        ).encode(encoding="utf-8")
+    def test_show_workers(self, nfclient):       
+        reply = nfclient.get(b"mmi.service.broker", "show_workers")
         
-        reply = nfclient.send(b"mmi.broker_utils", request)
-        
-        ret = json.loads(reply[0])
+        ret = json.loads(reply)
         pprint.pprint(ret)
     
-        assert all(k in ret[0] for k in ["identity", "name", "service", "status"])
+        assert all(k in ret[0] for k in ["holdtime", "name", "service", "status"])
         assert ret[0]["name"] == 'nornir-worker-1'
         assert ret[0]["service"] == 'nornir'
-        assert ret[0]["status"] == 'active'
+        assert ret[0]["status"] == 'alive'
         
     def test_show_broker(self, nfclient):
-        request = json.dumps(
-            {"jid": None, "task": "show_broker", "kwargs": {}, "args": []}
-        ).encode(encoding="utf-8")
+        reply = nfclient.get(b"mmi.service.broker", "show_broker")
         
-        reply = nfclient.send(b"mmi.broker_utils", request)
-        
-        ret = json.loads(reply[0])
+        ret = json.loads(reply)
         pprint.pprint(ret)        
         
         for k, v in {
                'address': 'tcp://127.0.0.1:5555',
-               'heartbeat interval': 2500,
-               'heartbeat liveness': 3,
+               'keepalive': 2500,
+               'multiplier': 6,
                'services count': 1,
                'status': 'active',
                'workers count': 1

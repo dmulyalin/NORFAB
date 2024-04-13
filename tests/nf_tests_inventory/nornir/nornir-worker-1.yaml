@@ -1,12 +1,12 @@
 hosts: 
   ceos-spine-1:
-    hostname: 192.168.1.130
+    hostname: 192.168.4.130
     platform: arista_eos
     username: admin
     password: admin
     port: 2200
   ceos-spine-2:
-    hostname: 192.168.1.130
+    hostname: 192.168.4.130
     platform: arista_eos
     username: admin
     password: admin

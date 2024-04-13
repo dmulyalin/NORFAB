@@ -1,7 +1,13 @@
-__version__ = "0.1.0"
-
 import argparse
+import logging
 from norfab.clients.picle_shell_client import start_picle_shell
+
+logging.basicConfig(
+    format="%(asctime)s.%(msecs)d %(levelname)s [%(name)s:%(lineno)d ] -- %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S",
+    level="WARNING",
+)
+log = logging.getLogger()
 
 
 def cli_tool():
@@ -10,10 +16,10 @@ def cli_tool():
     """
     argparser = argparse.ArgumentParser(
         description=(
-            f"Norfab PICLE Shell Tool, version {__version__}"
+            f"Norfab PICLE Shell Tool"
             f"\n\n"
             f"Sample Usage:\n"
-            f"  nf -i ./norfab_lab/inventory.yaml -b -w 'nornir-worker-1'"
+            f"  nf -i ./norfab_lab/inventory.yaml"
         ),
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
@@ -39,15 +45,6 @@ def cli_tool():
         help="Comma separated list of worker names to start processes for",
     )
     run_options.add_argument(
-        "-s",
-        "--services",
-        action="store",
-        dest="SERVICES",
-        default=None,
-        type=str,
-        help="Comma separated list of service names to start processes for",
-    )
-    run_options.add_argument(
         "-b",
         "--broker",
         action="store_true",
@@ -55,22 +52,28 @@ def cli_tool():
         default=False,
         help="Start NorFab broker process",
     )
-
+    run_options.add_argument(
+        "-l",
+        "--log-level",
+        action="store",
+        dest="LOGLEVEL",
+        default="WARNING",
+        help="Set logging level debug, info, warning, error",
+    )
     # extract argparser arguments:
     args = argparser.parse_args()
     INVENTORY = args.INVENTORY
     WORKERS = args.WORKERS
     INVENTORY = args.INVENTORY
     BROKER = args.BROKER
-    SERVICES = args.SERVICES
+    LOGLEVEL = args.LOGLEVEL
+
+    log.setLevel(LOGLEVEL.upper())
 
     if WORKERS is not None:
         WORKERS = [i.strip() for i in args.WORKERS.split(",")]
 
-    if SERVICES is not None:
-        SERVICES = [i.strip() for i in args.SERVICES.split(",")]
-
     # start interactive shell
     start_picle_shell(
-        inventory=INVENTORY, workers=WORKERS, start_broker=BROKER, services=SERVICES
+        inventory=INVENTORY, workers=WORKERS, start_broker=BROKER, log_level=LOGLEVEL
     )

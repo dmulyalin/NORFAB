@@ -5,7 +5,7 @@ import json
 from norfab.core.inventory import NorFabInventory
 
 class TestInventoryLoad:
-    inventory = NorFabInventory(path="./inventory/inventory.yaml")
+    inventory = NorFabInventory(path="./nf_tests_inventory/inventory.yaml")
     
     def test_broker_inventory(self):
         assert self.inventory.broker, "No broker data"
@@ -19,7 +19,7 @@ class TestInventoryLoad:
     
 
 class TestWorkersInventory:
-    inventory = NorFabInventory(path="./inventory/inventory.yaml")
+    inventory = NorFabInventory(path="./nf_tests_inventory/inventory.yaml")
     
     def test_get_item(self):
         nornir_worker_1 = self.inventory.workers["nornir-worker-1"]
