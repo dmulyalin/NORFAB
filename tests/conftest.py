@@ -1,6 +1,7 @@
-import pytest 
+import pytest
 import time
 from norfab.core.nfapi import NorFab
+
 
 @pytest.fixture(scope="class")
 def nfclient():
@@ -9,7 +10,7 @@ def nfclient():
     once tests done destroys NorFab
     """
     nf = NorFab(inventory="./nf_tests_inventory/inventory.yaml")
-    client = nf.start()
-    time.sleep(3) # wait for workers to start 
-    yield  client # return nf client  
-    nf.destroy() # teardown   
+    nf.start()
+    time.sleep(3)  # wait for workers to start
+    yield nf.client  # return nf client
+    nf.destroy()  # teardown

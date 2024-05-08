@@ -1,0 +1,7 @@
+hosts:
+  router:
+    username: admin
+    password: admin
+    platform: arista_eos
+    port: [6000, 6004]
+    replicas: 5

@@ -7,8 +7,8 @@ CLass that implements higher level Python API to work with NorFab.
 import logging
 
 from multiprocessing import Process, Event
-from norfab.core.broker import MajorDomoBroker, NFPBroker
-from norfab.core.client import MajorDomoClient, TSPClient, NFPClient
+from norfab.core.broker import NFPBroker
+from norfab.core.client import NFPClient
 from norfab.core.inventory import NorFabInventory
 from norfab.workers.nornir_worker import NornirWorker
 
@@ -84,7 +84,10 @@ class NorFab:
 
     def start_worker(self, worker_name):
         if not self.workers.get(worker_name):
-            worker_inventory = self.inventory[worker_name]
+            try:
+                worker_inventory = self.inventory[worker_name]
+            except FileNotFoundError:
+                return
 
             self.workers[worker_name] = Process(
                 target=start_worker_process,
@@ -99,10 +102,14 @@ class NorFab:
 
             self.workers[worker_name].start()
 
-    def make_client(self, broker_endpoint=None):
+    def make_client(self, broker_endpoint: str = None):
+        """
+        Make an instance of Norfab client
+
+        :param broker_endpoint: (str), Broker URL to connect with
+        """
+
         if broker_endpoint or self.broker_endpoint:
-            # client = MajorDomoClient(broker_endpoint or self.broker_endpoint)
-            # client = TSPClient(broker_endpoint or self.broker_endpoint)
             client = NFPClient(
                 broker_endpoint or self.broker_endpoint, "NFPClient", self.log_level
             )
@@ -115,32 +122,31 @@ class NorFab:
 
     def start(
         self,
-        start_broker: bool = False,
+        start_broker: bool = None,
         workers: list = None,
-        return_client: bool = True,
     ):
         """
         Function to start NorFab component.
 
         :param start_broker: if True, starts broker process
         :param workers: list of worker names to start processes for
-        :pram servcies: list of service names to start processes for
-        :param return_client: if True, makes and return NorFab client object
         """
-        workers = workers or self.inventory.topology.get("workers", [])
-        start_broker = start_broker or self.inventory.topology.get("broker", False)
+        if workers is None:
+            workers = self.inventory.topology.get("workers", [])
+        if start_broker is None:
+            start_broker = self.inventory.topology.get("broker", False)
 
-        if start_broker:
+        if start_broker is True:
             self.start_broker()
 
-        for worker_name in workers:
-            try:
-                self.start_worker(worker_name)
-            except KeyError:
-                log.error(f"No inventory data found for {worker_name}")
+        if workers and isinstance(workers, list):
+            for worker_name in workers:
+                try:
+                    self.start_worker(worker_name)
+                except KeyError:
+                    log.error(f"No inventory data found for '{worker_name}'")
 
-        if return_client:
-            return self.make_client()
+        self.make_client()
 
     def destroy(self):
         # stop workers

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "norfab"
-version = "0.1.0"
+version = "0.2.0"
 description = "Network Fabric - NorFab - module for communication networks automations"
 authors = ["Denis Mulyalin <d.mulyalin@gmail.com>"]
 maintainers = ["Denis Mulyalin <d.mulyalin@gmail.com>"]
@@ -21,19 +21,54 @@ classifiers = [
 ]
 
 [tool.poetry.dependencies]
-# mandatory dependencies
-python = ">=3.7,<4.0"
-nornir = ">=3.3.0,<4.0.0"
-nornir-salt = { version = ">=0.20.0", extras = ['prodminminion'] }
-pydantic = ">=2.3.0,<3.0.0"
-picle = "0.5.*"
-pyyaml = "6.0.1"
-pyzmq = "25.1.1"
-rich = ">=13.0.0,<=14.0.0"
+# Core Libs
+python = ">=3.8,<3.12"
+pyyaml = ">=6.0.1,<7.0.0"
+pyzmq = ">=25.0.0,<27.0.0"
+
+# PICLE Client Dependencies
+picle = { version = ">=0.5.3,<1.0.0", optional = true }
+rich = { version = ">=13.0.0,<14.0.0", optional = true }
+tabulate = { version = ">=0.9.0,<1.0.0", optional = true }
+pydantic = { version = ">=2.3.0,<3.0.0", optional = true }
+
+# Nornir Service Dependencies
+nornir = { version = ">=3.3.0,<4.0.0", optional = true }
+nornir-salt = { version = ">=0.21.0", optional = true }
+cerberus = { version = "1.3.5", optional = true }
+jmespath = { version = "1.0.1", optional = true }
+napalm = { version = "4.1.0", optional = true }
+ncclient = { version = "0.6.15", optional = true }
+netmiko = { version = "4.3.0", optional = true }
+nornir-napalm = { version = "0.4.0", optional = true }
+nornir-netmiko = { version = "1.0.1", optional = true }
+nornir-scrapli = { version = "2023.7.30", optional = true }
+ntc-templates = { version = "4.1.0", optional = true }
+paramiko = { version = "3.4.0", optional = true }
+pygnmi = { version = "0.8.13", optional = true }
+puresnmp = { version = "2.0.0", optional = true, extras = ['crypto'] }
+requests = { version = "2.31.0", optional = true }
+scrapli = { version = "2023.7.30", optional = true }
+scrapli-community = { version = "2023.7.30", optional = true }
+scrapli-netconf = { version = "2023.7.30", optional = true }
+ttp = { version = "0.9.*", optional = true }
+ttp-templates = { version = "0.3.*", optional = true }
+xmltodict = { version = "0.13.0", optional = true }
+lxml = { version = ">=4.9.3,<5.1.0", optional = true }
+textfsm = { version = "1.1.3", optional = true }
+jinja2 = { version = "3.1.3", optional = true }
+N2G = { version = "0.3.*", optional = true }
+dnspython = { version = "2.4.2", optional = true }
+pythonping = { version = "1.1.4", optional = true }
+
+# Netbox Service Dependencies
+diskcache = { version = "5.6.3", optional = true }
+pynetbox = { version = "7.3.3", optional = true }
 
 [tool.poetry.dev-dependencies]
 black = "22.3.*"
-pytest = { version = ">=7.1", markers = "python_version >= '3.7'" }
+pytest = { version = ">=7.1" }
+fakenos = { version = ">=0.2.1" }
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
@@ -43,5 +78,40 @@ build-backend = "poetry.core.masonry.api"
 nf = 'norfab.utils:cli_tool'
 
 [tool.poetry.extras]
-
-
+nfcli = [
+	"picle",
+    "rich",
+    "tabulate",
+	"pydantic",
+]
+nornir_service = [
+    "nornir",
+    "nornir-salt",
+    "cerberus",
+    "jmespath",
+    "napalm",
+    "ncclient",
+    "netmiko",
+    "nornir-napalm",
+    "nornir-netmiko",
+    "nornir-scrapli",
+    "ntc-templates",
+    "paramiko",
+    "pygnmi",
+    "puresnmp",
+    "requests",
+    "scrapli",
+    "scrapli-community",
+    "scrapli-netconf",
+    "ttp",
+    "ttp-templates",
+    "xmltodict",
+    "lxml",
+    "textfsm",
+    "jinja2",
+    "N2G",
+    "dnspython",
+    "pythonping",
+	"tabulate",
+	"pydantic",
+]

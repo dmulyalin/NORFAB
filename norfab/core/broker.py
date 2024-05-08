@@ -14,12 +14,11 @@ import threading
 import random
 import os
 import hashlib
+import zmq
 
 from binascii import hexlify
 from multiprocessing import Event
-
-import zmq
-
+from typing import Union
 from . import MDP
 from . import NFP
 from .zhelpers import dump
@@ -706,15 +705,29 @@ class NFPBroker:
         :param target: bytest string, workers target
         :param service: NFPService object
         """
+        ret = []
         if not service.workers:
-            return []
+            ret = []
         elif target == b"any":
-            return [service.workers[random.randint(0, len(service.workers) - 1)]]
+            ret = [service.workers[random.randint(0, len(service.workers) - 1)]]
         elif target == b"all":
-            return service.workers
-        elif target in self.workers:
-            return [self.workers[target]]
-        return []
+            ret = service.workers
+        elif target in self.workers:  # single worker
+            ret = [self.workers[target]]
+        else:  # target list of workers
+            try:
+                target = json.loads(target)
+                if isinstance(target, list):
+                    for w in target:
+                        w = w.encode("utf-8")
+                        if w in self.workers:
+                            ret.append(self.workers[w])
+                    ret = list(set(ret))  # dedup workers
+            except Exception as e:
+                log.error(
+                    f"NFPBroker - Failed to load target '{target}' with error '{e}'"
+                )
+        return ret
 
     def dispatch(self, sender, command, service, target, uuid, data):
         """

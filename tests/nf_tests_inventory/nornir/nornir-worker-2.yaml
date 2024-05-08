@@ -1,22 +1,58 @@
 hosts: 
   ceos-leaf-1:
-    hostname: 192.168.1.130
+    hostname: 192.168.4.130
     platform: arista_eos
     username: admin
     password: admin
     port: 2202
+    groups:
+      - eos_params
+    connection_options:
+      scrapli_netconf:
+        port: 8302
+      napalm:
+        extras:
+          optional_args:
+            transport: http
+            port: 8802
+      ncclient:
+        port: 8302
   ceos-leaf-2:
-    hostname: 192.168.1.130
+    hostname: 192.168.4.130
     platform: arista_eos
     username: admin
     password: admin
     port: 2203
+    groups:
+      - eos_params
+    connection_options:
+      scrapli_netconf:
+        port: 8303
+      napalm:
+        extras:
+          optional_args:
+            transport: http
+            port: 8803
+      ncclient:
+        port: 8303
   ceos-leaf-3:
-    hostname: 192.168.1.130
+    hostname: 192.168.4.130
     platform: arista_eos
     username: admin
     password: admin
     port: 2204
+    groups:
+      - eos_params
+    connection_options:
+      scrapli_netconf:
+        port: 8304
+      napalm:
+        extras:
+          optional_args:
+            transport: http
+            port: 8804
+      ncclient:
+        port: 8304
 groups: 
   foo:
     port: 22

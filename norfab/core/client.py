@@ -285,6 +285,17 @@ class NFPClient(object):
             target=recv, daemon=True, name=f"{self.name}_recv_thread", args=(self,)
         ).start()
 
+    def _make_workers(self, workers) -> bytes:
+        """Helper function to convert workers target to bytes"""
+        # transform workers string to bytes
+        if isinstance(workers, str):
+            workers = workers.encode("utf-8")
+        # encode workers names list to list of bytes
+        elif isinstance(workers, list):
+            workers = json.dumps(workers).encode("utf-8")
+
+        return workers
+
     def reconnect_to_broker(self):
         """Connect or reconnect to broker"""
         if self.broker_socket:
@@ -390,8 +401,7 @@ class NFPClient(object):
         if not isinstance(uuid, bytes):
             uuid = uuid.encode("utf-8")
 
-        if not isinstance(workers, bytes):
-            workers = workers.encode("utf-8")
+        workers = self._make_workers(workers)
 
         request = json.dumps(
             {"task": task, "kwargs": kwargs or {}, "args": args or []}
@@ -482,8 +492,7 @@ class NFPClient(object):
         if not isinstance(uuid, bytes):
             uuid = uuid.encode("utf-8")
 
-        if not isinstance(workers, bytes):
-            workers = workers.encode("utf-8")
+        workers = self._make_workers(workers)
 
         request = json.dumps(
             {"task": task, "kwargs": kwargs or {}, "args": args or []}
@@ -567,8 +576,7 @@ class NFPClient(object):
         if not isinstance(uuid, bytes):
             uuid = uuid.encode("utf-8")
 
-        if not isinstance(workers, bytes):
-            workers = workers.encode("utf-8")
+        workers = self._make_workers(workers)
 
         request = json.dumps(
             {"task": task, "kwargs": kwargs or {}, "args": args or []}
@@ -658,10 +666,12 @@ class NFPClient(object):
 
         # define file destination
         if destination is None:
-            os.makedirs(os.path.join(self.base_dir, "fetchedfiles"), exist_ok=True)
             destination = os.path.join(
-                self.base_dir, "fetchedfiles", os.path.split(url)[1]
+                self.base_dir, "fetchedfiles", *os.path.split(url.replace("nf://", ""))
             )
+
+        # make sure all destination directories exist
+        os.makedirs(os.path.split(destination)[0], exist_ok=True)
 
         # get file details
         request = json.dumps({"task": "file_details", "kwargs": {"url": url}}).encode(
@@ -740,7 +750,7 @@ class NFPClient(object):
         # decode status
         if isinstance(status, bytes):
             status = status.decode("utf-8")
-            
+
         return status, reply
 
     def run_job(

@@ -564,7 +564,9 @@ class NFPWorker:
         if status == "200":
             return file_content
         else:
-            log.error(f"{self.name} - worker '{url}' fetch file failed with status '{status}'")
+            log.error(
+                f"{self.name} - worker '{url}' fetch file failed with status '{status}'"
+            )
             return None
 
     def work(self):

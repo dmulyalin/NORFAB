@@ -31,7 +31,7 @@ def cli_tool():
         "--inventory",
         action="store",
         dest="INVENTORY",
-        default=None,
+        default="inventory.yaml",
         type=str,
         help="OS Path to YAML file with NORFAB inventory data",
     )
@@ -49,7 +49,7 @@ def cli_tool():
         "--broker",
         action="store_true",
         dest="BROKER",
-        default=False,
+        default=None,
         help="Start NorFab broker process",
     )
     run_options.add_argument(

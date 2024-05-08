@@ -13,3 +13,39 @@ runner:
     task_splay: 100
     reconnect_on_fail: True
     task_timeout: 600
+    
+groups:
+  eos_params:
+    connection_options:
+      scrapli:
+        platform: arista_eos
+        extras:
+          auth_strict_key: False
+          ssh_config_file: False
+          transport: paramiko
+      scrapli_netconf:
+        extras:
+          ssh_config_file: True
+          auth_strict_key: False
+          transport: paramiko
+          transport_options:
+            # refer to https://github.com/saltstack/salt/issues/59962 for details
+            # on why need netconf_force_pty False
+            netconf_force_pty: False
+      napalm:
+        platform: eos
+        extras:
+          optional_args:
+            transport: http
+      ncclient:
+        extras:
+          allow_agent: False
+          hostkey_verify: False
+      http:
+        extras:
+          transport: https
+          verify: False
+          base_url: "restconf/data"
+          headers:
+            Content-Type: "application/yang-data+json"
+            Accept: "application/yang-data+json"

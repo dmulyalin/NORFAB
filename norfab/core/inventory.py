@@ -91,8 +91,12 @@ class WorkersInventory:
 
         # iterate over path items, load and merge them
         for item in paths:
-            with open(os.path.join(self.path, item), "r", encoding="utf-8") as f:
-                self.merge_recursively(ret, yaml.safe_load(f.read()))
+            if os.path.isfile(os.path.join(self.path, item)):
+                with open(os.path.join(self.path, item), "r", encoding="utf-8") as f:
+                    self.merge_recursively(ret, yaml.safe_load(f.read()))
+            else:
+                log.error(f"{os.path.join(self.path, item)} - file not found")
+                raise FileNotFoundError(os.path.join(self.path, item))
 
         if ret:
             return ret

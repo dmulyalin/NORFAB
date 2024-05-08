@@ -1,0 +1,41 @@
+hosts: 
+  router0:
+    hostname: 127.0.0.1
+    platform: arista_eos
+    username: admin
+    password: admin
+    port: 6000
+    groups:
+      - eos_params
+  router1:
+    hostname: 127.0.0.1
+    platform: arista_eos
+    username: admin
+    password: admin
+    port: 6001
+    groups:
+      - eos_params
+  router2:
+    hostname: 127.0.0.1
+    platform: arista_eos
+    username: admin
+    password: admin
+    port: 6002
+    groups:
+      - eos_params
+  router3:
+    hostname: 127.0.0.1
+    platform: arista_eos
+    username: admin
+    password: admin
+    port: 6003
+    groups:
+      - eos_params
+  router4:
+    hostname: 127.0.0.1
+    platform: arista_eos
+    username: admin
+    password: admin
+    port: 6004
+    groups:
+      - eos_params

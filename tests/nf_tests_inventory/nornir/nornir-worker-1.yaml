@@ -5,12 +5,45 @@ hosts:
     username: admin
     password: admin
     port: 2200
+    groups:
+      - eos_params
+    data:
+      interfaces:
+        - loopback0
+        - ethernet1
+    connection_options:
+      scrapli_netconf:
+        port: 8300
+      napalm:
+        extras:
+          optional_args:
+            transport: http
+            port: 8800
+      ncclient:
+        port: 8300
+        
   ceos-spine-2:
     hostname: 192.168.4.130
     platform: arista_eos
     username: admin
     password: admin
     port: 2201
+    groups:
+      - eos_params
+    data:
+      interfaces:
+        - ethernet1
+    connection_options:
+      scrapli_netconf:
+        port: 8301
+      napalm:
+        extras:
+          optional_args:
+            transport: http
+            port: 8801
+      ncclient:
+        port: 8301
+        
 groups: {}
 defaults: {}
         
