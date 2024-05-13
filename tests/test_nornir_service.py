@@ -1,5 +1,6 @@
 import pprint
 import pytest
+import random
 
 
 class TestNornirWorker:
@@ -51,17 +52,17 @@ class TestNornirCli:
                     "show version" in res and "Traceback" not in res["show version"]
                 ), f"{worker}:{host} show clock output is wrong"
 
-    def test_commands_dry_run(self, nfclient):
+    def test_commands_cli_dry_run(self, nfclient):
         ret = nfclient.run_job(
             b"nornir",
             "cli",
-            kwargs={"commands": ["show version", "show clock"], "dry_run": True},
+            kwargs={"commands": ["show version", "show clock"], "cli_dry_run": True},
         )
         pprint.pprint(ret)
 
         for worker, results in ret.items():
             for host, res in results.items():
-                assert "nr_test" in res and res["nr_test"] == [
+                assert "cli_dry_run" in res and res["cli_dry_run"] == [
                     "show version",
                     "show clock",
                 ], f"{worker}:{host} dry run output is wrong"
@@ -98,20 +99,20 @@ class TestNornirCli:
     def test_commands_plugin_napalm(self, nfclient):
         pass
 
-    def test_commands_from_file_dry_run(self, nfclient):
+    def test_commands_from_file_cli_dry_run(self, nfclient):
         ret = nfclient.run_job(
             b"nornir",
             "cli",
             kwargs={
                 "commands": "nf://nf_tests_inventory/cli/commands.txt",
-                "dry_run": True,
+                "cli_dry_run": True,
             },
         )
         pprint.pprint(ret)
 
         for worker, results in ret.items():
             for host, res in results.items():
-                assert "nr_test" in res and res["nr_test"] == [
+                assert "cli_dry_run" in res and res["cli_dry_run"] == [
                     "show version\nshow clock\nshow int description"
                 ], f"{worker}:{host} output is wrong"
 
@@ -134,7 +135,7 @@ class TestNornirCli:
             "cli",
             kwargs={
                 "commands": "nf://nf_tests_inventory/cli/show_interfaces.j2",
-                "dry_run": True,
+                "cli_dry_run": True,
             },
         )
         pprint.pprint(ret)
@@ -142,11 +143,11 @@ class TestNornirCli:
         for worker, results in ret.items():
             for host, res in results.items():
                 if host == "ceos-spine-1":
-                    assert "loopback0" in res["nr_test"][0]
-                    assert "ethernet1" in res["nr_test"][0]
+                    assert "loopback0" in res["cli_dry_run"][0]
+                    assert "ethernet1" in res["cli_dry_run"][0]
                 elif host == "ceos-spine-2":
-                    assert "loopback0" not in res["nr_test"][0]
-                    assert "ethernet1" in res["nr_test"][0]
+                    assert "loopback0" not in res["cli_dry_run"][0]
+                    assert "ethernet1" in res["cli_dry_run"][0]
 
 
 class TestNornirTask:
@@ -292,3 +293,543 @@ class TestNornirTask:
                 },
             }
         }
+
+
+class TestNornirCfg:
+    def test_config_list(self, nfclient):
+        ret = nfclient.run_job(
+            b"nornir",
+            "cfg",
+            workers=["nornir-worker-1", "nornir-worker-2"],
+            kwargs={"config": ["interface loopback 0", "description RID"]},
+        )
+        pprint.pprint(ret)
+
+        for worker, results in ret.items():
+            for host, res in results.items():
+                assert (
+                    "netmiko_send_config" in res
+                ), f"{worker}:{host} no netmiko_send_config output"
+                assert (
+                    "Traceback" not in res["netmiko_send_config"]
+                ), f"{worker}:{host} cfg output is wrong"
+
+    def test_config_cfg_dry_run(self, nfclient):
+        ret = nfclient.run_job(
+            b"nornir",
+            "cfg",
+            workers=["nornir-worker-1", "nornir-worker-2"],
+            kwargs={
+                "config": ["interface loopback 0", "description RID"],
+                "cfg_dry_run": True,
+            },
+        )
+        pprint.pprint(ret)
+
+        for worker, results in ret.items():
+            for host, res in results.items():
+                assert "cfg_dry_run" in res, f"{worker}:{host} no cfg dry run output"
+                assert res["cfg_dry_run"] == [
+                    "interface loopback 0",
+                    "description RID",
+                ], f"{worker}:{host} cfg dry run output is wrong"
+
+    def test_config_with_hosts_filters(self, nfclient):
+        ret = nfclient.run_job(
+            b"nornir",
+            "cfg",
+            workers=["nornir-worker-1", "nornir-worker-2"],
+            kwargs={
+                "config": ["interface loopback 0", "description RID"],
+                "FL": ["ceos-leaf-1", "ceos-spine-1"],
+                "cfg_dry_run": True,
+            },
+        )
+        pprint.pprint(ret)
+
+        assert (
+            len(ret["nornir-worker-1"]) == 1
+        ), f"nornir-worker-1 produced more then 1 host result"
+        assert (
+            len(ret["nornir-worker-2"]) == 1
+        ), f"nornir-worker-2 produced more then 1 host result"
+
+        assert (
+            "ceos-spine-1" in ret["nornir-worker-1"]
+        ), f"nornir-worker-1 no output for ceos-spine-1"
+        assert (
+            "ceos-leaf-1" in ret["nornir-worker-2"]
+        ), f"nornir-worker-2 no output for ceos-leaf-1"
+
+    def test_config_with_worker_target(self, nfclient):
+        ret = nfclient.run_job(
+            b"nornir",
+            "cfg",
+            workers=["nornir-worker-1"],
+            kwargs={
+                "config": ["interface loopback 0", "description RID"],
+                "cfg_dry_run": True,
+            },
+        )
+        pprint.pprint(ret)
+
+        assert len(ret) == 1, f"CFG produced more then 1 worker result"
+        assert "nornir-worker-1" in ret, f"No output for nornir-worker-1"
+
+    def test_config_add_details(self, nfclient):
+        ret = nfclient.run_job(
+            b"nornir",
+            "cfg",
+            workers=["nornir-worker-1", "nornir-worker-2"],
+            kwargs={
+                "config": ["interface loopback 0", "description RID"],
+                "add_details": True,
+                "cfg_dry_run": True,
+            },
+        )
+        pprint.pprint(ret)
+
+        for worker, results in ret.items():
+            for host, res in results.items():
+                assert "cfg_dry_run" in res, f"{worker}:{host} no cfg_dry_run output"
+                assert isinstance(
+                    res["cfg_dry_run"], dict
+                ), f"{worker}:{host} no detailed output produced"
+                assert all(
+                    k in res["cfg_dry_run"]
+                    for k in [
+                        "changed",
+                        "connection_retry",
+                        "diff",
+                        "exception",
+                        "failed",
+                        "result",
+                        "task_retry",
+                    ]
+                ), f"{worker}:{host} detailed output incomplete"
+
+    def test_config_to_dict_false(self, nfclient):
+        ret = nfclient.run_job(
+            b"nornir",
+            "cfg",
+            workers=["nornir-worker-1", "nornir-worker-2"],
+            kwargs={
+                "config": ["interface loopback 0", "description RID"],
+                "to_dict": False,
+                "cfg_dry_run": True,
+            },
+        )
+        pprint.pprint(ret)
+
+        for worker, results in ret.items():
+            assert isinstance(results, list), f"{worker} did not return list result"
+            for host_res in results:
+                assert (
+                    len(host_res) == 3
+                ), f"{worker} was expecting 3 items in host result dic, but got more"
+                assert all(
+                    k in host_res for k in ["name", "result", "host"]
+                ), f"{worker} host output incomplete"
+
+    def test_config_to_dict_false_add_details(self, nfclient):
+        ret = nfclient.run_job(
+            b"nornir",
+            "cfg",
+            workers=["nornir-worker-1", "nornir-worker-2"],
+            kwargs={
+                "config": ["interface loopback 0", "description RID"],
+                "to_dict": False,
+                "cfg_dry_run": True,
+                "add_details": True,
+            },
+        )
+        pprint.pprint(ret)
+
+        for worker, results in ret.items():
+            assert isinstance(results, list), f"{worker} did not return list result"
+            for host_res in results:
+                assert (
+                    len(host_res) > 3
+                ), f"{worker} was expecting more then 3 items in host result dic, but got less"
+                assert all(
+                    k in host_res
+                    for k in [
+                        "changed",
+                        "connection_retry",
+                        "diff",
+                        "exception",
+                        "failed",
+                        "result",
+                        "task_retry",
+                        "name",
+                        "host",
+                    ]
+                ), f"{worker} host output incomplete"
+
+    def test_config_wrong_plugin(self, nfclient):
+        ret = nfclient.run_job(
+            b"nornir",
+            "cfg",
+            workers=["nornir-worker-1", "nornir-worker-2"],
+            kwargs={
+                "config": ["interface loopback 0", "description RID"],
+                "cfg_dry_run": True,
+                "plugin": "wrong_plugin",
+            },
+        )
+        pprint.pprint(ret)
+
+        for worker, results in ret.items():
+            assert "UnsupportedPluginError" in results, f"{worker} did not raise error"
+
+    def test_config_from_file_cfg_dry_run(self, nfclient):
+        ret = nfclient.run_job(
+            b"nornir",
+            "cfg",
+            workers=["nornir-worker-1", "nornir-worker-2"],
+            kwargs={
+                "config": "nf://nf_tests_inventory/cfg/config_1.txt",
+                "cfg_dry_run": True,
+            },
+        )
+        pprint.pprint(ret)
+
+        for worker, results in ret.items():
+            for host, res in results.items():
+                assert "cfg_dry_run" in res, f"{worker}:{host} no cfg dry run output"
+                assert res["cfg_dry_run"] == [
+                    "interface Loopback0\ndescription RID"
+                ], f"{worker}:{host} cfg dry run output is wrong"
+
+    def test_config_from_nonexisting_file(self, nfclient):
+        ret = nfclient.run_job(
+            b"nornir",
+            "cfg",
+            workers=["nornir-worker-1", "nornir-worker-2"],
+            kwargs={
+                "config": "nf://nf_tests_inventory/cfg/config_non_existing.txt",
+                "cfg_dry_run": True,
+            },
+        )
+        pprint.pprint(ret)
+
+        for worker, results in ret.items():
+            for host, res in results.items():
+                assert "cfg_dry_run" in res, f"{worker}:{host} no cfg dry run output"
+                assert (
+                    res["cfg_dry_run"] == []
+                ), f"{worker}:{host} cfg dry run output is wrong"
+
+    def test_config_from_file_template(self, nfclient):
+        ret = nfclient.run_job(
+            b"nornir",
+            "cfg",
+            workers=["nornir-worker-1", "nornir-worker-2"],
+            kwargs={
+                "config": "nf://nf_tests_inventory/cfg/config_2.txt",
+                "cfg_dry_run": True,
+            },
+        )
+        pprint.pprint(ret)
+
+        for worker, results in ret.items():
+            for host_name, res in results.items():
+                assert (
+                    "cfg_dry_run" in res
+                ), f"{worker}:{host_name} no cfg dry run output"
+                assert (
+                    "interface Loopback0\ndescription RID for " in res["cfg_dry_run"][0]
+                ), f"{worker}:{host_name} cfg dry run output is wrong"
+                assert (
+                    host_name in res["cfg_dry_run"][0]
+                ), f"{worker}:{host_name} cfg dry run output is not rendered"
+
+    def test_config_plugin_napalm(self, nfclient):
+        ret = nfclient.run_job(
+            b"nornir",
+            "cfg",
+            workers=["nornir-worker-1"],
+            kwargs={
+                "config": [
+                    "interface loopback 123",
+                    f"description RID {random.randint(0, 1000)}",
+                ],
+                "plugin": "napalm",
+                "add_details": True,
+            },
+        )
+        pprint.pprint(ret)
+
+        for worker, results in ret.items():
+            for host, res in results.items():
+                assert (
+                    "napalm_configure" in res
+                ), f"{worker}:{host} no napalm_configure output"
+                assert (
+                    res["napalm_configure"]["result"] is None
+                ), f"{worker}:{host} cfg output is wrong"
+                assert (
+                    res["napalm_configure"]["diff"] is not None
+                ), f"{worker}:{host} cfg output no diff"
+
+    def test_config_plugin_scrapli(self, nfclient):
+        ret = nfclient.run_job(
+            b"nornir",
+            "cfg",
+            workers=["nornir-worker-1"],
+            kwargs={
+                "config": ["interface loopback 0", "description RID"],
+                "plugin": "scrapli",
+            },
+        )
+        pprint.pprint(ret)
+
+        for worker, results in ret.items():
+            for host, res in results.items():
+                assert (
+                    "scrapli_send_config" in res
+                ), f"{worker}:{host} no scrapli_send_config output"
+                assert (
+                    "Traceback" not in res["scrapli_send_config"]
+                ), f"{worker}:{host} cfg output is wrong"
+
+    def test_config_plugin_netmiko(self, nfclient):
+        ret = nfclient.run_job(
+            b"nornir",
+            "cfg",
+            workers=["nornir-worker-1"],
+            kwargs={
+                "config": ["interface loopback 0", "description RID"],
+                "plugin": "netmiko",
+            },
+        )
+        pprint.pprint(ret)
+
+        for worker, results in ret.items():
+            for host, res in results.items():
+                assert (
+                    "netmiko_send_config" in res
+                ), f"{worker}:{host} no netmiko_send_config output"
+                assert (
+                    "Traceback" not in res["netmiko_send_config"]
+                ), f"{worker}:{host} cfg output is wrong"
+
+
+class TestNornirTests:
+    def test_nornir_test_suite(self, nfclient):
+        ret = nfclient.run_job(
+            b"nornir",
+            "test",
+            workers=["nornir-worker-1"],
+            kwargs={"suite": "nf://nf_tests_inventory/nornir_test_suites/suite_1.txt"},
+        )
+        pprint.pprint(ret)
+
+        for worker, results in ret.items():
+            for host, res in results.items():
+                for test_name, test_res in res.items():
+                    assert (
+                        "Traceback" not in test_res
+                    ), f"{worker}:{host}:{test_name} test output contains error"
+                    assert test_res in [
+                        "PASS",
+                        "FAIL",
+                    ], f"{worker}:{host}:{test_name} unexpected test result"
+
+    def test_nornir_test_suite_template(self, nfclient):
+        ret = nfclient.run_job(
+            b"nornir",
+            "test",
+            workers=["nornir-worker-1"],
+            kwargs={"suite": "nf://nf_tests_inventory/nornir_test_suites/suite_2.txt"},
+        )
+        pprint.pprint(ret)
+
+        for worker, results in ret.items():
+            for host, res in results.items():
+                for test_name, test_res in res.items():
+                    assert (
+                        "Traceback" not in test_res
+                    ), f"{worker}:{host}:{test_name} test output contains error"
+                    assert test_res in [
+                        "PASS",
+                        "FAIL",
+                    ], f"{worker}:{host}:{test_name} unexpected test result"
+
+    def test_nornir_test_suite_subset(self, nfclient):
+        ret = nfclient.run_job(
+            b"nornir",
+            "test",
+            workers=["nornir-worker-1"],
+            kwargs={
+                "suite": "nf://nf_tests_inventory/nornir_test_suites/suite_1.txt",
+                "subset": "check*version",
+            },
+        )
+        pprint.pprint(ret)
+
+        for worker, results in ret.items():
+            for host, res in results.items():
+                assert (
+                    len(res) == 1
+                ), f"{worker}:{host} was expecting results for single test only"
+                assert (
+                    "check ceos version" in res
+                ), f"{worker}:{host} was expecting 'check ceos version' results"
+
+    def test_nornir_test_dry_run(self, nfclient):
+        ret = nfclient.run_job(
+            b"nornir",
+            "test",
+            workers=["nornir-worker-1"],
+            kwargs={
+                "suite": "nf://nf_tests_inventory/nornir_test_suites/suite_1.txt",
+                "dry_run": True,
+            },
+        )
+        pprint.pprint(ret)
+
+        for worker, results in ret.items():
+            for host, res in results.items():
+                assert (
+                    "tests_dry_run" in res
+                ), f"{worker}:{host} no tests_dry_run results"
+                assert isinstance(
+                    res["tests_dry_run"], list
+                ), f"{worker}:{host} was expecting list of tests"
+                for i in res["tests_dry_run"]:
+                    assert all(
+                        k in i for k in ["name", "pattern", "task", "test"]
+                    ), f"{worker}:{host} test missing some keys"
+
+    def test_nornir_test_to_dict_true(self, nfclient):
+        ret = nfclient.run_job(
+            b"nornir",
+            "test",
+            workers=["nornir-worker-1"],
+            kwargs={
+                "suite": "nf://nf_tests_inventory/nornir_test_suites/suite_1.txt",
+                "to_dict": True,
+            },
+        )
+        pprint.pprint(ret)
+
+        for worker, results in ret.items():
+            for host, res in results.items():
+                for test_name, test_res in res.items():
+                    assert (
+                        "Traceback" not in test_res
+                    ), f"{worker}:{host}:{test_name} test output contains error"
+                    assert test_res in [
+                        "PASS",
+                        "FAIL",
+                    ], f"{worker}:{host}:{test_name} unexpected test result"
+
+    def test_nornir_test_to_dict_false(self, nfclient):
+        ret = nfclient.run_job(
+            b"nornir",
+            "test",
+            workers=["nornir-worker-1"],
+            kwargs={
+                "suite": "nf://nf_tests_inventory/nornir_test_suites/suite_1.txt",
+                "to_dict": False,
+            },
+        )
+        pprint.pprint(ret)
+
+        for worker, results in ret.items():
+            assert isinstance(results, list)
+            for i in results:
+                assert all(
+                    k in i for k in ["host", "name", "result"]
+                ), f"{worker} test output does not contains all keys"
+
+    def test_nornir_test_remove_tasks_false(self, nfclient):
+        ret = nfclient.run_job(
+            b"nornir",
+            "test",
+            workers=["nornir-worker-1"],
+            kwargs={
+                "suite": "nf://nf_tests_inventory/nornir_test_suites/suite_1.txt",
+                "remove_tasks": False,
+            },
+        )
+        pprint.pprint(ret)
+
+        for worker, results in ret.items():
+            for host, res in results.items():
+                assert len(res) > 2, f"{worker}:{host} not having tasks output"
+                for task_name, task_res in res.items():
+                    assert (
+                        "Traceback" not in task_res
+                    ), f"{worker}:{host}:{test_name} test output contains error"
+
+    def test_nornir_test_failed_only_true(self, nfclient):
+        ret = nfclient.run_job(
+            b"nornir",
+            "test",
+            workers=["nornir-worker-1"],
+            kwargs={
+                "suite": "nf://nf_tests_inventory/nornir_test_suites/suite_1.txt",
+                "failed_only": True,
+            },
+        )
+        pprint.pprint(ret)
+
+        for worker, results in ret.items():
+            for host, res in results.items():
+                for test_name, test_res in res.items():
+                    assert (
+                        "Traceback" not in test_res
+                    ), f"{worker}:{host}:{test_name} test output contains error"
+                    assert test_res in [
+                        "FAIL"
+                    ], f"{worker}:{host}:{test_name} unexpected test result"
+
+    def test_nornir_test_suite_non_existing_file(self, nfclient):
+        ret = nfclient.run_job(
+            b"nornir",
+            "test",
+            workers=["nornir-worker-1"],
+            kwargs={
+                "suite": "nf://nf_tests_inventory/nornir_test_suites/suite_non_existing.txt"
+            },
+        )
+        pprint.pprint(ret)
+
+        for worker, results in ret.items():
+            assert (
+                "suite download failed" in results
+            ), f"{worker} was expecting download to fail"
+
+    def test_nornir_test_suite_bad_yaml_file(self, nfclient):
+        ret = nfclient.run_job(
+            b"nornir",
+            "test",
+            workers=["nornir-worker-1"],
+            kwargs={
+                "suite": "nf://nf_tests_inventory/nornir_test_suites/suite_bad_yaml.txt"
+            },
+        )
+        pprint.pprint(ret)
+
+        for worker, results in ret.items():
+            assert (
+                "YAML load failed" in results
+            ), f"{worker} was expecting YAML load to fail"
+
+    def test_nornir_test_suite_bad_jinja2(self, nfclient):
+        ret = nfclient.run_job(
+            b"nornir",
+            "test",
+            workers=["nornir-worker-1"],
+            kwargs={
+                "suite": "nf://nf_tests_inventory/nornir_test_suites/suite_bad_jinja2.txt"
+            },
+        )
+        pprint.pprint(ret)
+
+        for worker, results in ret.items():
+            assert (
+                "Jinja2 rendering failed" in results
+            ), f"{worker} was expecting Jinja2 rendering to fail"

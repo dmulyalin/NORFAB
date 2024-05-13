@@ -2,6 +2,7 @@ import json
 import logging
 import sys
 import importlib.metadata
+import yaml
 
 from jinja2 import Environment
 from norfab.core.worker import MajorDomoWorker, NFPWorker
@@ -10,6 +11,9 @@ from nornir_salt.plugins.tasks import (
     netmiko_send_commands,
     scrapli_send_commands,
     napalm_send_commands,
+    napalm_configure,
+    netmiko_send_config,
+    scrapli_send_config,
     nr_test,
 )
 from nornir_salt.plugins.functions import FFun_functions, FFun, ResultSerializer
@@ -19,6 +23,8 @@ from nornir_salt.plugins.processors import (
     DiffProcessor,
     DataProcessor,
 )
+from nornir_salt.utils.pydantic_models import modelTestsProcessorSuite
+from typing import Union
 
 log = logging.getLogger(__name__)
 
@@ -237,7 +243,11 @@ class NornirWorker(NFPWorker):
         return libs
 
     def cli(
-        self, commands: list, plugin: str = "netmiko", dry_run: bool = False, **kwargs
+        self,
+        commands: list,
+        plugin: str = "netmiko",
+        cli_dry_run: bool = False,
+        **kwargs,
     ) -> dict:
         """
         Function to collect show commands output from devices using
@@ -245,11 +255,10 @@ class NornirWorker(NFPWorker):
 
         :param commands: list of commands to send to devices
         :param plugin: plugin name to use - ``netmiko``, ``scrapli``, ``napalm``
-        :param dry_run: do not send commands to devices just return them
+        :param cli_dry_run: do not send commands to devices just return them
         """
-        ret = None
+        ret = []
         downloaded_cmds = []
-        rendered_cmds = []
         commands = commands if isinstance(commands, list) else [commands]
 
         # extract attributes
@@ -269,6 +278,14 @@ class NornirWorker(NFPWorker):
 
         self.nr.data.reset_failed_hosts()  # reset failed hosts
         filtered_nornir = FFun(self.nr, **filters)  # filter hosts
+
+        # check if no hosts matched
+        if not filtered_nornir.inventory.hosts:
+            log.debug(
+                f"{self.name} - nothing to do, no hosts matched by filters '{filters}'"
+            )
+            return {} if to_dict else []
+
         nr = self._add_processors(filtered_nornir, kwargs)  # add processors
 
         # download commands from broker if needed
@@ -293,9 +310,13 @@ class NornirWorker(NFPWorker):
                 )
 
         # run task
-        log.debug(f"{self.name} - running cli commands '{commands}', kwargs '{kwargs}'")
-        if dry_run is True:
-            result = nr.run(task=nr_test, use_task_data="commands", **kwargs)
+        log.debug(
+            f"{self.name} - running cli commands '{commands}', kwargs '{kwargs}', is cli dry run - '{cli_dry_run}'"
+        )
+        if cli_dry_run is True:
+            result = nr.run(
+                task=nr_test, use_task_data="commands", name="cli_dry_run", **kwargs
+            )
         else:
             result = nr.run(task=task_plugin, **kwargs)
 
@@ -362,6 +383,14 @@ class NornirWorker(NFPWorker):
 
         self.nr.data.reset_failed_hosts()  # reset failed hosts
         filtered_nornir = FFun(self.nr, **filters)  # filter hosts
+
+        # check if no hosts matched
+        if not filtered_nornir.inventory.hosts:
+            log.debug(
+                f"{self.name} - nothing to do, no hosts matched by filters '{filters}'"
+            )
+            return {} if to_dict else []
+
         nr = self._add_processors(filtered_nornir, kwargs)  # add processors
 
         # run task
@@ -371,14 +400,189 @@ class NornirWorker(NFPWorker):
         return ResultSerializer(result, to_dict=to_dict, add_details=add_details)
 
     def cfg(
-        self, commands: list, plugin: str = "netmiko", dry_run: bool = False, **kwargs
+        self, config: list, plugin: str = "netmiko", cfg_dry_run: bool = False, **kwargs
     ) -> dict:
-        pass
+        """
+        Function to send configuration commands to devices using
+        Command Line Interface (CLI)
+
+        :param config: list of commands to send to devices
+        :param plugin: plugin name to use - ``netmiko``, ``scrapli``, ``napalm``
+        :param cfg_dry_run: do not send commands to devices just return them
+        """
+        ret = []
+        downloaded_cfg = []
+        config = config if isinstance(config, list) else [config]
+
+        # extract attributes
+        add_details = kwargs.pop("add_details", False)  # ResultSerializer
+        to_dict = kwargs.pop("to_dict", True)  # ResultSerializer
+        filters = {k: kwargs.pop(k) for k in list(kwargs.keys()) if k in FFun_functions}
+
+        # decide on what send commands task plugin to use
+        if plugin == "netmiko":
+            task_plugin = netmiko_send_config
+        elif plugin == "scrapli":
+            task_plugin = scrapli_send_config
+        elif plugin == "napalm":
+            task_plugin = napalm_configure
+        else:
+            raise UnsupportedPluginError(f"Plugin '{plugin}' not supported")
+
+        self.nr.data.reset_failed_hosts()  # reset failed hosts
+        filtered_nornir = FFun(self.nr, **filters)  # filter hosts
+
+        # check if no hosts matched
+        if not filtered_nornir.inventory.hosts:
+            log.debug(
+                f"{self.name} - nothing to do, no hosts matched by filters '{filters}'"
+            )
+            return {} if to_dict else []
+
+        nr = self._add_processors(filtered_nornir, kwargs)  # add processors
+
+        # download config from broker if needed
+        for command in config:
+            if command.startswith("nf://"):
+                downloaded = self.fetch_file(command)
+                if downloaded is not None:
+                    downloaded_cfg.append(downloaded)
+                else:
+                    log.error(
+                        f"{self.name} - config command download failed '{command}'"
+                    )
+            else:
+                downloaded_cfg.append(command)
+
+        # render config using Jinja2 on a per-host basis
+        for host_name, host_object in nr.inventory.hosts.items():
+            context = {"host": host_object}
+            host_object.data["__task__"] = {"config": []}
+            for command in downloaded_cfg:
+                renderer = Environment(loader="BaseLoader").from_string(command)
+                host_object.data["__task__"]["config"].append(
+                    renderer.render(**context)
+                )
+
+        # run task
+        log.debug(
+            f"{self.name} - sending config commands '{config}', kwargs '{kwargs}', is cfg_dry_run - '{cfg_dry_run}'"
+        )
+        if cfg_dry_run is True:
+            result = nr.run(
+                task=nr_test, use_task_data="config", name="cfg_dry_run", **kwargs
+            )
+        else:
+            result = nr.run(task=task_plugin, **kwargs)
+
+        ret = ResultSerializer(result, to_dict=to_dict, add_details=add_details)
+
+        # remove __task__ data
+        for host_name, host_object in nr.inventory.hosts.items():
+            _ = host_object.data.pop("__task__", None)
+
+        return ret
+
+    def test(
+        self,
+        suite: Union[list, str],
+        subset: str = None,
+        dry_run: bool = False,
+        remove_tasks: bool = True,
+        failed_only: bool = False,
+        **kwargs,
+    ) -> dict:
+        """
+        Function to tests data obtained from devices.
+
+        :param suite: path to YAML file with tests
+        :param dry_run: if True, returns produced per-host tests suite content only
+        :param subset: list or string with comma separated non case sensitive glob
+            patterns to filter tests' by name, subset argument ignored by dry run
+        :param failed_only: if True returns test results for failed tests only
+        :param remove_tasks: if False results will include other tasks output
+        """
+        ret = []
+        downloaded_suite = None
+        tests = {}  # dictionary to hold per-host test suites
+
+        # extract attributes
+        add_details = kwargs.pop("add_details", False)  # ResultSerializer
+        to_dict = kwargs.pop("to_dict", True)  # ResultSerializer
+        filters = {k: kwargs.pop(k) for k in list(kwargs.keys()) if k in FFun_functions}
+
+        self.nr.data.reset_failed_hosts()  # reset failed hosts
+        filtered_nornir = FFun(self.nr, **filters)  # filter hosts
+
+        # check if no hosts matched
+        if not filtered_nornir.inventory.hosts:
+            log.debug(
+                f"{self.name} - nothing to do, no hosts matched by filters '{filters}'"
+            )
+            return {} if to_dict else []
+
+        # download tests suite
+        downloaded_suite = self.fetch_file(suite)
+        if downloaded_suite is None:
+            msg = f"{self.name} - '{suite}' suite download failed"
+            log.error(msg)
+            return msg
+
+        # generate per-host test suites
+        for host_name, host_object in filtered_nornir.inventory.hosts.items():
+            context = {"host": host_object}
+            # render suite using Jinja2
+            try:
+                renderer = Environment(loader="BaseLoader").from_string(
+                    downloaded_suite
+                )
+                rendered_suite = renderer.render(**context)
+            except Exception as e:
+                msg = (
+                    f"{self.name} - '{suite}' Jinja2 rendering failed with error '{e}'"
+                )
+                log.error(msg)
+                return msg
+            # load suit using YAML
+            try:
+                tests[host_name] = yaml.safe_load(rendered_suite)
+            except Exception as e:
+                msg = f"{self.name} - '{suite}' YAML load failed with error '{e}'"
+                log.error(msg)
+                return msg
+
+        # validate tests suite
+        try:
+            _ = modelTestsProcessorSuite(tests=tests)
+        except Exception as e:
+            msg = f"{self.name} - '{suite}' suite validation failed with error '{e}'"
+            log.error(msg)
+            return msg
+
+        # run task
+        log.debug(f"{self.name} - running test '{suite}', is dry run - '{dry_run}'")
+        if dry_run is True:
+            result = filtered_nornir.run(
+                task=nr_test, name="tests_dry_run", ret_data_per_host=tests
+            )
+        else:
+            # add tests processor
+            nr = self._add_processors(
+                filtered_nornir,
+                kwargs={
+                    "tests": tests,
+                    "remove_tasks": remove_tasks,
+                    "failed_only": failed_only,
+                    "subset": subset,
+                },
+            )
+            result = nr.run(task=netmiko_send_commands, **kwargs)
+
+        ret = ResultSerializer(result, to_dict=to_dict, add_details=add_details)
+
+        return ret
 
     def netconf(self) -> dict:
-        pass
-
-    def test(self) -> dict:
         pass
 
     def file(self) -> dict:

@@ -79,6 +79,7 @@ class ShowCommandsModel(BaseModel):
     client: Callable = Field(
         "show_client", description="show client details", outputter=print_stats
     )
+    # jobs: details, summary, last x, failed, pending, completed, by worker
 
     class PicleConfig:
         pipe = PipeFunctionsModel
@@ -205,7 +206,7 @@ class FileServiceCommands(BaseModel):
 
 
 class NorFabShell(BaseModel):
-    show: ShowCommandsModel = Field(None, description="show commands")
+    show: ShowCommandsModel = Field(None, description="NorFab show commands")
     nornir: picle_shell_client_nornir_service.NornirServiceCommands = Field(
         None, description="Nornir service"
     )
