@@ -1,6 +1,6 @@
 # Network Automations Fabric - NORFAB
 
-NORFAB is a package and a collection of tools to automate networks.
+NORFAB is a tool for extreme network automations.
 
 # Features
 
@@ -12,16 +12,16 @@ NORFAB is a package and a collection of tools to automate networks.
 
 # The IDEA
 
-Most of the software to manage network devices falls into one of the two categories: 
+Most of the software to manage networks falls into one of the two categories: 
 
 - heavyweight platforms running on dedicated infrastructure
 - lightweight scripts or tools developed and run locally
 
 NORFAB goal is to be both - software you can run equally well from your laptop or on a 
 server, centralized or fully distributed, lightweight and feature reach. Capable of 
-doing any use cases without the need to throw gazillion of dollars and man hours at 
-it. Always ready to serve the purpose of making engineers life better and fulfilling 
-business requirements.
+doing any use cases without the need to throw gazillions of dollars and man hours at 
+it. Always ready to serve the purpose of unlocking engineers superpowers making their 
+life better while fulfilling business requirements.
 
 # Architecture
 
@@ -33,7 +33,7 @@ Key components include
 
 - Broker
 - Clients
-- Services
+- Workers that form services
 
 *Services* expose functionality consumed by *Clients* via *Broker*.
 
@@ -51,6 +51,12 @@ NORFAB comes with modified version of MDP
 # Built-in Services
 
 - Nornir Service to manage Network devices
-
+- File services
+- Simple Inventory Service a.k.a. SID
 
 [architecture]:                docs/ArcOverview_v0.png "NORFAB architecture"
+
+# History
+
+NORFAB is a successor of Salt-Nornir SaltStack proxy minion targeting 
+to address its shortcomings and surpass its limits.
