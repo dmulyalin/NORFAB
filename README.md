@@ -4,11 +4,12 @@ NORFAB is a tool for extreme network automations.
 
 # Features
 
-- Run anywhere - locally on Windows, MAC or Linux, in a container, on a VM, in the cloud, centralized or distributed
-- Extend anything - extendability is the core of the NORFAB
-- Integrate with everything - Python API, REST API, CLI northbound interfaces
-- Manage anything - develop your own services or use built-in to manage your devices and services
+- Run Anywhere - locally on Windows, MAC or Linux, in a container, on a VM, in the cloud, centralized or distributed
+- Extend Anything - extendability is in the core of NORFAB
+- Integrate with Everything - Python API, REST API, CLI northbound interfaces
+- Manage Anything - develop your own services or use built-in to manage your network infrastructure
 - Model and data driven - Pydantic models for API, validation and documentation
+- Automate Anything - we mean it, sky is the limit on what you can do with NORFAB automating your networks
 
 # The IDEA
 
@@ -59,4 +60,4 @@ NORFAB comes with modified version of MDP
 # History
 
 NORFAB is a successor of Salt-Nornir SaltStack proxy minion targeting 
-to address its shortcomings and surpass its limits.
+to surpass its limitations.
