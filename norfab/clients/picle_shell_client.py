@@ -28,6 +28,7 @@ from typing import Union, Optional, List, Any, Dict, Callable, Tuple
 from norfab.core.nfapi import NorFab
 
 from . import picle_shell_client_nornir_service
+from . import picle_shell_client_netbox_service
 
 NFCLIENT = None
 log = logging.getLogger(__name__)
@@ -211,6 +212,9 @@ class NorFabShell(BaseModel):
         None, description="Nornir service"
     )
     file: FileServiceCommands = Field(None, description="File sharing service")
+    netbox: picle_shell_client_netbox_service.NetboxServiceCommands = Field(
+        None, description="Netbox service"
+    )
 
     class PicleConfig:
         subshell = True
@@ -244,6 +248,7 @@ def start_picle_shell(
     if NFCLIENT is not None:
         # inject NFCLINET to imported models global space
         setattr(picle_shell_client_nornir_service, "NFCLIENT", NFCLIENT)
+        setattr(picle_shell_client_netbox_service, "NFCLIENT", NFCLIENT)
 
         # start PICLE interactive shell
         shell = App(NorFabShell)

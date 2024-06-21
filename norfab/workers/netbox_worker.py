@@ -1,0 +1,840 @@
+"""
+{
+  __schema {
+    queryType {
+      fields {
+        name
+      }
+    }
+  }
+}
+"""
+
+import json
+import logging
+import sys
+import importlib.metadata
+import requests
+
+from norfab.core.worker import NFPWorker
+from typing import Union
+from requests.packages.urllib3.exceptions import InsecureRequestWarning
+
+log = logging.getLogger(__name__)
+
+# ----------------------------------------------------------------------
+# CONSTANTS
+# ----------------------------------------------------------------------
+
+DEVICE_FIELDS = [
+    "name",
+    "last_updated",
+    "custom_field_data",
+    "tags {name}",
+    "device_type {model}",
+    "role {name}",
+    "config_context",
+    "tenant {name}",
+    "platform {name}",
+    "serial",
+    "asset_tag",
+    "site {name tags{name}}",
+    "location {name}",
+    "rack {name}",
+    "status",
+    "primary_ip4 {address}",
+    "primary_ip6 {address}",
+    "airflow",
+    "position",
+]
+
+# ----------------------------------------------------------------------
+# HELPER FUNCTIONS
+# ----------------------------------------------------------------------
+
+
+def _form_query(obj, filters, fields, alias=None):
+    """
+    Helper function to form graphql query
+
+    :param obj: string, object to return data for e.g. device, interface, ip_address
+    :param filters: dictionary of key-value pairs to filter by
+    :param fields: list of data fields to return
+    :param alias: string, alias value for requested object
+    """
+    filters_list = []
+    for k, v in filters.items():
+        if isinstance(v, (list, set, tuple)):
+            items = ", ".join(f'"{i}"' for i in v)
+            filters_list.append(f"{k}: [{items}]")
+        elif "{" in v and "}" in v:
+            filters_list.append(f"{k}: {v}")
+        else:
+            filters_list.append(f'{k}: "{v}"')
+    filters_string = ", ".join(filters_list)
+    fields = " ".join(fields)
+    if alias:
+        query = f"{alias}: {obj}(filters: {{{filters_string}}}) {{{fields}}}"
+    else:
+        query = f"{obj}(filters: {{{filters_string}}}) {{{fields}}}"
+
+    return query
+
+
+class NetboxWorker(NFPWorker):
+    default_instance = None
+    inventory = None
+    compatible_ge = 405  # 4.0.5 - minimum supported Netbox version
+
+    def __init__(
+        self, broker, service, worker_name, exit_event=None, log_level="WARNING"
+    ):
+        super().__init__(broker, service, worker_name, exit_event, log_level)
+
+        # get inventory from broker
+        self.inventory = self.load_inventory()
+        if not self.inventory:
+            log.critical(
+                f"Broker {self.broker} returned no inventory for {self.name}, killing myself..."
+            )
+            self.destroy()
+
+        assert self.inventory.get(
+            "instances"
+        ), f"{self.name} - inventory has no Netbox instances"
+
+        # find default instance
+        for name, params in self.inventory["instances"].items():
+            if params.get("default") is True:
+                self.default_instance = name
+                break
+        else:
+            self.default_instance = name
+
+        # check Netbox compatibility
+        self._verify_compatibility()
+
+        log.info(f"{self.name} - Started")
+
+    # ----------------------------------------------------------------------
+    # Netbox Service Functions that exposed for calling
+    # ----------------------------------------------------------------------
+
+    def get_netbox_inventory(self):
+        return dict(self.inventory)
+
+    def get_netbox_version(self, **kwargs):
+        libs = {
+            "pynetbox": "",
+            "requests": "",
+            "python": sys.version.split(" ")[0],
+            "platform": sys.platform,
+        }
+        # get version of packages installed
+        for pkg in libs.keys():
+            try:
+                libs[pkg] = importlib.metadata.version(pkg)
+            except importlib.metadata.PackageNotFoundError:
+                pass
+
+        return libs
+
+    def get_compatibility(self):
+        ret = {}
+        netbox_status = self.get_netbox_status()
+        for instance, params in netbox_status.items():
+            if params["status"] is not True:
+                log.warning(f"{self.name} - {instance} Netbox instance not reachable")
+                ret[instance] = None
+            else:
+                nb_version = int(params["netbox-version"].replace(".", ""))
+                ret[instance] = nb_version >= self.compatible_ge
+
+        return ret
+
+    def _verify_compatibility(self):
+        compatibility = self.get_compatibility()
+        if not all(i is not False for i in compatibility.values()):
+            raise RuntimeError(
+                f"{self.name} - not all Netbox instances are compatible: {compatibility}"
+            )
+
+    def _query_netbox_status(self, name):
+        params = self.inventory["instances"][name]
+        ret = {
+            "error": None,
+            "status": True,
+        }
+        try:
+            response = requests.get(
+                f"{params['url']}/api/status",
+                verify=params.get("ssl_verify", True),
+                timeout=(3, 600),
+            )
+            response.raise_for_status()
+            ret.update(response.json())
+        except Exception as e:
+            ret["status"] = False
+            msg = (
+                f"{self.name} - failed to query Netbox API URL "
+                f"'{params['url']}', token ends "
+                f"with '..{params['token'][-6:]}'; error: '{e}'"
+            )
+            log.error(msg)
+            ret["error"] = msg
+
+        return ret
+
+    def get_netbox_status(self, instance=None):
+        ret = {}
+        if instance:
+            ret[instance] = self._query_netbox_status(instance)
+        else:
+            for name in self.inventory["instances"].keys():
+                ret[name] = self._query_netbox_status(name)
+        return ret
+
+    def _get_instance_params(self, name: str) -> dict:
+        """
+        Helper function to get inventory params for Netbox instance.
+
+        :param name: Netbox instance name
+        """
+        if name:
+            ret = self.inventory["instances"][name]
+        else:
+            ret = self.inventory["instances"][self.default_instance]
+
+        # check if need to disable SSL warnings
+        if ret.get("ssl_verify") == False:
+            requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
+        else:
+            requests.packages.urllib3.enable_warnings(InsecureRequestWarning)
+
+        return ret
+
+    def _get_pynetbox(self, instance):
+        """Helper function to instantiate pynetbox api object"""
+        params = self._get_instance_params(instance)
+
+        if params.get("ssl_verify") == False:
+            requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
+            nb = pynetbox.api(url=params["url"], token=params["token"])
+            nb.http_session.verify = False
+        else:
+            nb = pynetbox.api(url=params["url"], token=params["token"])
+
+        return nb
+
+    def graphql(
+        self,
+        instance: str = None,
+        dry_run: bool = False,
+        obj: dict = None,
+        filters: dict = None,
+        fields: list = None,
+        queries: dict = None,
+        query_string: str = None,
+    ):
+        """
+        Function to send query to Netbox GraphQL API and return results.
+
+        :param instance: Netbox instance name
+        :param dry_run: only return query content, do not run it
+        :param obj: object to return data for e.g. device, interface, ip_address
+        :param filters: dictionary of key-value pairs to filter by
+        :param fields: list of data fields to return
+        :param queries: dictionary keyed by GraphQL aliases with values of obj, filters, fields dictionary
+        :param query_string: string with GraphQL query
+        """
+        nb_params = self._get_instance_params(instance)
+
+        # form graphql query(ies) payload
+        if queries:
+            queries_list = []
+            for alias, query_data in queries.items():
+                query_data["alias"] = alias
+                queries_list.append(_form_query(**query_data))
+            queries_strings = "    ".join(queries_list)
+            query = f"query {{{queries_strings}}}"
+        elif obj and filters and fields:
+            query = _form_query(obj, filters, fields)
+            query = f"query {{{query}}}"
+        elif query_string:
+            query = query_string
+        else:
+            raise RuntimeError(
+                f"{self.name} - graphql method expects quieries argument or obj, filters, "
+                f"fields arguments or query_string argument provided"
+            )
+        payload = json.dumps({"query": query})
+
+        # form and return dry run response
+        if dry_run:
+            return {
+                "url": f"{nb_params['url']}/graphql/",
+                "data": payload,
+                "verify": nb_params.get("ssl_verify", True),
+                "headers": {
+                    "Content-Type": "application/json",
+                    "Accept": "application/json",
+                    "Authorization": f"Token ...{nb_params['token'][-6:]}",
+                },
+            }
+
+        # send request to Netbox GraphQL API
+        log.debug(
+            f"{self.name} - sending GraphQL query '{payload}' to URL '{nb_params['url']}/graphql/'"
+        )
+        req = requests.post(
+            url=f"{nb_params['url']}/graphql/",
+            headers={
+                "Content-Type": "application/json",
+                "Accept": "application/json",
+                "Authorization": f"Token {nb_params['token']}",
+            },
+            data=payload,
+            verify=nb_params.get("ssl_verify", True),
+            timeout=(3, 600),
+        )
+        try:
+            req.raise_for_status()
+        except Exception as e:
+            msg = (
+                f"{self.name} -  Netbox GraphQL query failed, query '{query}', "
+                f"URL '{req.url}', status-code '{req.status_code}', reason '{req.reason}', "
+                f"response content '{req.text}'"
+            )
+            log.error(msg)
+            return msg
+
+        # return results
+        reply = req.json()
+        if reply.get("errors"):
+            log.error(
+                f"{self.name} - GrapQL query error '{reply['errors']}', query '{payload}'"
+            )
+            return reply
+        elif queries or query_string:
+            return reply["data"]
+        else:
+            return reply["data"][obj]
+
+    def get_interfaces(
+        self,
+        instance: str = None,
+        devices: list = None,
+        ip_addresses: bool = False,
+        inventory_items: bool = False,
+        dry_run: bool = False,
+    ):
+        """
+        Function to retrieve device interfaces from Netbox using GraphQL API.
+
+        :param instance: Netbox instance name
+        :param devices: list of devices to retrieve interfaces for
+        :param ip_addresses: if True, retrieves interface IPs
+        :param inventory_items: if True, retrieves interface inventory items
+        :param dry_run: only return query content, do not run it
+        :return: dictionary keyed by device name with interface details
+        """
+        # form final result dictionary
+        ret = {d: {} for d in devices}
+        intf_fields = [
+            "name",
+            "enabled",
+            "description",
+            "mtu",
+            "parent {name}",
+            "mac_address",
+            "mode",
+            "untagged_vlan {vid name}",
+            "vrf {name}",
+            "tagged_vlans {vid name}",
+            "tags {name}",
+            "custom_fields",
+            "last_updated",
+            "bridge {name}",
+            "child_interfaces {name}",
+            "bridge_interfaces {name}",
+            "member_interfaces {name}",
+            "wwn",
+            "duplex",
+            "speed",
+            "id",
+            "device {name}",
+        ]
+
+        # add IP addresses to interfaces fields
+        if ip_addresses:
+            intf_fields.append(
+                "ip_addresses {address status role dns_name description custom_fields last_updated tenant {name} tags {name}}"
+            )
+
+        # form interfaces query dictionary
+        queries = {
+            "interfaces": {
+                "obj": "interface_list",
+                "filters": {"device": devices},
+                "fields": intf_fields,
+            }
+        }
+
+        # add query to retrieve inventory items
+        if inventory_items:
+            inv_filters = {"device": devices, "component_type": "dcim.interface"}
+            inv_fields = [
+                "name",
+                "component {... on InterfaceType {id}}",
+                "role {name}",
+                "manufacturer {name}",
+                "custom_fields",
+                "label",
+                "description",
+                "tags {name}",
+                "asset_tag",
+                "serial",
+                "part_id",
+            ]
+            queries["inventor_items"] = {
+                "obj": "inventory_item_list",
+                "filters": inv_filters,
+                "fields": inv_fields,
+            }
+
+        interfaces_data = self.graphql(
+            instance=instance, queries=queries, dry_run=dry_run
+        )
+
+        # return dry run result
+        if dry_run:
+            return interfaces_data
+
+        # exit if no Interfaces returned
+        if not interfaces_data.get("interfaces"):
+            log.error(
+                f"{self.name} - no interfaces data in '{interfaces_data}' returned by '{instance}' "
+                f"for devices {', '.join(devices)}"
+            )
+            return ret
+
+        # process query results
+        interfaces = interfaces_data.pop("interfaces")
+
+        # process inventory items
+        if inventory_items:
+            inventory_items_list = interfaces_data.pop("inventor_items")
+            # transform inventory items list to a dictionary keyed by intf_id
+            inventory_items_dict = {}
+            while inventory_items_list:
+                inv_item = inventory_items_list.pop()
+                # skip inventory items that does not assigned to components
+                if inv_item.get("component") is None:
+                    continue
+                intf_id = str(inv_item.pop("component").pop("id"))
+                inventory_items_dict.setdefault(intf_id, [])
+                inventory_items_dict[intf_id].append(inv_item)
+            # iterate over interfaces and add inventory items
+            for intf in interfaces:
+                intf["inventory_items"] = inventory_items_dict.pop(intf["id"], [])
+
+        # transform interfaces list to dictionary keyed by device and interfaces names
+        while interfaces:
+            intf = interfaces.pop()
+            _ = intf.pop("id")
+            device_name = intf.pop("device").pop("name")
+            intf_name = intf.pop("name")
+            if device_name in ret:  # Netbox issue #16299
+                ret[device_name][intf_name] = intf
+
+        return ret
+
+    def get_devices(
+        self,
+        filters: list = None,
+        instance: str = None,
+        dry_run: bool = False,
+        devices: list = None,
+    ):
+        """
+        Function to retrieve devices data from Netbox using GraphQL API.
+
+        :param filters: list of filters dictionaries to filter devices
+        :param instance: Netbox instance name
+        :param dry_run: only return query content, do not run it
+        :param devices: list of device names to query data for
+        :return: dictionary keyed by device name with device data
+        """
+        instance = instance or self.default_instance
+        ret = {}
+        filters = filters or []
+        nb_status = self.get_netbox_status(instance)
+
+        # form netbox version
+        NB_VERSION = nb_status[instance]["netbox-version"].split(".")
+        NB_VERSION = float(".".join(NB_VERSION[:2]))
+
+        device_fields = [
+            "name",
+            "last_updated",
+            "custom_field_data",
+            "tags {name}",
+            "device_type {model}",
+            "device_role {name}" if NB_VERSION < 3.6 else "role {name}",
+            "config_context",
+            "tenant {name}",
+            "platform {name}",
+            "serial",
+            "asset_tag",
+            "site {name tags{name}}",
+            "location {name}",
+            "rack {name}",
+            "status",
+            "primary_ip4 {address}",
+            "primary_ip6 {address}",
+            "airflow",
+            "position",
+        ]
+
+        # form queries dictionary out of filters
+        queries = {
+            f"devices_by_filter_{index}": {
+                "obj": "device_list",
+                "filters": filter_item,
+                "fields": device_fields,
+            }
+            for index, filter_item in enumerate(filters)
+        }
+
+        # add devices list query
+        if devices:
+            dlist = '["{dl}"]'.format(dl='", "'.join(devices))
+            queries["devices_by_devices_list"] = {
+                "obj": "device_list",
+                "filters": {"name": f"{{in_list: {dlist}}}"},
+                "fields": device_fields,
+            }
+
+        # send queries
+        devices_query_result = self.graphql(
+            queries=queries, instance=instance, dry_run=dry_run
+        )
+
+        # return dry run result
+        if dry_run:
+            return devices_query_result
+
+        # check for errors
+        if devices_query_result.get("errors"):
+            log.error(
+                f"{self.name} - get devices query failed with errors: {devices_query_result['errors']}"
+            )
+            return ret
+
+        # process devices
+        for devices_list in devices_query_result.values():
+            for device in devices_list:
+                if device["name"] not in ret:
+                    ret[device.pop("name")] = device
+
+        return ret
+
+    def get_connections(
+        self,
+        instance: str = None,
+        devices: list = None,
+        dry_run: bool = False,
+        cables: bool = False,
+        circuits: bool = False,
+    ):
+        """
+        Function to retrieve device connections data from Netbox using GraphQL API.
+
+        :param instance: Netbox instance name
+        :param devices: list of devices to retrieve interface for
+        :param dry_run: only return query content, do not run it
+        :param cables: if True includes interfaces' directly attached cables details
+        :param circuits: if True includes interfaces' circuits termination details
+        :return: dictionary keyed by device name with connections data
+        """
+        # form final result dictionary
+        connections_dict = {d: {} for d in devices}
+
+        # form lists of fields to request from netbox
+        cable_fields = """
+            cable {
+                type
+                status
+                tenant {name}
+                label
+                tags {name}
+                length
+                length_unit
+                custom_fields
+            }
+        """
+        interfaces_fields = [
+            "name",
+            "device {name}",
+            """connected_endpoints {
+              __typename 
+              ... on InterfaceType {name device {name}}
+              ... on ProviderNetworkType {name}
+            }""",
+        ]
+        console_ports_fields = [
+            "name",
+            "device {name}",
+            """connected_endpoints {
+              __typename 
+              ... on ConsoleServerPortType {name device {name}}
+            }""",
+            """link_peers {
+              __typename
+              ... on ConsoleServerPortType {name device {name}}
+              ... on FrontPortType {name device {name}}
+              ... on RearPortType {name device {name}}
+            }""",
+        ]
+        console_server_ports_fields = [
+            "name",
+            "device {name}",
+            """connected_endpoints {
+              __typename 
+              ... on ConsolePortType {name device {name}}
+            }""",
+            """link_peers {
+              __typename
+              ... on ConsolePortType {name device {name}}
+              ... on FrontPortType {name device {name}}
+              ... on RearPortType {name device {name}}
+            }""",
+        ]
+
+        # add circuits info
+        if circuits is True:
+            interfaces_fields.append(
+                """
+                link_peers {
+                    __typename
+                    ... on InterfaceType {name device {name}}
+                    ... on FrontPortType {name device {name}}
+                    ... on RearPortType {name device {name}}
+                    ... on CircuitTerminationType {
+                        circuit{
+                            cid 
+                            description 
+                            tags{name} 
+                            provider{name} 
+                            status
+                            custom_fields
+                            commit_rate
+                        }
+                    }
+                }
+            """
+            )
+        else:
+            interfaces_fields.append(
+                """
+                link_peers {
+                    __typename
+                    ... on InterfaceType {name device {name}}
+                    ... on FrontPortType {name device {name}}
+                    ... on RearPortType {name device {name}}
+                }
+            """
+            )
+
+        # check if need to include cables info
+        if cables is True:
+            interfaces_fields.append(cable_fields)
+            console_ports_fields.append(cable_fields)
+            console_server_ports_fields.append(cable_fields)
+
+        # form query dictionary with aliases to get data from Netbox
+        queries = {
+            "interface": {
+                "obj": "interface_list",
+                "filters": {"device": devices},
+                "fields": interfaces_fields,
+            },
+            "consoleport": {
+                "obj": "console_port_list",
+                "filters": {"device": devices},
+                "fields": console_ports_fields,
+            },
+            "consoleserverport": {
+                "obj": "console_server_port_list",
+                "filters": {"device": devices},
+                "fields": console_server_ports_fields,
+            },
+        }
+
+        # retrieve full list of devices interface with all cables
+        all_ports = self.graphql(queries=queries, instance=instance, dry_run=dry_run)
+
+        # return dry run result
+        if dry_run:
+            return all_ports
+
+        # extract interfaces
+        for port_type, ports in all_ports.items():
+            for port in ports:
+                endpoints = port["connected_endpoints"]
+                # skip ports that have no remote device connected
+                if not endpoints or not all(i for i in endpoints):
+                    continue
+
+                # extract required parameters
+                cable = port.get("cable", {})
+                device_name = port["device"]["name"]
+                port_name = port["name"]
+                link_peers = port["link_peers"]
+                remote_termination_type = endpoints[0]["__typename"].lower()
+                remote_termination_type = remote_termination_type.replace("type", "")
+
+                # form initial connection dictionary
+                connection = {
+                    "breakout": len(endpoints) > 1,
+                    "remote_termination_type": remote_termination_type,
+                    "termination_type": port_type,
+                }
+
+                # add remote connection details
+                if remote_termination_type == "providernetwork":
+                    connection["remote_device"] = None
+                    connection["remote_interface"] = None
+                    connection["provider"] = endpoints[0]["name"]
+                else:
+                    remote_interface = endpoints[0]["name"]
+                    if len(endpoints) > 1:
+                        remote_interface = [i["name"] for i in endpoints]
+                    connection["remote_interface"] = remote_interface
+                    connection["remote_device"] = endpoints[0]["device"]["name"]
+
+                # handle circuits
+                if (
+                    circuits and "circuit" in link_peers[0]
+                ):  # add circuit connection details
+                    connection["circuit"] = link_peers[0]["circuit"]
+
+                # add cable and its peer details
+                if cables:
+                    peer_termination_type = link_peers[0]["__typename"].lower()
+                    peer_termination_type = peer_termination_type.replace("type", "")
+                    cable["peer_termination_type"] = peer_termination_type
+                    cable["peer_device"] = link_peers[0].get("device", {}).get("name")
+                    cable["peer_interface"] = link_peers[0].get("name")
+                    if len(link_peers) > 1:  # handle breakout cable
+                        cable["peer_interface"] = [i["name"] for i in link_peers]
+                    connection["cable"] = cable
+
+                connections_dict[device_name][port_name] = connection
+
+        return connections_dict
+
+    def get_circuits(
+        self,
+        instance: str = None,
+        devices: list = None,
+        dry_run: bool = False,
+    ):
+        """
+        Function to retrieve device circuits data from Netbox using GraphQL API.
+
+        :param instance: Netbox instance name
+        :param devices: list of devices to retrieve interface for
+        :param dry_run: only return query content, do not run it
+        :return: dictionary keyed by device name with circuits data
+        """
+        pass
+
+    def get_nornir_inventory(
+        self,
+        filters: list = None,
+        devices: list = None,
+        instance: str = None,
+        interfaces: Union[dict, bool] = False,
+        connections: bool = False,
+        circuits: bool = False,
+        nbdata: bool = False,
+        primary_ip: str = "ip4",
+    ):
+        """
+        Method to query Netbox and return devices data in Nornir inventory format.
+        """
+        hosts = {}
+        inventory = {"hosts": hosts}
+
+        # check Netbox status
+        netbox_status = self.get_netbox_status(instance=instance)
+        if netbox_status[instance or self.default_instance]["status"] is False:
+            return inventory
+
+        # retrieve devices data
+        nb_devices = self.get_devices(
+            filters=filters, devices=devices, instance=instance
+        )
+
+        # form Nornir hosts inventory
+        for device_name, device in nb_devices.items():
+            host = device["config_context"].pop("nornir", {})
+            host.setdefault("data", {})
+            name = host.pop("name", device_name)
+            hosts[name] = host
+            # add platform if not provided in device config context
+            if not host.get("platform"):
+                if device["platform"]:
+                    host["platform"] = device["platform"]["name"]
+                else:
+                    log.warning(f"{self.name} - no platform found for '{name}' device")
+            # add hostname if not provided in config context
+            if not host.get("hostname"):
+                if device["primary_ip4"] and primary_ip in ["ip4", "ipv4"]:
+                    host["hostname"] = device["primary_ip4"]["address"].split("/")[0]
+                elif device["primary_ip6"] and primary_ip in ["ip6", "ipv6"]:
+                    host["hostname"] = device["primary_ip6"]["address"].split("/")[0]
+                else:
+                    host["hostname"] = name
+            # add netbox data to host's data
+            if nbdata is True:
+                host["data"].update(device)
+
+        # add interfaces data
+        if interfaces:
+            # decide on get_interfaces arguments
+            kwargs = interfaces if isinstance(interfaces, dict) else {}
+            # add 'interfaces' key to all hosts' data
+            for host in hosts.values():
+                host["data"].setdefault("interfaces", {})
+            # query interfaces data from netbox
+            nb_interfaces = self.get_interfaces(
+                devices=list(hosts), instance=instance, **kwargs
+            )
+            # save interfaces data to hosts' inventory
+            while nb_interfaces:
+                device, device_interfaces = nb_interfaces.popitem()
+                hosts[device]["data"]["interfaces"] = device_interfaces
+
+        # add connections data
+        if connections:
+            # decide on get_interfaces arguments
+            kwargs = connections if isinstance(connections, dict) else {}
+            # add 'connections' key to all hosts' data
+            for host in hosts.values():
+                host["data"].setdefault("connections", {})
+            # query connections data from netbox
+            nb_connections = self.get_connections(
+                devices=list(hosts), instance=instance, **kwargs
+            )
+            # save interfaces data to hosts' inventory
+            while nb_connections:
+                device, device_connections = nb_connections.popitem()
+                hosts[device]["data"]["connections"] = device_connections
+
+        # add circuits data
+        if circuits is True:
+            pass
+
+        return inventory

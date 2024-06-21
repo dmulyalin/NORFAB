@@ -74,6 +74,12 @@ def cli_tool():
         WORKERS = [i.strip() for i in args.WORKERS.split(",")]
 
     # start interactive shell
-    start_picle_shell(
-        inventory=INVENTORY, workers=WORKERS, start_broker=BROKER, log_level=LOGLEVEL
-    )
+    try:
+        start_picle_shell(
+            inventory=INVENTORY,
+            workers=WORKERS,
+            start_broker=BROKER,
+            log_level=LOGLEVEL,
+        )
+    except KeyboardInterrupt:
+        print("\nInterrupted by user...")

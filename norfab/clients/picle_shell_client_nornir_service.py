@@ -135,6 +135,27 @@ class NornirCommonArgs(BaseModel):
         description="Add task details to results",
         json_schema_extra={"presence": True},
     )
+    run_num_workers: Optional[StrictInt] = Field(
+        None, description="RetryRunner number of threads for tasks execution"
+    )
+    run_num_connectors: Optional[StrictInt] = Field(
+        None, description="RetryRunner number of threads for device connections"
+    )
+    run_connect_retry: Optional[StrictInt] = Field(
+        None, description="RetryRunner number of connection attempts"
+    )
+    run_task_retry: Optional[StrictInt] = Field(
+        None, description="RetryRunner number of attempts to run task"
+    )
+    run_reconnect_on_fail: Optional[StrictBool] = Field(
+        None,
+        description="RetryRunner perform reconnect to host on task failure",
+        json_schema_extra={"presence": True},
+    )
+    run_creds_retry: Optional[List] = Field(
+        None,
+        description="RetryRunner ist of connection credentials and parameters to retry",
+    )
 
 
 class EnumTableTypes(str, Enum):
@@ -506,6 +527,7 @@ class NornirCliShell(filters, TabulateTableModel, NornirCommonArgs):
     enable: Optional[StrictBool] = Field(
         None, description="Enter exec mode", json_schema_extra={"presence": True}
     )
+    run_ttp: Optional[StrictStr] = Field(None, description="TTP Template to run")
 
     @staticmethod
     def run(*args, **kwargs):

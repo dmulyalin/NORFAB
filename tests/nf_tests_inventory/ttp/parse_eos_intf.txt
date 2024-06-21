@@ -1,0 +1,10 @@
+<input format="python">
+commands = [
+	"show run section interface"
+]
+</input>
+
+<group>
+interface {{ interface }}
+   description {{ description | re(".+") }}
+</group>

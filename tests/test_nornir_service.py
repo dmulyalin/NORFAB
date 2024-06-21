@@ -149,6 +149,78 @@ class TestNornirCli:
                     assert "loopback0" not in res["cli_dry_run"][0]
                     assert "ethernet1" in res["cli_dry_run"][0]
 
+    def test_run_ttp(self, nfclient):
+        ret = nfclient.run_job(
+            b"nornir",
+            "cli",
+            workers="nornir-worker-1",
+            kwargs={
+                "run_ttp": "nf://nf_tests_inventory/ttp/parse_eos_intf.txt",
+                "FB": ["ceos-spine-*"],
+                "enable": True,
+            },
+        )
+        pprint.pprint(ret)
+
+        for worker, results in ret.items():
+            for host, res in results.items():
+                assert "run_ttp" in res, f"{worker}:{host} no run_ttp output"
+                for interface in res["run_ttp"]:
+                    assert (
+                        "interface" in interface
+                    ), f"{worker}:{host} run_ttp output is wrong"
+
+    def test_commands_template_with_norfab_client_call(self, nfclient):
+        ret = nfclient.run_job(
+            b"nornir",
+            "cli",
+            workers="nornir-worker-1",
+            kwargs={
+                "commands": "nf://nf_tests_inventory/cli/test_commands_template_with_norfab_call.j2",
+                "cli_dry_run": True,
+                "FL": ["ceos-spine-1"],
+            },
+        )
+        pprint.pprint(ret)
+
+        for worker, results in ret.items():
+            for host, res in results.items():
+                assert all(
+                    k in res["cli_dry_run"][0]
+                    for k in [
+                        "nornir-worker-2",
+                        "ceos-leaf-1",
+                        "nr_test",
+                        "eos-leaf-3",
+                        "eos-leaf-2",
+                    ]
+                ), f"{worker}:{host} output is wrong"
+
+    def test_commands_template_with_nornir_worker_call(self, nfclient):
+        ret = nfclient.run_job(
+            b"nornir",
+            "cli",
+            workers="nornir-worker-1",
+            kwargs={
+                "commands": "nf://nf_tests_inventory/cli/test_commands_template_with_nornir_worker_call.j2",
+                "cli_dry_run": True,
+                "FL": ["ceos-spine-1", "ceos-spine-2"],
+            },
+        )
+        pprint.pprint(ret)
+
+        for worker, results in ret.items():
+            for host, res in results.items():
+                assert all(
+                    k in res["cli_dry_run"][0]
+                    for k in [
+                        "updated by norfab",
+                        "interface Ethernet",
+                        "interface Loopback",
+                        "description",
+                    ]
+                ), f"{worker}:{host} output is wrong"
+
 
 class TestNornirTask:
     def test_task_nornir_salt_nr_test(self, nfclient):

@@ -1,0 +1,2 @@
+{% set data = norfab.run_job("nornir", "task", workers=["nornir-worker-2"], kwargs={"plugin": "nornir_salt.plugins.tasks.nr_test"}) %}
+{{ data }}

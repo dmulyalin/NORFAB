@@ -707,6 +707,9 @@ class NFPBroker:
         """
         ret = []
         if not service.workers:
+            log.warning(
+                f"NFPBroker - '{service.name}' has no active workers registered, try later"
+            )
             ret = []
         elif target == b"any":
             ret = [service.workers[random.randint(0, len(service.workers) - 1)]]

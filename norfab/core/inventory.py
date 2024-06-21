@@ -68,6 +68,27 @@ from typing import Any, Union
 log = logging.getLogger(__name__)
 
 
+def merge_recursively(data: dict, merge: dict) -> None:
+    assert isinstance(data, dict) and isinstance(
+        merge, dict
+    ), f"Only supports dictionary/dictionary data merges, not {type(data)}/{type(merge)}"
+    for k, v in merge.items():
+        if k in data:
+            # merge two lists
+            if isinstance(data[k], list) and isinstance(v, list):
+                for i in v:
+                    if i not in data[k]:
+                        data[k].append(i)
+            # recursively merge dictionaries
+            elif isinstance(data[k], dict) and isinstance(v, dict):
+                merge_recursively(data[k], v)
+            # rewrite existing value with new data
+            else:
+                data[k] = v
+        else:
+            data[k] = v
+
+
 class WorkersInventory:
     __slots__ = (
         "path",
@@ -93,7 +114,7 @@ class WorkersInventory:
         for item in paths:
             if os.path.isfile(os.path.join(self.path, item)):
                 with open(os.path.join(self.path, item), "r", encoding="utf-8") as f:
-                    self.merge_recursively(ret, yaml.safe_load(f.read()))
+                    merge_recursively(ret, yaml.safe_load(f.read()))
             else:
                 log.error(f"{os.path.join(self.path, item)} - file not found")
                 raise FileNotFoundError(os.path.join(self.path, item))
@@ -102,27 +123,6 @@ class WorkersInventory:
             return ret
         else:
             raise KeyError(f"{name} has no invenotry data")
-
-    def merge_recursively(self, data: dict, merge: dict) -> None:
-        assert isinstance(data, dict) and isinstance(
-            merge, dict
-        ), f"Only supports dictionary/dictionary data merges, not {type(data)}/{type(merge)}"
-
-        for k, v in merge.items():
-            if k in data:
-                # merge two lists
-                if isinstance(data[k], list) and isinstance(v, list):
-                    for i in v:
-                        if i not in data[k]:
-                            data[k].append(i)
-                # recursively merge dictionaries
-                elif isinstance(data[k], dict) and isinstance(v, dict):
-                    self.merge_recursively(data[k], v)
-                # rewrite existing value with new data
-                else:
-                    data[k] = v
-            else:
-                data[k] = v
 
 
 class NorFabInventory:

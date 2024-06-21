@@ -2,7 +2,7 @@
 
 NORFAB is a tool for extreme network automations.
 
-# Features
+# Key Features
 
 - Run Anywhere - locally on Windows, MAC or Linux, in a container, on a VM, in the cloud, centralized or distributed
 - Extend Anything - extendability is in the core of NORFAB
@@ -21,12 +21,12 @@ Most of the software to manage networks falls into one of the two categories:
 NORFAB goal is to be both - software you can run equally well from your laptop or on a 
 server, centralized or fully distributed, lightweight and feature reach. Capable of 
 doing any use cases without the need to throw gazillions of dollars and man hours at 
-it. Always ready to serve the purpose of unlocking engineers superpowers making their 
-life better while fulfilling business requirements.
+it. Always ready to serve the purpose of unlocking engineers superpowers managing
+modern network and making their life better.
 
 # Architecture
 
-**TLDR** Micro Services
+**TLDR** Clients communicate with worker to run the jobs, broker distributes jobs across workers comprising the service.
 
 ![architecture][architecture]
 
@@ -46,8 +46,8 @@ NORFAB comes with modified version of MDP
 # Built-in Clients
 
 - Python API Client to provide foundation layer for building other clients
-- PICLE Client for interactive command line shell interface targeted to be used by humans
-- REST API Client based on FastAPI
+- PICLE Client - interactive command line shell interface targeted to be used by humans
+- TODO REST API Client based on FastAPI
 
 # Built-in Services
 
@@ -55,9 +55,9 @@ NORFAB comes with modified version of MDP
 - File services
 - Simple Inventory Service a.k.a. SID
 
-[architecture]:                docs/ArcOverview_v0.png "NORFAB architecture"
-
 # History
 
 NORFAB is a successor of Salt-Nornir SaltStack proxy minion targeting 
 to surpass its limitations.
+
+[architecture]:                docs/ArcOverview_v0.png "NORFAB architecture"

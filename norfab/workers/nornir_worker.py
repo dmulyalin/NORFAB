@@ -3,9 +3,11 @@ import logging
 import sys
 import importlib.metadata
 import yaml
+import time
 
 from jinja2 import Environment
 from norfab.core.worker import MajorDomoWorker, NFPWorker
+from norfab.core.inventory import merge_recursively
 from nornir import InitNornir
 from nornir_salt.plugins.tasks import (
     netmiko_send_commands,
@@ -36,8 +38,6 @@ class UnsupportedPluginError(Exception):
 
 
 class NornirWorker(NFPWorker):
-    __slots__ = ("inventory", "nr")
-
     def __init__(
         self, broker, service, worker_name, exit_event=None, log_level="WARNING"
     ):
@@ -45,13 +45,12 @@ class NornirWorker(NFPWorker):
 
         # get inventory from broker
         self.inventory = self.load_inventory()
-        if self.inventory:
-            self._initiate_nornir()
-        else:
-            log.critical(
-                f"Broker {self.broker} returned no inventory for {self.name}, killing myself..."
-            )
-            self.destroy()
+
+        # pull Nornir inventory from Netbox
+        self._pull_netbox_inventory()
+
+        # initiate Nornir
+        self._initiate_nornir()
 
     def _initiate_nornir(self):
         # initiate Nornir
@@ -69,6 +68,64 @@ class NornirWorker(NFPWorker):
             user_defined=self.inventory.get("user_defined", {}),
         )
 
+    def _pull_netbox_inventory(self):
+        """Function to query inventory from Netbox"""
+        # exit if has no Netbox data in inventory
+        if isinstance(self.inventory.get("netbox"), dict):
+            kwargs = self.inventory["netbox"]
+        elif self.inventory.get("netbox") is True:
+            kwargs = {}
+        else:
+            return
+
+        # extract parameters from kwargs
+        retry = kwargs.pop("retry", 3)
+        retry_interval = kwargs.pop("retry_interval", 5)
+
+        # check if need to add devices list
+        if "filters" not in kwargs and "devices" not in kwargs:
+            if self.inventory.get("hosts"):
+                kwargs["devices"] = list(self.inventory["hosts"])
+            else:
+                log.critical(
+                    f"{self.name} - inventory has no hosts, netbox "
+                    f"filters or devices defined"
+                )
+                return
+
+        # get Nornir inventory from netbox
+        while retry:
+            retry -= 1
+            nb_inventory_data = self.client.run_job(
+                b"netbox",
+                "get_nornir_inventory",
+                workers="any",
+                kwargs=kwargs,
+            )
+            if nb_inventory_data:
+                break
+            log.warning(
+                f"{self.name} - Netbox service returned no Nornir "
+                f"inventory data, retrying..."
+            )
+            time.sleep(retry_interval)
+        else:
+            log.error(
+                f"{self.name} - Netbox service returned no Nornir "
+                f"inventory data after 3 attempts, is it running?"
+            )
+            return
+
+        # merge Netbox inventory into Nornir inventory
+        worker, data = nb_inventory_data.popitem()
+        if data.get("hosts"):
+            merge_recursively(self.inventory, data)
+        else:
+            log.warning(
+                f"{self.name} - '{kwargs.get('instance', 'default')}' Netbox "
+                f"instance returned no hosts data, worker '{worker}'"
+            )
+
     def _add_processors(self, nr, kwargs):
         """
         Helper function to extract processors arguments and add processors
@@ -83,10 +140,6 @@ class NornirWorker(NFPWorker):
         # extract parameters
         tf = kwargs.pop("tf", None)  # to file
         tf_skip_failed = kwargs.pop("tf_skip_failed", False)  # to file
-        tests = kwargs.pop("tests", None)  # tests
-        subset = kwargs.pop("subset", [])  # tests
-        remove_tasks = kwargs.pop("remove_tasks", True)  # tests and/or run_ttp
-        failed_only = kwargs.pop("failed_only", False)  # tests
         diff = kwargs.pop("diff", "")  # diff processor
         last = kwargs.pop("last", 1) if diff else None  # diff processor
         dp = kwargs.pop("dp", [])  # data processor
@@ -97,6 +150,9 @@ class NornirWorker(NFPWorker):
         ttp_structure = kwargs.pop(
             "ttp_structure", "flat_list"
         )  # data processor run_ttp function
+        remove_tasks = kwargs.pop(
+            "remove_tasks", True
+        )  # TTP remove parsed tasks output
         xpath = kwargs.pop("xpath", "")  # xpath DataProcessor
         jmespath = kwargs.pop("jmespath", "")  # jmespath DataProcessor
         iplkp = kwargs.pop("iplkp", "")  # iplkp - ip lookup - DataProcessor
@@ -148,17 +204,6 @@ class NornirWorker(NFPWorker):
             )
         if ntfsm:
             processors.append(DataProcessor([{"fun": "ntfsm"}]))
-        if tests:
-            processors.append(
-                TestsProcessor(
-                    tests=tests,
-                    remove_tasks=remove_tasks,
-                    failed_only=failed_only,
-                    build_per_host_tests=True,
-                    subset=subset,
-                    render_tests=False,
-                )
-            )
         if diff:
             processors.append(
                 DiffProcessor(
@@ -244,9 +289,10 @@ class NornirWorker(NFPWorker):
 
     def cli(
         self,
-        commands: list,
+        commands: list = None,
         plugin: str = "netmiko",
         cli_dry_run: bool = False,
+        run_ttp: str = None,
         **kwargs,
     ) -> dict:
         """
@@ -256,10 +302,10 @@ class NornirWorker(NFPWorker):
         :param commands: list of commands to send to devices
         :param plugin: plugin name to use - ``netmiko``, ``scrapli``, ``napalm``
         :param cli_dry_run: do not send commands to devices just return them
+        :param run_ttp: TTP Template to run
         """
         ret = []
         downloaded_cmds = []
-        commands = commands if isinstance(commands, list) else [commands]
 
         # extract attributes
         add_details = kwargs.pop("add_details", False)  # ResultSerializer
@@ -286,28 +332,40 @@ class NornirWorker(NFPWorker):
             )
             return {} if to_dict else []
 
+        # download TTP template if needed
+        if run_ttp and run_ttp.startswith("nf://"):
+            downloaded = self.fetch_file(run_ttp)
+            kwargs["run_ttp"] = downloaded
+            if downloaded is None:
+                log.error(f"{self.name} - TTP template download failed '{run_ttp}'")
+                return {} if to_dict else []
+
         nr = self._add_processors(filtered_nornir, kwargs)  # add processors
 
-        # download commands from broker if needed
-        for command in commands:
-            if command.startswith("nf://"):
-                downloaded = self.fetch_file(command)
-                if downloaded is not None:
-                    downloaded_cmds.append(downloaded)
-                else:
-                    log.error(f"{self.name} - command download failed '{command}'")
-            else:
-                downloaded_cmds.append(command)
+        # put a per-host list of commands to run
+        if commands:
+            commands = commands if isinstance(commands, list) else [commands]
 
-        # render commands using Jinja2 on a per-host basis
-        for host_name, host_object in nr.inventory.hosts.items():
-            context = {"host": host_object}
-            host_object.data["__task__"] = {"commands": []}
-            for command in downloaded_cmds:
-                renderer = Environment(loader="BaseLoader").from_string(command)
-                host_object.data["__task__"]["commands"].append(
-                    renderer.render(**context)
-                )
+            # download commands from broker if needed
+            for command in commands:
+                if command.startswith("nf://"):
+                    downloaded = self.fetch_file(command)
+                    if downloaded is not None:
+                        downloaded_cmds.append(downloaded)
+                    else:
+                        log.error(f"{self.name} - command download failed '{command}'")
+                else:
+                    downloaded_cmds.append(command)
+
+            # render commands using Jinja2 on a per-host basis
+            for host_name, host_object in nr.inventory.hosts.items():
+                context = {"host": host_object, "norfab": self.client, "nornir": self}
+                rendered_commands = []
+                for command in downloaded_cmds:
+                    renderer = Environment(loader="BaseLoader").from_string(command)
+                    rendered_command = renderer.render(**context)
+                    rendered_commands.append(rendered_command)
+                host_object.data["__task__"] = {"commands": rendered_commands}
 
         # run task
         log.debug(
@@ -581,6 +639,18 @@ class NornirWorker(NFPWorker):
         ret = ResultSerializer(result, to_dict=to_dict, add_details=add_details)
 
         return ret
+
+    def netbox(
+        self, task: str, cache: bool = False, cache_ttl: int = 3600, **kwargs
+    ) -> dict:
+        nb_ret = self.client.run_job(
+            b"netbox",
+            task,
+            workers="any",
+            kwargs=kwargs,
+        )
+
+        return nb_ret
 
     def netconf(self) -> dict:
         pass

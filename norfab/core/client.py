@@ -261,9 +261,10 @@ class NFPClient(object):
     stats_recv_from_broker = 0
     stats_reconnect_to_broker = 0
 
-    def __init__(self, broker, name="NFPClient", log_level="WARNING"):
+    def __init__(self, broker, name, log_level="WARNING"):
         log.setLevel(log_level.upper())
         self.name = name
+        self.zmq_name = f"{self.name}-{uuid4().hex}"
         self.broker = broker
         self.ctx = zmq.Context()
         self.poller = zmq.Poller()
@@ -302,6 +303,7 @@ class NFPClient(object):
             self.poller.unregister(self.broker_socket)
             self.broker_socket.close()
         self.broker_socket = self.ctx.socket(zmq.DEALER)
+        self.broker_socket.setsockopt_unicode(zmq.IDENTITY, self.zmq_name, "utf8")
         self.broker_socket.linger = 0
         self.broker_socket.connect(self.broker)
         self.poller.register(self.broker_socket, zmq.POLLIN)
@@ -330,18 +332,14 @@ class NFPClient(object):
         retries = self.retries
         while retries > 0:
             try:
-                msg = self.recv_queue.get(block=True, timeout=self.timeout)
+                msg = self.recv_queue.get(block=True, timeout=self.timeout / 1000)
                 self.recv_queue.task_done()
             except queue.Empty:
                 if retries:
                     log.warning(
-                        f"{self.name} - no reply from broker '{self.broker}', reconnecting"
+                        f"{self.name} - '{uuid}' job, no reply from broker '{self.broker}', reconnecting"
                     )
                     self.reconnect_to_broker()
-                else:
-                    log.error(
-                        f"{self.name} - broker connection error, abandoning '{self.broker}'"
-                    )
                 retries -= 1
                 continue
 
@@ -371,7 +369,9 @@ class NFPClient(object):
             else:
                 self.recv_queue.put(msg)
         else:
-            log.error(f"{self.name} - client {self.retries} retries attempts exceeded")
+            log.error(
+                f"{self.name} - '{uuid}' job, client {self.retries} retries attempts exceeded"
+            )
             return b"408", b'{"status": "Request Timeout"}'
 
     def post(
@@ -419,13 +419,13 @@ class NFPClient(object):
             if status == b"202":  # 3 go over RESPONSE status and decide what to do
                 break
             else:
-                msg = f"{status}, {self.name} job '{uuid}' POST Request not accepted by broker '{post_response}'"
+                msg = f"{self.name} - '{uuid}' job, POST Request not accepted by broker '{post_response}'"
                 log.error(msg)
                 ret["errors"].append(msg)
                 ret["status"] = status
                 return ret
         else:
-            msg = f"408, {self.name} job '{uuid}' broker POST Request Timeout"
+            msg = f"{self.name} - '{uuid}' job, broker POST Request Timeout"
             log.error(msg)
             ret["errors"].append(msg)
             ret["status"] = b"408"
@@ -446,28 +446,26 @@ class NFPClient(object):
             response = json.loads(response)
             if status == b"202":  # ACCEPTED
                 log.debug(
-                    f"{self.name} - job '{uuid}' acknowledged by worker '{response}'"
+                    f"{self.name} - '{uuid}' job, acknowledged by worker '{response}'"
                 )
                 workers_acked.add(response["worker"])
                 if workers_acked == workers_dispatched:
                     break
             else:
-                msg = (
-                    f"{self.name} - unexpected status '{status}', response '{response}'"
-                )
+                msg = f"{self.name} - '{uuid}' job, unexpected POST request status '{status}', response '{response}'"
                 log.error(msg)
                 ret["errors"].append(msg)
         else:
             msg = (
-                f"{self.name} - timeout exceeded, these workers did not "
+                f"{self.name} - '{uuid}' job, POST request timeout exceeded, these workers did not "
                 f"acknowledge the job {workers_dispatched - workers_acked}"
             )
             log.error(msg)
             ret["errors"].append(msg)
+            ret["status"] = b"408"
 
         ret["workers"] = list(workers_acked)
-        ret["status"] = "200" if not ret["errors"] else "417"
-        log.debug(f"{self.name} - POST request completed '{ret}'")
+        log.debug(f"{self.name} - '{uuid}' job POST request completed '{ret}'")
         return ret
 
     def get(
@@ -539,7 +537,9 @@ class NFPClient(object):
                 elif status == b"300":  # PENDING
                     workers_responded.add(response["worker"])
                 else:
-                    msg = f"{self.name} - unexpected GET Response status '{status}', response '{response}'"
+                    if response.get("worker"):
+                        workers_responded.add(response["worker"])
+                    msg = f"{self.name} - '{uuid}' job, unexpected GET Response status '{status}', response '{response}'"
                     log.error(msg)
                     ret["errors"].append(msg)
                 if workers_responded == workers_dispatched:
@@ -548,7 +548,7 @@ class NFPClient(object):
                 break
             time.sleep(0.2)
         else:
-            msg = f"408, {self.name} job '{uuid}' broker GET Request Timeout"
+            msg = f"{self.name} - '{uuid}' job, broker {timeout}s GET request timeout expired"
             log.error(msg)
             ret["errors"].append(msg)
             ret["status"] = b"408"
@@ -777,9 +777,16 @@ class NFPClient(object):
         post_result = self.post(service, task, args, kwargs, workers, uuid, timeout)
 
         # GET job results
-        get_results = self.get(service, task, [], {}, workers, uuid, timeout)
-
-        return get_results["results"]
+        if post_result["status"] == "200":
+            get_results = self.get(
+                service, task, [], {}, post_result["workers"], uuid, timeout
+            )
+            return get_results["results"]
+        else:
+            log.error(
+                f"{self.name} - {service}:{task} POST status to '{workers}' workers is not 200 - '{post_result}'"
+            )
+            return None
 
     def run_job_iter(
         self,
@@ -809,7 +816,9 @@ class NFPClient(object):
         yield post_result
 
         # GET job results
-        for result in self.get_iter(service, task, [], {}, workers, uuid, timeout):
+        for result in self.get_iter(
+            service, task, [], {}, post_result["workers"], uuid, timeout
+        ):
             yield result
 
     def destroy(self):

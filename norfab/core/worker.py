@@ -271,13 +271,13 @@ def reply_filename(suuid: Union[str, bytes], base_dir: str):
     return os.path.join(base_dir, f"{suuid}.rep")
 
 
-def _post(worker, post_queue, queue_filename, threads_exit_event, base_dir):
+def _post(worker, post_queue, queue_filename, destroy_event, base_dir):
     """Thread to receive POST requests and save them to hard disk"""
     # Ensure message directory exists
     if not os.path.exists(base_dir):
         os.mkdir(base_dir)
 
-    while not threads_exit_event.is_set():
+    while not destroy_event.is_set():
         try:
             work = post_queue.get(block=True, timeout=0.1)
         except queue.Empty:
@@ -307,11 +307,13 @@ def _post(worker, post_queue, queue_filename, threads_exit_event, base_dir):
             ],
             filename,
         )
+        log.debug(f"{worker.name} - '{suuid}' job, saved PENDING reply filename")
 
         # add job request to the queue_filename
         with queue_file_lock:
             with open(queue_filename, "ab") as f:
                 f.write(f"{suuid.decode('utf-8')}--{timestamp}\n".encode("utf-8"))
+        log.debug(f"{worker.name} - '{suuid}' job, added job to queue filename")
 
         # ack job back to client
         worker.send_to_broker(
@@ -331,13 +333,16 @@ def _post(worker, post_queue, queue_filename, threads_exit_event, base_dir):
                 ).encode("utf-8"),
             ],
         )
+        log.debug(
+            f"{worker.name} - '{suuid}' job, sent ACK back to client '{client_address}'"
+        )
 
         post_queue.task_done()
 
 
-def _get(worker, get_queue, threads_exit_event, base_dir):
+def _get(worker, get_queue, destroy_event, base_dir):
     """Thread to receive GET requests and retrieve results from the hard disk"""
-    while not threads_exit_event.is_set():
+    while not destroy_event.is_set():
         try:
             work = get_queue.get(block=True, timeout=0.1)
         except queue.Empty:
@@ -359,7 +364,7 @@ def _get(worker, get_queue, threads_exit_event, base_dir):
                     {
                         "worker": worker.name,
                         "uuid": suuid.decode("utf-8"),
-                        "status": "UNKNOWN",
+                        "status": "JOB RESULTS NOT FOUND",
                         "service": worker.service.decode("utf-8"),
                     }
                 ).encode("utf-8"),
@@ -370,18 +375,13 @@ def _get(worker, get_queue, threads_exit_event, base_dir):
         get_queue.task_done()
 
 
-def close(delete_queue, queue_filename, threads_exit_event, base_dir):
+def close(delete_queue, queue_filename, destroy_event, base_dir):
     pass
 
 
-def recv(worker):
+def recv(worker, destroy_event):
     """Thread to process receive messages from broker."""
-    while True:
-        # check if need to stop
-        if worker.exit_event.is_set():
-            worker.destroy()
-            break
-
+    while not destroy_event.is_set():
         # Poll socket for messages every second
         try:
             items = worker.poller.poll(1000)
@@ -412,8 +412,6 @@ def recv(worker):
         if not worker.keepaliver.is_alive():
             log.warning(f"{worker.name} - '{worker.broker}' broker keepalive expired")
             worker.reconnect_to_broker()
-
-    log.info(f"{worker.name} - interrupt received, killed worker")
 
 
 class NFPWorker:
@@ -453,7 +451,11 @@ class NFPWorker:
         self.poller = zmq.Poller()
         self.reconnect_to_broker()
 
-        self.threads_exit_event = threading.Event()
+        self.destroy_event = threading.Event()
+        self.request_thread = None
+        self.reply_thread = None
+        self.close_thread = None
+        self.recv_thread = None
 
         self.post_queue = queue.Queue(maxsize=0)
         self.get_queue = queue.Queue(maxsize=0)
@@ -477,7 +479,7 @@ class NFPWorker:
             socket=self.broker_socket,
             multiplier=multiplier,
             keepalive=keepalive,
-            exit_event=self.exit_event,
+            exit_event=self.destroy_event,
             service=self.service,
             whoami=NFP.WORKER,
             name=self.name,
@@ -541,17 +543,25 @@ class NFPWorker:
 
         return json.loads(inventory_data)
 
-    def destroy(self):
-        self.exit_event.set()
-        self.ctx.destroy(0)
-        # make sure all queue are empty - messages saved to file or served
+    def destroy(self, message=None):
+        self.destroy_event.set()
 
-        # finish threads
-        self.threads_exit_event.set()
-        self.request_thread.join()
-        self.reply_thread.join()
-        self.close_thread.join()
+        # join all the threads
+        if self.request_thread is not None:
+            self.request_thread.join()
+        if self.reply_thread is not None:
+            self.reply_thread.join()
+        if self.close_thread is not None:
+            self.close_thread.join()
+        if self.recv_thread:
+            self.recv_thread.join()
+
+        self.ctx.destroy(0)
+
+        # stop keepalives
         self.keepaliver.stop()
+
+        log.info(f"{self.name} - worker destroyed, message: '{message}'")
 
     def fetch_file(self, url: str):
         """
@@ -579,16 +589,18 @@ class NFPWorker:
                 self,
                 self.post_queue,
                 self.queue_filename,
-                self.threads_exit_event,
+                self.destroy_event,
                 self.base_dir,
             ),
-        ).start()
+        )
+        self.request_thread.start()
         self.reply_thread = threading.Thread(
             target=_get,
             daemon=True,
             name=f"{self.name}_get_thread",
-            args=(self, self.get_queue, self.threads_exit_event, self.base_dir),
-        ).start()
+            args=(self, self.get_queue, self.destroy_event, self.base_dir),
+        )
+        self.reply_thread.start()
         self.close_thread = threading.Thread(
             target=close,
             daemon=True,
@@ -596,17 +608,25 @@ class NFPWorker:
             args=(
                 self.delete_queue,
                 self.queue_filename,
-                self.threads_exit_event,
+                self.destroy_event,
                 self.base_dir,
             ),
-        ).start()
+        )
+        self.close_thread.start()
         # start receive thread after other threads
         self.recv_thread = threading.Thread(
-            target=recv, daemon=True, name=f"{self.name}_recv_thread", args=(self,)
-        ).start()
+            target=recv,
+            daemon=True,
+            name=f"{self.name}_recv_thread",
+            args=(
+                self,
+                self.destroy_event,
+            ),
+        )
+        self.recv_thread.start()
 
         # start main work loop
-        while not self.exit_event.is_set():
+        while not self.exit_event.is_set() and not self.destroy_event.is_set():
             # get some job to do
             with queue_file_lock:
                 with open(self.queue_filename, "rb+") as f:
@@ -677,6 +697,9 @@ class NFPWorker:
                             if entry.startswith(suuid):
                                 entry = f"{entry}--{time.ctime()}\n".encode("utf-8")
                                 qdf.write(entry)
-                            # save remaining entries to queue_filename
+                            # re-save remaining entries to queue_filename
                             else:
-                                qf.write(entry.encode("utf-8"))
+                                qf.write(f"{entry}\n".encode("utf-8"))
+
+        # make sure to clean up
+        self.destroy()

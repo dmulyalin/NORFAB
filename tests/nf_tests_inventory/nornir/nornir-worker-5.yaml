@@ -1,0 +1,21 @@
+netbox:
+  retry: 3
+  retry_interval: 1
+  instance: prod
+  interfaces:
+    ip_addresses: True
+    inventory_items: True
+  connections:
+    cables: True
+    circuits: True
+  nbdata: True
+  primary_ip: "ipv4"
+  devices:
+    - fceos4
+    - fceos5
+    - fceos8
+    - ceos1
+  filters: 
+    - q: fceos3
+    - manufacturer: cisco
+      platform: cisco_xr

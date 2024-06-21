@@ -47,3 +47,11 @@ hosts:
 groups: {}
 defaults: {}
         
+        
+# netbox:
+#   instance: prod
+#   interfaces: True
+#   ip_addresses: True
+#   inventory_items: True
+#   nbdata: True
+#   primary_ip: "ipv4"

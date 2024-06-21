@@ -10,7 +10,7 @@ from multiprocessing import Process, Event
 from norfab.core.broker import NFPBroker
 from norfab.core.client import NFPClient
 from norfab.core.inventory import NorFabInventory
-from norfab.workers.nornir_worker import NornirWorker
+from norfab.workers import NornirWorker, NetboxWorker
 
 log = logging.getLogger(__name__)
 
@@ -31,13 +31,21 @@ def start_worker_process(
     exit_event=None,
     log_level="WARNING",
 ):
-    if service == "nornir":
-        worker = NornirWorker(
-            broker_endpoint, b"nornir", worker_name, exit_event, log_level
-        )
-        worker.work()
-    else:
-        raise RuntimeError(f"Unsupported service '{service}'")
+    try:
+        if service == "nornir":
+            worker = NornirWorker(
+                broker_endpoint, b"nornir", worker_name, exit_event, log_level
+            )
+            worker.work()
+        elif service == "netbox":
+            worker = NetboxWorker(
+                broker_endpoint, b"netbox", worker_name, exit_event, log_level
+            )
+            worker.work()
+        else:
+            raise RuntimeError(f"Unsupported service '{service}'")
+    except KeyboardInterrupt:
+        pass
 
 
 def start_service_process(broker_endpoint: str, service: str, exit_event=None):
@@ -136,9 +144,11 @@ class NorFab:
         if start_broker is None:
             start_broker = self.inventory.topology.get("broker", False)
 
+        # start the broker
         if start_broker is True:
             self.start_broker()
 
+        # start all the workers
         if workers and isinstance(workers, list):
             for worker_name in workers:
                 try:
@@ -146,6 +156,7 @@ class NorFab:
                 except KeyError:
                     log.error(f"No inventory data found for '{worker_name}'")
 
+        # make the API client
         self.make_client()
 
     def destroy(self):

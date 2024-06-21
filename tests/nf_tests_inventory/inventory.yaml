@@ -15,13 +15,19 @@ workers:
     - nornir/nornir-worker-3-non-existing-data.yaml
   nornir-worker-4:
     - nornir/nornir-worker-4.yaml
+  nornir-worker-5:
+    - nornir/nornir-worker-5.yaml
+  netbox-worker-1.*:
+    - netbox/common.yaml  
     
 # list what entities we want to start on this node
 topology:
   broker: True
   workers:
-    - nornir-worker-1
-#    - nornir-worker-1.2
-    - nornir-worker-2
-    - nornir-worker-3
-    - nornir-worker-4  
+    - netbox-worker-1.1
+    - netbox-worker-1.2
+    - nornir-worker-1 # ContainerLab devices
+    - nornir-worker-2 # ContainerLab devices
+    - nornir-worker-3 # Worker with no Nornir Hosts Inventory
+    - nornir-worker-4 # FakeNOS devices
+    - nornir-worker-5 # Worker to test Netbox Inventory
