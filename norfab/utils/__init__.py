@@ -1,1 +1,1 @@
-from .cli_tool import cli_tool
+from .nfcli import nfcli

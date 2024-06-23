@@ -1,0 +1,91 @@
+extra:
+  social:
+  - icon: fontawesome/brands/github-alt
+    link: https://github.com/dmulyalin
+  - icon: fontawesome/brands/twitter
+    link: https://twitter.com/DMulyalin
+markdown_extensions:
+- admonition
+- pymdownx.details
+- attr_list
+- md_in_html
+- pymdownx.superfences
+- pymdownx.emoji:
+    emoji_index: !!python/name:material.extensions.emoji.twemoji
+- toc:
+    permalink: "¤"
+nav:
+- NORFAB: 
+    - Overview: norfab_overview.md
+    - Installation: norfab_installation.md
+    - Getting Started: norfab_getting_started.md
+    - NORFAB CLI: norfab_cli_overview.md
+    - Python API: norfab_python_api_overview.md
+    - REST API: norfab_rest_api_overview.md
+    - Release Notes: norfab_release_notes.md
+- Services:
+    - Nornir: nornir_service.md
+    - Netbox: netbox_service.md
+- Architecture:
+    - NORFAB Architecture: norfab_architecture.md
+    - NORFAB Protocol RFC: NFP.md 
+- API Reference:
+    - NORFAB Inventory: norfab_inventory.md
+    - CORE:
+      - NFAPI (Python API): norfab_nfapi_reference.md
+      - Broker: norfab_broker_reference.md
+      - Worker: norfab_worker_reference.md
+      - Client: norfab_client_reference.md
+      - Simple Inventory: norfab_inventory_reference.md
+      - Exceptions: norfab_exceptions_reference.md
+    - Built-in Workers:
+      - Nornir Worker: nornir_worker_api_reference.md
+      - Netbox Worker: netbox_worker_api_reference.md
+    - Built-in Clients:
+      - NFCLI (PICLE Shell) Client: nfcli_client_api_reference.md
+plugins:
+- search
+- mkdocstrings:
+    handlers:
+      python:
+        options:
+          show_root_toc_entry: false
+          docstring_section_style: table
+          docstring_style: sphinx
+          members_order: source
+          merge_init_into_class: true
+repo_name: dmulyalin/norfab
+repo_url: https://github.com/dmulyalin/norfab
+site_author: Denis Mulyalin
+site_description: Network Automations Fabric documentation
+site_name: NORFAB Documentation
+site_url: https://dmulyalin.github.io/NORFAB/
+theme:
+  custom_dir: docs/overrides
+  features:
+  - navigation.tabs
+  - navigation.tabs.sticky
+  - navigation.sections
+  - navigation.top
+  - toc.follow
+  - navigation.instant
+  - navigation.instant.progress
+  - content.footnote.tooltips
+  - content.code.copy
+  - content.code.annotate
+  icon:
+    repo: fontawesome/brands/github-alt
+  name: material
+  palette:
+    - scheme: slate
+      toggle:
+        icon: material/weather-night
+        name: Switch to system preference
+      primary: brown
+      accent: deep orange
+    - scheme: default 
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to dark mode
+      primary: orange
+      accent: deep orange

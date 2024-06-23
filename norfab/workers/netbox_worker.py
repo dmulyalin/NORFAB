@@ -1,15 +1,3 @@
-"""
-{
-  __schema {
-    queryType {
-      fields {
-        name
-      }
-    }
-  }
-}
-"""
-
 import json
 import logging
 import sys

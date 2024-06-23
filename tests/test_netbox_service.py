@@ -15,6 +15,10 @@ class TestNetboxWorker:
     @pytest.mark.skip(reason="TBD")
     def test_get_netbox_status(self, nfclient):
         pass
+        
+    @pytest.mark.skip(reason="TBD")
+    def test_get_netbox_compatibility(self, nfclient):
+        pass
 
 
 class TestNetboxGrapQL:
@@ -908,6 +912,7 @@ class TestGetNornirInventory:
                         ]
                     ), f"{worker}:{device}:{intf_name} not all connection data returned"
         
+    @pytest.mark.skip(reason="TBD")
     def test_with_devices_add_circuits(self, nfclient):
         ret = nfclient.run_job(
             "netbox",

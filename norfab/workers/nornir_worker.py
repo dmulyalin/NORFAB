@@ -6,8 +6,9 @@ import yaml
 import time
 
 from jinja2 import Environment
-from norfab.core.worker import MajorDomoWorker, NFPWorker
+from norfab.core.worker import NFPWorker
 from norfab.core.inventory import merge_recursively
+from norfab.core.exceptions import UnsupportedPluginError
 from nornir import InitNornir
 from nornir_salt.plugins.tasks import (
     netmiko_send_commands,
@@ -29,12 +30,6 @@ from nornir_salt.utils.pydantic_models import modelTestsProcessorSuite
 from typing import Union
 
 log = logging.getLogger(__name__)
-
-
-class UnsupportedPluginError(Exception):
-    """Exception to raise when specified plugin not supported"""
-
-    pass
 
 
 class NornirWorker(NFPWorker):
@@ -232,17 +227,30 @@ class NornirWorker(NFPWorker):
     # Nornir Service Functions that exposed for calling
     # ----------------------------------------------------------------------
 
-    def get_nornir_hosts(self, **kwargs):
+    def get_nornir_hosts(self, **kwargs: dict) -> list:
+        """
+        Produce a list of hosts managed by this worker
+        
+        :param kwargs: dictionary of nornir-salt Fx filters
+        """
         filters = {k: kwargs.pop(k) for k in list(kwargs.keys()) if k in FFun_functions}
         filtered_nornir = FFun(self.nr, **filters)
         return list(filtered_nornir.inventory.hosts)
 
-    def get_nornir_inventory(self, **kwargs):
+    def get_nornir_inventory(self, **kwargs: dict) -> dict:
+        """
+        Retrieve running Nornir inventory for requested hosts
+        
+        :param kwargs: dictionary of nornir-salt Fx filters
+        """
         filters = {k: kwargs.pop(k) for k in list(kwargs.keys()) if k in FFun_functions}
         filtered_nornir = FFun(self.nr, **filters)
         return filtered_nornir.inventory.dict()
 
-    def get_nornir_version(self, **kwargs):
+    def get_nornir_version(self):
+        """
+        Produce Python packages version report
+        """
         libs = {
             "scrapli": "",
             "scrapli-netconf": "",
@@ -286,6 +294,83 @@ class NornirWorker(NFPWorker):
                 pass
 
         return libs
+
+
+    def task(self, plugin: str, **kwargs) -> dict:
+        """
+        Function to invoke any of supported Nornir task plugins. This function
+        performs dynamic import of requested plugin function and executes
+        ``nr.run`` using supplied args and kwargs
+
+        ``plugin`` attribute can refer to a file to fetch from file service. File must contain
+        function named ``task`` accepting Nornir task object as a first positional
+        argument, for example:
+
+        ```python
+        # define connection name for RetryRunner to properly detect it
+        CONNECTION_NAME = "netmiko"
+        
+        # create task function
+        def task(nornir_task_object, *args, **kwargs):
+            pass
+        ```
+        
+        !!! note "CONNECTION_NAME"
+        
+            ``CONNECTION_NAME`` must be defined within custom task function file if
+            RetryRunner in use, otherwise connection retry logic skipped and connections
+            to all hosts initiated simultaneously up to the number of ``num_workers``.
+            
+        :param plugin: (str) ``path.to.plugin.task_fun`` to import or ``nf://path/to/task.py``
+            to download custom task
+        :param kwargs: (dict) arguments to use with specified task plugin
+        """
+        # extract attributes
+        add_details = kwargs.pop("add_details", False)  # ResultSerializer
+        to_dict = kwargs.pop("to_dict", True)  # ResultSerializer
+        filters = {k: kwargs.pop(k) for k in list(kwargs.keys()) if k in FFun_functions}
+
+        # download task from broker and load it
+        if plugin.startswith("nf://"):
+            function_text = self.fetch_file(plugin)
+            if function_text is None:
+                msg = f"{self.name} - '{plugin}' task plugin download failed"
+                log.error(msg)
+                return msg
+            # load task function running exec
+            globals_dict = {}
+            exec(function_text, globals_dict, globals_dict)
+            task_function = globals_dict["task"]
+        # import task function
+        else:
+            # below same as "from nornir.plugins.tasks import task_fun as task_function"
+            task_fun = plugin.split(".")[-1]
+            try:
+                module = __import__(plugin, fromlist=[""])
+                task_function = getattr(module, task_fun)
+            except Exception as e:
+                msg = f"{self.name} - '{plugin}' task import failed with error '{e}'"
+                log.error(msg)
+                return msg
+
+        self.nr.data.reset_failed_hosts()  # reset failed hosts
+        filtered_nornir = FFun(self.nr, **filters)  # filter hosts
+
+        # check if no hosts matched
+        if not filtered_nornir.inventory.hosts:
+            log.debug(
+                f"{self.name} - nothing to do, no hosts matched by filters '{filters}'"
+            )
+            return {} if to_dict else []
+
+        nr = self._add_processors(filtered_nornir, kwargs)  # add processors
+
+        # run task
+        log.debug(f"{self.name} - running Nornir task '{plugin}', kwargs '{kwargs}'")
+        result = nr.run(task=task_function, **kwargs)
+
+        return ResultSerializer(result, to_dict=to_dict, add_details=add_details)
+
 
     def cli(
         self,
@@ -385,77 +470,6 @@ class NornirWorker(NFPWorker):
             _ = host_object.data.pop("__task__", None)
 
         return ret
-
-    def task(self, plugin: str, **kwargs) -> dict:
-        """
-        Function to invoke any of supported Nornir task plugins. This function
-        performs dynamic import of requested plugin function and executes
-        ``nr.run`` using supplied args and kwargs
-
-        :param plugin: (str) ``path.to.plugin.task_fun`` to import or ``nf://path/to/task.py``
-            to download custom task
-        :param kwargs: (dict) arguments to use with specified task plugin
-
-        ``plugin`` attribute can refer to a file to fetch from file service. File must contain
-        function named ``task`` accepting Nornir task object as a first positional
-        argument, for example::
-
-            # define connection name for RetryRunner to properly detect it
-            CONNECTION_NAME = "netmiko"
-
-            # create task function
-            def task(nornir_task_object, *args, **kwargs):
-                pass
-
-        .. note:: ``CONNECTION_NAME`` must be defined within custom task function file if
-            RetryRunner in use, otherwise connection retry logic skipped and connections
-            to all hosts initiated simultaneously up to the number of ``num_workers``.
-        """
-        # extract attributes
-        add_details = kwargs.pop("add_details", False)  # ResultSerializer
-        to_dict = kwargs.pop("to_dict", True)  # ResultSerializer
-        filters = {k: kwargs.pop(k) for k in list(kwargs.keys()) if k in FFun_functions}
-
-        # download task from broker and load it
-        if plugin.startswith("nf://"):
-            function_text = self.fetch_file(plugin)
-            if function_text is None:
-                msg = f"{self.name} - '{plugin}' task plugin download failed"
-                log.error(msg)
-                return msg
-            # load task function running exec
-            globals_dict = {}
-            exec(function_text, globals_dict, globals_dict)
-            task_function = globals_dict["task"]
-        # import task function
-        else:
-            # below same as "from nornir.plugins.tasks import task_fun as task_function"
-            task_fun = plugin.split(".")[-1]
-            try:
-                module = __import__(plugin, fromlist=[""])
-                task_function = getattr(module, task_fun)
-            except Exception as e:
-                msg = f"{self.name} - '{plugin}' task import failed with error '{e}'"
-                log.error(msg)
-                return msg
-
-        self.nr.data.reset_failed_hosts()  # reset failed hosts
-        filtered_nornir = FFun(self.nr, **filters)  # filter hosts
-
-        # check if no hosts matched
-        if not filtered_nornir.inventory.hosts:
-            log.debug(
-                f"{self.name} - nothing to do, no hosts matched by filters '{filters}'"
-            )
-            return {} if to_dict else []
-
-        nr = self._add_processors(filtered_nornir, kwargs)  # add processors
-
-        # run task
-        log.debug(f"{self.name} - running Nornir task '{plugin}', kwargs '{kwargs}'")
-        result = nr.run(task=task_function, **kwargs)
-
-        return ResultSerializer(result, to_dict=to_dict, add_details=add_details)
 
     def cfg(
         self, config: list, plugin: str = "netmiko", cfg_dry_run: bool = False, **kwargs

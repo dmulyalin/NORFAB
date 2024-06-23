@@ -1,9 +1,3 @@
-"""
-NorFab Python API
-=================
-
-CLass that implements higher level Python API to work with NorFab.
-"""
 import logging
 
 from multiprocessing import Process, Event
@@ -18,9 +12,7 @@ log = logging.getLogger(__name__)
 def start_broker_process(
     endpoint, exit_event=None, inventory=None, log_level="WARNING"
 ):
-    # broker = MajorDomoBroker(exit_event, inventory)
     broker = NFPBroker(endpoint, exit_event, inventory, log_level)
-    # broker.bind(endpoint)
     broker.mediate()
 
 
@@ -48,14 +40,6 @@ def start_worker_process(
         pass
 
 
-def start_service_process(broker_endpoint: str, service: str, exit_event=None):
-    if service == "nornir":
-        service = NornirService(broker_endpoint, "nornir", exit_event)
-        service.start()
-    else:
-        raise RuntimeError(f"Unsupported service '{service}'")
-
-
 class NorFab:
     """
     Utility class to implement Python API for interfacing with NorFab.
@@ -66,7 +50,21 @@ class NorFab:
     inventory = None
     workers = {}
 
-    def __init__(self, inventory="./inventory.yaml", log_level="WARNING"):
+    def __init__(self, inventory: str="./inventory.yaml", log_level: str="WARNING") -> None:
+        """
+        NorFab Python API Client initialization class
+        
+        ```
+        from norfab.core.nfapi import NorFab
+        
+        nf = NorFab(inventory=inventory)
+        nf.start(start_broker=True, workers=["my-worker-1"])
+        NFCLIENT = nf.client
+        ```
+        
+        :param inventory: OS path to NorFab inventory YAML file
+        :param log_level: one or supported logging levels - `CRITICAL`, `ERROR`, `WARNING`, `INFO`, `DEBUG`
+        """
         self.inventory = NorFabInventory(inventory)
         self.log_level = log_level
         self.broker_endpoint = self.inventory.get("broker", {}).get("endpoint")
@@ -110,31 +108,13 @@ class NorFab:
 
             self.workers[worker_name].start()
 
-    def make_client(self, broker_endpoint: str = None):
-        """
-        Make an instance of Norfab client
-
-        :param broker_endpoint: (str), Broker URL to connect with
-        """
-
-        if broker_endpoint or self.broker_endpoint:
-            client = NFPClient(
-                broker_endpoint or self.broker_endpoint, "NFPClient", self.log_level
-            )
-            if self.client is None:  # own the first client
-                self.client = client
-            return client
-        else:
-            log.error("Failed to make client, no broker endpoint defined")
-            return None
-
     def start(
         self,
         start_broker: bool = None,
         workers: list = None,
     ):
         """
-        Function to start NorFab component.
+        Main entry method to start NorFab components.
 
         :param start_broker: if True, starts broker process
         :param workers: list of worker names to start processes for
@@ -159,7 +139,10 @@ class NorFab:
         # make the API client
         self.make_client()
 
-    def destroy(self):
+    def destroy(self) -> None:
+        """
+        Stop NORFAB processes.
+        """
         # stop workers
         self.workers_exit_event.set()
         while self.workers:
@@ -171,3 +154,21 @@ class NorFab:
             self.broker.join()
         # stop client
         self.client.destroy()
+        
+    def make_client(self, broker_endpoint: str = None) -> NFPClient:
+        """
+        Make an instance of NorFab client
+
+        :param broker_endpoint: (str), Broker URL to connect with
+        """
+
+        if broker_endpoint or self.broker_endpoint:
+            client = NFPClient(
+                broker_endpoint or self.broker_endpoint, "NFPClient", self.log_level
+            )
+            if self.client is None:  # own the first client
+                self.client = client
+            return client
+        else:
+            log.error("Failed to make client, no broker endpoint defined")
+            return None

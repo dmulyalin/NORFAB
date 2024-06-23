@@ -72,12 +72,20 @@ fakenos = { version = ">=0.2.1" }
 coverage = "*"
 invoke = "*"
 
+# docs dependencies for extras definition
+mkdocs = { version = "*" }
+mkdocs-material = { version = "*" }
+mkdocs-material-extensions = { version = "*" }
+mkdocstrings = { version = "*", extras = ["python"] } 
+pygments = { version = "*" }
+pymdown-extensions = { version = "*" }
+
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
-nf = 'norfab.utils:cli_tool'
+nfcli = 'norfab.utils:nfcli'
 
 [tool.poetry.extras]
 nfcli = [

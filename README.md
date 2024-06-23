@@ -2,6 +2,8 @@
 
 NORFAB is a tool for extreme network automations.
 
+[Documentation](https://dmulyalin.github.io/NORFAB/)
+
 # Key Features
 
 - Run Anywhere - locally on Windows, MAC or Linux, in a container, on a VM, in the cloud, centralized or distributed
@@ -40,7 +42,7 @@ Key components include
 
 # Built-in Broker
 
-NORFAB comes with modified version of MDP
+NORFAB comes with (heavily) modified version of MDP
 ([Majordomo Protocol](https://rfc.zeromq.org/spec/7/)) broker.
 
 # Built-in Clients

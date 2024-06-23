@@ -1,7 +1,6 @@
 """
-# Simple Local Inventory
-
-Inventory plugin to load inventory data from locally stored files.
+Simple Local Inventory is an inventory plugin to load 
+inventory data from locally stored files.
 
 Sample inventory file
 
@@ -14,6 +13,11 @@ workers:
     - nornir/common.yaml  
   nornir-worker-1:
     - nornir/nornir-worker-1.yaml
+    
+topology:
+  broker: True
+  workers:
+    - nornir-worker-1
 ```
 
 where `nornir/common.yaml` contains
@@ -56,7 +60,7 @@ defaults: {}
 
 Whenever inventory queried to provide data for worker with name `nornir-worker-1`
 Simple Inventory iterates over `workers` dictionary and recursively merges 
-data for keys that matched worker name.
+data for keys (glob patterns) that matched worker name.
 """
 import os
 import fnmatch
@@ -69,6 +73,12 @@ log = logging.getLogger(__name__)
 
 
 def merge_recursively(data: dict, merge: dict) -> None:
+    """
+    Function to merge two dictionaries data recursively.
+    
+    :param data: primary dictionary
+    :param merge: dictionary to merge into primary overriding the content
+    """
     assert isinstance(data, dict) and isinstance(
         merge, dict
     ), f"Only supports dictionary/dictionary data merges, not {type(data)}/{type(merge)}"
@@ -96,6 +106,16 @@ class WorkersInventory:
     )
 
     def __init__(self, path: str, data: dict) -> None:
+        """
+        Class to collect and server NorFab workers inventory data,
+        forming it by recursively merging all data files that associated
+        with the name of worker requesting inventory data.
+        
+        :param path: OS path to top folder with workers inventory data
+        :param data: dictionary keyed by glob patterns matching workers names
+            and values being a list of OS paths to files with workers 
+            inventory data
+        """
         self.path, _ = os.path.split(path)
         self.data = data
 
@@ -129,6 +149,11 @@ class NorFabInventory:
     __slots__ = ("broker", "workers", "topology")
 
     def __init__(self, path: str) -> None:
+        """
+        NorFabInventory class to instantiate simple inventory.
+        
+        :param path: OS path to YAML file with inventory data
+        """
         self.broker = {}
         self.workers = {}
         self.topology = {}
