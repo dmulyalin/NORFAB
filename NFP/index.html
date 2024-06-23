@@ -1,0 +1,2443 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Network Automations Fabric documentation">
+      
+      
+        <meta name="author" content="Denis Mulyalin">
+      
+      
+        <link rel="canonical" href="https://norfab.github.io/NFP/">
+      
+      
+        <link rel="prev" href="../norfab_architecture/">
+      
+      
+        <link rel="next" href="../norfab_inventory/">
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.0, mkdocs-material-9.5.27">
+    
+    
+      
+        <title>NORFAB Protocol RFC - NORFAB Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.6543a935.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="brown" data-md-color-accent="deep-orange">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#norfab-protocol" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="NORFAB Documentation" class="md-header__button md-logo" aria-label="NORFAB Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            NORFAB Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              NORFAB Protocol RFC
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="brown" data-md-color-accent="deep-orange"  aria-label="Switch to system preference"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to system preference" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3 3.19.09m3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95 2.06.05m-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31Z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="orange" data-md-color-accent="deep-orange"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5c-.84 0-1.65.15-2.39.42L12 2M3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29L3.34 7m.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14L3.36 17M20.65 7l-1.77 3.79a7.023 7.023 0 0 0-2.38-4.15l4.15.36m-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29L20.64 17M12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44L12 22Z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var media,input,key,value,palette=__md_get("__palette");if(palette&&palette.color){"(prefers-color-scheme)"===palette.color.media&&(media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']"),palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent"));for([key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/dmulyalin/norfab" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 512"><!--! Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M186.1 328.7c0 20.9-10.9 55.1-36.7 55.1s-36.7-34.2-36.7-55.1 10.9-55.1 36.7-55.1 36.7 34.2 36.7 55.1zM480 278.2c0 31.9-3.2 65.7-17.5 95-37.9 76.6-142.1 74.8-216.7 74.8-75.8 0-186.2 2.7-225.6-74.8-14.6-29-20.2-63.1-20.2-95 0-41.9 13.9-81.5 41.5-113.6-5.2-15.8-7.7-32.4-7.7-48.8 0-21.5 4.9-32.3 14.6-51.8 45.3 0 74.3 9 108.8 36 29-6.9 58.8-10 88.7-10 27 0 54.2 2.9 80.4 9.2 34-26.7 63-35.2 107.8-35.2 9.8 19.5 14.6 30.3 14.6 51.8 0 16.4-2.6 32.7-7.7 48.2 27.5 32.4 39 72.3 39 114.2zm-64.3 50.5c0-43.9-26.7-82.6-73.5-82.6-18.9 0-37 3.4-56 6-14.9 2.3-29.8 3.2-45.1 3.2-15.2 0-30.1-.9-45.1-3.2-18.7-2.6-37-6-56-6-46.8 0-73.5 38.7-73.5 82.6 0 87.8 80.4 101.3 150.4 101.3h48.2c70.3 0 150.6-13.4 150.6-101.3zm-82.6-55.1c-25.8 0-36.7 34.2-36.7 55.1s10.9 55.1 36.7 55.1 36.7-34.2 36.7-55.1-10.9-55.1-36.7-55.1z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    dmulyalin/norfab
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../norfab_overview/" class="md-tabs__link">
+          
+  
+  NORFAB
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../nornir_service/" class="md-tabs__link">
+          
+  
+  Services
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../norfab_architecture/" class="md-tabs__link">
+          
+  
+  Architecture
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../norfab_inventory/" class="md-tabs__link">
+          
+  
+  API Reference
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="NORFAB Documentation" class="md-nav__button md-logo" aria-label="NORFAB Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    NORFAB Documentation
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/dmulyalin/norfab" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 512"><!--! Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M186.1 328.7c0 20.9-10.9 55.1-36.7 55.1s-36.7-34.2-36.7-55.1 10.9-55.1 36.7-55.1 36.7 34.2 36.7 55.1zM480 278.2c0 31.9-3.2 65.7-17.5 95-37.9 76.6-142.1 74.8-216.7 74.8-75.8 0-186.2 2.7-225.6-74.8-14.6-29-20.2-63.1-20.2-95 0-41.9 13.9-81.5 41.5-113.6-5.2-15.8-7.7-32.4-7.7-48.8 0-21.5 4.9-32.3 14.6-51.8 45.3 0 74.3 9 108.8 36 29-6.9 58.8-10 88.7-10 27 0 54.2 2.9 80.4 9.2 34-26.7 63-35.2 107.8-35.2 9.8 19.5 14.6 30.3 14.6 51.8 0 16.4-2.6 32.7-7.7 48.2 27.5 32.4 39 72.3 39 114.2zm-64.3 50.5c0-43.9-26.7-82.6-73.5-82.6-18.9 0-37 3.4-56 6-14.9 2.3-29.8 3.2-45.1 3.2-15.2 0-30.1-.9-45.1-3.2-18.7-2.6-37-6-56-6-46.8 0-73.5 38.7-73.5 82.6 0 87.8 80.4 101.3 150.4 101.3h48.2c70.3 0 150.6-13.4 150.6-101.3zm-82.6-55.1c-25.8 0-36.7 34.2-36.7 55.1s10.9 55.1 36.7 55.1 36.7-34.2 36.7-55.1-10.9-55.1-36.7-55.1z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    dmulyalin/norfab
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_1" id="__nav_1_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    NORFAB
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1">
+            <span class="md-nav__icon md-icon"></span>
+            NORFAB
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../norfab_overview/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Overview
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../norfab_installation/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Installation
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../norfab_getting_started/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Getting Started
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../norfab_cli_overview/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NORFAB CLI
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../norfab_python_api_overview/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Python API
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../norfab_rest_api_overview/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    REST API
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../norfab_release_notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Release Notes
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Services
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Services
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../nornir_service/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Nornir
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../netbox_service/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Netbox
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Architecture
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Architecture
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../norfab_architecture/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NORFAB Architecture
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    NORFAB Protocol RFC
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    NORFAB Protocol RFC
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#license" class="md-nav__link">
+    <span class="md-ellipsis">
+      License
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#change-process" class="md-nav__link">
+    <span class="md-ellipsis">
+      Change Process
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#language" class="md-nav__link">
+    <span class="md-ellipsis">
+      Language
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#goals" class="md-nav__link">
+    <span class="md-ellipsis">
+      Goals
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      Architecture
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Architecture">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#overall-topology" class="md-nav__link">
+    <span class="md-ellipsis">
+      Overall Topology
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#router-addressing" class="md-nav__link">
+    <span class="md-ellipsis">
+      ROUTER Addressing
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#nfp-messages" class="md-nav__link">
+    <span class="md-ellipsis">
+      NFP messages
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="NFP messages">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#open" class="md-nav__link">
+    <span class="md-ellipsis">
+      OPEN
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ready" class="md-nav__link">
+    <span class="md-ellipsis">
+      READY
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#keepalive" class="md-nav__link">
+    <span class="md-ellipsis">
+      KEEPALIVE
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#disconnect" class="md-nav__link">
+    <span class="md-ellipsis">
+      DISCONNECT
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#post" class="md-nav__link">
+    <span class="md-ellipsis">
+      POST
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#response" class="md-nav__link">
+    <span class="md-ellipsis">
+      RESPONSE
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get" class="md-nav__link">
+    <span class="md-ellipsis">
+      GET
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#delete" class="md-nav__link">
+    <span class="md-ellipsis">
+      DELETE
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#status-frames" class="md-nav__link">
+    <span class="md-ellipsis">
+      Status Frames
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#nfpclient" class="md-nav__link">
+    <span class="md-ellipsis">
+      NFP/Client
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#nfpbroker" class="md-nav__link">
+    <span class="md-ellipsis">
+      NFP/Broker
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#nfpworker" class="md-nav__link">
+    <span class="md-ellipsis">
+      NFP/Worker
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#nfpworker-pub" class="md-nav__link">
+    <span class="md-ellipsis">
+      NFP/Worker-PUB
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#nfpbroker-pub" class="md-nav__link">
+    <span class="md-ellipsis">
+      NFP/Broker-PUB
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="NFP/Broker-PUB">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#job-persistence" class="md-nav__link">
+    <span class="md-ellipsis">
+      Job Persistence
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opening-and-closing-a-connection" class="md-nav__link">
+    <span class="md-ellipsis">
+      Opening and Closing a Connection
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#post-and-response-processing" class="md-nav__link">
+    <span class="md-ellipsis">
+      POST and RESPONSE Processing
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#keepaliving" class="md-nav__link">
+    <span class="md-ellipsis">
+      Keepaliving
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#broker-management-interface-bmmi" class="md-nav__link">
+    <span class="md-ellipsis">
+      Broker Management Interface (BMMI)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#worker-management-interface-wmmi" class="md-nav__link">
+    <span class="md-ellipsis">
+      Worker Management Interface (WMMI)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#broker-simple-inventory-datastore-sid" class="md-nav__link">
+    <span class="md-ellipsis">
+      Broker Simple Inventory Datastore (SID)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Broker Simple Inventory Datastore (SID)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sid-implementation" class="md-nav__link">
+    <span class="md-ellipsis">
+      SID Implementation
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#broker-file-sharing-service-fss" class="md-nav__link">
+    <span class="md-ellipsis">
+      Broker File Sharing Service (FSS)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Broker File Sharing Service (FSS)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#fss-implementation" class="md-nav__link">
+    <span class="md-ellipsis">
+      FSS Implementation
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#reliability" class="md-nav__link">
+    <span class="md-ellipsis">
+      Reliability
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#scalability-and-performance" class="md-nav__link">
+    <span class="md-ellipsis">
+      Scalability and Performance
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#security" class="md-nav__link">
+    <span class="md-ellipsis">
+      Security
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Security">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#worker-authentication" class="md-nav__link">
+    <span class="md-ellipsis">
+      Worker Authentication
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#worker-authorization" class="md-nav__link">
+    <span class="md-ellipsis">
+      Worker Authorization
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#client-authentication" class="md-nav__link">
+    <span class="md-ellipsis">
+      Client Authentication
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#client-authorization-role-based-access-control-rbac" class="md-nav__link">
+    <span class="md-ellipsis">
+      Client Authorization - Role Based Access Control (RBAC)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#client-encryption" class="md-nav__link">
+    <span class="md-ellipsis">
+      Client Encryption
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#worker-encryption" class="md-nav__link">
+    <span class="md-ellipsis">
+      Worker Encryption
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#accounting" class="md-nav__link">
+    <span class="md-ellipsis">
+      Accounting
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#known-weaknesses" class="md-nav__link">
+    <span class="md-ellipsis">
+      Known Weaknesses
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    API Reference
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            API Reference
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../norfab_inventory/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NORFAB Inventory
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_2" id="__nav_4_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    CORE
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_2">
+            <span class="md-nav__icon md-icon"></span>
+            CORE
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../norfab_nfapi_reference/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NFAPI (Python API)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../norfab_broker_reference/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Broker
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../norfab_worker_reference.md" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Worker
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../norfab_client_reference.md" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Client
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../norfab_inventory_reference/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Simple Inventory
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../norfab_exceptions_reference/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Exceptions
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_3" id="__nav_4_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Built-in Workers
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_3">
+            <span class="md-nav__icon md-icon"></span>
+            Built-in Workers
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../nornir_worker_api_reference/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Nornir Worker
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../netbox_worker_api_reference/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Netbox Worker
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_4" id="__nav_4_4_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Built-in Clients
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_4">
+            <span class="md-nav__icon md-icon"></span>
+            Built-in Clients
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../nfcli_client_api_reference/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NFCLI (PICLE Shell) Client
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#license" class="md-nav__link">
+    <span class="md-ellipsis">
+      License
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#change-process" class="md-nav__link">
+    <span class="md-ellipsis">
+      Change Process
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#language" class="md-nav__link">
+    <span class="md-ellipsis">
+      Language
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#goals" class="md-nav__link">
+    <span class="md-ellipsis">
+      Goals
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      Architecture
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Architecture">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#overall-topology" class="md-nav__link">
+    <span class="md-ellipsis">
+      Overall Topology
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#router-addressing" class="md-nav__link">
+    <span class="md-ellipsis">
+      ROUTER Addressing
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#nfp-messages" class="md-nav__link">
+    <span class="md-ellipsis">
+      NFP messages
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="NFP messages">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#open" class="md-nav__link">
+    <span class="md-ellipsis">
+      OPEN
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ready" class="md-nav__link">
+    <span class="md-ellipsis">
+      READY
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#keepalive" class="md-nav__link">
+    <span class="md-ellipsis">
+      KEEPALIVE
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#disconnect" class="md-nav__link">
+    <span class="md-ellipsis">
+      DISCONNECT
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#post" class="md-nav__link">
+    <span class="md-ellipsis">
+      POST
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#response" class="md-nav__link">
+    <span class="md-ellipsis">
+      RESPONSE
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get" class="md-nav__link">
+    <span class="md-ellipsis">
+      GET
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#delete" class="md-nav__link">
+    <span class="md-ellipsis">
+      DELETE
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#status-frames" class="md-nav__link">
+    <span class="md-ellipsis">
+      Status Frames
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#nfpclient" class="md-nav__link">
+    <span class="md-ellipsis">
+      NFP/Client
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#nfpbroker" class="md-nav__link">
+    <span class="md-ellipsis">
+      NFP/Broker
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#nfpworker" class="md-nav__link">
+    <span class="md-ellipsis">
+      NFP/Worker
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#nfpworker-pub" class="md-nav__link">
+    <span class="md-ellipsis">
+      NFP/Worker-PUB
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#nfpbroker-pub" class="md-nav__link">
+    <span class="md-ellipsis">
+      NFP/Broker-PUB
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="NFP/Broker-PUB">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#job-persistence" class="md-nav__link">
+    <span class="md-ellipsis">
+      Job Persistence
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opening-and-closing-a-connection" class="md-nav__link">
+    <span class="md-ellipsis">
+      Opening and Closing a Connection
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#post-and-response-processing" class="md-nav__link">
+    <span class="md-ellipsis">
+      POST and RESPONSE Processing
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#keepaliving" class="md-nav__link">
+    <span class="md-ellipsis">
+      Keepaliving
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#broker-management-interface-bmmi" class="md-nav__link">
+    <span class="md-ellipsis">
+      Broker Management Interface (BMMI)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#worker-management-interface-wmmi" class="md-nav__link">
+    <span class="md-ellipsis">
+      Worker Management Interface (WMMI)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#broker-simple-inventory-datastore-sid" class="md-nav__link">
+    <span class="md-ellipsis">
+      Broker Simple Inventory Datastore (SID)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Broker Simple Inventory Datastore (SID)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sid-implementation" class="md-nav__link">
+    <span class="md-ellipsis">
+      SID Implementation
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#broker-file-sharing-service-fss" class="md-nav__link">
+    <span class="md-ellipsis">
+      Broker File Sharing Service (FSS)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Broker File Sharing Service (FSS)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#fss-implementation" class="md-nav__link">
+    <span class="md-ellipsis">
+      FSS Implementation
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#reliability" class="md-nav__link">
+    <span class="md-ellipsis">
+      Reliability
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#scalability-and-performance" class="md-nav__link">
+    <span class="md-ellipsis">
+      Scalability and Performance
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#security" class="md-nav__link">
+    <span class="md-ellipsis">
+      Security
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Security">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#worker-authentication" class="md-nav__link">
+    <span class="md-ellipsis">
+      Worker Authentication
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#worker-authorization" class="md-nav__link">
+    <span class="md-ellipsis">
+      Worker Authorization
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#client-authentication" class="md-nav__link">
+    <span class="md-ellipsis">
+      Client Authentication
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#client-authorization-role-based-access-control-rbac" class="md-nav__link">
+    <span class="md-ellipsis">
+      Client Authorization - Role Based Access Control (RBAC)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#client-encryption" class="md-nav__link">
+    <span class="md-ellipsis">
+      Client Encryption
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#worker-encryption" class="md-nav__link">
+    <span class="md-ellipsis">
+      Worker Encryption
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#accounting" class="md-nav__link">
+    <span class="md-ellipsis">
+      Accounting
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#known-weaknesses" class="md-nav__link">
+    <span class="md-ellipsis">
+      Known Weaknesses
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+  
+
+
+<h1 id="norfab-protocol">NORFAB Protocol<a class="headerlink" href="#norfab-protocol" title="Permanent link">¤</a></h1>
+<p>Status: experimental
+Editor: d.mulyalin@gmail.com
+Contributors: </p>
+<p>The NORFAB Protocol (NFP) defines a reliable service-oriented request-reply dialog between a set of client applications, a broker and a set of worker applications representing service managing a set of resources. </p>
+<p>NFP covers presence, heartbeating, and service-resource-oriented request-reply processing. NFP originated from the MDP pattern defined in Chapter 4 of the ZeroMQ Guide and combined with TSP pattern (developed in same chapter) approach for persistent messaging across a network of arbitrarily connected clients and workers as a design for disk-based reliable messaging. NORFAB allows clients and workers to work without being connected to the network at the same time, and defines handshaking for safe storage of requests, and retrieval of replies.</p>
+<h2 id="license">License<a class="headerlink" href="#license" title="Permanent link">¤</a></h2>
+<p>Copyright (c) 2024 Denis Mulyalin.</p>
+<p>This Specification is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 3 of the License, or (at your option) any later version.</p>
+<p>This Specification is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.</p>
+<p>You should have received a copy of the GNU General Public License along with this program; if not, see http://www.gnu.org/licenses.</p>
+<h2 id="change-process">Change Process<a class="headerlink" href="#change-process" title="Permanent link">¤</a></h2>
+<p>This Specification is a free and open standard (see “Definition of a Free and Open Standard") and is governed by the Digital Standards Organization’s Consensus-Oriented Specification System (COSS) (see “Consensus Oriented Specification System").</p>
+<h2 id="language">Language<a class="headerlink" href="#language" title="Permanent link">¤</a></h2>
+<p>The key words “MUST”, “MUST NOT”, “REQUIRED”, “SHALL”, “SHALL NOT”, “SHOULD”, “SHOULD NOT”, “RECOMMENDED”, “MAY”, and “OPTIONAL” in this document are to be interpreted as described in RFC 2119 (see “Key words for use in RFCs to Indicate Requirement Levels").</p>
+<h2 id="goals">Goals<a class="headerlink" href="#goals" title="Permanent link">¤</a></h2>
+<p>The NORFAB Protocol (NFP) defines a reliable service-resource-oriented request-reply dialog between a set of client applications, a broker and a set of worker applications. NFP covers presence, heartbeating, and service-oriented request-reply processing. </p>
+<p>NFP uses name-based service resolution, named based resource targeting and structured protocol commands.</p>
+<p>The goals of NFP are to:</p>
+<ul>
+<li>Allow requests to be routed to workers on the basis of abstract service names.</li>
+<li>Allow broker and workers to detect disconnection of one another, through the use of heartbeating.</li>
+<li>ALlow task distribution by clients targeting <code>all</code> (broadcast), <code>any</code> (anycast) or <code>unicast</code> certain workers by names within given service.</li>
+<li>Allow the broker to recover from dead or disconnected workers by re-sending requests to other workers.</li>
+<li>Allow workers to manage <code>resource</code> entities, where entities can be dynamically distributed across all workers within the service.</li>
+<li>Allow workers to have access to inventory data hosted by broker</li>
+</ul>
+<h2 id="architecture">Architecture<a class="headerlink" href="#architecture" title="Permanent link">¤</a></h2>
+<h3 id="overall-topology">Overall Topology<a class="headerlink" href="#overall-topology" title="Permanent link">¤</a></h3>
+<p>NFP connects a set of client applications, a single broker device and a pool of workers applications. Clients connect to the broker, as do workers. Clients and workers do not see each other, and both can come and go arbitrarily. The broker MAY open two sockets (ports), one front-end for clients, and one back-end for workers. However NFP is also designed to work over a single broker socket.</p>
+<p>We define ‘client’ applications as those issuing requests, and ‘worker’ applications as those processing them. NFP makes these assumptions:</p>
+<ul>
+<li>Workers are idempotent, i.e. it is safe to execute the same request more than once.</li>
+<li>Workers will handle at most one request a time, and will issue exactly one reply for each successful request.</li>
+<li>The NORFAB broker mediates requests one a per service basis. The broker SHOULD serve clients on a fair basis and SHOULD deliver requests to workers on the basis of targeting specified by client - <code>any</code> worker, <code>all</code> workers or <code>unicast</code> worker identified by name.</li>
+</ul>
+<p>NFP consists of four sub-protocols:</p>
+<ul>
+<li>NFP/Client, which covers how the NFP broker communicates with client applications.</li>
+<li>NFP/Worker, which covers how the NFP broker communicates with workers applications.</li>
+<li>NFP/Worker-PUB, which covers how broker subscribes to events published by workers.</li>
+<li>NFP/Broker-PUB, which covers how broker publishes collected worker events to clients.</li>
+</ul>
+<p>The broker SHOULD be an intermediary (a device) application that mediates Client-Workers communication. The broker SHOULD integrate Management Interface (MMI) service directly into it together with simple disk based Inventory service for workers.</p>
+<h3 id="router-addressing">ROUTER Addressing<a class="headerlink" href="#router-addressing" title="Permanent link">¤</a></h3>
+<p>The broker MUST use a ROUTER socket to accept requests from clients, and connections from workers. The broker MAY use a separate socket for each sub-protocol, or MAY use a single socket for both sub-protocols.</p>
+<p>From the ØMQ Reference Manual:</p>
+<p>When receiving messages a ROUTER socket shall prepend a message part containing the identity of the originating peer to the message before passing it to the application. When sending messages a ROUTER socket shall remove the first part of the message and use it to determine the identity of the peer the message shall be routed to.</p>
+<p>This extra frame is not shown in the sub-protocol commands explained below.</p>
+<h3 id="nfp-messages">NFP messages<a class="headerlink" href="#nfp-messages" title="Permanent link">¤</a></h3>
+<h4 id="open">OPEN<a class="headerlink" href="#open" title="Permanent link">¤</a></h4>
+<p>A OPEN command consists of 4 frames, formatted on the wire as follows:</p>
+<div class="highlight"><pre><span></span><code>OPEN command
+---------------------------------------------------------------
+Frame 0: Empty frame
+Frame 1: “NFPC01” or “NFPW01” or “NFPB01” (six bytes, representing NFP/Client or NFP/Worker or NFP/Broker v0.1)
+Frame 2: 0x00 (one byte, representing OPEN)
+Frame 3: Open body (opaque binary)
+</code></pre></div>
+<p>Worker and client use OPEN message to introduce itself to broker to negotiate connection parameters. Broker sends OPEN message back to client or worker to confirm the connection.</p>
+<h4 id="ready">READY<a class="headerlink" href="#ready" title="Permanent link">¤</a></h4>
+<p>A READY command consists of a multipart message of 4 frames, formatted on the wire as follows:</p>
+<div class="highlight"><pre><span></span><code>READY command
+---------------------------------------------------------------
+Frame 0: Empty frame
+Frame 1: “NFPW01” (six bytes, representing NFP/Worker v0.1)
+Frame 2: 0x01 (one byte, representing READY)
+Frame 3: Service name (printable string)
+</code></pre></div>
+<p>Worker sends READY command to broker, broker accepts ready request and registers worker with a service.</p>
+<h4 id="keepalive">KEEPALIVE<a class="headerlink" href="#keepalive" title="Permanent link">¤</a></h4>
+<p>A KEEPALIVE command consists of 4 frames, formatted on the wire as follows:</p>
+<div class="highlight"><pre><span></span><code>KEEPALIVE command
+---------------------------------------------------------------
+Frame 0: Empty frame
+Frame 1: “NFPB01” or “NFPW01” (six bytes, representing NFP/Broker or NFP/Worker v0.1)
+Frame 2: 0x02 (one byte, representing KEEPALIVE)
+Frame 3: Service name (printable string)
+</code></pre></div>
+<p>Broker sends KEEPALIVE messages to workers to indicate broker is still alive.</p>
+<p>Workers send KEEPALIVE messages to broker to indicate worker is still alive.</p>
+<h4 id="disconnect">DISCONNECT<a class="headerlink" href="#disconnect" title="Permanent link">¤</a></h4>
+<p>A DISCONNECT command consists of 3 frames, formatted on the wire as follows:</p>
+<div class="highlight"><pre><span></span><code>DISCONNECT command
+---------------------------------------------------------------
+Frame 0: Empty frame
+Frame 1: “NFPB01” or “NFPW01” (six bytes, representing NFP/Broker or NFP/Worker v0.1)
+Frame 2: 0x03 (one byte, representing DISCONNECT)
+Frame 3: Service name (printable string)
+Frame 4: Disconnect body (opaque binary)
+</code></pre></div>
+<p>Broker sends DISCONNECT command to workers to signal the request to disconnect. </p>
+<p>Workers also can send DISCONNECT command to broker to signal the request to disconnect. </p>
+<h4 id="post">POST<a class="headerlink" href="#post" title="Permanent link">¤</a></h4>
+<p>A POST command consists of 7 or more frames, formatted on the wire as follows:</p>
+<div class="highlight"><pre><span></span><code>POST command
+---------------------------------------------------------------
+Frame 0: Empty (zero bytes, invisible to REQ application)
+Frame 1: “NFPC01” or &quot;NFPB01&quot; (six bytes, representing NFP/Client or NFP/Broker v0.1)
+Frame 2: 0x04 (one byte, representing POST)
+Frame 3: Service name (printable string)
+Frame 4: Target (printable string) workers, `all` (default), `any` or comma separated `worker names`
+Frame 5: Job UUID (printable string)
+Frames 6: POST body (opaque binary)
+</code></pre></div>
+<p>Client sends POST message to broker to distribute job requests among workers. </p>
+<p>Broker relays POST message to individual workers to publish job request.</p>
+<h4 id="response">RESPONSE<a class="headerlink" href="#response" title="Permanent link">¤</a></h4>
+<p>A RESPONSE command consists of 7 or more frames, formatted on the wire as follows:</p>
+<div class="highlight"><pre><span></span><code>RESPONSE command
+---------------------------------------------------------------
+Frame 0: Empty (zero bytes, invisible to REQ application)
+Frame 1: “NFPB01” or “NFPW01” (six bytes, representing NFP/Broker or NFP/Worker v0.1)
+Frame 2: 0x05 (one byte, representing RESPONSE)
+Frame 3: Service name (printable string)
+Frame 4: Job UUID (printable string)
+Frame 5: Status code, (explained below)
+Frames 6: Response body (opaque binary)
+</code></pre></div>
+<p>Worker sends RESPONSE message to broker with requests status or job results. </p>
+<p>Broker relays RESPONSE message to client.</p>
+<h4 id="get">GET<a class="headerlink" href="#get" title="Permanent link">¤</a></h4>
+<p>A GET command consists of 7 or more frames, formatted on the wire as follows:</p>
+<div class="highlight"><pre><span></span><code>GET command
+---------------------------------------------------------------
+Frame 0: Empty (zero bytes, invisible to REQ application)
+Frame 1: “NFPC01” or &quot;NFPB01&quot; (six bytes, representing NFP/Client or NFP/Broker v0.1)
+Frame 2: 0x06 (one byte, representing GET)
+Frame 3: Service name (printable string)
+Frame 4: Target (printable string) workers, `all` (default), `any` or comma separated `worker names`
+Frame 5: Job UUID (printable string)
+Frames 6: GET request body (opaque binary)
+</code></pre></div>
+<p>Client sends GET message to broker to retrieve job results. </p>
+<p>Broker relays GET message to individual workers to request job request.</p>
+<h4 id="delete">DELETE<a class="headerlink" href="#delete" title="Permanent link">¤</a></h4>
+<p>A DELETE command consists of 7 or more frames, formatted on the wire as follows:</p>
+<div class="highlight"><pre><span></span><code>DELETE command
+---------------------------------------------------------------
+Frame 0: Empty (zero bytes, invisible to REQ application)
+Frame 1: “NFPC01” or &quot;NFPB01&quot; (six bytes, representing NFP/Client or NFP/Broker v0.1)
+Frame 2: 0x07 (one byte, representing POST)
+Frame 3: Service name (printable string)
+Frame 4: Target (printable string) workers, `all` (default), `any` or comma separated `worker names`
+Frame 5: Job UUID (printable string)
+Frames 6: DELETE body (opaque binary)
+</code></pre></div>
+<p>Client sends DELETE message to broker to distribute job delete requests to workers. </p>
+<p>Broker relays DELETE message to individual workers to cancel the job.</p>
+<h3 id="status-frames">Status Frames<a class="headerlink" href="#status-frames" title="Permanent link">¤</a></h3>
+<p>Every RESPONSE message contains a status frame followed by zero or more content frames. The status frame contains a string formatted as three digits, optionally followed by a space and descriptive text. A client MUST NOT treat the text as significant in any way. Implementations MAY NOT use status codes that are not defined here:</p>
+<p>200 - OK. The NORFAB worker executed the request successfully. 
+202 - ACCEPTED. The NORFAB Broker accepted POST request to dispatch the job.
+300 - PENDING. The client SHOULD retry the request at a later time.
+400 - UNKNOWN. The client is using an invalid or unknown UUID and SHOULD NOT retry.
+408 - REQUEST TIMEOUT. Client did not receive response from broker or worker.
+417 - EXPECT FAILED. Client did not receive what it was expecting to receive.
+500 - ERROR. The server cannot complete the request due to some internal error. The client SHOULD retry at some later time.</p>
+<h3 id="nfpclient">NFP/Client<a class="headerlink" href="#nfpclient" title="Permanent link">¤</a></h3>
+<p>NFP/Client is a strictly synchronous dialog initiated by the client (where ‘C’ represents the client, and ‘B’ represents the broker):</p>
+<div class="highlight"><pre><span></span><code>C: OPEN
+B: OPEN
+
+Repeat:
+
+    C: POST
+    B: RESPONSE
+    ...
+
+    C: GET
+    B: RESPONSE
+    ...
+</code></pre></div>
+<p>Clients SHOULD use a REQ socket when implementing a synchronous request-reply pattern. The REQ socket will silently create frame 0 for outgoing requests, and remove it for replies before passing them to the calling application. </p>
+<p>Clients MAY use any suitable strategy for recovering from a non-responsive broker. One recommended strategy is:</p>
+<ul>
+<li>To use polling instead of blocking receives on the request socket.</li>
+<li>If there is no reply within some timeout, to close the request socket and open a new socket, and resend the request on that new socket.</li>
+<li>If there is no reply after several retries, to signal the transaction as failed.</li>
+<li>The service name is a 0MQ string that matches the service name specified by a worker in its READY command (see NFP/Worker below). The broker SHOULD queue client requests for which service no workers has been registered and SHOULD expire these requests after a reasonable and configurable time if no service's workers has been registered.</li>
+</ul>
+<h3 id="nfpbroker">NFP/Broker<a class="headerlink" href="#nfpbroker" title="Permanent link">¤</a></h3>
+<p>NFP/Broker is a mediator that receives messages from clients and dispatches them out to workers. In return messages from workers routed to clients.</p>
+<h3 id="nfpworker">NFP/Worker<a class="headerlink" href="#nfpworker" title="Permanent link">¤</a></h3>
+<p>NFP/Worker is a mix of a synchronous request-reply dialog, initiated by the service worker, and an asynchronous heartbeat dialog that operates independently in both directions. This is the synchronous dialog (where ‘W’ represents the service worker, and ‘B’ represents the broker):</p>
+<div class="highlight"><pre><span></span><code>W: OPEN
+B: OPEN
+W: READY
+
+Repeat:
+
+    B: POST
+    W: RESPONSE
+    ...
+
+    B: GET
+    W: RESPONSE
+    ... 
+</code></pre></div>
+<p>The asynchronous heartbeat dialog operates on the same sockets and works thus:</p>
+<div class="highlight"><pre><span></span><code>Repeat:                 Repeat:
+
+    W: HEARTBEAT            B: HEARTBEAT
+    ...                     ...
+
+W: DISCONNECT           B: DISCONNECT
+</code></pre></div>
+<p>NFP/Worker commands all start with an empty frame to allow consistent processing of client and worker frames in a broker, over a single socket. The empty frame has no other significance.</p>
+<h3 id="nfpworker-pub">NFP/Worker-PUB<a class="headerlink" href="#nfpworker-pub" title="Permanent link">¤</a></h3>
+<p>TBD </p>
+<h3 id="nfpbroker-pub">NFP/Broker-PUB<a class="headerlink" href="#nfpbroker-pub" title="Permanent link">¤</a></h3>
+<p>TBD</p>
+<h4 id="job-persistence">Job Persistence<a class="headerlink" href="#job-persistence" title="Permanent link">¤</a></h4>
+<p>Workers SHOULD persistently store job requests and job execution results for a configurable amount of time allowing clients (client submitted job request or any other client) to request job execution results on demand.</p>
+<p>Clients SHOULD persistently store job requests and MAY store job execution results locally for a configurable amount of time.</p>
+<h4 id="opening-and-closing-a-connection">Opening and Closing a Connection<a class="headerlink" href="#opening-and-closing-a-connection" title="Permanent link">¤</a></h4>
+<p>The worker is responsible for opening and closing a logical connection. One worker MUST connect to exactly one broker using a single ØMQ DEALER (XREQ) socket.</p>
+<p>Since ØMQ automatically reconnects peers after a failure, every NFP command includes the protocol header to allow proper validation of all messages that a peer receives.</p>
+<p>The worker opens the connection to the broker by creating a new socket, connecting it, and then sending a READY command to register to a service. One worker handles precisely one service, and many workers MAY handle the same service. The worker MUST NOT send a further READY.</p>
+<p>There is no response to a READY. The worker SHOULD assume the registration succeeded until or unless it receives a DISCONNECT, or it detects a broker failure through heartbeating.</p>
+<p>The worker MAY send DISCONNECT at any time, including before READY. When the broker receives DISCONNECT from a worker it MUST send no further commands to that worker.</p>
+<p>The broker MAY send DISCONNECT at any time, by definition after it has received at least one command from the worker.</p>
+<p>The broker MUST respond to any valid but unexpected command by sending DISCONNECT and then no further commands to that worker. The broker SHOULD respond to invalid messages by dropping them and treating that peer as invalid.</p>
+<p>When the worker receives DISCONNECT it must send no further commands to the broker; it MUST close its socket, and reconnect to the broker on a new socket. This mechanism allows workers to re-register after a broker failure and recovery.</p>
+<h4 id="post-and-response-processing">POST and RESPONSE Processing<a class="headerlink" href="#post-and-response-processing" title="Permanent link">¤</a></h4>
+<p>The POST and the RESPONSE commands MUST contain precisely one client address frame. This frame MUST be followed by an empty (zero sized) frame.</p>
+<p>The address of each directly connected client is prepended by the ROUTER socket to all request messages coming from clients. That ROUTER socket also expects a client address to be prepended to each reply message sent to a client.</p>
+<h4 id="keepaliving">Keepaliving<a class="headerlink" href="#keepaliving" title="Permanent link">¤</a></h4>
+<p>KEEPALIVE commands are valid at any time, after a READY command.</p>
+<p>Any received command except DISCONNECT acts as a keepalive. Peers SHOULD NOT send KEEPALIVE commands while also sending other commands.</p>
+<p>Both broker and worker MUST send heartbeats at regular and agreed-upon intervals. A peer MUST consider the other peer “disconnected” if no keepalive arrives within some multiple of that interval (usually 3-5).</p>
+<p>If the worker detects that the broker has disconnected, it SHOULD restart a new conversation.</p>
+<p>If the broker detects that the worked has disconnected, it SHOULD stop sending messages of any type to that worker.</p>
+<h3 id="broker-management-interface-bmmi">Broker Management Interface (BMMI)<a class="headerlink" href="#broker-management-interface-bmmi" title="Permanent link">¤</a></h3>
+<p>Broker SHOULD implement Management interface as a service endpoint for clients to interact with.</p>
+<p>Broker should use <code>mmi.service.broker</code> service endpoint to listen to client's requests. </p>
+<p>These MMI functions SHOULD be implemented:</p>
+<ul>
+<li><code>show_broker</code> - to return broker status and statistics</li>
+<li><code>show_workers</code> - to return worker status and statistics </li>
+<li><code>show_clients</code> - to return clients statistics</li>
+<li><code>show_services</code> - to return services status and statistics </li>
+<li><code>restart</code> - restart broker</li>
+<li><code>shutdown</code> - shutdown broker completely</li>
+<li><code>disconnect</code> - to disconnect all workers</li>
+</ul>
+<h3 id="worker-management-interface-wmmi">Worker Management Interface (WMMI)<a class="headerlink" href="#worker-management-interface-wmmi" title="Permanent link">¤</a></h3>
+<p>Worker SHOULD implement Management interface as a service endpoint for clients to interact with.</p>
+<p>Worker should use <code>mmi.service.worker</code> service endpoint to listen to client's requests. </p>
+<p>These MMI functions SHOULD be implemented:</p>
+<ul>
+<li><code>show_broker</code> - to return broker status and statistics</li>
+<li><code>show_workers</code> - to return worker status and statistics </li>
+<li><code>show_clients</code> - to return clients statistics</li>
+<li><code>restart</code> - restart worker</li>
+<li><code>shutdown</code> - shutdown worker completely</li>
+<li><code>disconnect</code> - to disconnect worker from broker and re-establish connection</li>
+</ul>
+<h3 id="broker-simple-inventory-datastore-sid">Broker Simple Inventory Datastore (SID)<a class="headerlink" href="#broker-simple-inventory-datastore-sid" title="Permanent link">¤</a></h3>
+<p>Broker should implement Inventory Datastore to store and serve configuration to workers as well as arbitrary workers inventory data.</p>
+<p>Broker should use <code>sid.service.broker</code> service endpoint to listen to worker's requests. </p>
+<p>Workers willing to make use of broker's inventory datastore should implement <code>NFP/Client</code> protocol defined above to request inventory data.</p>
+<p>These SID functions SHOULD be implemented:</p>
+<ul>
+<li><code>get_inventory</code> - to return inventory content for given worker</li>
+</ul>
+<h4 id="sid-implementation">SID Implementation<a class="headerlink" href="#sid-implementation" title="Permanent link">¤</a></h4>
+<p>TBD</p>
+<h3 id="broker-file-sharing-service-fss">Broker File Sharing Service (FSS)<a class="headerlink" href="#broker-file-sharing-service-fss" title="Permanent link">¤</a></h3>
+<p>Broker implements service to serve files to clients and workers from local file system using <code>nf://&lt;filepath&gt;</code> URL for supported arguments.</p>
+<p>Broker should use <code>fss.service.broker</code> service endpoint to listen to worker's requests. </p>
+<h4 id="fss-implementation">FSS Implementation<a class="headerlink" href="#fss-implementation" title="Permanent link">¤</a></h4>
+<p>TBD</p>
+<h3 id="reliability">Reliability<a class="headerlink" href="#reliability" title="Permanent link">¤</a></h3>
+<p>The NORFAB pattern is designed to extend the basic ØMQ request-reply pattern with the ability to detect and recover from a specific set of failures:</p>
+<ul>
+<li>Worker applications which crash, run too slowly, or freeze.</li>
+<li>Worker applications that are disconnected from the network (temporarily or permanently).</li>
+<li>Client applications that are temporarily disconnected from the network.</li>
+<li>A queue broker that crashes and is restarted.</li>
+<li>A queue broker that suffers a permanent failure.</li>
+<li>Requests or replies that are lost due to any of these failures.</li>
+<li>The general approach is to retry and reconnect, using heartbeating when needed. </li>
+</ul>
+<h3 id="scalability-and-performance">Scalability and Performance<a class="headerlink" href="#scalability-and-performance" title="Permanent link">¤</a></h3>
+<p>NORFAB is designed to be scalable to large numbers (thousands) of workers and clients allowing to manage 10s of thousands resource entities, limited only by system resources on the broker. Partitioning of workers by service allows for multiple applications to share the same broker infrastructure. Workers manage a set of resources defined by system administrator. Same resource can be managed by single or multiple workers, system impose no restrictions on how resource entities distributed across workers.</p>
+<p>Throughput performance for a single client application will be limited to tens of thousands, not millions, of request-reply transactions per second due to round-trip costs and the extra latency of a broker-based approach. The larger the request and reply messages, the more efficient NORFAB will become. </p>
+<p>System requirements for the broker are moderate: no more than one outstanding request per client will be queued, and message contents can be switched between clients and workers without copying or processing. A single broker thread can therefore switch several million messages per second.</p>
+<h2 id="security">Security<a class="headerlink" href="#security" title="Permanent link">¤</a></h2>
+<h3 id="worker-authentication">Worker Authentication<a class="headerlink" href="#worker-authentication" title="Permanent link">¤</a></h3>
+<p>TBD</p>
+<h3 id="worker-authorization">Worker Authorization<a class="headerlink" href="#worker-authorization" title="Permanent link">¤</a></h3>
+<p>TBD</p>
+<h3 id="client-authentication">Client Authentication<a class="headerlink" href="#client-authentication" title="Permanent link">¤</a></h3>
+<p>TBD</p>
+<h3 id="client-authorization-role-based-access-control-rbac">Client Authorization - Role Based Access Control (RBAC)<a class="headerlink" href="#client-authorization-role-based-access-control-rbac" title="Permanent link">¤</a></h3>
+<p>TBD</p>
+<h3 id="client-encryption">Client Encryption<a class="headerlink" href="#client-encryption" title="Permanent link">¤</a></h3>
+<p>TBD</p>
+<h3 id="worker-encryption">Worker Encryption<a class="headerlink" href="#worker-encryption" title="Permanent link">¤</a></h3>
+<p>TBD</p>
+<h3 id="accounting">Accounting<a class="headerlink" href="#accounting" title="Permanent link">¤</a></h3>
+<p>TBD</p>
+<h2 id="known-weaknesses">Known Weaknesses<a class="headerlink" href="#known-weaknesses" title="Permanent link">¤</a></h2>
+<ul>
+<li>The heartbeat rate must be set to similar values in broker and worker, or false disconnections will occur. </li>
+<li>The use of multiple frames for command formatting has a performance impact.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        <div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/dmulyalin" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 512"><!--! Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M186.1 328.7c0 20.9-10.9 55.1-36.7 55.1s-36.7-34.2-36.7-55.1 10.9-55.1 36.7-55.1 36.7 34.2 36.7 55.1zM480 278.2c0 31.9-3.2 65.7-17.5 95-37.9 76.6-142.1 74.8-216.7 74.8-75.8 0-186.2 2.7-225.6-74.8-14.6-29-20.2-63.1-20.2-95 0-41.9 13.9-81.5 41.5-113.6-5.2-15.8-7.7-32.4-7.7-48.8 0-21.5 4.9-32.3 14.6-51.8 45.3 0 74.3 9 108.8 36 29-6.9 58.8-10 88.7-10 27 0 54.2 2.9 80.4 9.2 34-26.7 63-35.2 107.8-35.2 9.8 19.5 14.6 30.3 14.6 51.8 0 16.4-2.6 32.7-7.7 48.2 27.5 32.4 39 72.3 39 114.2zm-64.3 50.5c0-43.9-26.7-82.6-73.5-82.6-18.9 0-37 3.4-56 6-14.9 2.3-29.8 3.2-45.1 3.2-15.2 0-30.1-.9-45.1-3.2-18.7-2.6-37-6-56-6-46.8 0-73.5 38.7-73.5 82.6 0 87.8 80.4 101.3 150.4 101.3h48.2c70.3 0 150.6-13.4 150.6-101.3zm-82.6-55.1c-25.8 0-36.7 34.2-36.7 55.1s10.9 55.1 36.7 55.1 36.7-34.2 36.7-55.1-10.9-55.1-36.7-55.1z"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://twitter.com/DMulyalin" target="_blank" rel="noopener" title="twitter.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+      <div class="md-progress" data-md-component="progress" role="progressbar"></div>
+    
+    
+    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.top", "toc.follow", "navigation.instant", "navigation.instant.progress", "content.footnote.tooltips", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.ad660dcc.min.js"></script>
+      
+    
+  </body>
+</html>
