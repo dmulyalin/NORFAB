@@ -79,6 +79,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#norfab-inventory" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -762,6 +767,19 @@
       <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
       
       
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    NORFAB Inventory
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
         
@@ -772,6 +790,67 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#broker-inventory" class="md-nav__link">
+    <span class="md-ellipsis">
+      Broker Inventory
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#workers-inventory" class="md-nav__link">
+    <span class="md-ellipsis">
+      Workers Inventory
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Workers Inventory">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#workers-inventory-parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      Workers Inventory Parameters
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#topology-inventory" class="md-nav__link">
+    <span class="md-ellipsis">
+      Topology Inventory
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -1144,6 +1223,58 @@
   
   
   
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#broker-inventory" class="md-nav__link">
+    <span class="md-ellipsis">
+      Broker Inventory
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#workers-inventory" class="md-nav__link">
+    <span class="md-ellipsis">
+      Workers Inventory
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Workers Inventory">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#workers-inventory-parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      Workers Inventory Parameters
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#topology-inventory" class="md-nav__link">
+    <span class="md-ellipsis">
+      Topology Inventory
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
   
 </nav>
                   </div>
@@ -1161,9 +1292,82 @@
   
 
 
-  <h1>NORFAB Inventory</h1>
+<h1 id="norfab-inventory">NorFab Inventory<a class="headerlink" href="#norfab-inventory" title="Permanent link">¤</a></h1>
+<p>NorFab comes with Simple Inventory Datastore (SID) hosted by broker.</p>
+<h2 id="broker-inventory">Broker Inventory<a class="headerlink" href="#broker-inventory" title="Permanent link">¤</a></h2>
+<p>TBD</p>
+<h2 id="workers-inventory">Workers Inventory<a class="headerlink" href="#workers-inventory" title="Permanent link">¤</a></h2>
+<p>To understand how Simple Inventory Datastore serves workers inventory 
+it is good to know that each worker has a unique name to identify it.</p>
+<p>With that in mind, the goal is to map inventory data to individual worker
+by its name.</p>
+<p>For example, let's pretend that worker name is <code>nornir-worker-1</code> and we have
+<code>common.yaml</code> and <code>nornir-worker-1.yaml</code> files with inventory data  that
+we need to provide worker with.</p>
+<p>To do the mapping between worker name and inventory files we can put this
+in NorFab inventory (<code>inventory.yaml</code>) file:</p>
+<p>``` yaml title=inventory.yaml
+workers:
+  nornir-*:
+    - nornir/common.yaml<br />
+  nornir-worker-1:
+    - nornir/nornir-worker-1.yaml
+<div class="highlight"><pre><span></span><code>Where files structure would look like this:
+</code></pre></div>
+└───rootfolder
+    │   inventory.yaml
+    │
+    └───nornir
+            common.yaml
+            nornir-worker-1.yaml
+<div class="highlight"><pre><span></span><code>As you can see, `inventory.yaml` file contains `workers` section with a
+dictionary keyed by glob patterns to match against workers&#39; names, once
+worker name matched by the pattern, all items in the list underneaths that
+pattern being loaded and recursively merged. As such, process continues 
+until all patterns evaluated. Final output of the process is a combined
+inventory data of all the matched files.
 
+The recursive logic of combining inventory data files is pretty 
+straightforward - each next data file merged into the previous data file 
+overriding the overlapping values.
 
+The glob pattern matching logic allows be as specific as required and 
+map specific files to individual workers or to map single data file to 
+multiple workers or map multiple files to multiple workers, all combinations 
+supported.
+
+For example, we have a group of two workers with names `netbox-wroker-1.1` and
+`netbox-worker-1.2` and we want to map `netbox_common.yaml` to both of the workers,
+in that case NorFab inventory (`inventory.yaml`) file could have this content:
+
+``` yaml title=inventory.yaml
+workers:
+  netbox-worker-1.*:
+    - nornir/netbox_common.yaml  
+</code></pre></div></p>
+<p>Where files structure would look like this:</p>
+<div class="highlight"><pre><span></span><code>└───rootfolder
+    │   inventory.yaml
+    │
+    └───netbox
+            netbox_common.yaml
+</code></pre></div>
+<p>Both workers will be served with  <code>netbox_common.yaml</code> file content as an
+inventory data.</p>
+<h3 id="workers-inventory-parameters">Workers Inventory Parameters<a class="headerlink" href="#workers-inventory-parameters" title="Permanent link">¤</a></h3>
+<p>Workers inventory can contain these common parameters:</p>
+<ol>
+<li><code>service</code> - name of the service this worker belongs to</li>
+<li><code>broker_endpoint</code> - Broker URL to connect to</li>
+</ol>
+<p>Sample worker base inventory:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">service</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nornir</span>
+<span class="nt">broker_endpoint</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;tcp://127.0.0.1:5555&quot;</span>
+</code></pre></div>
+<p>The rest of the inventory data is worker specific.</p>
+<h2 id="topology-inventory">Topology Inventory<a class="headerlink" href="#topology-inventory" title="Permanent link">¤</a></h2>
+<p>Topology section of NorFab inventory identifies the components
+that need to be started on the given node.</p>
 
 
 
