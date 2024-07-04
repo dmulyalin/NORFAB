@@ -94,7 +94,7 @@ nfcli = [
     "tabulate",
 	"pydantic",
 ]
-nornir_service = [
+nornirservice = [
     "nornir",
     "nornir-salt",
     "cerberus",
@@ -125,7 +125,7 @@ nornir_service = [
 	"tabulate",
 	"pydantic",
 ]
-netbox_service = [
+netboxservice = [
 	"requests",
 	"pynetbox",
 ]

@@ -1,98 +1,98 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
-         <loc>https://norfab.github.io/NFP/</loc>
-         <lastmod>2024-06-23</lastmod>
+         <loc>https://dmulyalin.github.io/NORFAB/</loc>
+         <lastmod>2024-07-04</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://norfab.github.io/netbox_service/</loc>
-         <lastmod>2024-06-23</lastmod>
+         <loc>https://dmulyalin.github.io/NORFAB/NFP/</loc>
+         <lastmod>2024-07-04</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://norfab.github.io/netbox_worker_api_reference/</loc>
-         <lastmod>2024-06-23</lastmod>
+         <loc>https://dmulyalin.github.io/NORFAB/netbox_service/</loc>
+         <lastmod>2024-07-04</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://norfab.github.io/nfcli_client_api_reference/</loc>
-         <lastmod>2024-06-23</lastmod>
+         <loc>https://dmulyalin.github.io/NORFAB/netbox_worker_api_reference/</loc>
+         <lastmod>2024-07-04</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://norfab.github.io/norfab_architecture/</loc>
-         <lastmod>2024-06-23</lastmod>
+         <loc>https://dmulyalin.github.io/NORFAB/nfcli_client_api_reference/</loc>
+         <lastmod>2024-07-04</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://norfab.github.io/norfab_broker_reference/</loc>
-         <lastmod>2024-06-23</lastmod>
+         <loc>https://dmulyalin.github.io/NORFAB/norfab_architecture/</loc>
+         <lastmod>2024-07-04</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://norfab.github.io/norfab_cli_overview/</loc>
-         <lastmod>2024-06-23</lastmod>
+         <loc>https://dmulyalin.github.io/NORFAB/norfab_broker_reference/</loc>
+         <lastmod>2024-07-04</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://norfab.github.io/norfab_exceptions_reference/</loc>
-         <lastmod>2024-06-23</lastmod>
+         <loc>https://dmulyalin.github.io/NORFAB/norfab_cli_overview/</loc>
+         <lastmod>2024-07-04</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://norfab.github.io/norfab_getting_started/</loc>
-         <lastmod>2024-06-23</lastmod>
+         <loc>https://dmulyalin.github.io/NORFAB/norfab_exceptions_reference/</loc>
+         <lastmod>2024-07-04</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://norfab.github.io/norfab_installation/</loc>
-         <lastmod>2024-06-23</lastmod>
+         <loc>https://dmulyalin.github.io/NORFAB/norfab_getting_started/</loc>
+         <lastmod>2024-07-04</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://norfab.github.io/norfab_inventory/</loc>
-         <lastmod>2024-06-23</lastmod>
+         <loc>https://dmulyalin.github.io/NORFAB/norfab_installation/</loc>
+         <lastmod>2024-07-04</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://norfab.github.io/norfab_inventory_reference/</loc>
-         <lastmod>2024-06-23</lastmod>
+         <loc>https://dmulyalin.github.io/NORFAB/norfab_inventory/</loc>
+         <lastmod>2024-07-04</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://norfab.github.io/norfab_nfapi_reference/</loc>
-         <lastmod>2024-06-23</lastmod>
+         <loc>https://dmulyalin.github.io/NORFAB/norfab_inventory_reference/</loc>
+         <lastmod>2024-07-04</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://norfab.github.io/norfab_overview/</loc>
-         <lastmod>2024-06-23</lastmod>
+         <loc>https://dmulyalin.github.io/NORFAB/norfab_nfapi_reference/</loc>
+         <lastmod>2024-07-04</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://norfab.github.io/norfab_python_api_overview/</loc>
-         <lastmod>2024-06-23</lastmod>
+         <loc>https://dmulyalin.github.io/NORFAB/norfab_python_api_overview/</loc>
+         <lastmod>2024-07-04</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://norfab.github.io/norfab_release_notes/</loc>
-         <lastmod>2024-06-23</lastmod>
+         <loc>https://dmulyalin.github.io/NORFAB/norfab_release_notes/</loc>
+         <lastmod>2024-07-04</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://norfab.github.io/norfab_rest_api_overview/</loc>
-         <lastmod>2024-06-23</lastmod>
+         <loc>https://dmulyalin.github.io/NORFAB/norfab_rest_api_overview/</loc>
+         <lastmod>2024-07-04</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://norfab.github.io/nornir_service/</loc>
-         <lastmod>2024-06-23</lastmod>
+         <loc>https://dmulyalin.github.io/NORFAB/nornir_service/</loc>
+         <lastmod>2024-07-04</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://norfab.github.io/nornir_worker_api_reference/</loc>
-         <lastmod>2024-06-23</lastmod>
+         <loc>https://dmulyalin.github.io/NORFAB/nornir_worker_api_reference/</loc>
+         <lastmod>2024-07-04</lastmod>
          <changefreq>daily</changefreq>
     </url>
 </urlset>

@@ -2,7 +2,19 @@ import pprint
 import pytest
 import random
 
+def get_nb_version(nfclient, instance=None) -> tuple:
+    ret = nfclient.run_job(
+        b"netbox",
+        "get_netbox_status",
+        workers="any",
+        kwargs={"instance": instance}
+    )
+    # pprint.pprint(f">>>>>>>>>>>> {ret}")
+    for w, instances_data in ret.items():
+        for instance, instance_data in instances_data.items():
+            return tuple([int(i) for i in instance_data["netbox-version"].split(".")])
 
+                
 class TestNetboxWorker:
     @pytest.mark.skip(reason="TBD")
     def test_get_netbox_inventory(self, nfclient):
@@ -22,6 +34,8 @@ class TestNetboxWorker:
 
 
 class TestNetboxGrapQL:
+    nb_version = None
+    
     def test_graphql_query_string(self, nfclient):
         ret = nfclient.run_job(
             b"netbox",
@@ -98,152 +112,300 @@ class TestNetboxGrapQL:
             ), f"{worker} did not return errors fro malformed graphql query"
 
     def test_form_graphql_query_dry_run(self, nfclient):
-        ret = nfclient.run_job(
-            b"netbox",
-            "graphql",
-            workers="any",
-            kwargs={
-                "obj": "device_list",
-                "fields": ["name", "platform {name}"],
-                "filters": {"q": "ceos", "platform": "arista_eos"},
-                "dry_run": True,
-            },
-        )
-        pprint.pprint(ret, width=200)
+        if self.nb_version is None:
+            self.nb_version = get_nb_version(nfclient)
 
-        for worker, res in ret.items():
-            assert res["data"] == (
-                '{"query": "query {device_list(filters: {q: \\"ceos\\", platform: \\"arista_eos\\"}) {name platform {name}}}"}'
-            ), f"{worker} did not return correct query string"
+        if self.nb_version[0] == 4:
+            ret = nfclient.run_job(
+                b"netbox",
+                "graphql",
+                workers="any",
+                kwargs={
+                    "obj": "device_list",
+                    "fields": ["name", "platform {name}"],
+                    "filters": {"q": "ceos", "platform": "arista_eos"},
+                    "dry_run": True,
+                },
+            )
+            pprint.pprint(ret, width=200)
+            for worker, res in ret.items():
+                assert res["data"] == (
+                    '{"query": "query {device_list(filters: {q: \\"ceos\\", platform: \\"arista_eos\\"}) {name platform {name}}}"}'
+                ), f"{worker} did not return correct query string"
+        elif self.nb_version[0] == 3:
+            ret = nfclient.run_job(
+                b"netbox",
+                "graphql",
+                workers="any",
+                kwargs={
+                    "obj": "device_list",
+                    "fields": ["name", "platform {name}"],
+                    "filters": {"name__ic": "ceos", "platform": "arista_eos"},
+                    "dry_run": True,
+                },
+            )
+            pprint.pprint(ret, width=200)
+            for worker, res in ret.items():
+                assert res["data"] == (
+                    '{"query": "query {device_list(name__ic: \\"ceos\\", platform: \\"arista_eos\\") {name platform {name}}}"}'
+                ), f"{worker} did not return correct query string"
 
-    def test_form_graphql_query_dry_run_compisite_filter(self, nfclient):
-        ret = nfclient.run_job(
-            b"netbox",
-            "graphql",
-            workers="any",
-            kwargs={
-                "obj": "interface_list",
-                "fields": ["name"],
-                "filters": {"q": "eth", "type": '{exact: "virtual"}'},
-                "dry_run": True,
-            },
-        )
-        pprint.pprint(ret, width=200)
+    def test_form_graphql_query_dry_run_composite_filter(self, nfclient):
+        if self.nb_version is None:
+            self.nb_version = get_nb_version(nfclient)
 
-        for worker, res in ret.items():
-            assert res["data"] == (
-                '{"query": "query {interface_list(filters: {q: \\"eth\\", type: {exact: \\"virtual\\"}}) {name}}"}'
-            ), f"{worker} did not return correct query string"
+        if self.nb_version[0] == 4:
+            ret = nfclient.run_job(
+                b"netbox",
+                "graphql",
+                workers="any",
+                kwargs={
+                    "obj": "interface_list",
+                    "fields": ["name"],
+                    "filters": {"q": "eth", "type": '{exact: "virtual"}'},
+                    "dry_run": True,
+                },
+            )
+            pprint.pprint(ret, width=200)
+    
+            for worker, res in ret.items():
+                assert res["data"] == (
+                    '{"query": "query {interface_list(filters: {q: \\"eth\\", type: {exact: \\"virtual\\"}}) {name}}"}'
+                ), f"{worker} did not return correct query string"
+        elif self.nb_version[0] == 3:
+            pytest.skip("Only for Netbox v4")
+                    
 
     def test_form_graphql_query_dry_run_list_filter(self, nfclient):
-        ret = nfclient.run_job(
-            b"netbox",
-            "graphql",
-            workers="any",
-            kwargs={
-                "obj": "ip_address_list",
-                "fields": ["address"],
-                "filters": {"address": ["1.0.10.3/32", "1.0.10.1/32"]},
-                "dry_run": True,
-            },
-        )
-        pprint.pprint(ret, width=200)
+        if self.nb_version is None:
+            self.nb_version = get_nb_version(nfclient)
 
-        for worker, res in ret.items():
-            assert res["data"] == (
-                '{"query": "query {ip_address_list(filters: {address: [\\"1.0.10.3/32\\", \\"1.0.10.1/32\\"]}) {address}}"}'
-            ), f"{worker} did not return correct query string"
+        if self.nb_version[0] == 4:
+            ret = nfclient.run_job(
+                b"netbox",
+                "graphql",
+                workers="any",
+                kwargs={
+                    "obj": "ip_address_list",
+                    "fields": ["address"],
+                    "filters": {"address": ["1.0.10.3/32", "1.0.10.1/32"]},
+                    "dry_run": True,
+                },
+            )
+            pprint.pprint(ret, width=200)
+    
+            for worker, res in ret.items():
+                assert res["data"] == (
+                    '{"query": "query {ip_address_list(filters: {address: [\\"1.0.10.3/32\\", \\"1.0.10.1/32\\"]}) {address}}"}'
+                ), f"{worker} did not return correct query string"
+        elif self.nb_version[0] == 3:
+            ret = nfclient.run_job(
+                b"netbox",
+                "graphql",
+                workers="any",
+                kwargs={
+                    "obj": "ip_address_list",
+                    "fields": ["address"],
+                    "filters": {"address": ["1.0.10.3/32", "1.0.10.1/32"]},
+                    "dry_run": True,
+                },
+            )
+            pprint.pprint(ret, width=200)
+    
+            for worker, res in ret.items():
+                assert res["data"] == (
+                    '{"query": "query {ip_address_list(address: [\\"1.0.10.3/32\\", \\"1.0.10.1/32\\"]) {address}}"}'
+                ), f"{worker} did not return correct query string"
 
     def test_form_graphql_query(self, nfclient):
-        ret = nfclient.run_job(
-            b"netbox",
-            "graphql",
-            workers="any",
-            kwargs={
-                "obj": "device_list",
-                "fields": ["name", "platform {name}"],
-                "filters": {"q": "ceos", "platform": "arista_eos"},
-            },
-        )
-        pprint.pprint(ret)
+        if self.nb_version is None:
+            self.nb_version = get_nb_version(nfclient)
 
-        for worker, res in ret.items():
-            assert isinstance(res, list), f"{worker} - unexpected result type"
-            for item in res:
-                assert (
-                    "name" in item and "platform" in item
-                ), f"{worker} - no name and platform returned: {item}"
+        if self.nb_version[0] == 4:
+            ret = nfclient.run_job(
+                b"netbox",
+                "graphql",
+                workers="any",
+                kwargs={
+                    "obj": "device_list",
+                    "fields": ["name", "platform {name}"],
+                    "filters": {"q": "ceos", "platform": "arista_eos"},
+                },
+            )
+            pprint.pprint(ret)
+    
+            for worker, res in ret.items():
+                assert isinstance(res, list), f"{worker} - unexpected result type"
+                for item in res:
+                    assert (
+                        "name" in item and "platform" in item
+                    ), f"{worker} - no name and platform returned: {item}"
+        elif self.nb_version[0] == 3:
+            ret = nfclient.run_job(
+                b"netbox",
+                "graphql",
+                workers="any",
+                kwargs={
+                    "obj": "device_list",
+                    "fields": ["name", "platform {name}"],
+                    "filters": {"name__ic": "ceos", "platform": "arista_eos"},
+                },
+            )
+            pprint.pprint(ret)
+    
+            for worker, res in ret.items():
+                assert isinstance(res, list), f"{worker} - unexpected result type"
+                for item in res:
+                    assert (
+                        "name" in item and "platform" in item
+                    ), f"{worker} - no name and platform returned: {item}"
+                    
 
     def test_form_graphql_queries_with_aliases_dry_run(self, nfclient):
-        ret = nfclient.run_job(
-            b"netbox",
-            "graphql",
-            workers="any",
-            kwargs={
-                "queries": {
-                    "devices": {
-                        "obj": "device_list",
-                        "fields": ["name", "platform {name}"],
-                        "filters": {"q": "ceos", "platform": "arista_eos"},
-                    },
-                    "interfaces": {
-                        "obj": "interface_list",
-                        "fields": ["name"],
-                        "filters": {"q": "eth", "type": '{exact: "virtual"}'},
-                    },
-                    "addresses": {
-                        "obj": "ip_address_list",
-                        "fields": ["address"],
-                        "filters": {"address": ["1.0.10.3/32", "1.0.10.1/32"]},
-                    },
-                },
-                "dry_run": True,
-            },
-        )
-        pprint.pprint(ret, width=200)
+        if self.nb_version is None:
+            self.nb_version = get_nb_version(nfclient)
 
-        for worker, res in ret.items():
-            assert res["data"] == (
-                '{"query": "query {devices: device_list(filters: {q: \\"ceos\\", platform: '
-                + '\\"arista_eos\\"}) {name platform {name}}    interfaces: interface_list(filters: '
-                + '{q: \\"eth\\", type: {exact: \\"virtual\\"}}) {name}    addresses: '
-                + 'ip_address_list(filters: {address: [\\"1.0.10.3/32\\", \\"1.0.10.1/32\\"]}) {address}}"}'
-            ), f"{worker} did not return correct query string"
+        if self.nb_version[0] == 4:
+            ret = nfclient.run_job(
+                b"netbox",
+                "graphql",
+                workers="any",
+                kwargs={
+                    "queries": {
+                        "devices": {
+                            "obj": "device_list",
+                            "fields": ["name", "platform {name}"],
+                            "filters": {"q": "ceos", "platform": "arista_eos"},
+                        },
+                        "interfaces": {
+                            "obj": "interface_list",
+                            "fields": ["name"],
+                            "filters": {"q": "eth", "type": '{exact: "virtual"}'},
+                        },
+                        "addresses": {
+                            "obj": "ip_address_list",
+                            "fields": ["address"],
+                            "filters": {"address": ["1.0.10.3/32", "1.0.10.1/32"]},
+                        },
+                    },
+                    "dry_run": True,
+                },
+            )
+            pprint.pprint(ret, width=200)
+    
+            for worker, res in ret.items():
+                assert res["data"] == (
+                    '{"query": "query {devices: device_list(filters: {q: \\"ceos\\", platform: '
+                    + '\\"arista_eos\\"}) {name platform {name}}    interfaces: interface_list(filters: '
+                    + '{q: \\"eth\\", type: {exact: \\"virtual\\"}}) {name}    addresses: '
+                    + 'ip_address_list(filters: {address: [\\"1.0.10.3/32\\", \\"1.0.10.1/32\\"]}) {address}}"}'
+                ), f"{worker} did not return correct query string"
+        elif self.nb_version[0] == 3:
+            ret = nfclient.run_job(
+                b"netbox",
+                "graphql",
+                workers="any",
+                kwargs={
+                    "queries": {
+                        "devices": {
+                            "obj": "device_list",
+                            "fields": ["name", "platform {name}"],
+                            "filters": {"name__ic": "ceos", "platform": "arista_eos"},
+                        },
+                        "interfaces": {
+                            "obj": "interface_list",
+                            "fields": ["name"],
+                            "filters": {"name__ic": "eth", "type": "virtual"},
+                        },
+                        "addresses": {
+                            "obj": "ip_address_list",
+                            "fields": ["address"],
+                            "filters": {"address": ["1.0.10.3/32", "1.0.10.1/32"]},
+                        },
+                    },
+                    "dry_run": True,
+                },
+            )
+            pprint.pprint(ret, width=200)
+    
+            for worker, res in ret.items():
+                assert res["data"] == (
+                    '{"query": "query {devices: device_list(name__ic: \\"ceos\\", platform: \\"arista_eos\\") ' +
+                    '{name platform {name}}    interfaces: interface_list(name__ic: \\"eth\\", type: \\"virtual\\") ' +
+                    '{name}    addresses: ip_address_list(address: [\\"1.0.10.3/32\\", \\"1.0.10.1/32\\"]) {address}}"}'
+                ), f"{worker} did not return correct query string"
 
     def test_form_graphql_queries_with_aliases(self, nfclient):
-        ret = nfclient.run_job(
-            b"netbox",
-            "graphql",
-            workers="any",
-            kwargs={
-                "queries": {
-                    "devices": {
-                        "obj": "device_list",
-                        "fields": ["name", "platform {name}"],
-                        "filters": {"q": "ceos", "platform": "arista_eos"},
-                    },
-                    "interfaces": {
-                        "obj": "interface_list",
-                        "fields": ["name"],
-                        "filters": {"q": "eth", "type": '{exact: "virtual"}'},
-                    },
-                    "addresses": {
-                        "obj": "ip_address_list",
-                        "fields": ["address"],
-                        "filters": {"address": '{in_list: ["1.0.10.3/32", "1.0.10.1/32"]}'},
+        if self.nb_version is None:
+            self.nb_version = get_nb_version(nfclient)
+
+        if self.nb_version[0] == 4:
+            ret = nfclient.run_job(
+                b"netbox",
+                "graphql",
+                workers="any",
+                kwargs={
+                    "queries": {
+                        "devices": {
+                            "obj": "device_list",
+                            "fields": ["name", "platform {name}"],
+                            "filters": {"q": "ceos", "platform": "arista_eos"},
+                        },
+                        "interfaces": {
+                            "obj": "interface_list",
+                            "fields": ["name"],
+                            "filters": {"q": "eth", "type": '{exact: "virtual"}'},
+                        },
+                        "addresses": {
+                            "obj": "ip_address_list",
+                            "fields": ["address"],
+                            "filters": {"address": '{in_list: ["1.0.10.3/32", "1.0.10.1/32"]}'},
+                        },
                     },
                 },
-            },
-        )
-        pprint.pprint(ret, width=200)
-
-        for worker, res in ret.items():
-            assert all(
-                k in res for k in ["devices", "interfaces", "addresses"]
-            ), f"{worker} - did not return some data"
+            )
+            pprint.pprint(ret, width=200)
+    
+            for worker, res in ret.items():
+                assert all(
+                    k in res for k in ["devices", "interfaces", "addresses"]
+                ), f"{worker} - did not return some data"
+        elif self.nb_version[0] == 3:
+            ret = nfclient.run_job(
+                b"netbox",
+                "graphql",
+                workers="any",
+                kwargs={
+                    "queries": {
+                        "devices": {
+                            "obj": "device_list",
+                            "fields": ["name", "platform {name}"],
+                            "filters": {"name__ic": "ceos", "platform": "arista_eos"},
+                        },
+                        "interfaces": {
+                            "obj": "interface_list",
+                            "fields": ["name"],
+                            "filters": {"name__ic": "eth", "type": "virtual"},
+                        },
+                        "addresses": {
+                            "obj": "ip_address_list",
+                            "fields": ["address"],
+                            "filters": {"address": ["1.0.10.3/32", "1.0.10.1/32"]},
+                        },
+                    },
+                },
+            )
+            pprint.pprint(ret, width=200)
+    
+            for worker, res in ret.items():
+                assert all(
+                    k in res for k in ["devices", "interfaces", "addresses"]
+                ), f"{worker} - did not return some data"
 
 
 class TestGetInterfaces:
+    nb_version = None
+    
     def test_get_interfaces(self, nfclient):
         ret = nfclient.run_job(
             b"netbox",
@@ -329,6 +491,9 @@ class TestGetInterfaces:
                     ), f"{worker}:{device}:{intf_name} not all data returned" 
                     
     def test_get_interfaces_dry_run(self, nfclient):
+        if self.nb_version is None:
+            self.nb_version = get_nb_version(nfclient)
+        
         ret = nfclient.run_job(
             b"netbox",
             "get_interfaces",
@@ -340,14 +505,24 @@ class TestGetInterfaces:
         )
         pprint.pprint(ret)
         
-        for worker, res in ret.items():
-            assert res["data"] == (
-                '{"query": "query {interfaces: interface_list(filters: {device: [\\"ceos1\\", ' +
-                '\\"fceos4\\"]}) {name enabled description mtu parent {name} mac_address mode ' +
-                'untagged_vlan {vid name} vrf {name} tagged_vlans {vid name} tags {name} ' +
-                'custom_fields last_updated bridge {name} child_interfaces {name} bridge_interfaces ' +
-                '{name} member_interfaces {name} wwn duplex speed id device {name}}}"}'
-            ), f"{worker} did not return correct query string"
+        if self.nb_version[0] == 4:
+            for worker, res in ret.items():
+                assert res["data"] == (
+                    '{"query": "query {interfaces: interface_list(filters: {device: [\\"ceos1\\", ' +
+                    '\\"fceos4\\"]}) {name enabled description mtu parent {name} mac_address mode ' +
+                    'untagged_vlan {vid name} vrf {name} tagged_vlans {vid name} tags {name} ' +
+                    'custom_fields last_updated bridge {name} child_interfaces {name} bridge_interfaces ' +
+                    '{name} member_interfaces {name} wwn duplex speed id device {name}}}"}'
+                ), f"{worker} did not return correct query string"
+        elif self.nb_version[0] == 3:
+            for worker, res in ret.items():
+                assert res["data"] == (
+                    '{"query": "query {interfaces: interface_list(device: [\\"ceos1\\", \\"fceos4\\"]) ' +
+                    '{name enabled description mtu parent {name} mac_address mode untagged_vlan {vid name} ' +
+                    'vrf {name} tagged_vlans {vid name} tags {name} custom_fields last_updated bridge ' +
+                    '{name} child_interfaces {name} bridge_interfaces {name} member_interfaces {name} wwn ' +
+                    'duplex speed id device {name}}}"}'
+                ), f"{worker} did not return correct query string"
             
             
     def test_get_interfaces_add_ip(self, nfclient):
@@ -422,6 +597,8 @@ class TestGetInterfaces:
                         
                         
 class TestGetDevices:
+    nb_version = None
+    
     def test_with_devices_list(self, nfclient):
         ret = nfclient.run_job(
             b"netbox",
@@ -462,17 +639,33 @@ class TestGetDevices:
                 assert "role" in device_data or "devcie_role" in device_data, f"{worker}:{device} nodevice role info returned" 
                 
     def test_with_filters(self, nfclient):
-        ret = nfclient.run_job(
-            b"netbox",
-            "get_devices",
-            workers="any",
-            kwargs={
-                "filters": [
-                    {"name": '{in_list: ["ceos1", "fceos4"]}'},
-                    {"q": "390"},
-                ]
-            },
-        )
+        if self.nb_version is None:
+            self.nb_version = get_nb_version(nfclient)
+    
+        if self.nb_version[0] == 4:
+            ret = nfclient.run_job(
+                b"netbox",
+                "get_devices",
+                workers="any",
+                kwargs={
+                    "filters": [
+                        {"name": '{in_list: ["ceos1", "fceos4"]}'},
+                        {"q": "390"},
+                    ]
+                },
+            )
+        elif self.nb_version[0] == 3:
+            ret = nfclient.run_job(
+                b"netbox",
+                "get_devices",
+                workers="any",
+                kwargs={
+                    "filters": [
+                        {"name": ["ceos1", "fceos4"]},
+                        {"name__ic": "390"},
+                    ]
+                },
+            )
         pprint.pprint(ret)
                 
         for worker, res in ret.items():
@@ -718,6 +911,7 @@ class TestGetConnections:
     
     
 class TestGetNornirInventory:
+    nb_version = None
     
     def test_with_devices(self, nfclient):
         ret = nfclient.run_job(
@@ -743,17 +937,33 @@ class TestGetNornirInventory:
                 ), f"{worker}:{device} not all data returned"
         
     def test_with_filters(self, nfclient):
-        ret = nfclient.run_job(
-            "netbox",
-            "get_nornir_inventory",
-            workers="any",
-            kwargs={
-                "filters": [
-                    {"name": '{in_list: ["ceos1"]}'},
-                    {"name": '{contains: "fceos"}'},
-                ]
-            },
-        )
+        if self.nb_version is None:
+            self.nb_version = get_nb_version(nfclient)
+    
+        if self.nb_version[0] == 4:
+            ret = nfclient.run_job(
+                "netbox",
+                "get_nornir_inventory",
+                workers="any",
+                kwargs={
+                    "filters": [
+                        {"name": '{in_list: ["ceos1"]}'},
+                        {"name": '{contains: "fceos"}'},
+                    ]
+                },
+            )
+        elif self.nb_version[0] == 3:
+            ret = nfclient.run_job(
+                "netbox",
+                "get_nornir_inventory",
+                workers="any",
+                kwargs={
+                    "filters": [
+                        {"name": ["ceos1"]},
+                        {"name__ic":"fceos"},
+                    ]
+                },
+            )
         pprint.pprint(ret)
         for worker, res in ret.items():
             assert "ceos1" in res["hosts"], f"{worker} returned no results for ceos1"

@@ -1,6 +1,11 @@
+> **Through lifting others we rise** :rocket:
+
+---
+
 ## Network Automations Fabric
 
 ![Network Automations Fabric](images/norfab_overview_top_image.webp)
+
 
 Hi :smile:, thank you for getting here.
 

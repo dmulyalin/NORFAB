@@ -1,3 +1,11 @@
+"""
+
+### Nornir Worker Inventory Reference
+
+TBD
+
+"""
+
 import json
 import logging
 import sys

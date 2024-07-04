@@ -85,7 +85,7 @@ This is how files structure will look like:
 ```
 
 Now you are ready to start NorFab Interactive Command Line Shell 
-client - NFCLI. Open terminal window, navigate to the folder with 
+Client - NFCLI. Open terminal window, navigate to the folder 
 where ``inventory.yaml`` located and start NFCLI:
 
 ```
@@ -95,7 +95,7 @@ nf#
 ```
 
 this will start the NorFab broker process, Nornir worker process, instantiate
-NFCLI client and drop you into interactive command line shell :shell:.
+NFCLI client and drop you into interactive command line shell :shell:
 
 ```
 nf#?

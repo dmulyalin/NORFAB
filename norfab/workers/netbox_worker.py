@@ -1,3 +1,57 @@
+"""
+
+### Netbox Worker Inventory Reference
+
+
+
+#### Sample Netbox Worker Inventory
+
+``` yaml
+service: netbox
+broker_endpoint: "tcp://127.0.0.1:5555"
+instances:
+  prod:
+    default: True
+    url: "http://192.168.4.130:8000/"
+    token: "0123456789abcdef0123456789abcdef01234567"
+    ssl_verify: False
+  dev:
+    url: "http://192.168.4.131:8000/"
+    token: "0123456789abcdef0123456789abcdef01234567"
+    ssl_verify: False
+  preprod:
+    url: "http://192.168.4.132:8000/"
+    token: "0123456789abcdef0123456789abcdef01234567"
+    ssl_verify: False
+```
+
+#### Sample Nornir Worker Netbox Inventory
+
+``` yaml
+netbox:
+  retry: 3
+  retry_interval: 1
+  instance: prod
+  interfaces:
+    ip_addresses: True
+    inventory_items: True
+  connections:
+    cables: True
+    circuits: True
+  nbdata: True
+  primary_ip: "ipv4"
+  devices:
+    - fceos4
+    - fceos5
+    - fceos8
+    - ceos1
+  filters: 
+    - q: fceos3
+    - manufacturer: cisco
+      platform: cisco_xr
+```
+"""
+
 import json
 import logging
 import sys
@@ -41,7 +95,7 @@ DEVICE_FIELDS = [
 # ----------------------------------------------------------------------
 
 
-def _form_query(obj, filters, fields, alias=None):
+def _form_query_v4(obj, filters, fields, alias=None):
     """
     Helper function to form graphql query
 
@@ -69,10 +123,38 @@ def _form_query(obj, filters, fields, alias=None):
     return query
 
 
+def _form_query_v3(obj, filters, fields, alias=None):
+    """
+    Helper function to form graphql query
+
+    :param obj: string, obj to return data for e.g. device, interface, ip_address
+    :param filters: dictionary of key-value pairs to filter by
+    :param fields: list of data fields to return
+    :param alias: string, alias value for requested obj
+    """
+    filters_list = []
+    for k, v in filters.items():
+        if isinstance(v, (list, set, tuple)):
+            items = ", ".join(f'"{i}"' for i in v)
+            filters_list.append(f"{k}: [{items}]")
+        else:
+            filters_list.append(f'{k}: "{v}"')
+    filters_string = ", ".join(filters_list)
+    fields = " ".join(fields)
+    if alias:
+        query = f"{alias}: {obj}({filters_string}) {{{fields}}}"
+    else:
+        query = f"{obj}({filters_string}) {{{fields}}}"
+
+    return query
+    
+
 class NetboxWorker(NFPWorker):
     default_instance = None
     inventory = None
-    compatible_ge = 405  # 4.0.5 - minimum supported Netbox version
+    nb_version = None
+    compatible_ge_v3 = (3,6,0,)  # 3.6.0 - minimum supported Netbox v3
+    compatible_ge_v4 = (4,0,5,)  # 4.0.5 - minimum supported Netbox v4
 
     def __init__(
         self, broker, service, worker_name, exit_event=None, log_level="WARNING"
@@ -135,8 +217,11 @@ class NetboxWorker(NFPWorker):
                 log.warning(f"{self.name} - {instance} Netbox instance not reachable")
                 ret[instance] = None
             else:
-                nb_version = int(params["netbox-version"].replace(".", ""))
-                ret[instance] = nb_version >= self.compatible_ge
+                self.nb_version = tuple([int(i) for i in params["netbox-version"].split(".")])
+                if self.nb_version[0] == 3: # check Netbox 3 compatibility
+                    ret[instance] = self.nb_version >= self.compatible_ge_v3
+                elif self.nb_version[0] == 4: # check Netbox 4 compatibility
+                    ret[instance] = self.nb_version >= self.compatible_ge_v4
 
         return ret
 
@@ -213,7 +298,7 @@ class NetboxWorker(NFPWorker):
             nb = pynetbox.api(url=params["url"], token=params["token"])
 
         return nb
-
+        
     def graphql(
         self,
         instance: str = None,
@@ -224,17 +309,7 @@ class NetboxWorker(NFPWorker):
         queries: dict = None,
         query_string: str = None,
     ):
-        """
-        Function to send query to Netbox GraphQL API and return results.
-
-        :param instance: Netbox instance name
-        :param dry_run: only return query content, do not run it
-        :param obj: object to return data for e.g. device, interface, ip_address
-        :param filters: dictionary of key-value pairs to filter by
-        :param fields: list of data fields to return
-        :param queries: dictionary keyed by GraphQL aliases with values of obj, filters, fields dictionary
-        :param query_string: string with GraphQL query
-        """
+        """Function to query Netbox v4 GraphQL API"""
         nb_params = self._get_instance_params(instance)
 
         # form graphql query(ies) payload
@@ -242,11 +317,17 @@ class NetboxWorker(NFPWorker):
             queries_list = []
             for alias, query_data in queries.items():
                 query_data["alias"] = alias
-                queries_list.append(_form_query(**query_data))
+                if self.nb_version[0] == 4:
+                    queries_list.append(_form_query_v4(**query_data))
+                elif self.nb_version[0] == 3:
+                    queries_list.append(_form_query_v3(**query_data))
             queries_strings = "    ".join(queries_list)
             query = f"query {{{queries_strings}}}"
         elif obj and filters and fields:
-            query = _form_query(obj, filters, fields)
+            if self.nb_version[0] == 4:
+                query = _form_query_v4(obj, filters, fields)
+            elif self.nb_version[0] == 3:
+                query = _form_query_v3(obj, filters, fields)
             query = f"query {{{query}}}"
         elif query_string:
             query = query_string
@@ -302,12 +383,104 @@ class NetboxWorker(NFPWorker):
             log.error(
                 f"{self.name} - GrapQL query error '{reply['errors']}', query '{payload}'"
             )
+            if reply.get("data"):
+                return reply["data"] # at least return some data
             return reply
         elif queries or query_string:
             return reply["data"]
         else:
             return reply["data"][obj]
 
+    def get_devices(
+        self,
+        filters: list = None,
+        instance: str = None,
+        dry_run: bool = False,
+        devices: list = None,
+    ):
+        """
+        Function to retrieve devices data from Netbox using GraphQL API.
+
+        :param filters: list of filters dictionaries to filter devices
+        :param instance: Netbox instance name
+        :param dry_run: only return query content, do not run it
+        :param devices: list of device names to query data for
+        :return: dictionary keyed by device name with device data
+        """
+        instance = instance or self.default_instance
+        ret = {}
+        filters = filters or []
+        nb_status = self.get_netbox_status(instance)
+
+        device_fields = [
+            "name",
+            "last_updated",
+            "custom_field_data",
+            "tags {name}",
+            "device_type {model}",
+            "role {name}",
+            "config_context",
+            "tenant {name}",
+            "platform {name}",
+            "serial",
+            "asset_tag",
+            "site {name tags{name}}",
+            "location {name}",
+            "rack {name}",
+            "status",
+            "primary_ip4 {address}",
+            "primary_ip6 {address}",
+            "airflow",
+            "position",
+        ]
+
+        # form queries dictionary out of filters
+        queries = {
+            f"devices_by_filter_{index}": {
+                "obj": "device_list",
+                "filters": filter_item,
+                "fields": device_fields,
+            }
+            for index, filter_item in enumerate(filters)
+        }
+
+        # add devices list query
+        if devices:
+            if self.nb_version[0] == 4:
+                dlist = '["{dl}"]'.format(dl='", "'.join(devices))
+                filters_dict = {"name": f"{{in_list: {dlist}}}"}
+            elif self.nb_version[0] == 3:
+                filters_dict = {"name": devices}
+            queries["devices_by_devices_list"] = {
+                "obj": "device_list",
+                "filters": filters_dict,
+                "fields": device_fields,
+            }
+
+        # send queries
+        devices_query_result = self.graphql(
+            queries=queries, instance=instance, dry_run=dry_run
+        )
+
+        # return dry run result
+        if dry_run:
+            return devices_query_result
+
+        # check for errors
+        if devices_query_result.get("errors"):
+            log.error(
+                f"{self.name} - get devices query failed with errors: {devices_query_result['errors']}"
+            )
+            return ret
+
+        # process devices
+        for devices_list in devices_query_result.values():
+            for device in devices_list:
+                if device["name"] not in ret:
+                    ret[device.pop("name")] = device
+
+        return ret
+        
     def get_interfaces(
         self,
         instance: str = None,
@@ -437,96 +610,6 @@ class NetboxWorker(NFPWorker):
 
         return ret
 
-    def get_devices(
-        self,
-        filters: list = None,
-        instance: str = None,
-        dry_run: bool = False,
-        devices: list = None,
-    ):
-        """
-        Function to retrieve devices data from Netbox using GraphQL API.
-
-        :param filters: list of filters dictionaries to filter devices
-        :param instance: Netbox instance name
-        :param dry_run: only return query content, do not run it
-        :param devices: list of device names to query data for
-        :return: dictionary keyed by device name with device data
-        """
-        instance = instance or self.default_instance
-        ret = {}
-        filters = filters or []
-        nb_status = self.get_netbox_status(instance)
-
-        # form netbox version
-        NB_VERSION = nb_status[instance]["netbox-version"].split(".")
-        NB_VERSION = float(".".join(NB_VERSION[:2]))
-
-        device_fields = [
-            "name",
-            "last_updated",
-            "custom_field_data",
-            "tags {name}",
-            "device_type {model}",
-            "device_role {name}" if NB_VERSION < 3.6 else "role {name}",
-            "config_context",
-            "tenant {name}",
-            "platform {name}",
-            "serial",
-            "asset_tag",
-            "site {name tags{name}}",
-            "location {name}",
-            "rack {name}",
-            "status",
-            "primary_ip4 {address}",
-            "primary_ip6 {address}",
-            "airflow",
-            "position",
-        ]
-
-        # form queries dictionary out of filters
-        queries = {
-            f"devices_by_filter_{index}": {
-                "obj": "device_list",
-                "filters": filter_item,
-                "fields": device_fields,
-            }
-            for index, filter_item in enumerate(filters)
-        }
-
-        # add devices list query
-        if devices:
-            dlist = '["{dl}"]'.format(dl='", "'.join(devices))
-            queries["devices_by_devices_list"] = {
-                "obj": "device_list",
-                "filters": {"name": f"{{in_list: {dlist}}}"},
-                "fields": device_fields,
-            }
-
-        # send queries
-        devices_query_result = self.graphql(
-            queries=queries, instance=instance, dry_run=dry_run
-        )
-
-        # return dry run result
-        if dry_run:
-            return devices_query_result
-
-        # check for errors
-        if devices_query_result.get("errors"):
-            log.error(
-                f"{self.name} - get devices query failed with errors: {devices_query_result['errors']}"
-            )
-            return ret
-
-        # process devices
-        for devices_list in devices_query_result.values():
-            for device in devices_list:
-                if device["name"] not in ret:
-                    ret[device.pop("name")] = device
-
-        return ret
-
     def get_connections(
         self,
         instance: str = None,
@@ -561,15 +644,25 @@ class NetboxWorker(NFPWorker):
                 custom_fields
             }
         """
-        interfaces_fields = [
-            "name",
-            "device {name}",
-            """connected_endpoints {
-              __typename 
-              ... on InterfaceType {name device {name}}
-              ... on ProviderNetworkType {name}
-            }""",
-        ]
+        if self.nb_version[0] == 4:
+            interfaces_fields = [
+                "name",
+                "device {name}",
+                """connected_endpoints {
+                __typename 
+                ... on InterfaceType {name device {name}}
+                ... on ProviderNetworkType {name}
+                }""",
+            ]
+        elif self.nb_version[0] == 3:
+            interfaces_fields = [
+                "name",
+                "device {name}",
+                """connected_endpoints {
+                __typename 
+                ... on InterfaceType {name device {name}}
+                }""",
+            ]
         console_ports_fields = [
             "name",
             "device {name}",

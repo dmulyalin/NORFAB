@@ -16,7 +16,7 @@ markdown_extensions:
     permalink: "¤"
 nav:
 - NORFAB: 
-    - Overview: norfab_overview.md
+    - Overview: index.md
     - Installation: norfab_installation.md
     - Getting Started: norfab_getting_started.md
     - NORFAB CLI: norfab_cli_overview.md
