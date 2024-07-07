@@ -30,4 +30,7 @@ topology:
     - nornir-worker-2 # ContainerLab devices
     - nornir-worker-3 # Worker with no Nornir Hosts Inventory
     - nornir-worker-4 # FakeNOS devices
-    - nornir-worker-5 # Worker to test Netbox Inventory
+    - nornir-worker-5: # Worker to test Netbox Inventory
+        depends_on: 
+          - netbox-worker-1.1
+          - netbox-worker-1.2

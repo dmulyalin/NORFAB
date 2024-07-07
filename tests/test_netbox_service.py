@@ -1133,3 +1133,66 @@ class TestGetNornirInventory:
             },
         )
         pprint.pprint(ret)
+        
+        
+class TestGetCircuits:
+    nb_version = None
+    
+    def test_get_circuits_dry_run(self, nfclient):
+        if self.nb_version is None:
+            self.nb_version = get_nb_version(nfclient)
+
+        if self.nb_version[0] == 3:
+            ret = nfclient.run_job(
+                b"netbox",
+                "get_circuits",
+                workers="any",
+                kwargs={
+                    "devices": ["fceos4", "fceos5"],
+                    "dry_run": True,
+                },
+            )
+            pprint.pprint(ret, width=200)
+            for worker, res in ret.items():
+                assert res["data"] == (
+                    '{"query": "query {circuit_list(site: ' +
+                    '[\\"saltnornir-lab\\"]) {cid tags {name} ' +
+                    'provider {name} commit_rate description status ' +
+                    'type {name} provider_account {name} tenant ' +
+                    '{name} termination_a {id} termination_z {id} ' +
+                    'custom_fields comments}}"}'
+                ), f"{worker} did not return correct query string"
+                
+                
+    def test_get_circuits(self, nfclient):
+        ret = nfclient.run_job(
+            b"netbox",
+            "get_circuits",
+            workers="any",
+            kwargs={
+                "devices": ["fceos4", "fceos5"],
+            },
+        )
+        pprint.pprint(ret, width=200)
+        for worker, res in ret.items():
+            assert "fceos5" in res["hosts"], f"{worker} returned no results for fceos5"
+            assert "fceos4" in res["hosts"], f"{worker} returned no results for fceos4"
+            for device, device_data in res.items():
+                for cid, cid_data in device_data.items():
+                    assert all(
+                        k in cid_data for k in [
+                            "tags",
+                            "provider",
+                            "commit_rate",
+                            "description",
+                            "status",
+                            "type",
+                            "provider_accoun",
+                            "tenant",
+                            "custom_fields",
+                            "comments",
+                            "remote_device",
+                            "remote_interface",
+                            
+                        ]
+                    ), f"{worker}:{device}:{cid} not all circuit data returned" 

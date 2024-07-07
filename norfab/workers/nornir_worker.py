@@ -41,11 +41,21 @@ log = logging.getLogger(__name__)
 
 
 class NornirWorker(NFPWorker):
+    """
+    :param broker: broker URL to connect to
+    :param service: name of the service with worker belongs to
+    :param worker_name: name of this worker
+    :param exit_event: if set, worker need to stop/exit
+    :param init_done_event: event to set when worker done initializing
+    :param log_keve: logging level of this worker    
+    """
+
     def __init__(
-        self, broker, service, worker_name, exit_event=None, log_level="WARNING"
+        self, broker:str, service:str, worker_name:str, exit_event=None, init_done_event=None, log_level:str="WARNING"
     ):
         super().__init__(broker, service, worker_name, exit_event, log_level)
-
+        self.init_done_event = init_done_event
+        
         # get inventory from broker
         self.inventory = self.load_inventory()
 
@@ -53,9 +63,12 @@ class NornirWorker(NFPWorker):
         self._pull_netbox_inventory()
 
         # initiate Nornir
-        self._initiate_nornir()
+        self._init_nornir()
+        
+        self.init_done_event.set()
+        log.info(f"{self.name} - Started")
 
-    def _initiate_nornir(self):
+    def _init_nornir(self):
         # initiate Nornir
         self.nr = InitNornir(
             logging=self.inventory.get("logging", {"enabled": False}),

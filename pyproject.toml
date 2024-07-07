@@ -68,7 +68,7 @@ pynetbox = { version = "7.3.3", optional = true }
 [tool.poetry.dev-dependencies]
 black = "22.3.*"
 pytest = { version = ">=7.1" }
-fakenos = { version = ">=0.2.1" }
+fakenos = { version = ">=1.0.0" }
 coverage = "*"
 invoke = "*"
 

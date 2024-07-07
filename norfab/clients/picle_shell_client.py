@@ -27,8 +27,8 @@ from pydantic import (
 from typing import Union, Optional, List, Any, Dict, Callable, Tuple
 from norfab.core.nfapi import NorFab
 
-from . import picle_shell_client_nornir_service
-from . import picle_shell_client_netbox_service
+from .picle_shells import picle_shell_client_nornir_service
+from .picle_shells import picle_shell_client_netbox_service
 
 NFCLIENT = None
 log = logging.getLogger(__name__)
@@ -208,10 +208,10 @@ class FileServiceCommands(BaseModel):
 
 class NorFabShell(BaseModel):
     show: ShowCommandsModel = Field(None, description="NorFab show commands")
+    file: FileServiceCommands = Field(None, description="File sharing service")
     nornir: picle_shell_client_nornir_service.NornirServiceCommands = Field(
         None, description="Nornir service"
     )
-    file: FileServiceCommands = Field(None, description="File sharing service")
     netbox: picle_shell_client_netbox_service.NetboxServiceCommands = Field(
         None, description="Netbox service"
     )

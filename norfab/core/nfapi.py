@@ -1,4 +1,5 @@
 import logging
+import time
 
 from multiprocessing import Process, Event
 from norfab.core.broker import NFPBroker
@@ -22,16 +23,17 @@ def start_worker_process(
     worker_name: str,
     exit_event=None,
     log_level="WARNING",
+    init_done_event=None,
 ):
     try:
         if service == "nornir":
             worker = NornirWorker(
-                broker_endpoint, b"nornir", worker_name, exit_event, log_level
+                broker_endpoint, b"nornir", worker_name, exit_event, init_done_event, log_level
             )
             worker.work()
         elif service == "netbox":
             worker = NetboxWorker(
-                broker_endpoint, b"netbox", worker_name, exit_event, log_level
+                broker_endpoint, b"netbox", worker_name, exit_event, init_done_event, log_level
             )
             worker.work()
         else:
@@ -48,7 +50,7 @@ class NorFab:
     client = None
     broker = None
     inventory = None
-    workers = {}
+    workers_processes = {}
 
     def __init__(self, inventory: str="./inventory.yaml", log_level: str="WARNING") -> None:
         """
@@ -68,7 +70,6 @@ class NorFab:
         self.inventory = NorFabInventory(inventory)
         self.log_level = log_level
         self.broker_endpoint = self.inventory.get("broker", {}).get("endpoint")
-        self.workers = {}
         self.broker_exit_event = Event()
         self.workers_exit_event = Event()
         self.services_exit_event = Event()
@@ -88,25 +89,40 @@ class NorFab:
         else:
             log.error("Failed to start broker, no broker endpoint defined")
 
-    def start_worker(self, worker_name):
-        if not self.workers.get(worker_name):
-            try:
-                worker_inventory = self.inventory[worker_name]
-            except FileNotFoundError:
-                return
-
-            self.workers[worker_name] = Process(
-                target=start_worker_process,
-                args=(
-                    worker_inventory.get("broker_endpoint", self.broker_endpoint),
-                    worker_inventory["service"],
-                    worker_name,
-                    self.workers_exit_event,
-                    self.log_level,
+    def start_worker(self, worker_name, worker_data):
+        if not self.workers_processes.get(worker_name):
+            worker_inventory = self.inventory[worker_name]
+            init_done_event = Event() # for worker to signal if its fully initiated
+            
+            # check dependent processes
+            if worker_data.get("depends_on"):
+                # check if all dependent processes are alive
+                for w in worker_data["depends_on"]:
+                    if not self.workers_processes[w]["process"].is_alive():
+                        raise RuntimeError(f"Dependent process is dead '{w}'")
+                # check if all depended process fully initialized
+                if not all(
+                    self.workers_processes[w]["init_done"].is_set()
+                    for w in worker_data["depends_on"]
+                ):
+                    return
+                
+            self.workers_processes[worker_name] = {
+                "process": Process(
+                    target=start_worker_process,
+                    args=(
+                        worker_inventory.get("broker_endpoint", self.broker_endpoint),
+                        worker_inventory["service"],
+                        worker_name,
+                        self.workers_exit_event,
+                        self.log_level,
+                        init_done_event,
+                    ),
                 ),
-            )
+                "init_done": init_done_event
+            }
 
-            self.workers[worker_name].start()
+            self.workers_processes[worker_name]["process"].start()
 
     def start(
         self,
@@ -124,18 +140,46 @@ class NorFab:
         if start_broker is None:
             start_broker = self.inventory.topology.get("broker", False)
 
+        # form a list of workers to start
+        workers_to_start = set()
+        for worker_name in workers:
+            if isinstance(worker_name, dict):
+                worker_name = tuple(worker_name)[0]
+            workers_to_start.add(worker_name)
+            
         # start the broker
         if start_broker is True:
             self.start_broker()
-
+            
         # start all the workers
-        if workers and isinstance(workers, list):
-            for worker_name in workers:
+        while workers_to_start != set(self.workers_processes.keys()): 
+            for worker in workers:
+                # extract worker name and data/params
+                if isinstance(worker, dict):
+                    worker_name = tuple(worker)[0]
+                    worker_data = worker[worker_name]
+                else:
+                    worker_name = worker
+                    worker_data = {}
+                # verify if need to start this worker
+                if worker_name not in workers_to_start:
+                    continue
+                # start worker
                 try:
-                    self.start_worker(worker_name)
+                    self.start_worker(worker_name, worker_data)
+                # if failed to start remove from workers to start
                 except KeyError:
-                    log.error(f"No inventory data found for '{worker_name}'")
-
+                    workers_to_start.remove(worker_name)
+                    log.error(f"'{worker_name}' - failed to start worker, no inventory data found")
+                except FileNotFoundError as e:
+                    workers_to_start.remove(worker_name)
+                    log.error(f"'{worker_name}' - failed to start worker, inventory file not found '{e}'")
+                except Exception as e:
+                    workers_to_start.remove(worker_name)
+                    log.error(f"'{worker_name}' - failed to start worker, error '{e}'")
+                    
+            time.sleep(0.01)
+            
         # make the API client
         self.make_client()
 
@@ -145,9 +189,9 @@ class NorFab:
         """
         # stop workers
         self.workers_exit_event.set()
-        while self.workers:
-            _, w = self.workers.popitem()
-            w.join()
+        while self.workers_processes:
+            _, w = self.workers_processes.popitem()
+            w["process"].join()
         # stop broker
         self.broker_exit_event.set()
         if self.broker:

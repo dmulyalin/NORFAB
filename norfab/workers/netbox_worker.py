@@ -57,6 +57,7 @@ import logging
 import sys
 import importlib.metadata
 import requests
+import copy
 
 from norfab.core.worker import NFPWorker
 from typing import Union
@@ -150,6 +151,14 @@ def _form_query_v3(obj, filters, fields, alias=None):
     
 
 class NetboxWorker(NFPWorker):
+    """
+    :param broker: broker URL to connect to
+    :param service: name of the service with worker belongs to
+    :param worker_name: name of this worker
+    :param exit_event: if set, worker need to stop/exit
+    :param init_done_event: event to set when worker done initializing
+    :param log_keve: logging level of this worker    
+    """
     default_instance = None
     inventory = None
     nb_version = None
@@ -157,10 +166,11 @@ class NetboxWorker(NFPWorker):
     compatible_ge_v4 = (4,0,5,)  # 4.0.5 - minimum supported Netbox v4
 
     def __init__(
-        self, broker, service, worker_name, exit_event=None, log_level="WARNING"
+        self, broker, service, worker_name, exit_event=None, init_done_event=None, log_level="WARNING"
     ):
         super().__init__(broker, service, worker_name, exit_event, log_level)
-
+        self.init_done_event = init_done_event
+        
         # get inventory from broker
         self.inventory = self.load_inventory()
         if not self.inventory:
@@ -184,6 +194,7 @@ class NetboxWorker(NFPWorker):
         # check Netbox compatibility
         self._verify_compatibility()
 
+        self.init_done_event.set()
         log.info(f"{self.name} - Started")
 
     # ----------------------------------------------------------------------
@@ -309,7 +320,12 @@ class NetboxWorker(NFPWorker):
         queries: dict = None,
         query_string: str = None,
     ):
-        """Function to query Netbox v4 GraphQL API"""
+        """
+        Function to query Netbox v4 GraphQL API
+        
+        :param instance: Netbox instance name
+        :param dry_run: only return query content, do not run it
+        """
         nb_params = self._get_instance_params(instance)
 
         # form graphql query(ies) payload
@@ -391,6 +407,39 @@ class NetboxWorker(NFPWorker):
         else:
             return reply["data"][obj]
 
+    def rest(
+        self, 
+        instance: str = None,
+        method: str = "get", 
+        api: str = "", 
+        **kwargs
+    ) -> dict:
+        """
+        Method to query Netbox REST API.
+    
+        :param instance: Netbox instance name
+        :param method: requests method name e.g. get, post, put etc.
+        :param api: api url to query e.g. "extras" or "dcim/interfaces" etc.
+        :param kwargs: any additional requests method's arguments
+        """
+        params = self._get_instance_params(instance)
+    
+        # send request to Netbox REST API
+        response = getattr(requests, method)(
+            url=f"{params['url']}/api/{api}/",
+            headers={
+                "Content-Type": "application/json",
+                "Accept": "application/json",
+                "Authorization": f"Token {params['token']}",
+            },
+            verify=params.get("ssl_verify", True),
+            **kwargs,
+        )
+    
+        response.raise_for_status()
+    
+        return response.json()
+        
     def get_devices(
         self,
         filters: list = None,
@@ -612,8 +661,8 @@ class NetboxWorker(NFPWorker):
 
     def get_connections(
         self,
+        devices: list,
         instance: str = None,
-        devices: list = None,
         dry_run: bool = False,
         cables: bool = False,
         circuits: bool = False,
@@ -817,19 +866,161 @@ class NetboxWorker(NFPWorker):
 
     def get_circuits(
         self,
+        devices: list,
         instance: str = None,
-        devices: list = None,
         dry_run: bool = False,
     ):
         """
         Function to retrieve device circuits data from Netbox using GraphQL API.
 
-        :param instance: Netbox instance name
         :param devices: list of devices to retrieve interface for
+        :param instance: Netbox instance name
         :param dry_run: only return query content, do not run it
         :return: dictionary keyed by device name with circuits data
         """
-        pass
+        # form final result dictionary
+        circuits_dict = {d: {} for d in devices}
+        
+        device_sites_fields = ["site {slug}"]
+        circuit_fields = [
+            "cid",
+            "tags {name}",
+            "provider {name}",
+            "commit_rate",
+            "description",
+            "status",
+            "type {name}",
+            "provider_account {name}",
+            "tenant {name}",
+            "termination_a {id}",
+            "termination_z {id}",
+            "custom_fields",
+            "comments",
+        ]
+        
+        # retrieve list of hosts' sites
+        if self.nb_version[0] == 4:
+            dlist = '["{dl}"]'.format(dl='", "'.join(devices))
+            device_filters_dict = {"name": f"{{in_list: {dlist}}}"}
+        elif self.nb_version[0] == 3:
+            device_filters_dict = {"name": devices}
+        device_sites = self.graphql(
+            obj="device_list",
+            filters=device_filters_dict,
+            fields=device_sites_fields, 
+            instance=instance,
+        )
+        sites = list(set([i["site"]["slug"] for i in device_sites]))
+
+        # retrieve all circuits for devices' sites
+        if self.nb_version[0] == 4:
+            slist = '["{sl}"]'.format(sl='", "'.join(sites))
+            circuits_filters_dict = {"name": f"{{in_list: {slist}}}"}
+        elif self.nb_version[0] == 3:
+            circuits_filters_dict = {"site": sites}
+        all_circuits = self.graphql(
+            obj="circuit_list", 
+            filters=circuits_filters_dict, 
+            fields=circuit_fields, 
+            dry_run=dry_run, 
+            instance=instance,
+        )
+        
+        # return dry run result
+        if dry_run is True:
+            return all_circuits
+            
+        # iterate over circuits and map them to devices
+        for circuit in all_circuits:
+            cid = circuit.pop("cid")
+            circuit["tags"] = [i["name"] for i in circuit["tags"]]
+            circuit["type"] = circuit["type"]["name"]
+            circuit["provider"] = circuit["provider"]["name"]
+            circuit["tenant"] = circuit["tenant"]["name"] if circuit["tenant"] else None
+            circuit["provider_account"] = (
+                circuit["provider_account"]["name"]
+                if circuit["provider_account"]
+                else None
+            )
+            termination_a = circuit.pop("termination_a")
+            termination_z = circuit.pop("termination_z")
+            termination_a = termination_a["id"] if termination_a else None
+            termination_z = termination_z["id"] if termination_z else None
+
+            # retrieve A or Z termination path using Netbox REST API
+            if termination_a is not None:
+                circuit_path = self.rest(
+                    instance=instance,
+                    method="get",
+                    api=f"/circuits/circuit-terminations/{termination_a}/paths/",
+                )
+            elif termination_z is not None:
+                circuit_path = self.rest(
+                    instance=instance,
+                    method="get",
+                    api=f"/circuits/circuit-terminations/{termination_z}/paths/",
+                )
+            else:
+                continue
+
+            # check if circuit ends connect to device or provider network
+            if (
+                not circuit_path
+                or "name" not in circuit_path[0]["path"][0][0]
+                or "name" not in circuit_path[0]["path"][-1][-1]
+            ):
+                continue
+
+            # form A and Z connection endpoints
+            end_a = {
+                "device": circuit_path[0]["path"][0][0]
+                .get("device", {})
+                .get("name", False),
+                "provider_network": "provider-network"
+                in circuit_path[0]["path"][0][0]["url"],
+                "name": circuit_path[0]["path"][0][0]["name"],
+            }
+            end_z = {
+                "device": circuit_path[0]["path"][-1][-1]
+                .get("device", {})
+                .get("name", False),
+                "provider_network": "provider-network"
+                in circuit_path[0]["path"][-1][-1]["url"],
+                "name": circuit_path[0]["path"][-1][-1]["name"],
+            }
+            circuit["is_active"] = circuit_path[0]["is_active"]
+
+            # map path ends to devices
+            if end_a["device"] and end_a["device"] in devices:
+                circuits_dict[end_a["device"]][cid] = copy.deepcopy(circuit)
+                circuits_dict[end_a["device"]][cid]["interface"] = end_a["name"]
+                if end_z["device"]:
+                    circuits_dict[end_a["device"]][cid]["remote_device"] = end_z[
+                        "device"
+                    ]
+                    circuits_dict[end_a["device"]][cid]["remote_interface"] = end_z[
+                        "name"
+                    ]
+                elif end_z["provider_network"]:
+                    circuits_dict[end_a["device"]][cid]["provider_network"] = end_z[
+                        "name"
+                    ]
+            if end_z["device"] and end_z["device"] in devices:
+                circuits_dict[end_z["device"]][cid] = copy.deepcopy(circuit)
+                circuits_dict[end_z["device"]][cid]["interface"] = end_z["name"]
+                if end_a["device"]:
+                    circuits_dict[end_z["device"]][cid]["remote_device"] = end_a[
+                        "device"
+                    ]
+                    circuits_dict[end_z["device"]][cid]["remote_interface"] = end_a[
+                        "name"
+                    ]
+                elif end_a["provider_network"]:
+                    circuits_dict[end_z["device"]][cid]["provider_network"] = end_a[
+                        "name"
+                    ]
+                    
+        return circuits_dict
 
     def get_nornir_inventory(
         self,
