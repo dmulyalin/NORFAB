@@ -1175,24 +1175,41 @@ class TestGetCircuits:
         )
         pprint.pprint(ret, width=200)
         for worker, res in ret.items():
-            assert "fceos5" in res["hosts"], f"{worker} returned no results for fceos5"
-            assert "fceos4" in res["hosts"], f"{worker} returned no results for fceos4"
+            assert "fceos5" in res, f"{worker} returned no results for fceos5"
+            assert "fceos4" in res, f"{worker} returned no results for fceos4"
             for device, device_data in res.items():
                 for cid, cid_data in device_data.items():
-                    assert all(
-                        k in cid_data for k in [
-                            "tags",
-                            "provider",
-                            "commit_rate",
-                            "description",
-                            "status",
-                            "type",
-                            "provider_accoun",
-                            "tenant",
-                            "custom_fields",
-                            "comments",
-                            "remote_device",
-                            "remote_interface",
-                            
-                        ]
-                    ), f"{worker}:{device}:{cid} not all circuit data returned" 
+                    if cid=="CID3":
+                        assert all(
+                            k in cid_data for k in [
+                                "tags",
+                                "provider",
+                                "commit_rate",
+                                "description",
+                                "status",
+                                "type",
+                                "provider_account",
+                                "tenant",
+                                "custom_fields",
+                                "comments",
+                                "provider_account",
+                                "provider_network",
+                            ]
+                        ), f"{worker}:{device}:{cid} not all circuit data returned" 
+                    else:
+                        assert all(
+                            k in cid_data for k in [
+                                "tags",
+                                "provider",
+                                "commit_rate",
+                                "description",
+                                "status",
+                                "type",
+                                "provider_account",
+                                "tenant",
+                                "custom_fields",
+                                "comments",
+                                "remote_device",
+                                "remote_interface",
+                            ]
+                        ), f"{worker}:{device}:{cid} not all circuit data returned" 

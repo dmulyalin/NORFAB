@@ -28,12 +28,22 @@ def start_worker_process(
     try:
         if service == "nornir":
             worker = NornirWorker(
-                broker_endpoint, b"nornir", worker_name, exit_event, init_done_event, log_level
+                broker_endpoint,
+                b"nornir",
+                worker_name,
+                exit_event,
+                init_done_event,
+                log_level,
             )
             worker.work()
         elif service == "netbox":
             worker = NetboxWorker(
-                broker_endpoint, b"netbox", worker_name, exit_event, init_done_event, log_level
+                broker_endpoint,
+                b"netbox",
+                worker_name,
+                exit_event,
+                init_done_event,
+                log_level,
             )
             worker.work()
         else:
@@ -52,18 +62,20 @@ class NorFab:
     inventory = None
     workers_processes = {}
 
-    def __init__(self, inventory: str="./inventory.yaml", log_level: str="WARNING") -> None:
+    def __init__(
+        self, inventory: str = "./inventory.yaml", log_level: str = "WARNING"
+    ) -> None:
         """
         NorFab Python API Client initialization class
-        
+
         ```
         from norfab.core.nfapi import NorFab
-        
+
         nf = NorFab(inventory=inventory)
         nf.start(start_broker=True, workers=["my-worker-1"])
         NFCLIENT = nf.client
         ```
-        
+
         :param inventory: OS path to NorFab inventory YAML file
         :param log_level: one or supported logging levels - `CRITICAL`, `ERROR`, `WARNING`, `INFO`, `DEBUG`
         """
@@ -92,8 +104,8 @@ class NorFab:
     def start_worker(self, worker_name, worker_data):
         if not self.workers_processes.get(worker_name):
             worker_inventory = self.inventory[worker_name]
-            init_done_event = Event() # for worker to signal if its fully initiated
-            
+            init_done_event = Event()  # for worker to signal if its fully initiated
+
             # check dependent processes
             if worker_data.get("depends_on"):
                 # check if all dependent processes are alive
@@ -106,7 +118,7 @@ class NorFab:
                     for w in worker_data["depends_on"]
                 ):
                     return
-                
+
             self.workers_processes[worker_name] = {
                 "process": Process(
                     target=start_worker_process,
@@ -119,7 +131,7 @@ class NorFab:
                         init_done_event,
                     ),
                 ),
-                "init_done": init_done_event
+                "init_done": init_done_event,
             }
 
             self.workers_processes[worker_name]["process"].start()
@@ -146,13 +158,13 @@ class NorFab:
             if isinstance(worker_name, dict):
                 worker_name = tuple(worker_name)[0]
             workers_to_start.add(worker_name)
-            
+
         # start the broker
         if start_broker is True:
             self.start_broker()
-            
+
         # start all the workers
-        while workers_to_start != set(self.workers_processes.keys()): 
+        while workers_to_start != set(self.workers_processes.keys()):
             for worker in workers:
                 # extract worker name and data/params
                 if isinstance(worker, dict):
@@ -170,16 +182,20 @@ class NorFab:
                 # if failed to start remove from workers to start
                 except KeyError:
                     workers_to_start.remove(worker_name)
-                    log.error(f"'{worker_name}' - failed to start worker, no inventory data found")
+                    log.error(
+                        f"'{worker_name}' - failed to start worker, no inventory data found"
+                    )
                 except FileNotFoundError as e:
                     workers_to_start.remove(worker_name)
-                    log.error(f"'{worker_name}' - failed to start worker, inventory file not found '{e}'")
+                    log.error(
+                        f"'{worker_name}' - failed to start worker, inventory file not found '{e}'"
+                    )
                 except Exception as e:
                     workers_to_start.remove(worker_name)
                     log.error(f"'{worker_name}' - failed to start worker, error '{e}'")
-                    
+
             time.sleep(0.01)
-            
+
         # make the API client
         self.make_client()
 
@@ -198,7 +214,7 @@ class NorFab:
             self.broker.join()
         # stop client
         self.client.destroy()
-        
+
     def make_client(self, broker_endpoint: str = None) -> NFPClient:
         """
         Make an instance of NorFab client

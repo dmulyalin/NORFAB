@@ -47,15 +47,21 @@ class NornirWorker(NFPWorker):
     :param worker_name: name of this worker
     :param exit_event: if set, worker need to stop/exit
     :param init_done_event: event to set when worker done initializing
-    :param log_keve: logging level of this worker    
+    :param log_keve: logging level of this worker
     """
 
     def __init__(
-        self, broker:str, service:str, worker_name:str, exit_event=None, init_done_event=None, log_level:str="WARNING"
+        self,
+        broker: str,
+        service: str,
+        worker_name: str,
+        exit_event=None,
+        init_done_event=None,
+        log_level: str = "WARNING",
     ):
         super().__init__(broker, service, worker_name, exit_event, log_level)
         self.init_done_event = init_done_event
-        
+
         # get inventory from broker
         self.inventory = self.load_inventory()
 
@@ -64,7 +70,7 @@ class NornirWorker(NFPWorker):
 
         # initiate Nornir
         self._init_nornir()
-        
+
         self.init_done_event.set()
         log.info(f"{self.name} - Started")
 
@@ -251,7 +257,7 @@ class NornirWorker(NFPWorker):
     def get_nornir_hosts(self, **kwargs: dict) -> list:
         """
         Produce a list of hosts managed by this worker
-        
+
         :param kwargs: dictionary of nornir-salt Fx filters
         """
         filters = {k: kwargs.pop(k) for k in list(kwargs.keys()) if k in FFun_functions}
@@ -261,7 +267,7 @@ class NornirWorker(NFPWorker):
     def get_nornir_inventory(self, **kwargs: dict) -> dict:
         """
         Retrieve running Nornir inventory for requested hosts
-        
+
         :param kwargs: dictionary of nornir-salt Fx filters
         """
         filters = {k: kwargs.pop(k) for k in list(kwargs.keys()) if k in FFun_functions}
@@ -316,7 +322,6 @@ class NornirWorker(NFPWorker):
 
         return libs
 
-
     def task(self, plugin: str, **kwargs) -> dict:
         """
         Function to invoke any of supported Nornir task plugins. This function
@@ -330,18 +335,18 @@ class NornirWorker(NFPWorker):
         ```python
         # define connection name for RetryRunner to properly detect it
         CONNECTION_NAME = "netmiko"
-        
+
         # create task function
         def task(nornir_task_object, *args, **kwargs):
             pass
         ```
-        
+
         !!! note "CONNECTION_NAME"
-        
+
             ``CONNECTION_NAME`` must be defined within custom task function file if
             RetryRunner in use, otherwise connection retry logic skipped and connections
             to all hosts initiated simultaneously up to the number of ``num_workers``.
-            
+
         :param plugin: (str) ``path.to.plugin.task_fun`` to import or ``nf://path/to/task.py``
             to download custom task
         :param kwargs: (dict) arguments to use with specified task plugin
@@ -391,7 +396,6 @@ class NornirWorker(NFPWorker):
         result = nr.run(task=task_function, **kwargs)
 
         return ResultSerializer(result, to_dict=to_dict, add_details=add_details)
-
 
     def cli(
         self,

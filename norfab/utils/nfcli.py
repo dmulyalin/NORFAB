@@ -76,7 +76,7 @@ def nfcli():
     BROKER = args.BROKER
     LOGLEVEL = args.LOGLEVEL
     SHELL = args.SHELL
-    
+
     log.setLevel(LOGLEVEL.upper())
 
     if WORKERS is not None:

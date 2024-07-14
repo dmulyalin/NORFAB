@@ -518,7 +518,9 @@ class NrCliPlugins(BaseModel):
 
 class NornirCliShell(filters, TabulateTableModel, NornirCommonArgs):
     commands: Optional[Union[StrictStr, List[StrictStr]]] = Field(
-        None, description="List of commands to collect form devices"
+        None,
+        description="List of commands to collect form devices",
+        json_schema_extra={"multiline": True},
     )
     plugin: NrCliPlugins = Field(None, description="Connection plugin parameters")
     cli_dry_run: Optional[StrictBool] = Field(
@@ -746,7 +748,9 @@ class NornirCfgShell(filters, TabulateTableModel, NornirCommonArgs):
         None, description="Dry run cfg function", json_schema_extra={"presence": True}
     )
     config: Optional[Union[StrictStr, List[StrictStr]]] = Field(
-        None, description="List of configuration commands to send to devices"
+        None,
+        description="List of configuration commands to send to devices",
+        json_schema_extra={"multiline": True},
     )
     plugin: NrCfgPlugins = Field(None, description="Configuration plugin parameters")
 

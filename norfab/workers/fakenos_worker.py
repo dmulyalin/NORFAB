@@ -57,8 +57,8 @@ def whatch_stop(network, exit_event):
             break
         else:
             time.sleep(0.01)
-            
-                
+
+
 class FakenosWorker(NFPWorker):
     inventory = None
 
@@ -69,7 +69,7 @@ class FakenosWorker(NFPWorker):
 
         # get inventory from broker
         self.inventory = self.load_inventory()
-        
+
         # start FakeNOS Network
         self.network = FakeNOS(
             inventory={
@@ -77,10 +77,16 @@ class FakenosWorker(NFPWorker):
                 "default": self.inventory.get("default", {}),
             }
         )
-        self.network.start()              
-        whatch_stop_thread = threading.Thread(target=whatch_stop, args=(network, exit_event,))
+        self.network.start()
+        whatch_stop_thread = threading.Thread(
+            target=whatch_stop,
+            args=(
+                network,
+                exit_event,
+            ),
+        )
         whatch_stop_thread.start()
-        
+
         log.info(f"{self.name} - Initiated")
 
     # ----------------------------------------------------------------------
@@ -90,20 +96,18 @@ class FakenosWorker(NFPWorker):
     def stop(self):
         self.network.stop()
         return "Done"
-        
+
     def start(self):
         self.network.start()
         return "Done"
-        
+
     def restart(self):
         self.network.stop()
         self.network.start()
         return "Done"
-        
+
     def get_inventory(self):
         return dict(self.inventory)
-        
+
     def get_hosts(self):
         return list(self.network.hosts)
-        
-    

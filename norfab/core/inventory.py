@@ -75,7 +75,7 @@ log = logging.getLogger(__name__)
 def merge_recursively(data: dict, merge: dict) -> None:
     """
     Function to merge two dictionaries data recursively.
-    
+
     :param data: primary dictionary
     :param merge: dictionary to merge into primary overriding the content
     """
@@ -110,10 +110,10 @@ class WorkersInventory:
         Class to collect and server NorFab workers inventory data,
         forming it by recursively merging all data files that associated
         with the name of worker requesting inventory data.
-        
+
         :param path: OS path to top folder with workers inventory data
         :param data: dictionary keyed by glob patterns matching workers names
-            and values being a list of OS paths to files with workers 
+            and values being a list of OS paths to files with workers
             inventory data
         """
         self.path, _ = os.path.split(path)
@@ -151,7 +151,7 @@ class NorFabInventory:
     def __init__(self, path: str) -> None:
         """
         NorFabInventory class to instantiate simple inventory.
-        
+
         :param path: OS path to YAML file with inventory data
         """
         self.broker = {}

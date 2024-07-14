@@ -27,7 +27,7 @@ pyyaml = ">=6.0.1,<7.0.0"
 pyzmq = ">=25.0.0,<27.0.0"
 
 # PICLE Client Dependencies
-picle = { version = ">=0.5.3,<1.0.0", optional = true }
+picle = { version = ">=0.6.0,<1.0.0", optional = true }
 rich = { version = ">=13.0.0,<14.0.0", optional = true }
 tabulate = { version = ">=0.9.0,<1.0.0", optional = true }
 pydantic = { version = ">=2.3.0,<3.0.0", optional = true }
@@ -126,6 +126,43 @@ nornirservice = [
 	"pydantic",
 ]
 netboxservice = [
+	"requests",
+	"pynetbox",
+]
+full = [
+	"picle",
+    "rich",
+    "tabulate",
+	"pydantic",
+    "nornir",
+    "nornir-salt",
+    "cerberus",
+    "jmespath",
+    "napalm",
+    "ncclient",
+    "netmiko",
+    "nornir-napalm",
+    "nornir-netmiko",
+    "nornir-scrapli",
+    "ntc-templates",
+    "paramiko",
+    "pygnmi",
+    "puresnmp",
+    "requests",
+    "scrapli",
+    "scrapli-community",
+    "scrapli-netconf",
+    "ttp",
+    "ttp-templates",
+    "xmltodict",
+    "lxml",
+    "textfsm",
+    "jinja2",
+    "N2G",
+    "dnspython",
+    "pythonping",
+	"tabulate",
+	"pydantic",
 	"requests",
 	"pynetbox",
 ]
