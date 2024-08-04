@@ -254,7 +254,7 @@ class NornirWorker(NFPWorker):
     # Nornir Service Functions that exposed for calling
     # ----------------------------------------------------------------------
 
-    def get_nornir_hosts(self, **kwargs: dict) -> list:
+    def get_nornir_hosts(self, details: bool = False, **kwargs: dict) -> list:
         """
         Produce a list of hosts managed by this worker
 
@@ -262,7 +262,19 @@ class NornirWorker(NFPWorker):
         """
         filters = {k: kwargs.pop(k) for k in list(kwargs.keys()) if k in FFun_functions}
         filtered_nornir = FFun(self.nr, **filters)
-        return list(filtered_nornir.inventory.hosts)
+        if details:
+            return {
+                host_name: {
+                    "platform": str(host.platform),
+                    "hostname": str(host.hostname),
+                    "port": str(host.port),
+                    "groups": [str(g) for g in host.groups],
+                    "username": str(host.username),
+                }
+                for host_name, host in filtered_nornir.inventory.hosts.items()
+            }
+        else:
+            return list(filtered_nornir.inventory.hosts)
 
     def get_nornir_inventory(self, **kwargs: dict) -> dict:
         """
@@ -678,18 +690,6 @@ class NornirWorker(NFPWorker):
         ret = ResultSerializer(result, to_dict=to_dict, add_details=add_details)
 
         return ret
-
-    def netbox(
-        self, task: str, cache: bool = False, cache_ttl: int = 3600, **kwargs
-    ) -> dict:
-        nb_ret = self.client.run_job(
-            b"netbox",
-            task,
-            workers="any",
-            kwargs=kwargs,
-        )
-
-        return nb_ret
 
     def netconf(self) -> dict:
         pass

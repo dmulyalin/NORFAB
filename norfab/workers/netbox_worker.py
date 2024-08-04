@@ -1041,8 +1041,8 @@ class NetboxWorker(NFPWorker):
         devices: list = None,
         instance: str = None,
         interfaces: Union[dict, bool] = False,
-        connections: bool = False,
-        circuits: bool = False,
+        connections: Union[dict, bool] = False,
+        circuits: Union[dict, bool] = False,
         nbdata: bool = False,
         primary_ip: str = "ip4",
     ):
@@ -1113,13 +1113,39 @@ class NetboxWorker(NFPWorker):
             nb_connections = self.get_connections(
                 devices=list(hosts), instance=instance, **kwargs
             )
-            # save interfaces data to hosts' inventory
+            # save connections data to hosts' inventory
             while nb_connections:
                 device, device_connections = nb_connections.popitem()
                 hosts[device]["data"]["connections"] = device_connections
 
         # add circuits data
-        if circuits is True:
-            pass
+        if circuits:
+            # decide on get_interfaces arguments
+            kwargs = circuits if isinstance(circuits, dict) else {}
+            # add 'circuits' key to all hosts' data
+            for host in hosts.values():
+                host["data"].setdefault("circuits", {})
+            # query circuits data from netbox
+            nb_circuits = self.get_circuits(
+                devices=list(hosts), instance=instance, **kwargs
+            )
+            # save circuits data to hosts' inventory
+            while nb_circuits:
+                device, device_circuits = nb_circuits.popitem()
+                hosts[device]["data"]["circuits"] = device_circuits
 
         return inventory
+
+    def get_next_ip(
+        self,
+        prefix: str,
+        device: str = None,
+        interface: str = None,
+        secondary: bool = False,
+        instance: str = None,
+        dry_run: bool = False,
+        kwargs: dict = None,
+    ):
+        """
+        Method to allocate next available IP address in Netbox
+        """

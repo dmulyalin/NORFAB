@@ -275,12 +275,64 @@ class filters(BaseModel):
 # ---------------------------------------------------------------------------------------------
 
 
+class NornirShowHosts(filters, TabulateTableModel):
+    details: Optional[StrictBool] = Field(
+        None, description="show hosts details", presence=True
+    )
+
+    class PicleConfig:
+        outputter = Outputters.outputter_rich_json
+        pipe = PipeFunctionsModel
+
+    @staticmethod
+    def run(*args, **kwargs):
+        # extract Tabulate arguments
+        table = kwargs.pop("table", {})  # tabulate
+        headers = kwargs.pop("headers", "keys")  # tabulate
+        headers_exclude = kwargs.pop("headers_exclude", [])  # tabulate
+        sortby = kwargs.pop("sortby", "host")  # tabulate
+        reverse = kwargs.pop("reverse", False)  # tabulate
+
+        # run task
+        result = filters.get_nornir_hosts(**kwargs)
+
+        # form table results
+        if table:
+            if table is True or table == "brief":
+                table = {"tablefmt": "grid"}
+            table_data = []
+            for w_name, w_res in result.items():
+                if isinstance(w_res, list):
+                    for item in w_res:
+                        table_data.append({"worker": w_name, "host": item})
+                elif isinstance(w_res, dict):
+                    for host, host_data in w_res.items():
+                        table_data.append({"worker": w_name, "host": host, **host_data})
+                else:
+                    return result
+            ret = (  # tuple to return outputter reference
+                TabulateFormatter(
+                    table_data,
+                    tabulate=table,
+                    headers=headers,
+                    headers_exclude=headers_exclude,
+                    sortby=sortby,
+                    reverse=reverse,
+                ),
+                Outputters.outputter_rich_print,
+            )
+        else:
+            ret = result
+
+        return ret
+
+
 class NornirShowCommandsModel(filters):
     inventory: Callable = Field(
         "get_nornir_inventory",
         description="show Nornir inventory data",
     )
-    hosts: Callable = Field(
+    hosts: NornirShowHosts = Field(
         "print_nornir_hosts",
         description="show Nornir hosts",
     )
@@ -297,10 +349,6 @@ class NornirShowCommandsModel(filters):
     def get_nornir_inventory(**kwargs):
         workers = kwargs.pop("workers", "all")
         return NFCLIENT.run_job("nornir", "get_nornir_inventory", workers=workers)
-
-    @staticmethod
-    def print_nornir_hosts(**kwargs):
-        return filters.get_nornir_hosts(**kwargs)
 
     @staticmethod
     def get_nornir_version(**kwargs):

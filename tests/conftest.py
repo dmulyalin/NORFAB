@@ -14,5 +14,3 @@ def nfclient():
     time.sleep(3)  # wait for workers to start
     yield nf.client  # return nf client
     nf.destroy()  # teardown
-
-    
