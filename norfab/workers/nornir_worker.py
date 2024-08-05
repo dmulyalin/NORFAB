@@ -718,20 +718,20 @@ class NornirWorker(NFPWorker):
     def network(self, fun, **kwargs) -> dict:
         """
         Function to call various network related utility functions.
-    
+
         :param fun: (str) utility function name to call
         :param kwargs: (dict) function arguments
-    
+
         Available utility functions.
-    
+
         **resolve_dns** function
-    
+
         resolves hosts' hostname DNS returning IP addresses using
         ``nornir_salt.plugins.tasks.network.resolve_dns`` Nornir-Salt
         function.
-    
+
         **ping** function
-    
+
         Function to execute ICMP ping to host using
         ``nornir_salt.plugins.tasks.network.ping`` Nornir-Salt
         function.

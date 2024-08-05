@@ -166,7 +166,9 @@ class EnumTableTypes(str, Enum):
 
 class TabulateTableModel(BaseModel):
     table: Union[EnumTableTypes, Dict, StrictBool] = Field(
-        None, description="table format (brief, terse, extend) or parameters or True", presence="brief"
+        None,
+        description="table format (brief, terse, extend) or parameters or True",
+        presence="brief",
     )
     headers: Union[StrictStr, List[StrictStr]] = Field(
         None, description="table headers"
@@ -181,8 +183,8 @@ class TabulateTableModel(BaseModel):
 
     def source_table():
         return ["brief", "terse", "extend", "True"]
-        
-        
+
+
 class filters(BaseModel):
     """
     Model to list common filter arguments for FFun function
@@ -992,33 +994,54 @@ class NornirTestShell(filters, TabulateTableModel, NornirCommonArgs):
     def run(*args, **kwargs):
         workers = kwargs.pop("workers", "all")
 
+
 # ---------------------------------------------------------------------------------------------
 # NORNIR NETWORK UTILITY FUNCTIONS SHELL MODEL
 # ---------------------------------------------------------------------------------------------
 
+
 class NornirNetworkPing(filters, TabulateTableModel, NornirCommonArgs):
     use_host_name: StrictBool = Field(
-        None, description="Ping host's name instead of host's hostname", json_schema_extra={"presence": True}
+        None,
+        description="Ping host's name instead of host's hostname",
+        json_schema_extra={"presence": True},
     )
     count: StrictInt = Field(None, description="Number of pings to run")
-    timeout: StrictInt = Field(None, description="Time in seconds before considering each non-arrived reply permanently lost")
+    timeout: StrictInt = Field(
+        None,
+        description="Time in seconds before considering each non-arrived reply permanently lost",
+    )
     size: StrictInt = Field(None, description="Size of the entire packet to send")
-    interval: Union[int, float] = Field(None, description="Interval to wait between pings")
+    interval: Union[int, float] = Field(
+        None, description="Interval to wait between pings"
+    )
     payload: str = Field(None, description="Payload content if size is not set")
-    sweep_start: StrictInt = Field(None, description="If size is not set, initial size in a sweep of sizes")
-    sweep_end: StrictInt = Field(None, description="If size is not set, final size in a sweep of sizes")
-    df: StrictBool = Field(None, description="Don't Fragment flag value for IP Header", json_schema_extra={"presence": True})
-    match: StrictBool = Field(None, description="Do payload matching between request and reply", json_schema_extra={"presence": True})
+    sweep_start: StrictInt = Field(
+        None, description="If size is not set, initial size in a sweep of sizes"
+    )
+    sweep_end: StrictInt = Field(
+        None, description="If size is not set, final size in a sweep of sizes"
+    )
+    df: StrictBool = Field(
+        None,
+        description="Don't Fragment flag value for IP Header",
+        json_schema_extra={"presence": True},
+    )
+    match: StrictBool = Field(
+        None,
+        description="Do payload matching between request and reply",
+        json_schema_extra={"presence": True},
+    )
     source: StrictStr = Field(None, description="Source IP address")
-    
+
     class PicleConfig:
         outputter = print_nornir_results
-        
+
     @staticmethod
     def run(*args, **kwargs):
         kwargs["fun"] = "ping"
         workers = kwargs.pop("workers", "all")
-        
+
         # extract Tabulate arguments
         table = kwargs.pop("table", {})  # tabulate
         headers = kwargs.pop("headers", "keys")  # tabulate
@@ -1056,25 +1079,35 @@ class NornirNetworkPing(filters, TabulateTableModel, NornirCommonArgs):
             ret = result
 
         return ret
-        
+
 
 class NornirNetworkDns(filters, TabulateTableModel, NornirCommonArgs):
     use_host_name: StrictBool = Field(
-        None, description="Ping host's name instead of host's hostname", json_schema_extra={"presence": True}
+        None,
+        description="Ping host's name instead of host's hostname",
+        json_schema_extra={"presence": True},
     )
-    servers: Union[StrictStr,List[StrictStr]] = Field(None, description="List of DNS servers to use")
-    timeout: StrictInt = Field(None, description="Time in seconds before considering request lost")
-    ipv4: StrictBool = Field(None, description="Resolve 'A' record", json_schema_extra={"presence": True})
-    ipv6: StrictBool = Field(None, description="Resolve 'AAAA' record", json_schema_extra={"presence": True})
-    
+    servers: Union[StrictStr, List[StrictStr]] = Field(
+        None, description="List of DNS servers to use"
+    )
+    timeout: StrictInt = Field(
+        None, description="Time in seconds before considering request lost"
+    )
+    ipv4: StrictBool = Field(
+        None, description="Resolve 'A' record", json_schema_extra={"presence": True}
+    )
+    ipv6: StrictBool = Field(
+        None, description="Resolve 'AAAA' record", json_schema_extra={"presence": True}
+    )
+
     class PicleConfig:
         outputter = print_nornir_results
-        
+
     @staticmethod
     def run(*args, **kwargs):
         kwargs["fun"] = "resolve_dns"
         workers = kwargs.pop("workers", "all")
-        
+
         # extract Tabulate arguments
         table = kwargs.pop("table", {})  # tabulate
         headers = kwargs.pop("headers", "keys")  # tabulate
@@ -1117,12 +1150,13 @@ class NornirNetworkDns(filters, TabulateTableModel, NornirCommonArgs):
 class NornirNetworkShell(BaseModel):
     ping: NornirNetworkPing = Field(None, description="Ping devices")
     dns: NornirNetworkDns = Field(None, description="Resolve DNS")
-    
+
     class PicleConfig:
         subshell = True
         prompt = "nf[nornir-net]#"
         outputter = print_nornir_results
-    
+
+
 # ---------------------------------------------------------------------------------------------
 # NORNIR SERVICE MAIN SHELL MODEL
 # ---------------------------------------------------------------------------------------------
@@ -1135,8 +1169,10 @@ class NornirServiceCommands(BaseModel):
     )
     task: NornirTaskShell = Field(None, description="Run Nornir task")
     test: NornirTestShell = Field(None, description="Run network tests")
-    network: NornirNetworkShell = Field(None, description="Network utility functions - ping, dns etc.")
-    
+    network: NornirNetworkShell = Field(
+        None, description="Network utility functions - ping, dns etc."
+    )
+
     # netconf:
     # file:
     # gnmi:

@@ -929,8 +929,10 @@ class TestNornirNetwork:
             assert results, f"{worker} returned no test results"
             for host, res in results.items():
                 assert "ping" in res, f"{worker}:{host} did not return ping result"
-                assert "Reply from" in res["ping"], f"{worker}:{host} ping result is not good"
-                
+                assert (
+                    "Reply from" in res["ping"]
+                ), f"{worker}:{host} ping result is not good"
+
     def test_nornir_network_ping_with_count(self, nfclient):
         ret = nfclient.run_job(
             "nornir",
@@ -944,10 +946,14 @@ class TestNornirNetwork:
             assert results, f"{worker} returned no test results"
             for host, res in results.items():
                 assert "ping" in res, f"{worker}:{host} did not return ping result"
-                assert "Reply from" in res["ping"], f"{worker}:{host} ping result is not good"
-                assert res["ping"].count("Reply from") == 2, f"{worker}:{host} ping result did not get 2 replies"
-                
-    @pytest.mark.skip(reason="TBD")  
+                assert (
+                    "Reply from" in res["ping"]
+                ), f"{worker}:{host} ping result is not good"
+                assert (
+                    res["ping"].count("Reply from") == 2
+                ), f"{worker}:{host} ping result did not get 2 replies"
+
+    @pytest.mark.skip(reason="TBD")
     def test_nornir_network_resolve_dns(self, nfclient):
         ret = nfclient.run_job(
             "nornir",
@@ -961,4 +967,6 @@ class TestNornirNetwork:
             assert results, f"{worker} returned no test results"
             for host, res in results.items():
                 assert "ping" in res, f"{worker}:{host} did not return ping result"
-                assert "Reply from" in res["ping"], f"{worker}:{host} ping result is not good"
+                assert (
+                    "Reply from" in res["ping"]
+                ), f"{worker}:{host} ping result is not good"
