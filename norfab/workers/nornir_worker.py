@@ -172,9 +172,10 @@ class NornirWorker(NFPWorker):
         ttp_structure = kwargs.pop(
             "ttp_structure", "flat_list"
         )  # data processor run_ttp function
-        remove_tasks = kwargs.pop(
-            "remove_tasks", True
-        )  # TTP remove parsed tasks output
+        remove_tasks = kwargs.pop("remove_tasks", True)  # tests and/or run_ttp
+        tests = kwargs.pop("tests", None)  # tests
+        subset = kwargs.pop("subset", [])  # tests
+        failed_only = kwargs.pop("failed_only", False)  # tests
         xpath = kwargs.pop("xpath", "")  # xpath DataProcessor
         jmespath = kwargs.pop("jmespath", "")  # jmespath DataProcessor
         iplkp = kwargs.pop("iplkp", "")  # iplkp - ip lookup - DataProcessor
@@ -226,6 +227,17 @@ class NornirWorker(NFPWorker):
             )
         if ntfsm:
             processors.append(DataProcessor([{"fun": "ntfsm"}]))
+        if tests:
+            processors.append(
+                TestsProcessor(
+                    tests=tests,
+                    remove_tasks=remove_tasks,
+                    failed_only=failed_only,
+                    build_per_host_tests=True,
+                    subset=subset,
+                    render_tests=False,
+                )
+            )
         if diff:
             processors.append(
                 DiffProcessor(
@@ -703,5 +715,29 @@ class NornirWorker(NFPWorker):
     def snmp(self) -> dict:
         pass
 
-    def net(self) -> dict:
-        pass
+    def network(self, fun, **kwargs) -> dict:
+        """
+        Function to call various network related utility functions.
+    
+        :param fun: (str) utility function name to call
+        :param kwargs: (dict) function arguments
+    
+        Available utility functions.
+    
+        **resolve_dns** function
+    
+        resolves hosts' hostname DNS returning IP addresses using
+        ``nornir_salt.plugins.tasks.network.resolve_dns`` Nornir-Salt
+        function.
+    
+        **ping** function
+    
+        Function to execute ICMP ping to host using
+        ``nornir_salt.plugins.tasks.network.ping`` Nornir-Salt
+        function.
+        """
+        kwargs["call"] = fun
+        return self.task(
+            plugin="nornir_salt.plugins.tasks.network",
+            **kwargs,
+        )

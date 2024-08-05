@@ -18,7 +18,7 @@ troubleshooting. They spent hours accessing each and every device,
 manually configuring and patching systems. Nights were sleepless, 
 filled with frantic calls to resolve outages that could no longer 
 be preemptively detected or resolved. Collaboration was slow, 
-relying on face-to-face meetings and paper documentation. 
+relying on face-to-face meetings and manual documentation. 
 Overwhelmed and exhausted, their innovative spirit was stifled by 
 the sheer volume of repetitive tasks...
 
@@ -26,12 +26,16 @@ Let us introduce you to the world of Network Automations Fabric.
 
 ## What (The Idea) :bulb:
 
-Most of the software to manage networks falls into one of the two categories: 
+NorFab purpose is to augment engineers capabilities with automation 
+superpowers.
+
+Most of the software to manage networks falls into one of the two 
+categories: 
 
 - heavyweight platforms running on dedicated infrastructure
 - lightweight scripts or tools developed and run locally
 
-NorFab goal is to be both - software you can run equally well from
+NorFab can be both - software you can run equally well from
 your laptop or on a server, centralized or fully distributed, 
 lightweight and feature reach. Capable of doing any use cases 
 without the need to throw gazillions of dollars and man hours at 

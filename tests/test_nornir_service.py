@@ -698,6 +698,7 @@ class TestNornirTests:
         pprint.pprint(ret)
 
         for worker, results in ret.items():
+            assert results, f"{worker} returned no test results"
             for host, res in results.items():
                 for test_name, test_res in res.items():
                     assert (
@@ -718,6 +719,7 @@ class TestNornirTests:
         pprint.pprint(ret)
 
         for worker, results in ret.items():
+            assert results, f"{worker} returned no test results"
             for host, res in results.items():
                 for test_name, test_res in res.items():
                     assert (
@@ -741,6 +743,7 @@ class TestNornirTests:
         pprint.pprint(ret)
 
         for worker, results in ret.items():
+            assert results, f"{worker} returned no test results"
             for host, res in results.items():
                 assert (
                     len(res) == 1
@@ -762,6 +765,7 @@ class TestNornirTests:
         pprint.pprint(ret)
 
         for worker, results in ret.items():
+            assert results, f"{worker} returned no test results"
             for host, res in results.items():
                 assert (
                     "tests_dry_run" in res
@@ -787,6 +791,7 @@ class TestNornirTests:
         pprint.pprint(ret)
 
         for worker, results in ret.items():
+            assert results, f"{worker} returned no test results"
             for host, res in results.items():
                 for test_name, test_res in res.items():
                     assert (
@@ -810,6 +815,7 @@ class TestNornirTests:
         pprint.pprint(ret)
 
         for worker, results in ret.items():
+            assert results, f"{worker} returned no test results"
             assert isinstance(results, list)
             for i in results:
                 assert all(
@@ -829,6 +835,7 @@ class TestNornirTests:
         pprint.pprint(ret)
 
         for worker, results in ret.items():
+            assert results, f"{worker} returned no test results"
             for host, res in results.items():
                 assert len(res) > 2, f"{worker}:{host} not having tasks output"
                 for task_name, task_res in res.items():
@@ -849,6 +856,7 @@ class TestNornirTests:
         pprint.pprint(ret)
 
         for worker, results in ret.items():
+            assert results, f"{worker} returned no test results"
             for host, res in results.items():
                 for test_name, test_res in res.items():
                     assert (
@@ -905,3 +913,52 @@ class TestNornirTests:
             assert (
                 "Jinja2 rendering failed" in results
             ), f"{worker} was expecting Jinja2 rendering to fail"
+
+
+class TestNornirNetwork:
+    def test_nornir_network_ping(self, nfclient):
+        ret = nfclient.run_job(
+            "nornir",
+            "network",
+            workers=["nornir-worker-1"],
+            kwargs={"fun": "ping", "FC": "ceos"},
+        )
+        pprint.pprint(ret)
+
+        for worker, results in ret.items():
+            assert results, f"{worker} returned no test results"
+            for host, res in results.items():
+                assert "ping" in res, f"{worker}:{host} did not return ping result"
+                assert "Reply from" in res["ping"], f"{worker}:{host} ping result is not good"
+                
+    def test_nornir_network_ping_with_count(self, nfclient):
+        ret = nfclient.run_job(
+            "nornir",
+            "network",
+            workers=["nornir-worker-1"],
+            kwargs={"fun": "ping", "FC": "ceos", "count": 2},
+        )
+        pprint.pprint(ret)
+
+        for worker, results in ret.items():
+            assert results, f"{worker} returned no test results"
+            for host, res in results.items():
+                assert "ping" in res, f"{worker}:{host} did not return ping result"
+                assert "Reply from" in res["ping"], f"{worker}:{host} ping result is not good"
+                assert res["ping"].count("Reply from") == 2, f"{worker}:{host} ping result did not get 2 replies"
+                
+    @pytest.mark.skip(reason="TBD")  
+    def test_nornir_network_resolve_dns(self, nfclient):
+        ret = nfclient.run_job(
+            "nornir",
+            "network",
+            workers=["nornir-worker-1"],
+            kwargs={"fun": "resolve_dns", "FC": "ceos"},
+        )
+        pprint.pprint(ret)
+
+        for worker, results in ret.items():
+            assert results, f"{worker} returned no test results"
+            for host, res in results.items():
+                assert "ping" in res, f"{worker}:{host} did not return ping result"
+                assert "Reply from" in res["ping"], f"{worker}:{host} ping result is not good"
