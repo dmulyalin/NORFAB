@@ -990,10 +990,6 @@ class NornirTestShell(filters, TabulateTableModel, NornirCommonArgs):
         prompt = "nf[nornir-test]#"
         outputter = print_nornir_results
 
-    @staticmethod
-    def run(*args, **kwargs):
-        workers = kwargs.pop("workers", "all")
-
 
 # ---------------------------------------------------------------------------------------------
 # NORNIR NETWORK UTILITY FUNCTIONS SHELL MODEL
