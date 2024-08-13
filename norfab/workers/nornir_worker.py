@@ -12,6 +12,7 @@ import sys
 import importlib.metadata
 import yaml
 import time
+import copy
 
 from jinja2 import Environment
 from norfab.core.worker import NFPWorker
@@ -611,6 +612,7 @@ class NornirWorker(NFPWorker):
         dry_run: bool = False,
         remove_tasks: bool = True,
         failed_only: bool = False,
+        return_tests_suite: bool = False,
         **kwargs,
     ) -> dict:
         """
@@ -622,6 +624,9 @@ class NornirWorker(NFPWorker):
             patterns to filter tests' by name, subset argument ignored by dry run
         :param failed_only: if True returns test results for failed tests only
         :param remove_tasks: if False results will include other tasks output
+        :param return_tests_suite: if True returns rendered per-host tests suite 
+            content in addition to test results using dictionary with ``results``
+            and ``suite`` keys
         """
         ret = []
         downloaded_suite = None
@@ -640,7 +645,12 @@ class NornirWorker(NFPWorker):
             log.debug(
                 f"{self.name} - nothing to do, no hosts matched by filters '{filters}'"
             )
-            return {} if to_dict else []
+            if to_dict is True:
+                ret = {}
+            if return_tests_suite is True:
+                return {"results": ret, "suite": {}}
+            else:
+                return ret
 
         # download tests suite
         downloaded_suite = self.fetch_file(suite)
@@ -680,6 +690,10 @@ class NornirWorker(NFPWorker):
             log.error(msg)
             return msg
 
+        # save per-host tests suite content before mutating it
+        if return_tests_suite is True:
+            return_suite = copy.deepcopy(tests)
+            
         # run task
         log.debug(f"{self.name} - running test '{suite}', is dry run - '{dry_run}'")
         if dry_run is True:
@@ -701,7 +715,11 @@ class NornirWorker(NFPWorker):
 
         ret = ResultSerializer(result, to_dict=to_dict, add_details=add_details)
 
-        return ret
+        # check if need to return tests suite content
+        if return_tests_suite is True:
+            return {"results": ret, "suite": return_suite}
+        else:
+            return ret
 
     def netconf(self) -> dict:
         pass
