@@ -62,32 +62,40 @@ log = logging.getLogger(__name__)
 
 # Global vars
 DATA = {}
+
+
 def clean_global_data():
     global DATA
     DATA.clear()
 
+
 class NorFabRobot:
-    ROBOT_LIBRARY_SCOPE = 'GLOBAL'
+    ROBOT_LIBRARY_SCOPE = "GLOBAL"
     ROBOT_AUTO_KEYWORDS = False
-    ROBOT_LIBRARY_DOC_FORMAT = 'reST' # reStructuredText
+    ROBOT_LIBRARY_DOC_FORMAT = "reST"  # reStructuredText
     ROBOT_LISTENER_API_VERSION = 3
-    
-    def __init__(self, inventory="./inventory.yaml", workers=None, start_broker=None, log_level="WARNING"):     
+
+    def __init__(
+        self,
+        inventory="./inventory.yaml",
+        workers=None,
+        start_broker=None,
+        log_level="WARNING",
+    ):
         self.ROBOT_LIBRARY_LISTENER = self
-        
-        # initiate NorFab        
+
+        # initiate NorFab
         self.nf = NorFab(inventory=inventory, log_level=log_level)
         self.nf.start(start_broker=start_broker, workers=workers)
         self.client = self.nf.client
 
     def start_suite(self, data, result):
         pass
-        
+
     def end_suite(self, data, result):
         print(f"NorFab ROBOT - Exiting")
         self.nf.destroy()
-        
-        
+
     @keyword("Service")
     def workers(self, *args, **kwargs):
         """Collect service to target"""
@@ -95,7 +103,7 @@ class NorFabRobot:
             DATA["service"] = args[0]
         else:
             DATA["service"] = kwargs["service"]
-            
+
     @keyword("Workers")
     def workers(self, *args, **kwargs):
         """Collect workers to target"""
@@ -109,7 +117,7 @@ class NorFabRobot:
         """Run task"""
         DATA["args"] = args
         DATA["kwargs"] = kwargs
-            
+
     @keyword("Task")
     def task(self, *args, **kwargs):
         """Run task"""
@@ -117,25 +125,22 @@ class NorFabRobot:
             task = args[0]
         else:
             task = kwargs["task"]
-            
-        logger.info(
-            f"Running '{task}' task with DATA '{DATA}'"
-        )
-        
+
+        logger.info(f"Running '{task}' task with DATA '{DATA}'")
+
         ret = self.client.run_job(
-            service=DATA["service"], 
-            task=task, 
-            workers=DATA.get("workers", "all"), 
+            service=DATA["service"],
+            task=task,
+            workers=DATA.get("workers", "all"),
             args=DATA.get("args", []),
             kwargs=DATA.get("kwargs", {}),
         )
-        
+
         if ret is None:
             raise ContinuableFailure("Task failed")
-            
+
         return ret
-        
-            
+
     @keyword("Hosts")
     def hosts(self, *args, **kwargs):
         """Collect hosts to target"""
@@ -151,25 +156,23 @@ class NorFabRobot:
         if args:
             kwargs["suite"] = args[0]
         kwargs = {
-            **kwargs, 
+            **kwargs,
             **DATA.pop("hosts", {"FB": "*"}),
             "remove_tasks": False,
             "add_details": True,
             "return_tests_suite": True,
             "to_dict": False,
         }
-        logger.info(
-            f"Running nr.test with kwargs '{kwargs}', global DATA '{DATA}'"
-        )
+        logger.info(f"Running nr.test with kwargs '{kwargs}', global DATA '{DATA}'")
         has_errors = False
         # run this function
         ret = self.client.run_job(
-            service="nornir", 
-            task="test", 
-            workers=DATA.get("workers", "all"), 
-            kwargs=kwargs
+            service="nornir",
+            task="test",
+            workers=DATA.get("workers", "all"),
+            kwargs=kwargs,
         )
-        # iterate over results and log tests and task statuses 
+        # iterate over results and log tests and task statuses
         for worker, worker_results in ret.items():
             for result in worker_results["results"]:
                 host = result["host"]
@@ -218,7 +221,7 @@ class NorFabRobot:
                     commands_output[host][result["name"]] = result["result"]
         # clear global state to prep for next test
         clean_global_data()
-    
+
         tests_results_html_table = TabulateFormatter(
             tests_results,
             tabulate={"tablefmt": "html"},
@@ -234,7 +237,7 @@ class NorFabRobot:
                 "exception",
             ],
         )
-    
+
         tests_results_csv_table = [
             f'''"{i['worker']}","{i['host']}","{i['name']}","{i['result']}","{i['failed']}","{i['task']}","{i['test']}","{i['criteria']}","{i['exception']}"'''
             for i in tests_results
@@ -244,7 +247,7 @@ class NorFabRobot:
             '"worker","host","name","result","failed","task","test","criteria","exception"',
         )
         tests_results_csv_table = "\n".join(tests_results_csv_table)
-    
+
         # form nested HTML of commands output
         devices_output_html = []
         for host in sorted(commands_output.keys()):
@@ -257,7 +260,7 @@ class NorFabRobot:
             devices_output_html.append(
                 f'<p><details><summary>{host} ({len(commands_output_html)} commands)</summary><p>{"".join(commands_output_html)}</p></details></p>'
             )
-    
+
         # form nested HTML for devices tes suite
         devices_test_suite = []
         for worker, worker_results in ret.items():
@@ -266,7 +269,7 @@ class NorFabRobot:
                 devices_test_suite.append(
                     f'<p><details><summary>{host} ({len(suite_content)} tests)</summary><p style="margin-left:20px;">{yaml.dump(suite_content, default_flow_style=False)}</p></details></p>'
                 )
-                
+
         logger.info(
             f"<details><summary>Workers results</summary>{pprint.pformat(ret)}</details>",
             html=True,
@@ -295,7 +298,7 @@ class NorFabRobot:
             ),
             html=True,
         )
-    
+
         # raise if has errors
         if has_errors:
             raise ContinuableFailure("Tests failed")

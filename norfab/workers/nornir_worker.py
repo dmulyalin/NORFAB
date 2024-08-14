@@ -64,7 +64,7 @@ class NornirWorker(NFPWorker):
         super().__init__(broker, service, worker_name, exit_event, log_level)
         self.init_done_event = init_done_event
         self.tf_base_path = os.path.join(self.base_dir, "tf")
-        
+
         # get inventory from broker
         self.inventory = self.load_inventory()
 
@@ -626,7 +626,7 @@ class NornirWorker(NFPWorker):
             patterns to filter tests' by name, subset argument ignored by dry run
         :param failed_only: if True returns test results for failed tests only
         :param remove_tasks: if False results will include other tasks output
-        :param return_tests_suite: if True returns rendered per-host tests suite 
+        :param return_tests_suite: if True returns rendered per-host tests suite
             content in addition to test results using dictionary with ``results``
             and ``suite`` keys
         """
@@ -695,7 +695,7 @@ class NornirWorker(NFPWorker):
         # save per-host tests suite content before mutating it
         if return_tests_suite is True:
             return_suite = copy.deepcopy(tests)
-            
+
         # run task
         log.debug(f"{self.name} - running test '{suite}', is dry run - '{dry_run}'")
         if dry_run is True:

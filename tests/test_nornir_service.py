@@ -225,7 +225,7 @@ class TestNornirCli:
     def test_commands_with_tf_processor(self, nfclient):
         pass
 
-    @pytest.mark.skip(reason="TBD")      
+    @pytest.mark.skip(reason="TBD")
     def test_commands_with_diff_processor(self, nfclient):
         pass
 

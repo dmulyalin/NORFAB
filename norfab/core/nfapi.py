@@ -215,7 +215,6 @@ class NorFab:
         if self.broker:
             self.broker.join()
 
-
     def make_client(self, broker_endpoint: str = None) -> NFPClient:
         """
         Make an instance of NorFab client

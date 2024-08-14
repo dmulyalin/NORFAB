@@ -173,7 +173,8 @@ class NornirCommonArgs(BaseModel):
         None,
         description="File version number to diff, default is 1 (last)",
     )
-    
+
+
 class EnumTableTypes(str, Enum):
     table_brief = "brief"
     table_terse = "terse"

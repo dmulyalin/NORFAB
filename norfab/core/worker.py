@@ -233,7 +233,7 @@ class NFPWorker:
         )  # used for keepalives to protect socket object
         self.base_dir = f"__norfab__/files/worker/{self.name}/"
         self.base_dir_jobs = os.path.join(self.base_dir, "jobs")
-        
+
         self.ctx = zmq.Context()
         self.poller = zmq.Poller()
         self.reconnect_to_broker()
