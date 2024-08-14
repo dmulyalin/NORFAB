@@ -45,23 +45,23 @@ def loader(filename):
             return pickle.load(f)
 
 
-def request_filename(suuid: Union[str, bytes], base_dir: str):
+def request_filename(suuid: Union[str, bytes], base_dir_jobs: str):
     """Returns freshly allocated request filename for given UUID str"""
     suuid = suuid.decode("utf-8") if isinstance(suuid, bytes) else suuid
-    return os.path.join(base_dir, f"{suuid}.req")
+    return os.path.join(base_dir_jobs, f"{suuid}.req")
 
 
-def reply_filename(suuid: Union[str, bytes], base_dir: str):
+def reply_filename(suuid: Union[str, bytes], base_dir_jobs: str):
     """Returns freshly allocated reply filename for given UUID str"""
     suuid = suuid.decode("utf-8") if isinstance(suuid, bytes) else suuid
-    return os.path.join(base_dir, f"{suuid}.rep")
+    return os.path.join(base_dir_jobs, f"{suuid}.rep")
 
 
-def _post(worker, post_queue, queue_filename, destroy_event, base_dir):
+def _post(worker, post_queue, queue_filename, destroy_event, base_dir_jobs):
     """Thread to receive POST requests and save them to hard disk"""
     # Ensure message directory exists
-    if not os.path.exists(base_dir):
-        os.mkdir(base_dir)
+    if not os.path.exists(base_dir_jobs):
+        os.mkdir(base_dir_jobs)
 
     while not destroy_event.is_set():
         try:
@@ -71,11 +71,11 @@ def _post(worker, post_queue, queue_filename, destroy_event, base_dir):
         timestamp = time.ctime()
         client_address = work[0]
         suuid = work[2]
-        filename = request_filename(suuid, base_dir)
+        filename = request_filename(suuid, base_dir_jobs)
         dumper(work, filename)
 
         # write reply for this job indicating it is pending
-        filename = reply_filename(suuid, base_dir)
+        filename = reply_filename(suuid, base_dir_jobs)
         dumper(
             [
                 client_address,
@@ -126,7 +126,7 @@ def _post(worker, post_queue, queue_filename, destroy_event, base_dir):
         post_queue.task_done()
 
 
-def _get(worker, get_queue, destroy_event, base_dir):
+def _get(worker, get_queue, destroy_event, base_dir_jobs):
     """Thread to receive GET requests and retrieve results from the hard disk"""
     while not destroy_event.is_set():
         try:
@@ -136,7 +136,7 @@ def _get(worker, get_queue, destroy_event, base_dir):
 
         client_address = work[0]
         suuid = work[2]
-        rep_filename = reply_filename(suuid, base_dir)
+        rep_filename = reply_filename(suuid, base_dir_jobs)
 
         if os.path.exists(rep_filename):
             reply = loader(rep_filename)
@@ -161,7 +161,7 @@ def _get(worker, get_queue, destroy_event, base_dir):
         get_queue.task_done()
 
 
-def close(delete_queue, queue_filename, destroy_event, base_dir):
+def close(delete_queue, queue_filename, destroy_event, base_dir_jobs):
     pass
 
 
@@ -232,7 +232,8 @@ class NFPWorker:
             threading.Lock()
         )  # used for keepalives to protect socket object
         self.base_dir = f"__norfab__/files/worker/{self.name}/"
-
+        self.base_dir_jobs = os.path.join(self.base_dir, "jobs")
+        
         self.ctx = zmq.Context()
         self.poller = zmq.Poller()
         self.reconnect_to_broker()
@@ -249,12 +250,13 @@ class NFPWorker:
 
         # create queue file
         os.makedirs(self.base_dir, exist_ok=True)
-        self.queue_filename = os.path.join(self.base_dir, f"{self.name}.queue.txt")
+        os.makedirs(self.base_dir_jobs, exist_ok=True)
+        self.queue_filename = os.path.join(self.base_dir_jobs, f"{self.name}.queue.txt")
         if not os.path.exists(self.queue_filename):
             with open(self.queue_filename, "w") as f:
                 pass
         self.queue_done_filename = os.path.join(
-            self.base_dir, f"{self.name}.queue.done.txt"
+            self.base_dir_jobs, f"{self.name}.queue.done.txt"
         )
         if not os.path.exists(self.queue_done_filename):
             with open(self.queue_done_filename, "w") as f:
@@ -376,7 +378,7 @@ class NFPWorker:
                 self.post_queue,
                 self.queue_filename,
                 self.destroy_event,
-                self.base_dir,
+                self.base_dir_jobs,
             ),
         )
         self.request_thread.start()
@@ -384,7 +386,7 @@ class NFPWorker:
             target=_get,
             daemon=True,
             name=f"{self.name}_get_thread",
-            args=(self, self.get_queue, self.destroy_event, self.base_dir),
+            args=(self, self.get_queue, self.destroy_event, self.base_dir_jobs),
         )
         self.reply_thread.start()
         self.close_thread = threading.Thread(
@@ -395,7 +397,7 @@ class NFPWorker:
                 self.delete_queue,
                 self.queue_filename,
                 self.destroy_event,
-                self.base_dir,
+                self.base_dir_jobs,
             ),
         )
         self.close_thread.start()
@@ -431,7 +433,7 @@ class NFPWorker:
             log.debug(f"{self.name} - processing request {suuid}")
 
             client_address, empty, juuid, data = loader(
-                request_filename(suuid, self.base_dir)
+                request_filename(suuid, self.base_dir_jobs)
             )
 
             data = json.loads(data)
@@ -466,7 +468,7 @@ class NFPWorker:
                     b"200",
                     json.dumps({self.name: reply}).encode("utf-8"),
                 ],
-                reply_filename(suuid, self.base_dir),
+                reply_filename(suuid, self.base_dir_jobs),
             )
 
             # mark job entry as processed - remove from queue file and save into queue done file

@@ -1,5 +1,5 @@
 *** Settings ***
-Library    norfab.clients.NorFabRobot
+Library    norfab.clients.robot_client.NorFabRobot
 
 *** Test Cases ***
 Run Tests

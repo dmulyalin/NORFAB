@@ -13,6 +13,7 @@ import importlib.metadata
 import yaml
 import time
 import copy
+import os
 
 from jinja2 import Environment
 from norfab.core.worker import NFPWorker
@@ -62,7 +63,8 @@ class NornirWorker(NFPWorker):
     ):
         super().__init__(broker, service, worker_name, exit_event, log_level)
         self.init_done_event = init_done_event
-
+        self.tf_base_path = os.path.join(self.base_dir, "tf")
+        
         # get inventory from broker
         self.inventory = self.load_inventory()
 
@@ -164,7 +166,7 @@ class NornirWorker(NFPWorker):
         tf = kwargs.pop("tf", None)  # to file
         tf_skip_failed = kwargs.pop("tf_skip_failed", False)  # to file
         diff = kwargs.pop("diff", "")  # diff processor
-        last = kwargs.pop("last", 1) if diff else None  # diff processor
+        diff_last = kwargs.pop("diff_last", 1) if diff else None  # diff processor
         dp = kwargs.pop("dp", [])  # data processor
         xml_flake = kwargs.pop("xml_flake", "")  # data processor xml_flake function
         match = kwargs.pop("match", "")  # data processor match function
@@ -243,9 +245,9 @@ class NornirWorker(NFPWorker):
             processors.append(
                 DiffProcessor(
                     diff=diff,
-                    last=int(last),
-                    base_url=nornir_data["files_base_path"],
-                    index=nornir_data["stats"]["proxy_minion_id"],
+                    last=int(diff_last),
+                    base_url=self.tf_base_path,
+                    index=self.name,
                 )
             )
         # append ToFileProcessor as the last one in the sequence
@@ -253,11 +255,11 @@ class NornirWorker(NFPWorker):
             processors.append(
                 ToFileProcessor(
                     tf=tf,
-                    base_url=nornir_data["files_base_path"],
-                    index=nornir_data["stats"]["proxy_minion_id"],
-                    max_files=nornir_data["files_max_count"],
+                    base_url=self.tf_base_path,
+                    index=self.name,
+                    max_files=1000,
                     skip_failed=tf_skip_failed,
-                    tf_index_lock=nornir_data["tf_index_lock"],
+                    tf_index_lock=None,
                 )
             )
 

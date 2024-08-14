@@ -221,6 +221,18 @@ class TestNornirCli:
                     ]
                 ), f"{worker}:{host} output is wrong"
 
+    @pytest.mark.skip(reason="TBD")
+    def test_commands_with_tf_processor(self, nfclient):
+        pass
+
+    @pytest.mark.skip(reason="TBD")      
+    def test_commands_with_diff_processor(self, nfclient):
+        pass
+
+    @pytest.mark.skip(reason="TBD")
+    def test_commands_with_diff_processor_diff_last(self, nfclient):
+        pass
+
 
 class TestNornirTask:
     def test_task_nornir_salt_nr_test(self, nfclient):

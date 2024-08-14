@@ -53,28 +53,12 @@ import pprint
 import yaml
 
 from norfab.core.nfapi import NorFab
+from robot.api.deco import keyword
+from robot.api import ContinuableFailure, FatalError, Error
+from robot.api import logger
+from nornir_salt.plugins.functions import TabulateFormatter
 
-try:
-    from robot.api.deco import keyword, library
-    from robot.api import ContinuableFailure, FatalError, Error
-    from robot.api import logger
-    
-    log = logging.getLogger(__name__)
-    
-    HAS_ROBOT = True
-except:
-    log.error("NorFab ROBOT - failed importing ROBOT libraries")
-    HAS_ROBOT = False
-
-try:
-    from nornir_salt.plugins.functions import TabulateFormatter
-
-    HAS_NORNIR = True
-except ImportError:
-    log.error("NorFab ROBOT - failed importing Nornir-Salt libraries")
-    HAS_NORNIR = False
-    
-__version__ = "0.1"
+log = logging.getLogger(__name__)
 
 # Global vars
 DATA = {}
@@ -82,14 +66,15 @@ def clean_global_data():
     global DATA
     DATA.clear()
 
-@library(listener='SELF')
 class NorFabRobot:
-    ROBOT_LIBRARY_SCOPE = 'SUITE'
+    ROBOT_LIBRARY_SCOPE = 'GLOBAL'
     ROBOT_AUTO_KEYWORDS = False
     ROBOT_LIBRARY_DOC_FORMAT = 'reST' # reStructuredText
     ROBOT_LISTENER_API_VERSION = 3
     
-    def __init__(self, inventory="./inventory.yaml", workers=None, start_broker=None, log_level="WARNING"):            
+    def __init__(self, inventory="./inventory.yaml", workers=None, start_broker=None, log_level="WARNING"):     
+        self.ROBOT_LIBRARY_LISTENER = self
+        
         # initiate NorFab        
         self.nf = NorFab(inventory=inventory, log_level=log_level)
         self.nf.start(start_broker=start_broker, workers=workers)
@@ -99,8 +84,9 @@ class NorFabRobot:
         pass
         
     def end_suite(self, data, result):
+        print(f"NorFab ROBOT - Exiting")
         self.nf.destroy()
-        print("!!!!!!!!!! norfab destroyed")
+        
         
     @keyword("Service")
     def workers(self, *args, **kwargs):

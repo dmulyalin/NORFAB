@@ -30,7 +30,7 @@ topology: # (6)!
 5.  Worker definition to map inventory file to a specific worker that has name ``nornir-worker-1``
 6.  Topology section to define what components to run
 7.  Start broker process
-8.  Lit of workers names to start processes for
+8.  List of workers names to start processes for
 
 In this example we are working with Nornir service.
 
@@ -98,7 +98,7 @@ this will start the NorFab broker process, Nornir worker process, instantiate
 NFCLI client and drop you into interactive command line shell :shell:
 
 ```
-nf#?
+nf#? # (1)!
  file      File sharing service
  netbox    Netbox service
  nornir    Nornir service
@@ -111,8 +111,11 @@ nf#show workers
  name             service  status  holdtime  keepalives tx/rx  alive (s)
  nornir-worker-1  nornir   alive   12.8      58 / 58           149
 nf#
-nf#nornir
+nf#nornir # (2)!
 nf[nornir]#?
+ cfg     Configure devices over CLI interface
+ cli     Send CLI commands to devices
+ show    Show Nornir service parameters
  task    Run Nornir task
  test    Run network tests
  end     Exit application
@@ -127,20 +130,12 @@ nf[nornir]#show hosts
          "R2"
      ]
  }
-nf[nornir]#?
- cfg     Configure devices over CLI interface
- cli     Send CLI commands to devices
- show    Show Nornir service parameters
- task    Run Nornir task
- test    Run network tests
- end     Exit application
- exit    Exit current shell
- help    Print help message
- pwd     Print current shell path
- top     Exit to top shell
 nf[nornir]# end
 Exiting...
 ```
+
+1. Question mark plus enter to print commands help
+2. Drop into Nornir Service command shell
 
 NorFab CLI supports Tab completions, question mark help together with
 sub-shells, read more about NorFab CLI and how to use it [here](norfab_cli_overview.md).

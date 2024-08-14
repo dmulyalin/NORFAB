@@ -203,6 +203,8 @@ class NorFab:
         """
         Stop NORFAB processes.
         """
+        # stop client
+        self.client.destroy()
         # stop workers
         self.workers_exit_event.set()
         while self.workers_processes:
@@ -212,8 +214,7 @@ class NorFab:
         self.broker_exit_event.set()
         if self.broker:
             self.broker.join()
-        # stop client
-        self.client.destroy()
+
 
     def make_client(self, broker_endpoint: str = None) -> NFPClient:
         """

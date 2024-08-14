@@ -99,10 +99,12 @@ class NFPClient(object):
         self.poller = zmq.Poller()
         self.reconnect_to_broker()
         self.base_dir = f"__norfab__/files/client/{self.name}/"
-
+        self.base_dir_jobs = os.path.join(self.base_dir, "jobs")
+        
         # create queue file
         os.makedirs(self.base_dir, exist_ok=True)
-        self.queue_filename = os.path.join(self.base_dir, f"{self.name}.jobsqueue.txt")
+        os.makedirs(self.base_dir_jobs, exist_ok=True)
+        self.queue_filename = os.path.join(self.base_dir_jobs, f"{self.name}.jobsqueue.txt")
         if not os.path.exists(self.queue_filename):
             with open(self.queue_filename, "w") as f:
                 pass

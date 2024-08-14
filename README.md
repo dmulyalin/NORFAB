@@ -28,7 +28,7 @@ modern network and making their life better.
 
 # Architecture
 
-**TLDR** Service Oriented Architecture (SOA)
+**TLDR** Service-Oriented Architecture (SOA)
 
 Clients communicate with broker to run the jobs, broker distributes jobs across workers comprising the service.
 

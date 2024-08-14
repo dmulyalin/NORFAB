@@ -156,8 +156,24 @@ class NornirCommonArgs(BaseModel):
         None,
         description="RetryRunner ist of connection credentials and parameters to retry",
     )
-
-
+    tf: Optional[StrictStr] = Field(
+        None,
+        description="File group name to save task results to on worker file system",
+    )
+    tf_skip_failed: Optional[StrictBool] = Field(
+        True,
+        description="Save results to file for failed tasks",
+        json_schema_extra={"presence": True},
+    )
+    diff: Optional[StrictStr] = Field(
+        None,
+        description="File group name to run the diff for",
+    )
+    diff_last: Optional[Union[StrictStr, StrictInt]] = Field(
+        None,
+        description="File version number to diff, default is 1 (last)",
+    )
+    
 class EnumTableTypes(str, Enum):
     table_brief = "brief"
     table_terse = "terse"
