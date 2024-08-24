@@ -22,16 +22,12 @@ from pydantic import (
     Field,
 )
 from typing import Union, Optional, List, Any, Dict, Callable, Tuple
+from .common import ClientRunJobArgs
 
 NFCLIENT = None  # NFCLIENT updated by parent shell
 RICHCONSOLE = Console()
 SERVICE = "netbox"
 log = logging.getLogger(__name__)
-
-# ---------------------------------------------------------------------------------------------
-# HELPER FUNCTIONS
-# ---------------------------------------------------------------------------------------------
-
 
 # ---------------------------------------------------------------------------------------------
 # COMMON MODELS
@@ -42,10 +38,6 @@ class Targeting(BaseModel):
     instance: Optional[StrictStr] = Field(
         None,
         description="Netbox instance name to target",
-    )
-    workers: Optional[StrictStr] = Field(
-        None,
-        description="Netbox workers name to target",
     )
 
     @staticmethod
@@ -70,7 +62,7 @@ class Targeting(BaseModel):
 # ---------------------------------------------------------------------------------------------
 
 
-class GrapQLCommands(Targeting):
+class GrapQLCommands(Targeting, ClientRunJobArgs):
     dry_run: Optional[StrictBool] = Field(
         None,
         description="Only return query content, do not run it",
@@ -169,7 +161,7 @@ class NetboxShowCommandsModel(Targeting):
 # ---------------------------------------------------------------------------------------------
 
 
-class GetInterfaces(Targeting):
+class GetInterfaces(Targeting, ClientRunJobArgs):
     devices: Union[StrictStr, List] = Field(
         ..., description="Devices to retrieve interface for"
     )

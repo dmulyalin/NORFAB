@@ -21,6 +21,7 @@ from pydantic import (
     root_validator,
     Field,
 )
+from .common import ClientRunJobArgs
 from typing import Union, Optional, List, Any, Dict, Callable, Tuple
 from nornir_salt.plugins.functions import TabulateFormatter
 
@@ -247,9 +248,6 @@ class filters(BaseModel):
     )
     FN: Optional[StrictBool] = Field(
         None, title="Filter Negate", description="Negate the match"
-    )
-    workers: Union[StrictStr, List[StrictStr]] = Field(
-        "all", description="Filter worker to target"
     )
     hosts: Union[StrictStr, List[StrictStr]] = Field(
         None, description="Filter hosts to target"
@@ -586,7 +584,7 @@ class NrCliPlugins(BaseModel):
     )
 
 
-class NornirCliShell(filters, TabulateTableModel, NornirCommonArgs):
+class NornirCliShell(filters, TabulateTableModel, NornirCommonArgs, ClientRunJobArgs):
     commands: Optional[Union[StrictStr, List[StrictStr]]] = Field(
         None,
         description="List of commands to collect form devices",
@@ -813,7 +811,7 @@ class NrCfgPlugins(BaseModel):
     )
 
 
-class NornirCfgShell(filters, TabulateTableModel, NornirCommonArgs):
+class NornirCfgShell(filters, TabulateTableModel, NornirCommonArgs, ClientRunJobArgs):
     cfg_dry_run: Optional[StrictBool] = Field(
         None, description="Dry run cfg function", json_schema_extra={"presence": True}
     )
@@ -879,7 +877,7 @@ class NornirCfgShell(filters, TabulateTableModel, NornirCommonArgs):
 # ---------------------------------------------------------------------------------------------
 
 
-class NornirTaskShell(filters, TabulateTableModel, NornirCommonArgs):
+class NornirTaskShell(filters, TabulateTableModel, NornirCommonArgs, ClientRunJobArgs):
     plugin: StrictStr = Field(
         None,
         description="Nornir task.plugin.name to import or nf://path/to/plugin/file.py",
@@ -938,7 +936,7 @@ class NornirTaskShell(filters, TabulateTableModel, NornirCommonArgs):
 # ---------------------------------------------------------------------------------------------
 
 
-class NornirTestShell(filters, TabulateTableModel, NornirCommonArgs):
+class NornirTestShell(filters, TabulateTableModel, NornirCommonArgs, ClientRunJobArgs):
     suite: StrictStr = Field(None, description="Nornir suite nf://path/to/file.py")
     dry_run: Optional[StrictBool] = Field(
         None,
@@ -1013,7 +1011,7 @@ class NornirTestShell(filters, TabulateTableModel, NornirCommonArgs):
 # ---------------------------------------------------------------------------------------------
 
 
-class NornirNetworkPing(filters, TabulateTableModel, NornirCommonArgs):
+class NornirNetworkPing(filters, TabulateTableModel, NornirCommonArgs, ClientRunJobArgs):
     use_host_name: StrictBool = Field(
         None,
         description="Ping host's name instead of host's hostname",
@@ -1094,7 +1092,7 @@ class NornirNetworkPing(filters, TabulateTableModel, NornirCommonArgs):
         return ret
 
 
-class NornirNetworkDns(filters, TabulateTableModel, NornirCommonArgs):
+class NornirNetworkDns(filters, TabulateTableModel, NornirCommonArgs, ClientRunJobArgs):
     use_host_name: StrictBool = Field(
         None,
         description="Ping host's name instead of host's hostname",

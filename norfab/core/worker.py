@@ -21,10 +21,71 @@ from uuid import uuid4
 from .client import NFPClient
 from .keepalives import KeepAliver
 
-from typing import Union
+from typing import Any, Callable, Dict, List, Optional, Union
 
 log = logging.getLogger(__name__)
 
+# --------------------------------------------------------------------------------------------
+# NORFAB Worker Results Object
+# --------------------------------------------------------------------------------------------
+
+class Result:
+    """
+    Result of running individual tasks.
+
+    
+    Attributes/Arguments:
+    
+    :param changed: ``True`` if the task is changing the system
+    :param diff: Diff between state of the system before/after running this task
+    :param result: Result of the task execution, see task's documentation for details
+    :param failed: Whether the execution failed or not
+    :param severity_level (logging.LEVEL): Severity level associated to the result of the execution
+    :param exception: uncaught exception thrown during the exception of the task (if any)
+    :param name: Task function name that produced the results
+    """
+
+    def __init__(
+        self,
+        result: Any = None,
+        changed: bool = False,
+        diff: str = "",
+        failed: bool = False,
+        exception: Optional[BaseException] = None,
+        name: str = "",
+        suuid: str = None,
+    ) -> None:
+        self.result = result
+        self.changed = changed
+        self.diff = diff
+        self.failed = failed
+        self.exception = exception
+        self.name = None
+        self.suuid = suuid
+        
+    def __repr__(self) -> str:
+        return '{}: "{}"'.format(self.__class__.__name__, self.name)
+
+    def __str__(self) -> str:
+        if self.exception:
+            return str(self.exception)
+
+        return str(self.result)
+        
+    def string(self):
+        return json.dumps(
+            {
+                "name": self.name,
+                "suuid": self.suuid,
+                "changed": self.changed,
+                "diff": self.diff,
+                "failed": self.failed,
+                "exception": str(self.exception),
+                "result": self.result,
+            }
+        )
+
+        
 # --------------------------------------------------------------------------------------------
 # NIRFAB worker, credits to https://rfc.zeromq.org/spec/9/
 # --------------------------------------------------------------------------------------------
@@ -446,18 +507,28 @@ class NFPWorker:
                 f"kwargs: '{kwargs}', client: '{client_address}', job uuid: '{juuid}'"
             )
 
+            result = Result(
+                name=task,
+                suuid=suuid,
+            )
+            
             # run the actual job
             try:
                 if getattr(self, task, None):
                     if callable(getattr(self, task)):
                         reply = getattr(self, task)(*args, **kwargs)
+                        result.result = reply
                     else:
                         reply = f"Worker {self.name} '{task}' not a callable function"
+                        result.result = reply
                 else:
                     reply = f"Worker {self.name} unsupported task: '{task}'"
+                    result.result = reply
             except:
+                result.exception = traceback.format_exc()
+                result.failed = True
                 reply = f"Worker experienced error:\n{traceback.format_exc()}"
-                log.exception(f"{self.name} - worker experienced error:\n")
+                log.exception(f"{self.name} - worker experienced error:\n{traceback.format_exc()}")
 
             # save job results to reply file
             dumper(
@@ -467,6 +538,7 @@ class NFPWorker:
                     suuid.encode("utf-8"),
                     b"200",
                     json.dumps({self.name: reply}).encode("utf-8"),
+                    # json.dumps({self.name: result.string()}).encode("utf-8"),
                 ],
                 reply_filename(suuid, self.base_dir_jobs),
             )

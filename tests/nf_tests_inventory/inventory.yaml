@@ -19,6 +19,10 @@ workers:
     - nornir/nornir-worker-5.yaml
   netbox-worker-1.*:
     - netbox/common.yaml  
+  pyats-*:
+    - pyats/common.yaml
+  pyats-worker-1*:
+    - pyats/pyats-worker-1.yaml
     
 # list what entities we want to start on this node
 topology:
@@ -34,3 +38,4 @@ topology:
         depends_on: 
           - netbox-worker-1.1
           - netbox-worker-1.2
+    # - pyats-worker-1

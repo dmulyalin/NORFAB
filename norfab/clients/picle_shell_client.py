@@ -118,9 +118,6 @@ class ShowCommandsModel(BaseModel):
 class ListFilesModel(BaseModel):
     url: StrictStr = Field("nf://", description="Directory to list content for")
 
-    class PicleConfig:
-        pipe = PipeFunctionsModel
-
     @staticmethod
     def run(*args, **kwargs):
         reply = NFCLIENT.get(
@@ -129,6 +126,7 @@ class ListFilesModel(BaseModel):
         return reply
 
     class PicleConfig:
+        pipe = PipeFunctionsModel
         outputter = Outputters.outputter_rich_json
 
 
@@ -150,10 +148,7 @@ class CopyFileModel(BaseModel):
 
 class ListFileDetails(BaseModel):
     url: StrictStr = Field("nf://", description="File location")
-
-    class PicleConfig:
-        pipe = PipeFunctionsModel
-
+       
     @staticmethod
     def run(*args, **kwargs):
         reply = NFCLIENT.get(
@@ -162,6 +157,7 @@ class ListFileDetails(BaseModel):
         return reply
 
     class PicleConfig:
+        pipe = PipeFunctionsModel
         outputter = Outputters.outputter_rich_json
 
 

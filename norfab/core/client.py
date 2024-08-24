@@ -472,7 +472,7 @@ class NFPClient(object):
         read: bool = False,
     ):
         """
-        Function to download file from File Sharing Service on broker.
+        Function to download file from Broker File Sharing Service.
 
         :param url: (str), path to file relative to ``base_dir``
         :param destination: (str), if provided destination to save file,
@@ -593,7 +593,7 @@ class NFPClient(object):
         args: list = None,
         kwargs: dict = None,
         workers: str = "all",
-        timeout: int = 60,
+        job_timeout: int = 60,
     ):
         """
         Run job and return results produced by workers.
@@ -607,12 +607,12 @@ class NFPClient(object):
         uuid = uuid4().hex
 
         # POST job to workers
-        post_result = self.post(service, task, args, kwargs, workers, uuid, timeout)
+        post_result = self.post(service, task, args, kwargs, workers, uuid, job_timeout)
 
         # GET job results
         if post_result["status"] == "200":
             get_results = self.get(
-                service, task, [], {}, post_result["workers"], uuid, timeout
+                service, task, [], {}, post_result["workers"], uuid, job_timeout
             )
             return get_results["results"]
         else:
@@ -628,7 +628,7 @@ class NFPClient(object):
         args: list = None,
         kwargs: dict = None,
         workers: str = "all",
-        timeout: int = 60,
+        job_timeout: int = 60,
     ):
         """
         Iter run_job allows to return job results from workers progressively
@@ -645,12 +645,12 @@ class NFPClient(object):
         uuid = uuid4().hex
 
         # POST job to workers
-        post_result = self.post(service, task, args, kwargs, workers, uuid, timeout)
+        post_result = self.post(service, task, args, kwargs, workers, uuid, job_timeout)
         yield post_result
 
         # GET job results
         for result in self.get_iter(
-            service, task, [], {}, post_result["workers"], uuid, timeout
+            service, task, [], {}, post_result["workers"], uuid, job_timeout
         ):
             yield result
 

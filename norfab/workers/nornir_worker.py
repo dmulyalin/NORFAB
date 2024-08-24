@@ -49,7 +49,7 @@ class NornirWorker(NFPWorker):
     :param worker_name: name of this worker
     :param exit_event: if set, worker need to stop/exit
     :param init_done_event: event to set when worker done initializing
-    :param log_keve: logging level of this worker
+    :param log_level: logging level of this worker
     """
 
     def __init__(
@@ -144,7 +144,7 @@ class NornirWorker(NFPWorker):
         # merge Netbox inventory into Nornir inventory
         worker, data = nb_inventory_data.popitem()
         if data.get("hosts"):
-            merge_recursively(self.inventory, data)
+            merge_recursively(self.inventory, data["hosts"])
         else:
             log.warning(
                 f"{self.name} - '{kwargs.get('instance', 'default')}' Netbox "

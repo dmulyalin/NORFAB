@@ -1,0 +1,24 @@
+devices: 
+  ceos-spine-1:
+    connections:
+      cli:
+        ip: 192.168.4.130
+        port: 2200
+        protocol: ssh
+    credentials:
+      default:
+        username: admin
+        password: admin
+    os: eos
+  ceos-spine-1:
+    connections:
+      cli:
+        ip: 192.168.4.130
+        port: 2201
+        protocol: ssh
+    credentials:
+      default:
+        username: admin
+        password: admin
+    os: eos
+ 
