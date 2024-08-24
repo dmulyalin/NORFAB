@@ -59,7 +59,7 @@ import importlib.metadata
 import requests
 import copy
 
-from norfab.core.worker import NFPWorker
+from norfab.core.worker import NFPWorker, Result
 from typing import Union
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 
@@ -216,10 +216,12 @@ class NetboxWorker(NFPWorker):
     # Netbox Service Functions that exposed for calling
     # ----------------------------------------------------------------------
 
-    def get_netbox_inventory(self):
-        return dict(self.inventory)
+    def get_netbox_inventory(self) -> Result:
+        return Result(
+            name=f"{self.name}:get_netbox_inventory", result=dict(self.inventory)
+        )
 
-    def get_netbox_version(self, **kwargs):
+    def get_netbox_version(self, **kwargs) -> Result:
         libs = {
             "pynetbox": "",
             "requests": "",
@@ -233,31 +235,40 @@ class NetboxWorker(NFPWorker):
             except importlib.metadata.PackageNotFoundError:
                 pass
 
-        return libs
+        return Result(name=f"{self.name}:get_netbox_version", result=libs)
 
-    def get_compatibility(self):
-        ret = {}
+    def get_netbox_status(self, instance=None) -> Result:
+        ret = Result(result={}, name=f"{self.name}:get_netbox_status")
+        if instance:
+            ret.result[instance] = self._query_netbox_status(instance)
+        else:
+            for name in self.inventory["instances"].keys():
+                ret.result[name] = self._query_netbox_status(name)
+        return ret
+
+    def get_compatibility(self) -> Result:
+        ret = Result(name=f"{self.name}:get_compatibility", result={})
         netbox_status = self.get_netbox_status()
-        for instance, params in netbox_status.items():
+        for instance, params in netbox_status.result.items():
             if params["status"] is not True:
                 log.warning(f"{self.name} - {instance} Netbox instance not reachable")
-                ret[instance] = None
+                ret.result[instance] = None
             else:
                 self.nb_version = tuple(
                     [int(i) for i in params["netbox-version"].split(".")]
                 )
                 if self.nb_version[0] == 3:  # check Netbox 3 compatibility
-                    ret[instance] = self.nb_version >= self.compatible_ge_v3
+                    ret.result[instance] = self.nb_version >= self.compatible_ge_v3
                 elif self.nb_version[0] == 4:  # check Netbox 4 compatibility
-                    ret[instance] = self.nb_version >= self.compatible_ge_v4
+                    ret.result[instance] = self.nb_version >= self.compatible_ge_v4
 
         return ret
 
     def _verify_compatibility(self):
         compatibility = self.get_compatibility()
-        if not all(i is not False for i in compatibility.values()):
+        if not all(i is not False for i in compatibility.result.values()):
             raise RuntimeError(
-                f"{self.name} - not all Netbox instances are compatible: {compatibility}"
+                f"{self.name} - not all Netbox instances are compatible: {compatibility.result}"
             )
 
     def _query_netbox_status(self, name):
@@ -284,15 +295,6 @@ class NetboxWorker(NFPWorker):
             log.error(msg)
             ret["error"] = msg
 
-        return ret
-
-    def get_netbox_status(self, instance=None):
-        ret = {}
-        if instance:
-            ret[instance] = self._query_netbox_status(instance)
-        else:
-            for name in self.inventory["instances"].keys():
-                ret[name] = self._query_netbox_status(name)
         return ret
 
     def _get_instance_params(self, name: str) -> dict:
@@ -336,7 +338,7 @@ class NetboxWorker(NFPWorker):
         fields: list = None,
         queries: dict = None,
         query_string: str = None,
-    ):
+    ) -> Result:
         """
         Function to query Netbox v4 GraphQL API
 
@@ -344,6 +346,7 @@ class NetboxWorker(NFPWorker):
         :param dry_run: only return query content, do not run it
         """
         nb_params = self._get_instance_params(instance)
+        ret = Result(name=f"{self.name}:graphql")
 
         # form graphql query(ies) payload
         if queries:
@@ -373,7 +376,7 @@ class NetboxWorker(NFPWorker):
 
         # form and return dry run response
         if dry_run:
-            return {
+            ret.result = {
                 "url": f"{nb_params['url']}/graphql/",
                 "data": payload,
                 "verify": nb_params.get("ssl_verify", True),
@@ -383,6 +386,7 @@ class NetboxWorker(NFPWorker):
                     "Authorization": f"Token ...{nb_params['token'][-6:]}",
                 },
             }
+            return ret
 
         # send request to Netbox GraphQL API
         log.debug(
@@ -402,27 +406,26 @@ class NetboxWorker(NFPWorker):
         try:
             req.raise_for_status()
         except Exception as e:
-            msg = (
+            raise Exception(
                 f"{self.name} -  Netbox GraphQL query failed, query '{query}', "
                 f"URL '{req.url}', status-code '{req.status_code}', reason '{req.reason}', "
                 f"response content '{req.text}'"
             )
-            log.error(msg)
-            return msg
 
         # return results
         reply = req.json()
         if reply.get("errors"):
-            log.error(
-                f"{self.name} - GrapQL query error '{reply['errors']}', query '{payload}'"
-            )
+            msg = f"{self.name} - GrapQL query error '{reply['errors']}', query '{payload}'"
+            log.error(msg)
+            ret.errors.append(msg)
             if reply.get("data"):
-                return reply["data"]  # at least return some data
-            return reply
+                ret.result = reply["data"]  # at least return some data
         elif queries or query_string:
-            return reply["data"]
+            ret.result = reply["data"]
         else:
-            return reply["data"][obj]
+            ret.result = reply["data"][obj]
+
+        return ret
 
     def rest(
         self, instance: str = None, method: str = "get", api: str = "", **kwargs
@@ -459,7 +462,7 @@ class NetboxWorker(NFPWorker):
         instance: str = None,
         dry_run: bool = False,
         devices: list = None,
-    ):
+    ) -> Result:
         """
         Function to retrieve devices data from Netbox using GraphQL API.
 
@@ -469,10 +472,9 @@ class NetboxWorker(NFPWorker):
         :param devices: list of device names to query data for
         :return: dictionary keyed by device name with device data
         """
+        ret = Result(name=f"{self.name}:get_devices", result={})
         instance = instance or self.default_instance
-        ret = {}
         filters = filters or []
-        nb_status = self.get_netbox_status(instance)
 
         device_fields = [
             "name",
@@ -520,26 +522,23 @@ class NetboxWorker(NFPWorker):
             }
 
         # send queries
-        devices_query_result = self.graphql(
-            queries=queries, instance=instance, dry_run=dry_run
-        )
+        query_result = self.graphql(queries=queries, instance=instance, dry_run=dry_run)
+        devices_data = query_result.result
 
         # return dry run result
         if dry_run:
-            return devices_query_result
+            return query_result
 
         # check for errors
-        if devices_query_result.get("errors"):
-            log.error(
-                f"{self.name} - get devices query failed with errors: {devices_query_result['errors']}"
-            )
-            return ret
+        if query_result.errors:
+            msg = f"{self.name} - get devices query failed with errors:\n{query_result.errors}"
+            raise Exception(msg)
 
         # process devices
-        for devices_list in devices_query_result.values():
+        for devices_list in devices_data.values():
             for device in devices_list:
-                if device["name"] not in ret:
-                    ret[device.pop("name")] = device
+                if device["name"] not in ret.result:
+                    ret.result[device.pop("name")] = device
 
         return ret
 
@@ -550,7 +549,7 @@ class NetboxWorker(NFPWorker):
         ip_addresses: bool = False,
         inventory_items: bool = False,
         dry_run: bool = False,
-    ):
+    ) -> Result:
         """
         Function to retrieve device interfaces from Netbox using GraphQL API.
 
@@ -561,8 +560,10 @@ class NetboxWorker(NFPWorker):
         :param dry_run: only return query content, do not run it
         :return: dictionary keyed by device name with interface details
         """
-        # form final result dictionary
-        ret = {d: {} for d in devices}
+        # form final result object
+        ret = Result(
+            name=f"{self.name}:get_interfaces", result={d: {} for d in devices}
+        )
         intf_fields = [
             "name",
             "enabled",
@@ -625,21 +626,20 @@ class NetboxWorker(NFPWorker):
                 "fields": inv_fields,
             }
 
-        interfaces_data = self.graphql(
-            instance=instance, queries=queries, dry_run=dry_run
-        )
+        query_result = self.graphql(instance=instance, queries=queries, dry_run=dry_run)
 
         # return dry run result
         if dry_run:
-            return interfaces_data
+            return query_result
+
+        interfaces_data = query_result.result
 
         # exit if no Interfaces returned
         if not interfaces_data.get("interfaces"):
-            log.error(
+            raise Exception(
                 f"{self.name} - no interfaces data in '{interfaces_data}' returned by '{instance}' "
                 f"for devices {', '.join(devices)}"
             )
-            return ret
 
         # process query results
         interfaces = interfaces_data.pop("interfaces")
@@ -667,8 +667,8 @@ class NetboxWorker(NFPWorker):
             _ = intf.pop("id")
             device_name = intf.pop("device").pop("name")
             intf_name = intf.pop("name")
-            if device_name in ret:  # Netbox issue #16299
-                ret[device_name][intf_name] = intf
+            if device_name in ret.result:  # Netbox issue #16299
+                ret.result[device_name][intf_name] = intf
 
         return ret
 
@@ -679,7 +679,7 @@ class NetboxWorker(NFPWorker):
         dry_run: bool = False,
         cables: bool = False,
         circuits: bool = False,
-    ):
+    ) -> Result:
         """
         Function to retrieve device connections data from Netbox using GraphQL API.
 
@@ -691,7 +691,9 @@ class NetboxWorker(NFPWorker):
         :return: dictionary keyed by device name with connections data
         """
         # form final result dictionary
-        connections_dict = {d: {} for d in devices}
+        ret = Result(
+            name=f"{self.name}:get_connections", result={d: {} for d in devices}
+        )
 
         # form lists of fields to request from netbox
         cable_fields = """
@@ -815,11 +817,13 @@ class NetboxWorker(NFPWorker):
         }
 
         # retrieve full list of devices interface with all cables
-        all_ports = self.graphql(queries=queries, instance=instance, dry_run=dry_run)
+        query_result = self.graphql(queries=queries, instance=instance, dry_run=dry_run)
 
         # return dry run result
         if dry_run:
-            return all_ports
+            return query_result
+
+        all_ports = query_result.result
 
         # extract interfaces
         for port_type, ports in all_ports.items():
@@ -873,9 +877,9 @@ class NetboxWorker(NFPWorker):
                         cable["peer_interface"] = [i["name"] for i in link_peers]
                     connection["cable"] = cable
 
-                connections_dict[device_name][port_name] = connection
+                ret.result[device_name][port_name] = connection
 
-        return connections_dict
+        return ret
 
     def get_circuits(
         self,
@@ -891,8 +895,8 @@ class NetboxWorker(NFPWorker):
         :param dry_run: only return query content, do not run it
         :return: dictionary keyed by device name with circuits data
         """
-        # form final result dictionary
-        circuits_dict = {d: {} for d in devices}
+        # form final result object
+        ret = Result(name=f"{self.name}:get_circuits", result={d: {} for d in devices})
 
         device_sites_fields = ["site {slug}"]
         circuit_fields = [
@@ -923,15 +927,15 @@ class NetboxWorker(NFPWorker):
             fields=device_sites_fields,
             instance=instance,
         )
-        sites = list(set([i["site"]["slug"] for i in device_sites]))
+        sites = list(set([i["site"]["slug"] for i in device_sites.result]))
 
         # retrieve all circuits for devices' sites
         if self.nb_version[0] == 4:
-            slist = '["{sl}"]'.format(sl='", "'.join(sites))
-            circuits_filters_dict = {"name": f"{{in_list: {slist}}}"}
+            circuits_filters_dict = {"site": sites}
         elif self.nb_version[0] == 3:
             circuits_filters_dict = {"site": sites}
-        all_circuits = self.graphql(
+
+        query_result = self.graphql(
             obj="circuit_list",
             filters=circuits_filters_dict,
             fields=circuit_fields,
@@ -941,7 +945,9 @@ class NetboxWorker(NFPWorker):
 
         # return dry run result
         if dry_run is True:
-            return all_circuits
+            return query_result
+
+        all_circuits = query_result.result
 
         # iterate over circuits and map them to devices
         for circuit in all_circuits:
@@ -1005,35 +1011,23 @@ class NetboxWorker(NFPWorker):
 
             # map path ends to devices
             if end_a["device"] and end_a["device"] in devices:
-                circuits_dict[end_a["device"]][cid] = copy.deepcopy(circuit)
-                circuits_dict[end_a["device"]][cid]["interface"] = end_a["name"]
+                ret.result[end_a["device"]][cid] = copy.deepcopy(circuit)
+                ret.result[end_a["device"]][cid]["interface"] = end_a["name"]
                 if end_z["device"]:
-                    circuits_dict[end_a["device"]][cid]["remote_device"] = end_z[
-                        "device"
-                    ]
-                    circuits_dict[end_a["device"]][cid]["remote_interface"] = end_z[
-                        "name"
-                    ]
+                    ret.result[end_a["device"]][cid]["remote_device"] = end_z["device"]
+                    ret.result[end_a["device"]][cid]["remote_interface"] = end_z["name"]
                 elif end_z["provider_network"]:
-                    circuits_dict[end_a["device"]][cid]["provider_network"] = end_z[
-                        "name"
-                    ]
+                    ret.result[end_a["device"]][cid]["provider_network"] = end_z["name"]
             if end_z["device"] and end_z["device"] in devices:
-                circuits_dict[end_z["device"]][cid] = copy.deepcopy(circuit)
-                circuits_dict[end_z["device"]][cid]["interface"] = end_z["name"]
+                ret.result[end_z["device"]][cid] = copy.deepcopy(circuit)
+                ret.result[end_z["device"]][cid]["interface"] = end_z["name"]
                 if end_a["device"]:
-                    circuits_dict[end_z["device"]][cid]["remote_device"] = end_a[
-                        "device"
-                    ]
-                    circuits_dict[end_z["device"]][cid]["remote_interface"] = end_a[
-                        "name"
-                    ]
+                    ret.result[end_z["device"]][cid]["remote_device"] = end_a["device"]
+                    ret.result[end_z["device"]][cid]["remote_interface"] = end_a["name"]
                 elif end_a["provider_network"]:
-                    circuits_dict[end_z["device"]][cid]["provider_network"] = end_a[
-                        "name"
-                    ]
+                    ret.result[end_z["device"]][cid]["provider_network"] = end_a["name"]
 
-        return circuits_dict
+        return ret
 
     def get_nornir_inventory(
         self,
@@ -1045,17 +1039,18 @@ class NetboxWorker(NFPWorker):
         circuits: Union[dict, bool] = False,
         nbdata: bool = False,
         primary_ip: str = "ip4",
-    ):
+    ) -> Result:
         """
         Method to query Netbox and return devices data in Nornir inventory format.
         """
         hosts = {}
         inventory = {"hosts": hosts}
+        ret = Result(name=f"{self.name}:get_nornir_inventory", result=inventory)
 
         # check Netbox status
         netbox_status = self.get_netbox_status(instance=instance)
-        if netbox_status[instance or self.default_instance]["status"] is False:
-            return inventory
+        if netbox_status.result[instance or self.default_instance]["status"] is False:
+            return ret
 
         # retrieve devices data
         nb_devices = self.get_devices(
@@ -1063,7 +1058,7 @@ class NetboxWorker(NFPWorker):
         )
 
         # form Nornir hosts inventory
-        for device_name, device in nb_devices.items():
+        for device_name, device in nb_devices.result.items():
             host = device["config_context"].pop("nornir", {})
             host.setdefault("data", {})
             name = host.pop("name", device_name)
@@ -1098,8 +1093,8 @@ class NetboxWorker(NFPWorker):
                 devices=list(hosts), instance=instance, **kwargs
             )
             # save interfaces data to hosts' inventory
-            while nb_interfaces:
-                device, device_interfaces = nb_interfaces.popitem()
+            while nb_interfaces.result:
+                device, device_interfaces = nb_interfaces.result.popitem()
                 hosts[device]["data"]["interfaces"] = device_interfaces
 
         # add connections data
@@ -1114,8 +1109,8 @@ class NetboxWorker(NFPWorker):
                 devices=list(hosts), instance=instance, **kwargs
             )
             # save connections data to hosts' inventory
-            while nb_connections:
-                device, device_connections = nb_connections.popitem()
+            while nb_connections.result:
+                device, device_connections = nb_connections.result.popitem()
                 hosts[device]["data"]["connections"] = device_connections
 
         # add circuits data
@@ -1130,11 +1125,11 @@ class NetboxWorker(NFPWorker):
                 devices=list(hosts), instance=instance, **kwargs
             )
             # save circuits data to hosts' inventory
-            while nb_circuits:
-                device, device_circuits = nb_circuits.popitem()
+            while nb_circuits.result:
+                device, device_circuits = nb_circuits.result.popitem()
                 hosts[device]["data"]["circuits"] = device_circuits
 
-        return inventory
+        return ret
 
     def get_next_ip(
         self,

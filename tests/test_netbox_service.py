@@ -9,14 +9,19 @@ def get_nb_version(nfclient, instance=None) -> tuple:
     )
     # pprint.pprint(f">>>>>>>>>>>> {ret}")
     for w, instances_data in ret.items():
-        for instance, instance_data in instances_data.items():
+        for instance, instance_data in instances_data["result"].items():
             return tuple([int(i) for i in instance_data["netbox-version"].split(".")])
 
 
 class TestNetboxWorker:
     @pytest.mark.skip(reason="TBD")
     def test_get_netbox_inventory(self, nfclient):
-        pass
+        ret = nfclient.run_job(
+            "netbox",
+            "get_netbox_inventory",
+            workers="any",
+        )
+        pprint.pprint(ret)
 
     @pytest.mark.skip(reason="TBD")
     def test_get_netbox_version(self, nfclient):
@@ -44,13 +49,13 @@ class TestNetboxGrapQL:
         pprint.pprint(ret)
 
         for worker, res in ret.items():
-            assert "Traceback" not in res, f"{worker} - received error"
-            assert "device_list" in res, f"{worker} no device list returned"
+            assert not res["errors"], f"{worker} - received error"
+            assert "device_list" in res["result"], f"{worker} no device list returned"
             assert isinstance(
-                res["device_list"], list
+                res["result"]["device_list"], list
             ), f"{worker} unexpected device list payload type, was expecting list"
             assert (
-                len(res["device_list"]) > 0
+                len(res["result"]["device_list"]) > 0
             ), f"{worker} returned no devices in device list"
 
     def test_graphql_query_string_with_instance(self, nfclient):
@@ -66,13 +71,13 @@ class TestNetboxGrapQL:
         pprint.pprint(ret)
 
         for worker, res in ret.items():
-            assert "Traceback" not in res, f"{worker} - received error"
-            assert "device_list" in res, f"{worker} no device list returned"
+            assert not res["errors"], f"{worker} - received error"
+            assert "device_list" in res["result"], f"{worker} no device list returned"
             assert isinstance(
-                res["device_list"], list
+                res["result"]["device_list"], list
             ), f"{worker} unexpected device list payload type, was expecting list"
             assert (
-                len(res["device_list"]) > 0
+                len(res["result"]["device_list"]) > 0
             ), f"{worker} returned no devices in device list"
 
     def test_graphql_query_string_dry_run(self, nfclient):
@@ -88,9 +93,9 @@ class TestNetboxGrapQL:
         pprint.pprint(ret)
 
         for worker, res in ret.items():
-            assert "Traceback" not in res, f"{worker} - received error"
+            assert not res["errors"], f"{worker} - received error"
             assert all(
-                k in res for k in ["headers", "data", "verify", "url"]
+                k in res["result"] for k in ["headers", "data", "verify", "url"]
             ), f"{worker} - not all dry run data returned"
 
     def test_graphql_query_string_error(self, nfclient):
@@ -105,9 +110,9 @@ class TestNetboxGrapQL:
         pprint.pprint(ret)
 
         for worker, res in ret.items():
-            assert (
-                "errors" in res
-            ), f"{worker} did not return errors fro malformed graphql query"
+            assert res[
+                "errors"
+            ], f"{worker} did not return errors fro malformed graphql query"
 
     def test_form_graphql_query_dry_run(self, nfclient):
         if self.nb_version is None:
@@ -127,7 +132,7 @@ class TestNetboxGrapQL:
             )
             pprint.pprint(ret, width=200)
             for worker, res in ret.items():
-                assert res["data"] == (
+                assert res["result"]["data"] == (
                     '{"query": "query {device_list(filters: {q: \\"ceos\\", platform: \\"arista_eos\\"}) {name platform {name}}}"}'
                 ), f"{worker} did not return correct query string"
         elif self.nb_version[0] == 3:
@@ -144,7 +149,7 @@ class TestNetboxGrapQL:
             )
             pprint.pprint(ret, width=200)
             for worker, res in ret.items():
-                assert res["data"] == (
+                assert res["result"]["data"] == (
                     '{"query": "query {device_list(name__ic: \\"ceos\\", platform: \\"arista_eos\\") {name platform {name}}}"}'
                 ), f"{worker} did not return correct query string"
 
@@ -167,7 +172,7 @@ class TestNetboxGrapQL:
             pprint.pprint(ret, width=200)
 
             for worker, res in ret.items():
-                assert res["data"] == (
+                assert res["result"]["data"] == (
                     '{"query": "query {interface_list(filters: {q: \\"eth\\", type: {exact: \\"virtual\\"}}) {name}}"}'
                 ), f"{worker} did not return correct query string"
         elif self.nb_version[0] == 3:
@@ -192,7 +197,7 @@ class TestNetboxGrapQL:
             pprint.pprint(ret, width=200)
 
             for worker, res in ret.items():
-                assert res["data"] == (
+                assert res["result"]["data"] == (
                     '{"query": "query {ip_address_list(filters: {address: [\\"1.0.10.3/32\\", \\"1.0.10.1/32\\"]}) {address}}"}'
                 ), f"{worker} did not return correct query string"
         elif self.nb_version[0] == 3:
@@ -210,7 +215,7 @@ class TestNetboxGrapQL:
             pprint.pprint(ret, width=200)
 
             for worker, res in ret.items():
-                assert res["data"] == (
+                assert res["result"]["data"] == (
                     '{"query": "query {ip_address_list(address: [\\"1.0.10.3/32\\", \\"1.0.10.1/32\\"]) {address}}"}'
                 ), f"{worker} did not return correct query string"
 
@@ -232,8 +237,10 @@ class TestNetboxGrapQL:
             pprint.pprint(ret)
 
             for worker, res in ret.items():
-                assert isinstance(res, list), f"{worker} - unexpected result type"
-                for item in res:
+                assert isinstance(
+                    res["result"], list
+                ), f"{worker} - unexpected result type"
+                for item in res["result"]:
                     assert (
                         "name" in item and "platform" in item
                     ), f"{worker} - no name and platform returned: {item}"
@@ -251,8 +258,10 @@ class TestNetboxGrapQL:
             pprint.pprint(ret)
 
             for worker, res in ret.items():
-                assert isinstance(res, list), f"{worker} - unexpected result type"
-                for item in res:
+                assert isinstance(
+                    res["result"], list
+                ), f"{worker} - unexpected result type"
+                for item in res["result"]:
                     assert (
                         "name" in item and "platform" in item
                     ), f"{worker} - no name and platform returned: {item}"
@@ -290,7 +299,7 @@ class TestNetboxGrapQL:
             pprint.pprint(ret, width=200)
 
             for worker, res in ret.items():
-                assert res["data"] == (
+                assert res["result"]["data"] == (
                     '{"query": "query {devices: device_list(filters: {q: \\"ceos\\", platform: '
                     + '\\"arista_eos\\"}) {name platform {name}}    interfaces: interface_list(filters: '
                     + '{q: \\"eth\\", type: {exact: \\"virtual\\"}}) {name}    addresses: '
@@ -325,7 +334,7 @@ class TestNetboxGrapQL:
             pprint.pprint(ret, width=200)
 
             for worker, res in ret.items():
-                assert res["data"] == (
+                assert res["result"]["data"] == (
                     '{"query": "query {devices: device_list(name__ic: \\"ceos\\", platform: \\"arista_eos\\") '
                     + '{name platform {name}}    interfaces: interface_list(name__ic: \\"eth\\", type: \\"virtual\\") '
                     + '{name}    addresses: ip_address_list(address: [\\"1.0.10.3/32\\", \\"1.0.10.1/32\\"]) {address}}"}'
@@ -366,7 +375,7 @@ class TestNetboxGrapQL:
 
             for worker, res in ret.items():
                 assert all(
-                    k in res for k in ["devices", "interfaces", "addresses"]
+                    k in res["result"] for k in ["devices", "interfaces", "addresses"]
                 ), f"{worker} - did not return some data"
         elif self.nb_version[0] == 3:
             ret = nfclient.run_job(
@@ -397,7 +406,7 @@ class TestNetboxGrapQL:
 
             for worker, res in ret.items():
                 assert all(
-                    k in res for k in ["devices", "interfaces", "addresses"]
+                    k in res["result"] for k in ["devices", "interfaces", "addresses"]
                 ), f"{worker} - did not return some data"
 
 
@@ -414,9 +423,9 @@ class TestGetInterfaces:
         pprint.pprint(ret)
 
         for worker, res in ret.items():
-            assert "ceos1" in res, f"{worker} returned no results for ceos1"
-            assert "fceos4" in res, f"{worker} returned no results for fceos4"
-            for device, interfaces in res.items():
+            assert "ceos1" in res["result"], f"{worker} returned no results for ceos1"
+            assert "fceos4" in res["result"], f"{worker} returned no results for fceos4"
+            for device, interfaces in res["result"].items():
                 assert isinstance(
                     interfaces, dict
                 ), f"{worker}:{device} did not return interfaces dictionary"
@@ -456,9 +465,9 @@ class TestGetInterfaces:
         pprint.pprint(ret)
 
         for worker, res in ret.items():
-            assert "ceos1" in res, f"{worker} returned no results for ceos1"
-            assert "fceos4" in res, f"{worker} returned no results for fceos4"
-            for device, interfaces in res.items():
+            assert "ceos1" in res["result"], f"{worker} returned no results for ceos1"
+            assert "fceos4" in res["result"], f"{worker} returned no results for fceos4"
+            for device, interfaces in res["result"].items():
                 assert isinstance(
                     interfaces, dict
                 ), f"{worker}:{device} did not return interfaces dictionary"
@@ -502,7 +511,7 @@ class TestGetInterfaces:
 
         if self.nb_version[0] == 4:
             for worker, res in ret.items():
-                assert res["data"] == (
+                assert res["result"]["data"] == (
                     '{"query": "query {interfaces: interface_list(filters: {device: [\\"ceos1\\", '
                     + '\\"fceos4\\"]}) {name enabled description mtu parent {name} mac_address mode '
                     + "untagged_vlan {vid name} vrf {name} tagged_vlans {vid name} tags {name} "
@@ -511,7 +520,7 @@ class TestGetInterfaces:
                 ), f"{worker} did not return correct query string"
         elif self.nb_version[0] == 3:
             for worker, res in ret.items():
-                assert res["data"] == (
+                assert res["result"]["data"] == (
                     '{"query": "query {interfaces: interface_list(device: [\\"ceos1\\", \\"fceos4\\"]) '
                     + "{name enabled description mtu parent {name} mac_address mode untagged_vlan {vid name} "
                     + "vrf {name} tagged_vlans {vid name} tags {name} custom_fields last_updated bridge "
@@ -529,9 +538,9 @@ class TestGetInterfaces:
         pprint.pprint(ret)
 
         for worker, res in ret.items():
-            assert "ceos1" in res, f"{worker} returned no results for ceos1"
-            assert "fceos4" in res, f"{worker} returned no results for fceos4"
-            for device, interfaces in res.items():
+            assert "ceos1" in res["result"], f"{worker} returned no results for ceos1"
+            assert "fceos4" in res["result"], f"{worker} returned no results for fceos4"
+            for device, interfaces in res["result"].items():
                 assert isinstance(
                     interfaces, dict
                 ), f"{worker}:{device} did not return interfaces dictionary"
@@ -568,9 +577,9 @@ class TestGetInterfaces:
         pprint.pprint(ret, width=200)
 
         for worker, res in ret.items():
-            assert "ceos1" in res, f"{worker} returned no results for ceos1"
-            assert "fceos4" in res, f"{worker} returned no results for fceos4"
-            for device, interfaces in res.items():
+            assert "ceos1" in res["result"], f"{worker} returned no results for ceos1"
+            assert "fceos4" in res["result"], f"{worker} returned no results for fceos4"
+            for device, interfaces in res["result"].items():
                 assert isinstance(
                     interfaces, dict
                 ), f"{worker}:{device} did not return interfaces dictionary"
@@ -609,9 +618,9 @@ class TestGetDevices:
         pprint.pprint(ret)
 
         for worker, res in ret.items():
-            assert "ceos1" in res, f"{worker} returned no results for ceos1"
-            assert "fceos4" in res, f"{worker} returned no results for fceos4"
-            for device, device_data in res.items():
+            assert "ceos1" in res["result"], f"{worker} returned no results for ceos1"
+            assert "fceos4" in res["result"], f"{worker} returned no results for fceos4"
+            for device, device_data in res["result"].items():
                 assert isinstance(
                     device_data, dict
                 ), f"{worker}:{device} did not return device data as dictionary"
@@ -672,10 +681,12 @@ class TestGetDevices:
         pprint.pprint(ret)
 
         for worker, res in ret.items():
-            assert "ceos1" in res, f"{worker} returned no results for ceos1"
-            assert "fceos3_390" in res, f"{worker} returned no results for fceos3_390"
-            assert "fceos4" in res, f"{worker} returned no results for fceos4"
-            for device, device_data in res.items():
+            assert "ceos1" in res["result"], f"{worker} returned no results for ceos1"
+            assert (
+                "fceos3_390" in res["result"]
+            ), f"{worker} returned no results for fceos3_390"
+            assert "fceos4" in res["result"], f"{worker} returned no results for fceos4"
+            for device, device_data in res["result"].items():
                 assert isinstance(
                     device_data, dict
                 ), f"{worker}:{device} did not return device data as dictionary"
@@ -721,9 +732,9 @@ class TestGetDevices:
         pprint.pprint(ret)
 
         for worker, res in ret.items():
-            assert "Traceback" not in res, f"{worker} - received error"
+            assert not res["errors"], f"{worker} - received error"
             assert all(
-                k in res for k in ["headers", "data", "verify", "url"]
+                k in res["result"] for k in ["headers", "data", "verify", "url"]
             ), f"{worker} - not all dry run data returned"
 
 
@@ -740,15 +751,15 @@ class TestGetConnections:
         pprint.pprint(ret)
 
         for worker, res in ret.items():
-            assert "fceos5" in res, f"{worker} returned no results for fceos5"
-            assert "fceos4" in res, f"{worker} returned no results for fceos4"
+            assert "fceos5" in res["result"], f"{worker} returned no results for fceos5"
+            assert "fceos4" in res["result"], f"{worker} returned no results for fceos4"
             assert (
-                "ConsolePort1" in res["fceos4"]
+                "ConsolePort1" in res["result"]["fceos4"]
             ), f"{worker}:fceos4 no console ports data returned"
             assert (
-                "ConsoleServerPort1" in res["fceos5"]
+                "ConsoleServerPort1" in res["result"]["fceos5"]
             ), f"{worker}:fceos5 no console server ports data returned"
-            for device, interfaces in res.items():
+            for device, interfaces in res["result"].items():
                 assert isinstance(
                     interfaces, dict
                 ), f"{worker}:{device} did not return interfaces dictionary"
@@ -789,9 +800,9 @@ class TestGetConnections:
         pprint.pprint(ret)
 
         for worker, res in ret.items():
-            assert "Traceback" not in res, f"{worker} - received error"
+            assert not res["errors"], f"{worker} - received error"
             assert all(
-                k in res for k in ["headers", "data", "verify", "url"]
+                k in res["result"] for k in ["headers", "data", "verify", "url"]
             ), f"{worker} - not all dry run data returned"
 
     def test_get_connections_and_cables(self, nfclient):
@@ -804,9 +815,9 @@ class TestGetConnections:
         pprint.pprint(ret)
 
         for worker, res in ret.items():
-            assert "fceos5" in res, f"{worker} returned no results for fceos5"
-            assert "fceos4" in res, f"{worker} returned no results for fceos4"
-            for device, interfaces in res.items():
+            assert "fceos5" in res["result"], f"{worker} returned no results for fceos5"
+            assert "fceos4" in res["result"], f"{worker} returned no results for fceos4"
+            for device, interfaces in res["result"].items():
                 assert isinstance(
                     interfaces, dict
                 ), f"{worker}:{device} did not return interfaces dictionary"
@@ -849,9 +860,9 @@ class TestGetConnections:
         pprint.pprint(ret)
 
         for worker, res in ret.items():
-            assert "fceos5" in res, f"{worker} returned no results for fceos5"
-            assert "fceos4" in res, f"{worker} returned no results for fceos4"
-            for device, interfaces in res.items():
+            assert "fceos5" in res["result"], f"{worker} returned no results for fceos5"
+            assert "fceos4" in res["result"], f"{worker} returned no results for fceos4"
+            for device, interfaces in res["result"].items():
                 assert isinstance(
                     interfaces, dict
                 ), f"{worker}:{device} did not return interfaces dictionary"
@@ -883,9 +894,9 @@ class TestGetConnections:
         pprint.pprint(ret)
 
         for worker, res in ret.items():
-            assert "fceos5" in res, f"{worker} returned no results for fceos5"
-            assert "fceos4" in res, f"{worker} returned no results for fceos4"
-            for device, interfaces in res.items():
+            assert "fceos5" in res["result"], f"{worker} returned no results for fceos5"
+            assert "fceos4" in res["result"], f"{worker} returned no results for fceos4"
+            for device, interfaces in res["result"].items():
                 assert isinstance(
                     interfaces, dict
                 ), f"{worker}:{device} did not return interfaces dictionary"
@@ -950,9 +961,13 @@ class TestGetNornirInventory:
         pprint.pprint(ret)
 
         for worker, res in ret.items():
-            assert "ceos1" in res["hosts"], f"{worker} returned no results for ceos1"
-            assert "fceos4" in res["hosts"], f"{worker} returned no results for fceos4"
-            for device, data in res["hosts"].items():
+            assert (
+                "ceos1" in res["result"]["hosts"]
+            ), f"{worker} returned no results for ceos1"
+            assert (
+                "fceos4" in res["result"]["hosts"]
+            ), f"{worker} returned no results for fceos4"
+            for device, data in res["result"]["hosts"].items():
                 assert all(
                     k in data for k in ["data", "hostname", "platform"]
                 ), f"{worker}:{device} not all data returned"
@@ -987,9 +1002,13 @@ class TestGetNornirInventory:
             )
         pprint.pprint(ret)
         for worker, res in ret.items():
-            assert "ceos1" in res["hosts"], f"{worker} returned no results for ceos1"
-            assert "fceos4" in res["hosts"], f"{worker} returned no results for fceos4"
-            for device, data in res["hosts"].items():
+            assert (
+                "ceos1" in res["result"]["hosts"]
+            ), f"{worker} returned no results for ceos1"
+            assert (
+                "fceos4" in res["result"]["hosts"]
+            ), f"{worker} returned no results for fceos4"
+            for device, data in res["result"]["hosts"].items():
                 assert all(
                     k in data for k in ["data", "hostname", "platform"]
                 ), f"{worker}:{device} not all data returned"
@@ -1004,8 +1023,10 @@ class TestGetNornirInventory:
         )
         pprint.pprint(ret)
         for worker, res in ret.items():
-            assert "iosxr1" in res["hosts"], f"{worker} returned no results for iosxr1"
-            for device, data in res["hosts"].items():
+            assert (
+                "iosxr1" in res["result"]["hosts"]
+            ), f"{worker} returned no results for iosxr1"
+            for device, data in res["result"]["hosts"].items():
                 assert all(
                     k in data for k in ["data", "hostname", "platform"]
                 ), f"{worker}:{device} not all data returned"
@@ -1020,9 +1041,13 @@ class TestGetNornirInventory:
         pprint.pprint(ret)
 
         for worker, res in ret.items():
-            assert "ceos1" in res["hosts"], f"{worker} returned no results for ceos1"
-            assert "fceos4" in res["hosts"], f"{worker} returned no results for fceos4"
-            for device, data in res["hosts"].items():
+            assert (
+                "ceos1" in res["result"]["hosts"]
+            ), f"{worker} returned no results for ceos1"
+            assert (
+                "fceos4" in res["result"]["hosts"]
+            ), f"{worker} returned no results for fceos4"
+            for device, data in res["result"]["hosts"].items():
                 assert all(
                     k in data for k in ["data", "hostname", "platform"]
                 ), f"{worker}:{device} not all device data returned"
@@ -1060,9 +1085,13 @@ class TestGetNornirInventory:
         pprint.pprint(ret)
 
         for worker, res in ret.items():
-            assert "ceos1" in res["hosts"], f"{worker} returned no results for ceos1"
-            assert "fceos4" in res["hosts"], f"{worker} returned no results for fceos4"
-            for device, data in res["hosts"].items():
+            assert (
+                "ceos1" in res["result"]["hosts"]
+            ), f"{worker} returned no results for ceos1"
+            assert (
+                "fceos4" in res["result"]["hosts"]
+            ), f"{worker} returned no results for fceos4"
+            for device, data in res["result"]["hosts"].items():
                 assert data["data"][
                     "interfaces"
                 ], f"{worker}:{device} no interfaces data returned"
@@ -1088,9 +1117,13 @@ class TestGetNornirInventory:
         )
         pprint.pprint(ret)
         for worker, res in ret.items():
-            assert "ceos1" in res["hosts"], f"{worker} returned no results for ceos1"
-            assert "fceos4" in res["hosts"], f"{worker} returned no results for fceos4"
-            for device, data in res["hosts"].items():
+            assert (
+                "ceos1" in res["result"]["hosts"]
+            ), f"{worker} returned no results for ceos1"
+            assert (
+                "fceos4" in res["result"]["hosts"]
+            ), f"{worker} returned no results for fceos4"
+            for device, data in res["result"]["hosts"].items():
                 assert data["data"][
                     "interfaces"
                 ], f"{worker}:{device} no interfaces data returned"
@@ -1112,9 +1145,13 @@ class TestGetNornirInventory:
         pprint.pprint(ret)
 
         for worker, res in ret.items():
-            assert "fceos5" in res["hosts"], f"{worker} returned no results for fceos5"
-            assert "fceos4" in res["hosts"], f"{worker} returned no results for fceos4"
-            for device, data in res["hosts"].items():
+            assert (
+                "fceos5" in res["result"]["hosts"]
+            ), f"{worker} returned no results for fceos5"
+            assert (
+                "fceos4" in res["result"]["hosts"]
+            ), f"{worker} returned no results for fceos4"
+            for device, data in res["result"]["hosts"].items():
                 assert data["data"][
                     "connections"
                 ], f"{worker}:{device} no connections data returned"
@@ -1136,7 +1173,7 @@ class TestGetNornirInventory:
         )
         pprint.pprint(ret)
         for worker, res in ret.items():
-            for device, data in res["hosts"].items():
+            for device, data in res["result"]["hosts"].items():
                 assert (
                     "circuits" in data["data"]
                 ), f"{worker}:{device} no circuits data returned"
@@ -1161,7 +1198,7 @@ class TestGetCircuits:
             )
             pprint.pprint(ret, width=200)
             for worker, res in ret.items():
-                assert res["data"] == (
+                assert res["result"]["data"] == (
                     '{"query": "query {circuit_list(site: '
                     + '[\\"saltnornir-lab\\"]) {cid tags {name} '
                     + "provider {name} commit_rate description status "
@@ -1181,9 +1218,9 @@ class TestGetCircuits:
         )
         pprint.pprint(ret, width=200)
         for worker, res in ret.items():
-            assert "fceos5" in res, f"{worker} returned no results for fceos5"
-            assert "fceos4" in res, f"{worker} returned no results for fceos4"
-            for device, device_data in res.items():
+            assert "fceos5" in res["result"], f"{worker} returned no results for fceos5"
+            assert "fceos4" in res["result"], f"{worker} returned no results for fceos4"
+            for device, device_data in res["result"].items():
                 for cid, cid_data in device_data.items():
                     if cid == "CID3":
                         assert all(

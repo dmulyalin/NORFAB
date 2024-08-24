@@ -1,5 +1,5 @@
 {% set data = nornir.cli(run_ttp="nf://nf_tests_inventory/ttp/parse_eos_intf.txt", enable=True, FB=host.name) %}
-{% for interface in data[host.name]["run_ttp"] %}
+{% for interface in data.result[host.name]["run_ttp"] %}
 interface {{ interface.interface }}
   description {{ interface.get("description", "") }} updated by norfab
 {% endfor %}

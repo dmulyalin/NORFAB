@@ -21,7 +21,7 @@ from pydantic import (
     root_validator,
     Field,
 )
-from .common import ClientRunJobArgs
+from .common import ClientRunJobArgs, log_error_or_result
 from typing import Union, Optional, List, Any, Dict, Callable, Tuple
 from nornir_salt.plugins.functions import TabulateFormatter
 
@@ -162,7 +162,7 @@ class NornirCommonArgs(BaseModel):
         description="File group name to save task results to on worker file system",
     )
     tf_skip_failed: Optional[StrictBool] = Field(
-        True,
+        None,
         description="Save results to file for failed tasks",
         json_schema_extra={"presence": True},
     )
@@ -262,10 +262,11 @@ class filters(BaseModel):
     @staticmethod
     def source_hosts():
         ret = set()
-        reply = NFCLIENT.run_job("nornir", "get_nornir_hosts")
-        # reply is a dict keyed by worker name with lists of hosts values
-        for worker, hosts in reply.items():
-            for host in hosts:
+        result = NFCLIENT.run_job("nornir", "get_nornir_hosts")
+        result = log_error_or_result(result)
+        # result is a dict keyed by worker name with lists of hosts values
+        for worker, result in result.items():
+            for host in result:
                 ret.add(host)
         return list(ret)
 
@@ -276,18 +277,11 @@ class filters(BaseModel):
     @staticmethod
     def get_nornir_hosts(**kwargs):
         workers = kwargs.pop("workers", "all")
-        reply = NFCLIENT.run_job(
+        result = NFCLIENT.run_job(
             "nornir", "get_nornir_hosts", workers=workers, kwargs=kwargs
         )
-        try:
-            if isinstance(reply, (bytes, str)):
-                return json.dumps(json.loads(reply), indent=4)
-            else:
-                return reply
-        except Exception as e:
-            log.error(
-                f"failed to deserialise JSON reply, reply content '{reply}', error '{e}'"
-            )
+        result = log_error_or_result(result)
+        return result
 
 
 # ---------------------------------------------------------------------------------------------
@@ -368,12 +362,14 @@ class NornirShowCommandsModel(filters):
     @staticmethod
     def get_nornir_inventory(**kwargs):
         workers = kwargs.pop("workers", "all")
-        return NFCLIENT.run_job("nornir", "get_nornir_inventory", workers=workers)
+        result = NFCLIENT.run_job("nornir", "get_nornir_inventory", workers=workers)
+        return log_error_or_result(result)
 
     @staticmethod
     def get_nornir_version(**kwargs):
         workers = kwargs.pop("workers", "all")
-        return NFCLIENT.run_job("nornir", "get_nornir_version", workers=workers)
+        result = NFCLIENT.run_job("nornir", "get_nornir_version", workers=workers)
+        return log_error_or_result(result)
 
 
 # ---------------------------------------------------------------------------------------------
@@ -631,6 +627,8 @@ class NornirCliShell(filters, TabulateTableModel, NornirCommonArgs, ClientRunJob
                 "nornir", "cli", workers=workers, args=args, kwargs=kwargs
             )
 
+        result = log_error_or_result(result)
+
         # form table results
         if table:
             table_data = []
@@ -846,6 +844,8 @@ class NornirCfgShell(filters, TabulateTableModel, NornirCommonArgs, ClientRunJob
                 "nornir", "cfg", workers=workers, args=args, kwargs=kwargs
             )
 
+        result = log_error_or_result(result)
+
         # form table results
         if table:
             table_data = []
@@ -904,6 +904,8 @@ class NornirTaskShell(filters, TabulateTableModel, NornirCommonArgs, ClientRunJo
             result = NFCLIENT.run_job(
                 "nornir", "task", workers=workers, args=args, kwargs=kwargs
             )
+
+        result = log_error_or_result(result)
 
         # form table results
         if table:
@@ -980,6 +982,8 @@ class NornirTestShell(filters, TabulateTableModel, NornirCommonArgs, ClientRunJo
                 "nornir", "test", workers=workers, args=args, kwargs=kwargs
             )
 
+        result = log_error_or_result(result)
+
         # form table results
         if table:
             table_data = []
@@ -1011,7 +1015,9 @@ class NornirTestShell(filters, TabulateTableModel, NornirCommonArgs, ClientRunJo
 # ---------------------------------------------------------------------------------------------
 
 
-class NornirNetworkPing(filters, TabulateTableModel, NornirCommonArgs, ClientRunJobArgs):
+class NornirNetworkPing(
+    filters, TabulateTableModel, NornirCommonArgs, ClientRunJobArgs
+):
     use_host_name: StrictBool = Field(
         None,
         description="Ping host's name instead of host's hostname",
@@ -1070,6 +1076,8 @@ class NornirNetworkPing(filters, TabulateTableModel, NornirCommonArgs, ClientRun
             result = NFCLIENT.run_job(
                 "nornir", "network", workers=workers, args=args, kwargs=kwargs
             )
+
+        result = log_error_or_result(result)
 
         # form table results
         if table:
@@ -1136,6 +1144,8 @@ class NornirNetworkDns(filters, TabulateTableModel, NornirCommonArgs, ClientRunJ
             result = NFCLIENT.run_job(
                 "nornir", "network", workers=workers, args=args, kwargs=kwargs
             )
+
+        result = log_error_or_result(result)
 
         # form table results
         if table:

@@ -22,12 +22,13 @@ from pydantic import (
     Field,
 )
 from typing import Union, Optional, List, Any, Dict, Callable, Tuple
-from .common import ClientRunJobArgs
+from .common import ClientRunJobArgs, log_error_or_result
 
 NFCLIENT = None  # NFCLIENT updated by parent shell
 RICHCONSOLE = Console()
 SERVICE = "netbox"
 log = logging.getLogger(__name__)
+
 
 # ---------------------------------------------------------------------------------------------
 # COMMON MODELS
@@ -134,26 +135,34 @@ class NetboxShowCommandsModel(Targeting):
     @staticmethod
     def get_netbox_inventory(**kwargs):
         workers = kwargs.pop("workers", "all")
-        return NFCLIENT.run_job("netbox", "get_netbox_inventory", workers=workers)
+        result = NFCLIENT.run_job("netbox", "get_netbox_inventory", workers=workers)
+        result = log_error_or_result(result)
+        return result
 
     @staticmethod
     def get_netbox_version(**kwargs):
         workers = kwargs.pop("workers", "all")
-        return NFCLIENT.run_job("netbox", "get_netbox_version", workers=workers)
+        result = NFCLIENT.run_job("netbox", "get_netbox_version", workers=workers)
+        result = log_error_or_result(result)
+        return result
 
     @staticmethod
     def get_netbox_status(**kwargs):
         workers = kwargs.pop("workers", "any")
-        return NFCLIENT.run_job(
+        result = NFCLIENT.run_job(
             "netbox", "get_netbox_status", workers=workers, kwargs=kwargs
         )
+        result = log_error_or_result(result)
+        return result
 
     @staticmethod
     def get_compatibility(**kwargs):
         workers = kwargs.pop("workers", "any")
-        return NFCLIENT.run_job(
+        result = NFCLIENT.run_job(
             "netbox", "get_compatibility", workers=workers, kwargs=kwargs
         )
+        result = log_error_or_result(result)
+        return result
 
 
 # ---------------------------------------------------------------------------------------------
@@ -165,7 +174,7 @@ class GetInterfaces(Targeting, ClientRunJobArgs):
     devices: Union[StrictStr, List] = Field(
         ..., description="Devices to retrieve interface for"
     )
-    ip: Optional[StrictBool] = Field(
+    ip_addresses: Optional[StrictBool] = Field(
         None,
         description="Retrieves interface IP addresses",
         json_schema_extra={"presence": True},
@@ -187,10 +196,11 @@ class GetInterfaces(Targeting, ClientRunJobArgs):
         if isinstance(kwargs["devices"], str):
             kwargs["devices"] = [kwargs["devices"]]
         with RICHCONSOLE.status("[bold green]Running query", spinner="dots") as status:
-            ret = NFCLIENT.run_job(
+            result = NFCLIENT.run_job(
                 "netbox", "get_interfaces", workers=workers, args=args, kwargs=kwargs
             )
-        return ret
+        result = log_error_or_result(result)
+        return result
 
     class PicleConfig:
         outputter = Outputters.outputter_rich_json

@@ -20,7 +20,6 @@ try:
 except ImportError:
     HAS_GENIE = False
     log.error("PyATS worker - failed to import Genie library.")
-    
 
 
 class NornirWorker(NFPWorker):

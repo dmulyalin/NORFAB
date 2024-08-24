@@ -2,15 +2,19 @@ import pprint
 import pytest
 import random
 
+# ----------------------------------------------------------------------------
+# NORNIR WORKER TESTS
+# ----------------------------------------------------------------------------
+
 
 class TestNornirWorker:
-    def test_get_nornir_invenotry(self, nfclient):
+    def test_get_nornir_inventory(self, nfclient):
         ret = nfclient.run_job(b"nornir", "get_nornir_inventory")
         pprint.pprint(ret)
 
         for worker_name, data in ret.items():
             assert all(
-                k in data for k in ["hosts", "groups", "defaults"]
+                k in data["result"] for k in ["hosts", "groups", "defaults"]
             ), f"{worker_name} inventory incomplete"
 
     def test_get_nornir_hosts(self, nfclient):
@@ -19,7 +23,7 @@ class TestNornirWorker:
 
         for worker_name, data in ret.items():
             assert isinstance(
-                data, list
+                data["result"], list
             ), "{worker_name} did not return a list of hosts"
             assert len(data) > 0 or data == []
 
@@ -29,8 +33,13 @@ class TestNornirWorker:
 
         assert isinstance(ret, dict), f"Expected dictionary but received {type(ret)}"
         for worker_name, version_report in ret.items():
-            for package, version in version_report.items():
+            for package, version in version_report["result"].items():
                 assert version != "", f"{worker_name}:{package} version is empty"
+
+
+# ----------------------------------------------------------------------------
+# NORNIR.CLI FUNCTION TESTS
+# ----------------------------------------------------------------------------
 
 
 class TestNornirCli:
@@ -44,7 +53,7 @@ class TestNornirCli:
         pprint.pprint(ret)
 
         for worker, results in ret.items():
-            for host, res in results.items():
+            for host, res in results["result"].items():
                 assert (
                     "show clock" in res and "Traceback" not in res["show clock"]
                 ), f"{worker}:{host} show clock output is wrong"
@@ -61,7 +70,7 @@ class TestNornirCli:
         pprint.pprint(ret)
 
         for worker, results in ret.items():
-            for host, res in results.items():
+            for host, res in results["result"].items():
                 assert "cli_dry_run" in res and res["cli_dry_run"] == [
                     "show version",
                     "show clock",
@@ -111,7 +120,7 @@ class TestNornirCli:
         pprint.pprint(ret)
 
         for worker, results in ret.items():
-            for host, res in results.items():
+            for host, res in results["result"].items():
                 assert "cli_dry_run" in res and res["cli_dry_run"] == [
                     "show version\nshow clock\nshow int description"
                 ], f"{worker}:{host} output is wrong"
@@ -127,7 +136,8 @@ class TestNornirCli:
         )
         pprint.pprint(ret)
 
-        assert ret == {"nornir-worker-1": {}}
+        assert ret["nornir-worker-1"]["failed"] == True
+        assert ret["nornir-worker-1"]["errors"]
 
     def test_commands_from_file_template(self, nfclient):
         ret = nfclient.run_job(
@@ -140,14 +150,22 @@ class TestNornirCli:
         )
         pprint.pprint(ret)
 
+        found_ceos_spine_1 = False
+        found_ceos_spine_2 = False
+
         for worker, results in ret.items():
-            for host, res in results.items():
+            for host, res in results["result"].items():
                 if host == "ceos-spine-1":
+                    found_ceos_spine_1 = True
                     assert "loopback0" in res["cli_dry_run"][0]
                     assert "ethernet1" in res["cli_dry_run"][0]
                 elif host == "ceos-spine-2":
                     assert "loopback0" not in res["cli_dry_run"][0]
                     assert "ethernet1" in res["cli_dry_run"][0]
+                    found_ceos_spine_2 = True
+
+        assert found_ceos_spine_1, "No results for ceos-spine-1"
+        assert found_ceos_spine_2, "No results for ceos-spine-2"
 
     def test_run_ttp(self, nfclient):
         ret = nfclient.run_job(
@@ -163,7 +181,7 @@ class TestNornirCli:
         pprint.pprint(ret)
 
         for worker, results in ret.items():
-            for host, res in results.items():
+            for host, res in results["result"].items():
                 assert "run_ttp" in res, f"{worker}:{host} no run_ttp output"
                 for interface in res["run_ttp"]:
                     assert (
@@ -184,7 +202,7 @@ class TestNornirCli:
         pprint.pprint(ret)
 
         for worker, results in ret.items():
-            for host, res in results.items():
+            for host, res in results["result"].items():
                 assert all(
                     k in res["cli_dry_run"][0]
                     for k in [
@@ -210,7 +228,7 @@ class TestNornirCli:
         pprint.pprint(ret)
 
         for worker, results in ret.items():
-            for host, res in results.items():
+            for host, res in results["result"].items():
                 assert all(
                     k in res["cli_dry_run"][0]
                     for k in [
@@ -234,6 +252,11 @@ class TestNornirCli:
         pass
 
 
+# ----------------------------------------------------------------------------
+# NORNIR.TASK FUNCTION TESTS
+# ----------------------------------------------------------------------------
+
+
 class TestNornirTask:
     def test_task_nornir_salt_nr_test(self, nfclient):
         ret = nfclient.run_job(
@@ -244,12 +267,9 @@ class TestNornirTask:
         )
         pprint.pprint(ret)
 
-        assert ret == {
-            "nornir-worker-1": {
-                "ceos-spine-1": {"nr_test": {"foo": "bar"}},
-                "ceos-spine-2": {"nr_test": {"foo": "bar"}},
-            }
-        }
+        for worker, results in ret.items():
+            for host, res in results["result"].items():
+                assert res == {"nr_test": {"foo": "bar"}}
 
     def test_task_nornir_salt_nr_test_add_details(self, nfclient):
         ret = nfclient.run_job(
@@ -263,10 +283,9 @@ class TestNornirTask:
             },
         )
         pprint.pprint(ret)
-
-        assert ret == {
-            "nornir-worker-1": {
-                "ceos-spine-1": {
+        for worker, results in ret.items():
+            for host, res in results["result"].items():
+                assert res == {
                     "nr_test": {
                         "changed": False,
                         "connection_retry": 0,
@@ -276,20 +295,7 @@ class TestNornirTask:
                         "result": {"foo": "bar"},
                         "task_retry": 0,
                     }
-                },
-                "ceos-spine-2": {
-                    "nr_test": {
-                        "changed": False,
-                        "connection_retry": 0,
-                        "diff": "",
-                        "exception": None,
-                        "failed": False,
-                        "result": {"foo": "bar"},
-                        "task_retry": 0,
-                    }
-                },
-            }
-        }
+                }
 
     def test_task_from_file(self, nfclient):
         ret = nfclient.run_job(
@@ -300,12 +306,9 @@ class TestNornirTask:
         )
         pprint.pprint(ret)
 
-        assert ret == {
-            "nornir-worker-1": {
-                "ceos-spine-1": {"dummy": True},
-                "ceos-spine-2": {"dummy": True},
-            }
-        }
+        for worker, results in ret.items():
+            for host, res in results["result"].items():
+                assert res == {"dummy": True}
 
     def test_task_from_nonexisting_file(self, nfclient):
         ret = nfclient.run_job(
@@ -316,9 +319,16 @@ class TestNornirTask:
         )
         pprint.pprint(ret, width=150)
 
-        assert ret == {
-            "nornir-worker-1": "nornir-worker-1 - 'nf://nf_tests_inventory/nornir_tasks/_non_existing_.py' task plugin download failed"
-        }
+        for worker, results in ret.items():
+            assert results["failed"] == True
+            assert (
+                "nornir-worker-1 - 'nf://nf_tests_inventory/nornir_tasks/_non_existing_.py' task plugin download failed"
+                in results["errors"][0]
+            )
+            assert (
+                "nornir-worker-1 - 'nf://nf_tests_inventory/nornir_tasks/_non_existing_.py' task plugin download failed"
+                in results["messages"][0]
+            )
 
     def test_task_from_nonexisting_module(self, nfclient):
         ret = nfclient.run_job(
@@ -332,9 +342,16 @@ class TestNornirTask:
         )
         pprint.pprint(ret, width=200)
 
-        assert ret == {
-            "nornir-worker-1": "nornir-worker-1 - 'nornir_salt.plugins.tasks.non_existing_module' task import failed with error 'No module named 'nornir_salt.plugins.tasks.non_existing_module''"
-        }
+        for worker, results in ret.items():
+            assert results["failed"] == True
+            assert (
+                "No module named 'nornir_salt.plugins.tasks.non_existing_module'"
+                in results["errors"][0]
+            )
+            assert (
+                "No module named 'nornir_salt.plugins.tasks.non_existing_module'"
+                in results["messages"][0]
+            )
 
     def test_task_with_error(self, nfclient):
         ret = nfclient.run_job(
@@ -348,7 +365,7 @@ class TestNornirTask:
         pprint.pprint(ret, width=150)
 
         for worker_name, worker_results in ret.items():
-            for hostname, host_results in worker_results.items():
+            for hostname, host_results in worker_results["result"].items():
                 assert (
                     "Traceback" in host_results["dummy"]
                     and "RuntimeError: dummy error" in host_results["dummy"]
@@ -365,18 +382,17 @@ class TestNornirTask:
         )
         pprint.pprint(ret)
 
-        assert ret == {
-            "nornir-worker-1": {
-                "ceos-spine-1": {
+        for worker, results in ret.items():
+            for host, res in results["result"].items():
+                assert res == {
                     "dummy": "dummy task done",
                     "dummy_subtask": "dummy substask done",
-                },
-                "ceos-spine-2": {
-                    "dummy": "dummy task done",
-                    "dummy_subtask": "dummy substask done",
-                },
-            }
-        }
+                }
+
+
+# ----------------------------------------------------------------------------
+# NORNIR.CFG FUNCTION TESTS
+# ----------------------------------------------------------------------------
 
 
 class TestNornirCfg:
@@ -390,7 +406,7 @@ class TestNornirCfg:
         pprint.pprint(ret)
 
         for worker, results in ret.items():
-            for host, res in results.items():
+            for host, res in results["result"].items():
                 assert (
                     "netmiko_send_config" in res
                 ), f"{worker}:{host} no netmiko_send_config output"
@@ -411,7 +427,7 @@ class TestNornirCfg:
         pprint.pprint(ret)
 
         for worker, results in ret.items():
-            for host, res in results.items():
+            for host, res in results["result"].items():
                 assert "cfg_dry_run" in res, f"{worker}:{host} no cfg dry run output"
                 assert res["cfg_dry_run"] == [
                     "interface loopback 0",
@@ -432,17 +448,17 @@ class TestNornirCfg:
         pprint.pprint(ret)
 
         assert (
-            len(ret["nornir-worker-1"]) == 1
+            len(ret["nornir-worker-1"]["result"]) == 1
         ), f"nornir-worker-1 produced more then 1 host result"
         assert (
-            len(ret["nornir-worker-2"]) == 1
+            len(ret["nornir-worker-2"]["result"]) == 1
         ), f"nornir-worker-2 produced more then 1 host result"
 
         assert (
-            "ceos-spine-1" in ret["nornir-worker-1"]
+            "ceos-spine-1" in ret["nornir-worker-1"]["result"]
         ), f"nornir-worker-1 no output for ceos-spine-1"
         assert (
-            "ceos-leaf-1" in ret["nornir-worker-2"]
+            "ceos-leaf-1" in ret["nornir-worker-2"]["result"]
         ), f"nornir-worker-2 no output for ceos-leaf-1"
 
     def test_config_with_worker_target(self, nfclient):
@@ -474,7 +490,7 @@ class TestNornirCfg:
         pprint.pprint(ret)
 
         for worker, results in ret.items():
-            for host, res in results.items():
+            for host, res in results["result"].items():
                 assert "cfg_dry_run" in res, f"{worker}:{host} no cfg_dry_run output"
                 assert isinstance(
                     res["cfg_dry_run"], dict
@@ -506,8 +522,10 @@ class TestNornirCfg:
         pprint.pprint(ret)
 
         for worker, results in ret.items():
-            assert isinstance(results, list), f"{worker} did not return list result"
-            for host_res in results:
+            assert isinstance(
+                results["result"], list
+            ), f"{worker} did not return list result"
+            for host_res in results["result"]:
                 assert (
                     len(host_res) == 3
                 ), f"{worker} was expecting 3 items in host result dic, but got more"
@@ -530,8 +548,10 @@ class TestNornirCfg:
         pprint.pprint(ret)
 
         for worker, results in ret.items():
-            assert isinstance(results, list), f"{worker} did not return list result"
-            for host_res in results:
+            assert isinstance(
+                results["result"], list
+            ), f"{worker} did not return list result"
+            for host_res in results["result"]:
                 assert (
                     len(host_res) > 3
                 ), f"{worker} was expecting more then 3 items in host result dic, but got less"
@@ -564,7 +584,9 @@ class TestNornirCfg:
         pprint.pprint(ret)
 
         for worker, results in ret.items():
-            assert "UnsupportedPluginError" in results, f"{worker} did not raise error"
+            assert (
+                "UnsupportedPluginError" in results["errors"][0]
+            ), f"{worker} did not raise error"
 
     def test_config_from_file_cfg_dry_run(self, nfclient):
         ret = nfclient.run_job(
@@ -579,7 +601,7 @@ class TestNornirCfg:
         pprint.pprint(ret)
 
         for worker, results in ret.items():
-            for host, res in results.items():
+            for host, res in results["result"].items():
                 assert "cfg_dry_run" in res, f"{worker}:{host} no cfg dry run output"
                 assert res["cfg_dry_run"] == [
                     "interface Loopback0\ndescription RID"
@@ -598,11 +620,7 @@ class TestNornirCfg:
         pprint.pprint(ret)
 
         for worker, results in ret.items():
-            for host, res in results.items():
-                assert "cfg_dry_run" in res, f"{worker}:{host} no cfg dry run output"
-                assert (
-                    res["cfg_dry_run"] == []
-                ), f"{worker}:{host} cfg dry run output is wrong"
+            assert "FileNotFoundError" in results["errors"][0]
 
     def test_config_from_file_template(self, nfclient):
         ret = nfclient.run_job(
@@ -617,7 +635,7 @@ class TestNornirCfg:
         pprint.pprint(ret)
 
         for worker, results in ret.items():
-            for host_name, res in results.items():
+            for host_name, res in results["result"].items():
                 assert (
                     "cfg_dry_run" in res
                 ), f"{worker}:{host_name} no cfg dry run output"
@@ -645,7 +663,7 @@ class TestNornirCfg:
         pprint.pprint(ret)
 
         for worker, results in ret.items():
-            for host, res in results.items():
+            for host, res in results["result"].items():
                 assert (
                     "napalm_configure" in res
                 ), f"{worker}:{host} no napalm_configure output"
@@ -669,7 +687,7 @@ class TestNornirCfg:
         pprint.pprint(ret)
 
         for worker, results in ret.items():
-            for host, res in results.items():
+            for host, res in results["result"].items():
                 assert (
                     "scrapli_send_config" in res
                 ), f"{worker}:{host} no scrapli_send_config output"
@@ -690,13 +708,18 @@ class TestNornirCfg:
         pprint.pprint(ret)
 
         for worker, results in ret.items():
-            for host, res in results.items():
+            for host, res in results["result"].items():
                 assert (
                     "netmiko_send_config" in res
                 ), f"{worker}:{host} no netmiko_send_config output"
                 assert (
                     "Traceback" not in res["netmiko_send_config"]
                 ), f"{worker}:{host} cfg output is wrong"
+
+
+# ----------------------------------------------------------------------------
+# NORNIR.TEST FUNCTION TESTS
+# ----------------------------------------------------------------------------
 
 
 class TestNornirTests:
@@ -711,7 +734,7 @@ class TestNornirTests:
 
         for worker, results in ret.items():
             assert results, f"{worker} returned no test results"
-            for host, res in results.items():
+            for host, res in results["result"].items():
                 for test_name, test_res in res.items():
                     assert (
                         "Traceback" not in test_res
@@ -732,7 +755,7 @@ class TestNornirTests:
 
         for worker, results in ret.items():
             assert results, f"{worker} returned no test results"
-            for host, res in results.items():
+            for host, res in results["result"].items():
                 for test_name, test_res in res.items():
                     assert (
                         "Traceback" not in test_res
@@ -756,7 +779,7 @@ class TestNornirTests:
 
         for worker, results in ret.items():
             assert results, f"{worker} returned no test results"
-            for host, res in results.items():
+            for host, res in results["result"].items():
                 assert (
                     len(res) == 1
                 ), f"{worker}:{host} was expecting results for single test only"
@@ -778,7 +801,7 @@ class TestNornirTests:
 
         for worker, results in ret.items():
             assert results, f"{worker} returned no test results"
-            for host, res in results.items():
+            for host, res in results["result"].items():
                 assert (
                     "tests_dry_run" in res
                 ), f"{worker}:{host} no tests_dry_run results"
@@ -804,7 +827,7 @@ class TestNornirTests:
 
         for worker, results in ret.items():
             assert results, f"{worker} returned no test results"
-            for host, res in results.items():
+            for host, res in results["result"].items():
                 for test_name, test_res in res.items():
                     assert (
                         "Traceback" not in test_res
@@ -827,9 +850,9 @@ class TestNornirTests:
         pprint.pprint(ret)
 
         for worker, results in ret.items():
-            assert results, f"{worker} returned no test results"
-            assert isinstance(results, list)
-            for i in results:
+            assert results["result"], f"{worker} returned no test results"
+            assert isinstance(results["result"], list)
+            for i in results["result"]:
                 assert all(
                     k in i for k in ["host", "name", "result"]
                 ), f"{worker} test output does not contains all keys"
@@ -847,8 +870,8 @@ class TestNornirTests:
         pprint.pprint(ret)
 
         for worker, results in ret.items():
-            assert results, f"{worker} returned no test results"
-            for host, res in results.items():
+            assert results["result"], f"{worker} returned no test results"
+            for host, res in results["result"].items():
                 assert len(res) > 2, f"{worker}:{host} not having tasks output"
                 for task_name, task_res in res.items():
                     assert (
@@ -869,7 +892,7 @@ class TestNornirTests:
 
         for worker, results in ret.items():
             assert results, f"{worker} returned no test results"
-            for host, res in results.items():
+            for host, res in results["result"].items():
                 for test_name, test_res in res.items():
                     assert (
                         "Traceback" not in test_res
@@ -891,7 +914,7 @@ class TestNornirTests:
 
         for worker, results in ret.items():
             assert (
-                "suite download failed" in results
+                "suite download failed" in results["errors"][0]
             ), f"{worker} was expecting download to fail"
 
     def test_nornir_test_suite_bad_yaml_file(self, nfclient):
@@ -907,7 +930,7 @@ class TestNornirTests:
 
         for worker, results in ret.items():
             assert (
-                "YAML load failed" in results
+                "YAML load failed" in results["errors"][0]
             ), f"{worker} was expecting YAML load to fail"
 
     def test_nornir_test_suite_bad_jinja2(self, nfclient):
@@ -923,8 +946,13 @@ class TestNornirTests:
 
         for worker, results in ret.items():
             assert (
-                "Jinja2 rendering failed" in results
+                "Jinja2 rendering failed" in results["errors"][0]
             ), f"{worker} was expecting Jinja2 rendering to fail"
+
+
+# ----------------------------------------------------------------------------
+# NORNIR.NETWORK FUNCTION TESTS
+# ----------------------------------------------------------------------------
 
 
 class TestNornirNetwork:
@@ -938,8 +966,8 @@ class TestNornirNetwork:
         pprint.pprint(ret)
 
         for worker, results in ret.items():
-            assert results, f"{worker} returned no test results"
-            for host, res in results.items():
+            assert results["result"], f"{worker} returned no test results"
+            for host, res in results["result"].items():
                 assert "ping" in res, f"{worker}:{host} did not return ping result"
                 assert (
                     "Reply from" in res["ping"]
@@ -955,8 +983,8 @@ class TestNornirNetwork:
         pprint.pprint(ret)
 
         for worker, results in ret.items():
-            assert results, f"{worker} returned no test results"
-            for host, res in results.items():
+            assert results["result"], f"{worker} returned no test results"
+            for host, res in results["result"].items():
                 assert "ping" in res, f"{worker}:{host} did not return ping result"
                 assert (
                     "Reply from" in res["ping"]
@@ -976,8 +1004,8 @@ class TestNornirNetwork:
         pprint.pprint(ret)
 
         for worker, results in ret.items():
-            assert results, f"{worker} returned no test results"
-            for host, res in results.items():
+            assert results["result"], f"{worker} returned no test results"
+            for host, res in results["result"].items():
                 assert "ping" in res, f"{worker}:{host} did not return ping result"
                 assert (
                     "Reply from" in res["ping"]

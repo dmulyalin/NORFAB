@@ -148,7 +148,7 @@ class CopyFileModel(BaseModel):
 
 class ListFileDetails(BaseModel):
     url: StrictStr = Field("nf://", description="File location")
-       
+
     @staticmethod
     def run(*args, **kwargs):
         reply = NFCLIENT.get(

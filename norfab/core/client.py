@@ -183,7 +183,7 @@ class NFPClient(object):
                 reply_service,
                 reply_uuid,
                 reply_status,
-                reply_body,
+                reply_task_result,
             ) = msg
 
             # find message from recv queue for given uuid
@@ -198,7 +198,7 @@ class NFPClient(object):
                     reply_service == service
                 ), f"Was expecting reply from '{service}' but received reply from '{reply_service}' service"
 
-                return reply_status, reply_body
+                return reply_status, reply_task_result
             else:
                 self.recv_queue.put(msg)
         else:
@@ -311,7 +311,23 @@ class NFPClient(object):
         uuid: hex = None,
         timeout: int = 60,
     ):
-        """Send job reply message to broker requesting job results."""
+        """S
+        end job reply message to broker requesting job results.
+
+        :param service: mandatory, service name to target
+        :param task: mandatory, service task name to run
+        :param args: optional, list of position argument for the task
+        :param kwargs: optional, dictionary of key-word arguments for the task
+        :param workers: optional, workers to target - ``all``, ``any``, or
+            list of workers names
+        :param uuid: optional, unique job identifier
+        :param timeout: optional, job timeout in seconds, for how long client
+            waits for job result before giving up
+
+        Returns dictionary of ``status``, ``results`` and ``errors`` keys,
+        where ``results`` key is a dictionary keyed by workers' names, and
+        ``errors`` is a list of error strings.
+        """
         uuid = uuid or uuid4().hex
         args = args or []
         kwargs = kwargs or {}
@@ -593,7 +609,7 @@ class NFPClient(object):
         args: list = None,
         kwargs: dict = None,
         workers: str = "all",
-        job_timeout: int = 60,
+        job_timeout: int = 600,
     ):
         """
         Run job and return results produced by workers.
@@ -628,7 +644,7 @@ class NFPClient(object):
         args: list = None,
         kwargs: dict = None,
         workers: str = "all",
-        job_timeout: int = 60,
+        job_timeout: int = 600,
     ):
         """
         Iter run_job allows to return job results from workers progressively

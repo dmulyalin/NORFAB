@@ -16,7 +16,7 @@ import copy
 import os
 
 from jinja2 import Environment
-from norfab.core.worker import NFPWorker
+from norfab.core.worker import NFPWorker, Result
 from norfab.core.inventory import merge_recursively
 from norfab.core.exceptions import UnsupportedPluginError
 from nornir import InitNornir
@@ -127,7 +127,8 @@ class NornirWorker(NFPWorker):
                 workers="any",
                 kwargs=kwargs,
             )
-            if nb_inventory_data:
+            worker, data = nb_inventory_data.popitem()
+            if data["result"] and not data["failed"]:
                 break
             log.warning(
                 f"{self.name} - Netbox service returned no Nornir "
@@ -142,9 +143,8 @@ class NornirWorker(NFPWorker):
             return
 
         # merge Netbox inventory into Nornir inventory
-        worker, data = nb_inventory_data.popitem()
-        if data.get("hosts"):
-            merge_recursively(self.inventory, data["hosts"])
+        if data["result"].get("hosts"):
+            merge_recursively(self.inventory, data["result"])
         else:
             log.warning(
                 f"{self.name} - '{kwargs.get('instance', 'default')}' Netbox "
@@ -278,18 +278,20 @@ class NornirWorker(NFPWorker):
         filters = {k: kwargs.pop(k) for k in list(kwargs.keys()) if k in FFun_functions}
         filtered_nornir = FFun(self.nr, **filters)
         if details:
-            return {
-                host_name: {
-                    "platform": str(host.platform),
-                    "hostname": str(host.hostname),
-                    "port": str(host.port),
-                    "groups": [str(g) for g in host.groups],
-                    "username": str(host.username),
+            return Result(
+                result={
+                    host_name: {
+                        "platform": str(host.platform),
+                        "hostname": str(host.hostname),
+                        "port": str(host.port),
+                        "groups": [str(g) for g in host.groups],
+                        "username": str(host.username),
+                    }
+                    for host_name, host in filtered_nornir.inventory.hosts.items()
                 }
-                for host_name, host in filtered_nornir.inventory.hosts.items()
-            }
+            )
         else:
-            return list(filtered_nornir.inventory.hosts)
+            return Result(result=list(filtered_nornir.inventory.hosts))
 
     def get_nornir_inventory(self, **kwargs: dict) -> dict:
         """
@@ -299,7 +301,9 @@ class NornirWorker(NFPWorker):
         """
         filters = {k: kwargs.pop(k) for k in list(kwargs.keys()) if k in FFun_functions}
         filtered_nornir = FFun(self.nr, **filters)
-        return filtered_nornir.inventory.dict()
+        return Result(
+            result=filtered_nornir.inventory.dict(), name="get_nornir_inventory"
+        )
 
     def get_nornir_version(self):
         """
@@ -347,9 +351,9 @@ class NornirWorker(NFPWorker):
             except importlib.metadata.PackageNotFoundError:
                 pass
 
-        return libs
+        return Result(result=libs)
 
-    def task(self, plugin: str, **kwargs) -> dict:
+    def task(self, plugin: str, **kwargs) -> Result:
         """
         Function to invoke any of supported Nornir task plugins. This function
         performs dynamic import of requested plugin function and executes
@@ -382,14 +386,16 @@ class NornirWorker(NFPWorker):
         add_details = kwargs.pop("add_details", False)  # ResultSerializer
         to_dict = kwargs.pop("to_dict", True)  # ResultSerializer
         filters = {k: kwargs.pop(k) for k in list(kwargs.keys()) if k in FFun_functions}
+        ret = Result(name=f"{self.name}:task", result={} if to_dict else [])
 
         # download task from broker and load it
         if plugin.startswith("nf://"):
             function_text = self.fetch_file(plugin)
             if function_text is None:
-                msg = f"{self.name} - '{plugin}' task plugin download failed"
-                log.error(msg)
-                return msg
+                raise FileNotFoundError(
+                    f"{self.name} - '{plugin}' task plugin download failed"
+                )
+
             # load task function running exec
             globals_dict = {}
             exec(function_text, globals_dict, globals_dict)
@@ -398,31 +404,29 @@ class NornirWorker(NFPWorker):
         else:
             # below same as "from nornir.plugins.tasks import task_fun as task_function"
             task_fun = plugin.split(".")[-1]
-            try:
-                module = __import__(plugin, fromlist=[""])
-                task_function = getattr(module, task_fun)
-            except Exception as e:
-                msg = f"{self.name} - '{plugin}' task import failed with error '{e}'"
-                log.error(msg)
-                return msg
+            module = __import__(plugin, fromlist=[""])
+            task_function = getattr(module, task_fun)
 
         self.nr.data.reset_failed_hosts()  # reset failed hosts
         filtered_nornir = FFun(self.nr, **filters)  # filter hosts
 
         # check if no hosts matched
         if not filtered_nornir.inventory.hosts:
-            log.debug(
+            msg = (
                 f"{self.name} - nothing to do, no hosts matched by filters '{filters}'"
             )
-            return {} if to_dict else []
+            log.debug(msg)
+            ret.messages.append(msg)
+            return ret
 
         nr = self._add_processors(filtered_nornir, kwargs)  # add processors
 
         # run task
         log.debug(f"{self.name} - running Nornir task '{plugin}', kwargs '{kwargs}'")
         result = nr.run(task=task_function, **kwargs)
+        ret.result = ResultSerializer(result, to_dict=to_dict, add_details=add_details)
 
-        return ResultSerializer(result, to_dict=to_dict, add_details=add_details)
+        return ret
 
     def cli(
         self,
@@ -441,13 +445,11 @@ class NornirWorker(NFPWorker):
         :param cli_dry_run: do not send commands to devices just return them
         :param run_ttp: TTP Template to run
         """
-        ret = []
-        downloaded_cmds = []
-
-        # extract attributes
         add_details = kwargs.pop("add_details", False)  # ResultSerializer
         to_dict = kwargs.pop("to_dict", True)  # ResultSerializer
         filters = {k: kwargs.pop(k) for k in list(kwargs.keys()) if k in FFun_functions}
+        downloaded_cmds = []
+        ret = Result(name=f"{self.name}:task", result={} if to_dict else [])
 
         # decide on what send commands task plugin to use
         if plugin == "netmiko":
@@ -464,18 +466,20 @@ class NornirWorker(NFPWorker):
 
         # check if no hosts matched
         if not filtered_nornir.inventory.hosts:
-            log.debug(
+            msg = (
                 f"{self.name} - nothing to do, no hosts matched by filters '{filters}'"
             )
-            return {} if to_dict else []
+            log.debug(msg)
+            ret.messages.append(msg)
+            return ret
 
         # download TTP template if needed
         if run_ttp and run_ttp.startswith("nf://"):
             downloaded = self.fetch_file(run_ttp)
             kwargs["run_ttp"] = downloaded
             if downloaded is None:
-                log.error(f"{self.name} - TTP template download failed '{run_ttp}'")
-                return {} if to_dict else []
+                msg = f"{self.name} - TTP template download failed '{run_ttp}'"
+                raise FileNotFoundError(msg)
 
         nr = self._add_processors(filtered_nornir, kwargs)  # add processors
 
@@ -490,7 +494,8 @@ class NornirWorker(NFPWorker):
                     if downloaded is not None:
                         downloaded_cmds.append(downloaded)
                     else:
-                        log.error(f"{self.name} - command download failed '{command}'")
+                        msg = f"{self.name} - command download failed '{command}'"
+                        raise FileNotFoundError(msg)
                 else:
                     downloaded_cmds.append(command)
 
@@ -515,7 +520,7 @@ class NornirWorker(NFPWorker):
         else:
             result = nr.run(task=task_plugin, **kwargs)
 
-        ret = ResultSerializer(result, to_dict=to_dict, add_details=add_details)
+        ret.result = ResultSerializer(result, to_dict=to_dict, add_details=add_details)
 
         # remove __task__ data
         for host_name, host_object in nr.inventory.hosts.items():
@@ -534,14 +539,12 @@ class NornirWorker(NFPWorker):
         :param plugin: plugin name to use - ``netmiko``, ``scrapli``, ``napalm``
         :param cfg_dry_run: do not send commands to devices just return them
         """
-        ret = []
         downloaded_cfg = []
         config = config if isinstance(config, list) else [config]
-
-        # extract attributes
         add_details = kwargs.pop("add_details", False)  # ResultSerializer
         to_dict = kwargs.pop("to_dict", True)  # ResultSerializer
         filters = {k: kwargs.pop(k) for k in list(kwargs.keys()) if k in FFun_functions}
+        ret = Result(name=f"{self.name}:task", result={} if to_dict else [])
 
         # decide on what send commands task plugin to use
         if plugin == "netmiko":
@@ -558,10 +561,12 @@ class NornirWorker(NFPWorker):
 
         # check if no hosts matched
         if not filtered_nornir.inventory.hosts:
-            log.debug(
+            msg = (
                 f"{self.name} - nothing to do, no hosts matched by filters '{filters}'"
             )
-            return {} if to_dict else []
+            ret.messages.append(msg)
+            log.debug(msg)
+            return ret
 
         nr = self._add_processors(filtered_nornir, kwargs)  # add processors
 
@@ -572,9 +577,8 @@ class NornirWorker(NFPWorker):
                 if downloaded is not None:
                     downloaded_cfg.append(downloaded)
                 else:
-                    log.error(
-                        f"{self.name} - config command download failed '{command}'"
-                    )
+                    msg = f"{self.name} - config download failed '{command}'"
+                    raise FileNotFoundError(msg)
             else:
                 downloaded_cfg.append(command)
 
@@ -598,8 +602,9 @@ class NornirWorker(NFPWorker):
             )
         else:
             result = nr.run(task=task_plugin, **kwargs)
+            ret.changed = True
 
-        ret = ResultSerializer(result, to_dict=to_dict, add_details=add_details)
+        ret.result = ResultSerializer(result, to_dict=to_dict, add_details=add_details)
 
         # remove __task__ data
         for host_name, host_object in nr.inventory.hosts.items():
@@ -630,36 +635,32 @@ class NornirWorker(NFPWorker):
             content in addition to test results using dictionary with ``results``
             and ``suite`` keys
         """
-        ret = []
         downloaded_suite = None
         tests = {}  # dictionary to hold per-host test suites
-
-        # extract attributes
         add_details = kwargs.pop("add_details", False)  # ResultSerializer
         to_dict = kwargs.pop("to_dict", True)  # ResultSerializer
         filters = {k: kwargs.pop(k) for k in list(kwargs.keys()) if k in FFun_functions}
+        ret = Result(name=f"{self.name}:task", result={} if to_dict else [])
 
         self.nr.data.reset_failed_hosts()  # reset failed hosts
         filtered_nornir = FFun(self.nr, **filters)  # filter hosts
 
         # check if no hosts matched
         if not filtered_nornir.inventory.hosts:
-            log.debug(
+            msg = (
                 f"{self.name} - nothing to do, no hosts matched by filters '{filters}'"
             )
-            if to_dict is True:
-                ret = {}
+            log.debug(msg)
+            ret.messages.append(msg)
             if return_tests_suite is True:
-                return {"results": ret, "suite": {}}
-            else:
-                return ret
+                ret.result = {"results": ret, "suite": {}}
+            return ret
 
         # download tests suite
         downloaded_suite = self.fetch_file(suite)
         if downloaded_suite is None:
             msg = f"{self.name} - '{suite}' suite download failed"
-            log.error(msg)
-            return msg
+            raise FileNotFoundError(msg)
 
         # generate per-host test suites
         for host_name, host_object in filtered_nornir.inventory.hosts.items():
@@ -671,26 +672,21 @@ class NornirWorker(NFPWorker):
                 )
                 rendered_suite = renderer.render(**context)
             except Exception as e:
-                msg = (
-                    f"{self.name} - '{suite}' Jinja2 rendering failed with error '{e}'"
-                )
-                log.error(msg)
-                return msg
+                msg = f"{self.name} - '{suite}' Jinja2 rendering failed: '{e}'"
+                raise RuntimeError(msg)
             # load suit using YAML
             try:
                 tests[host_name] = yaml.safe_load(rendered_suite)
             except Exception as e:
-                msg = f"{self.name} - '{suite}' YAML load failed with error '{e}'"
-                log.error(msg)
-                return msg
+                msg = f"{self.name} - '{suite}' YAML load failed: '{e}'"
+                raise RuntimeError(msg)
 
         # validate tests suite
         try:
             _ = modelTestsProcessorSuite(tests=tests)
         except Exception as e:
-            msg = f"{self.name} - '{suite}' suite validation failed with error '{e}'"
-            log.error(msg)
-            return msg
+            msg = f"{self.name} - '{suite}' suite validation failed: '{e}'"
+            raise RuntimeError(msg)
 
         # save per-host tests suite content before mutating it
         if return_tests_suite is True:
@@ -715,13 +711,20 @@ class NornirWorker(NFPWorker):
             )
             result = nr.run(task=netmiko_send_commands, **kwargs)
 
-        ret = ResultSerializer(result, to_dict=to_dict, add_details=add_details)
-
         # check if need to return tests suite content
         if return_tests_suite is True:
-            return {"results": ret, "suite": return_suite}
+            ret.result = {
+                "results": ResultSerializer(
+                    result, to_dict=to_dict, add_details=add_details
+                ),
+                "suite": return_suite,
+            }
         else:
-            return ret
+            ret.result = ResultSerializer(
+                result, to_dict=to_dict, add_details=add_details
+            )
+
+        return ret
 
     def netconf(self) -> dict:
         pass
