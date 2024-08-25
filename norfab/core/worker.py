@@ -334,7 +334,9 @@ class NFPWorker:
             log_level=self.log_level,
         )
         self.keepaliver.start()
-        self.client = NFPClient(self.broker, name=f"{self.name}-NFPClient")
+        self.client = NFPClient(
+            self.broker, name=f"{self.name}-NFPClient", exit_event=self.exit_event
+        )
 
     def reconnect_to_broker(self):
         """Connect or reconnect to broker"""
@@ -388,10 +390,14 @@ class NFPWorker:
 
         log.debug(f"{self.name} - worker received invenotry data {inventory_data}")
 
-        return json.loads(inventory_data)
+        if inventory_data:
+            return json.loads(inventory_data)
+        else:
+            return {}
 
     def destroy(self, message=None):
         self.destroy_event.set()
+        self.client.destroy()
 
         # join all the threads
         if self.request_thread is not None:

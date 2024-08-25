@@ -239,6 +239,35 @@ class TestNornirCli:
                     ]
                 ), f"{worker}:{host} output is wrong"
 
+    def test_commands_with_tests(self, nfclient):
+        ret = nfclient.run_job(
+            b"nornir",
+            "cli",
+            workers="nornir-worker-1",
+            kwargs={
+                "commands": ["show version", "show clock"],
+                "tests": [
+                    ["show version", "contains", "cEOS"],
+                    ["show clock", "contains", "NTP"],
+                ],
+                "FL": ["ceos-spine-1", "ceos-spine-2"],
+                "remove_tasks": False,
+            },
+        )
+        pprint.pprint(ret)
+        
+        for worker, results in ret.items():
+            for host, res in results["result"].items():
+                assert all(
+                    k in res 
+                    for k in [
+                        "show clock", 
+                        "show clock contains NTP..",
+                        "show version",
+                        "show version contains cEOS..",
+                    ]
+                )
+                
     @pytest.mark.skip(reason="TBD")
     def test_commands_with_tf_processor(self, nfclient):
         pass

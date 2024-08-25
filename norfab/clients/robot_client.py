@@ -136,7 +136,7 @@ class NorFabRobot:
             kwargs=DATA.get("kwargs", {}),
         )
 
-        if ret is None:
+        if ret["errors"]:
             raise ContinuableFailure("Task failed")
 
         return ret
@@ -174,7 +174,7 @@ class NorFabRobot:
         )
         # iterate over results and log tests and task statuses
         for worker, worker_results in ret.items():
-            for result in worker_results["results"]:
+            for result in worker_results["result"]["test_results"]:
                 host = result["host"]
                 # evaluate and log test result
                 if "success" in result:
@@ -264,8 +264,8 @@ class NorFabRobot:
         # form nested HTML for devices tes suite
         devices_test_suite = []
         for worker, worker_results in ret.items():
-            for host in sorted(worker_results["suite"].keys()):
-                suite_content = worker_results["suite"][host]
+            for host in sorted(worker_results["result"]["suite"].keys()):
+                suite_content = worker_results["result"]["suite"][host]
                 devices_test_suite.append(
                     f'<p><details><summary>{host} ({len(suite_content)} tests)</summary><p style="margin-left:20px;">{yaml.dump(suite_content, default_flow_style=False)}</p></details></p>'
                 )

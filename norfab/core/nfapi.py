@@ -84,7 +84,7 @@ class NorFab:
         self.broker_endpoint = self.inventory.get("broker", {}).get("endpoint")
         self.broker_exit_event = Event()
         self.workers_exit_event = Event()
-        self.services_exit_event = Event()
+        self.clients_exit_event = Event()
 
     def start_broker(self):
         if self.broker_endpoint:
@@ -204,6 +204,7 @@ class NorFab:
         Stop NORFAB processes.
         """
         # stop client
+        self.clients_exit_event.set()
         self.client.destroy()
         # stop workers
         self.workers_exit_event.set()
@@ -224,7 +225,10 @@ class NorFab:
 
         if broker_endpoint or self.broker_endpoint:
             client = NFPClient(
-                broker_endpoint or self.broker_endpoint, "NFPClient", self.log_level
+                broker_endpoint or self.broker_endpoint,
+                "NFPClient",
+                self.log_level,
+                self.clients_exit_event,
             )
             if self.client is None:  # own the first client
                 self.client = client

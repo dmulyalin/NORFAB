@@ -53,11 +53,7 @@ log = logging.getLogger(__name__)
 
 def recv(client):
     """Thread to process receive messages from broker."""
-    while True:
-        # check if need to stop
-        if client.exit_event.is_set():
-            break
-
+    while not client.exit_event.is_set():
         # Poll socket for messages every timeout interval
         try:
             items = client.poller.poll(client.timeout)
@@ -90,7 +86,7 @@ class NFPClient(object):
     stats_recv_from_broker = 0
     stats_reconnect_to_broker = 0
 
-    def __init__(self, broker, name, log_level="WARNING"):
+    def __init__(self, broker, name, log_level="WARNING", exit_event=None):
         log.setLevel(log_level.upper())
         self.name = name
         self.zmq_name = f"{self.name}-{uuid4().hex}"
@@ -111,7 +107,7 @@ class NFPClient(object):
             with open(self.queue_filename, "w") as f:
                 pass
 
-        self.exit_event = threading.Event()
+        self.exit_event = exit_event or threading.Event()
         self.recv_queue = queue.Queue(maxsize=0)
 
         # start receive thread
@@ -164,13 +160,17 @@ class NFPClient(object):
         """Wait for response from broker."""
         retries = self.retries
         while retries > 0:
+            # check if need to stop
+            if self.exit_event.is_set():
+                break
             try:
                 msg = self.recv_queue.get(block=True, timeout=self.timeout / 1000)
                 self.recv_queue.task_done()
             except queue.Empty:
                 if retries:
                     log.warning(
-                        f"{self.name} - '{uuid}' job, no reply from broker '{self.broker}', reconnecting"
+                        f"{self.name} - '{uuid}:{service}:{command}' job, "
+                        f"no reply from broker '{self.broker}', reconnecting"
                     )
                     self.reconnect_to_broker()
                 retries -= 1
@@ -203,14 +203,15 @@ class NFPClient(object):
                 self.recv_queue.put(msg)
         else:
             log.error(
-                f"{self.name} - '{uuid}' job, client {self.retries} retries attempts exceeded"
+                f"{self.name} - '{uuid}:{service}:{command}' job, "
+                f"client {self.retries} retries attempts exceeded"
             )
             return b"408", b'{"status": "Request Timeout"}'
 
     def post(
         self,
         service: str,
-        task: dict,
+        task: str,
         args: list = None,
         kwargs: dict = None,
         workers: str = "all",
@@ -243,6 +244,9 @@ class NFPClient(object):
         # run POST response loop
         start_time = time.time()
         while timeout > time.time() - start_time:
+            # check if need to stop
+            if self.exit_event.is_set():
+                return ret
             self.send_to_broker(
                 NFP.POST, service, workers, uuid, request
             )  # 1 send POST to broker
@@ -275,6 +279,9 @@ class NFPClient(object):
         start_time = time.time()
         workers_acked = set()
         while timeout > time.time() - start_time:
+            # check if need to stop
+            if self.exit_event.is_set():
+                return ret
             status, response = self.rcv_from_broker(NFP.RESPONSE, service, uuid)
             response = json.loads(response)
             if status == b"202":  # ACCEPTED
@@ -285,7 +292,10 @@ class NFPClient(object):
                 if workers_acked == workers_dispatched:
                     break
             else:
-                msg = f"{self.name} - '{uuid}' job, unexpected POST request status '{status}', response '{response}'"
+                msg = (
+                    f"{self.name} - '{uuid}:{service}:{task}' job, "
+                    f"unexpected POST request status '{status}', response '{response}'"
+                )
                 log.error(msg)
                 ret["errors"].append(msg)
         else:
@@ -349,12 +359,15 @@ class NFPClient(object):
         start_time = time.time()
         workers_done = set()
         while timeout > time.time() - start_time:
+            # check if need to stop
+            if self.exit_event.is_set():
+                return None
             # dispatch GET request to workers
             self.send_to_broker(NFP.GET, service, workers, uuid, request)
             status, get_response = self.rcv_from_broker(NFP.RESPONSE, service, uuid)
             # received actual GET request results from broker e.g. MMI, SID or FSS services
             if status == b"200":
-                ret = get_response
+                ret = get_response.decode("utf-8")
                 break
             # received DISPATCH response from broker
             if status != b"202":
@@ -368,6 +381,9 @@ class NFPClient(object):
             # collect GET responses from workers
             workers_responded = set()
             while timeout > time.time() - start_time:
+                # check if need to stop
+                if self.exit_event.is_set():
+                    return None
                 status, response = self.rcv_from_broker(NFP.RESPONSE, service, uuid)
                 log.debug(
                     f"{self.name} - job '{uuid}' response from worker '{response}'"
@@ -388,7 +404,10 @@ class NFPClient(object):
                 else:
                     if response.get("worker"):
                         workers_responded.add(response["worker"])
-                    msg = f"{self.name} - '{uuid}' job, unexpected GET Response status '{status}', response '{response}'"
+                    msg = (
+                        f"{self.name} - '{uuid}:{service}:{task}' job, "
+                        f"unexpected GET Response status '{status}', response '{response}'"
+                    )
                     log.error(msg)
                     ret["errors"].append(msg)
                 if workers_responded == workers_dispatched:
@@ -435,6 +454,9 @@ class NFPClient(object):
         start_time = time.time()
         workers_done = set()
         while timeout > time.time() - start_time:
+            # check if need to stop
+            if self.exit_event.is_set():
+                break
             # dispatch GET request to workers
             self.send_to_broker(NFP.GET, service, workers, uuid, request)
             status, get_response = self.rcv_from_broker(NFP.RESPONSE, service, uuid)
@@ -448,6 +470,9 @@ class NFPClient(object):
             # collect GET responses from workers
             workers_responded = set()
             while timeout > time.time() - start_time:
+                # check if need to stop
+                if self.exit_event.is_set():
+                    break
                 status, response = self.rcv_from_broker(NFP.RESPONSE, service, uuid)
                 log.debug(
                     f"{self.name} - job '{uuid}' response from worker '{response}'"
@@ -548,6 +573,9 @@ class NFPClient(object):
             with open(destination, "wb") as dst_file:
                 start_time = time.time()
                 while timeout > time.time() - start_time:
+                    # check if need to stop
+                    if self.exit_event.is_set():
+                        return "400", ""
                     # ask for chunks
                     while credit:
                         request = json.dumps(

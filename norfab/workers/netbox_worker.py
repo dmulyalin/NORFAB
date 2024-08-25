@@ -190,7 +190,7 @@ class NetboxWorker(NFPWorker):
         self.inventory = self.load_inventory()
         if not self.inventory:
             log.critical(
-                f"Broker {self.broker} returned no inventory for {self.name}, killing myself..."
+                f"{self.name} - Broker {self.broker} returned no inventory for {self.name}, killing myself..."
             )
             self.destroy()
 

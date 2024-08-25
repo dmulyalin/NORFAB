@@ -120,13 +120,18 @@ class NornirWorker(NFPWorker):
 
         # get Nornir inventory from netbox
         while retry:
+            if self.destroy_event.is_set():
+                return
             retry -= 1
             nb_inventory_data = self.client.run_job(
                 b"netbox",
                 "get_nornir_inventory",
                 workers="any",
                 kwargs=kwargs,
+                job_timeout=30,
             )
+            if not nb_inventory_data:
+                continue
             worker, data = nb_inventory_data.popitem()
             if data["result"] and not data["failed"]:
                 break
@@ -637,10 +642,10 @@ class NornirWorker(NFPWorker):
         """
         downloaded_suite = None
         tests = {}  # dictionary to hold per-host test suites
-        add_details = kwargs.pop("add_details", False)  # ResultSerializer
-        to_dict = kwargs.pop("to_dict", True)  # ResultSerializer
+        add_details = kwargs.get("add_details", False)  # ResultSerializer
+        to_dict = kwargs.get("to_dict", True)  # ResultSerializer
         filters = {k: kwargs.pop(k) for k in list(kwargs.keys()) if k in FFun_functions}
-        ret = Result(name=f"{self.name}:task", result={} if to_dict else [])
+        ret = Result(name=f"{self.name}:test", result={} if to_dict else [])
 
         self.nr.data.reset_failed_hosts()  # reset failed hosts
         filtered_nornir = FFun(self.nr, **filters)  # filter hosts
@@ -653,7 +658,7 @@ class NornirWorker(NFPWorker):
             log.debug(msg)
             ret.messages.append(msg)
             if return_tests_suite is True:
-                ret.result = {"results": ret, "suite": {}}
+                ret.result = {"test_results": [], "suite": {}}
             return ret
 
         # download tests suite
@@ -698,31 +703,24 @@ class NornirWorker(NFPWorker):
             result = filtered_nornir.run(
                 task=nr_test, name="tests_dry_run", ret_data_per_host=tests
             )
-        else:
-            # add tests processor
-            nr = self._add_processors(
-                filtered_nornir,
-                kwargs={
-                    "tests": tests,
-                    "remove_tasks": remove_tasks,
-                    "failed_only": failed_only,
-                    "subset": subset,
-                },
-            )
-            result = nr.run(task=netmiko_send_commands, **kwargs)
-
-        # check if need to return tests suite content
-        if return_tests_suite is True:
-            ret.result = {
-                "results": ResultSerializer(
-                    result, to_dict=to_dict, add_details=add_details
-                ),
-                "suite": return_suite,
-            }
-        else:
             ret.result = ResultSerializer(
                 result, to_dict=to_dict, add_details=add_details
             )
+        else:
+            test_kwargs = {
+                **kwargs,
+                **filters,
+                "tests": tests,
+                "remove_tasks": remove_tasks,
+                "failed_only": failed_only,
+                "subset": subset,
+            }
+            result = self.cli(**test_kwargs)  # returns Result object
+            ret.result = result.result
+
+        # check if need to return tests suite content
+        if return_tests_suite is True:
+            ret.result = {"test_results": ret.result, "suite": return_suite}
 
         return ret
 
