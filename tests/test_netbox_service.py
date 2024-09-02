@@ -1258,3 +1258,28 @@ class TestGetCircuits:
                                 "remote_interface",
                             ]
                         ), f"{worker}:{device}:{cid} not all circuit data returned"
+
+
+class TestGetNextIP:
+    nb_version = None
+
+    def test_get_ip(self, nfclient):
+        if self.nb_version is None:
+            self.nb_version = get_nb_version(nfclient)
+
+        if self.nb_version[0] == 4:
+            ret = nfclient.run_job(
+                b"netbox",
+                "get_next_ip",
+                workers="any",
+                kwargs={
+                    "prefix": "10.0.0.0/24",
+                    "description": "test create ip",
+                },
+            )
+            pprint.pprint(ret, width=200)
+            for worker, res in ret.items():
+                assert res["failed"] == False, "Allocation failed"
+                assert (
+                    res["result"].count(".") == 3 and "/" in res["result"]
+                ), f"Result is not IPv4 {res['result']}"

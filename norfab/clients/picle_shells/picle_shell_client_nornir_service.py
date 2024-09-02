@@ -7,8 +7,16 @@ Client that implements interactive shell to work with NorFab.
 import logging
 import json
 import yaml
+import queue
+import threading
+import functools
+import time
 
+from uuid import uuid4  # random uuid
 from rich.console import Console
+from rich.live import Live
+from rich.panel import Panel
+from rich import box
 from picle.models import PipeFunctionsModel, Outputters
 from enum import Enum
 from pydantic import (
@@ -33,6 +41,101 @@ log = logging.getLogger(__name__)
 # ---------------------------------------------------------------------------------------------
 # HELPER FUNCTIONS
 # ---------------------------------------------------------------------------------------------
+
+
+def generate_panel(message="", title=""):
+    return Panel(message, title=title, title_align="left", box=box.ROUNDED)
+
+
+def listen_events_thread(uuid, stop):
+    """Helper function to pretty print events to command line"""
+    events = []
+    start_time = time.time()
+    with Live(generate_panel(), refresh_per_second=10) as live:
+        while not (stop.is_set() or NFCLIENT.exit_event.is_set()):
+            try:
+                event = NFCLIENT.event_queue.get(block=True, timeout=0.1)
+                NFCLIENT.event_queue.task_done()
+            except queue.Empty:
+                continue
+
+            (
+                empty,
+                header,
+                command,
+                service,
+                job_uuid,
+                status,
+                data,
+            ) = event
+
+            if job_uuid != uuid.encode("utf-8"):
+                NFCLIENT.event_queue.put(event)
+                continue
+
+            # extract event parameters
+            data = json.loads(data)
+            worker = data["worker"]
+            service = data["service"]
+            task = data["task"]
+            timestamp = data["data"]["timestamp"]
+            nr_task_name = data["data"]["task_name"]
+            nr_task_event = data["data"]["task_event"]
+            nr_task_type = data["data"]["task_type"]
+            nr_task_hosts = data["data"].get("hosts")
+            nr_task_status = data["data"]["status"]
+            nr_task_message = data["data"]["message"]
+            nr_parent_task = data["data"]["parent_task"]
+
+            events.append(
+                f"{timestamp}: {worker} {', '.join(nr_task_hosts)} '{nr_task_name}' "
+                f"{nr_task_type} {nr_task_event}"
+            )
+            if len(events) == 20:
+                events = events[1:]
+
+            time_delta = time.strftime(
+                "%H:%M:%S", time.gmtime(time.time() - start_time)
+            )
+            live.update(
+                generate_panel(
+                    message="\n".join(events),
+                    title=f"{service}.{task} {uuid} {time_delta}",
+                )
+            )
+
+
+def listen_events(fun):
+    @functools.wraps(fun)
+    def wrapper(*args, **kwargs):
+        events_thread_stop = threading.Event()
+        progress = kwargs.get("progress")
+        uuid = uuid4().hex
+
+        # start events thread to handle job events printing
+        if progress:
+            events_thread = threading.Thread(
+                target=listen_events_thread,
+                name="NornirCliShell_events_listen_thread",
+                args=(
+                    uuid,
+                    events_thread_stop,
+                ),
+            )
+            events_thread.start()
+
+        # run decorated function
+        try:
+            res = fun(uuid, *args, **kwargs)
+        finally:
+            # stop events thread
+            if progress:
+                events_thread_stop.set()
+                events_thread.join()
+
+        return res
+
+    return wrapper
 
 
 def print_stats(data: dict):
@@ -173,6 +276,11 @@ class NornirCommonArgs(BaseModel):
     diff_last: Optional[Union[StrictStr, StrictInt]] = Field(
         None,
         description="File version number to diff, default is 1 (last)",
+    )
+    progress: Optional[StrictBool] = Field(
+        None,
+        description="Emit execution progress",
+        json_schema_extra={"presence": True},
     )
 
 
@@ -596,7 +704,8 @@ class NornirCliShell(filters, TabulateTableModel, NornirCommonArgs, ClientRunJob
     run_ttp: Optional[StrictStr] = Field(None, description="TTP Template to run")
 
     @staticmethod
-    def run(*args, **kwargs):
+    @listen_events
+    def run(uuid, *args, **kwargs):
         workers = kwargs.pop("workers", "all")
 
         # extract Tabulate arguments
@@ -612,21 +721,11 @@ class NornirCliShell(filters, TabulateTableModel, NornirCommonArgs, ClientRunJob
 
         if kwargs.get("hosts"):
             kwargs["FL"] = kwargs.pop("hosts")
-        # first_done = False
-        # for reply in NFCLIENT.run_job_iter("nornir", "cli", workers=workers, args=args, kwargs=kwargs):
-        #     if first_done is False:
-        #         print(f"Submitted job to workers {', '.join(reply['workers'])}")
-        #         first_done = True
-        #     else:
-        #         print(f"Received job results")
-        #         print_nornir_results(reply)
-        with RICHCONSOLE.status(
-            "[bold green]Collecting CLI commands", spinner="dots"
-        ) as status:
-            result = NFCLIENT.run_job(
-                "nornir", "cli", workers=workers, args=args, kwargs=kwargs
-            )
 
+        # run the job
+        result = NFCLIENT.run_job(
+            "nornir", "cli", workers=workers, args=args, kwargs=kwargs, uuid=uuid
+        )
         result = log_error_or_result(result)
 
         # form table results
@@ -821,7 +920,8 @@ class NornirCfgShell(filters, TabulateTableModel, NornirCommonArgs, ClientRunJob
     plugin: NrCfgPlugins = Field(None, description="Configuration plugin parameters")
 
     @staticmethod
-    def run(*args, **kwargs):
+    @listen_events
+    def run(uuid, *args, **kwargs):
         workers = kwargs.pop("workers", "all")
 
         # extract Tabulate arguments
@@ -841,7 +941,7 @@ class NornirCfgShell(filters, TabulateTableModel, NornirCommonArgs, ClientRunJob
             "[bold green]Configuring devices", spinner="dots"
         ) as status:
             result = NFCLIENT.run_job(
-                "nornir", "cfg", workers=workers, args=args, kwargs=kwargs
+                "nornir", "cfg", workers=workers, args=args, kwargs=kwargs, uuid=uuid
             )
 
         result = log_error_or_result(result)
@@ -884,7 +984,8 @@ class NornirTaskShell(filters, TabulateTableModel, NornirCommonArgs, ClientRunJo
     )
 
     @staticmethod
-    def run(*args, **kwargs):
+    @listen_events
+    def run(uuid, *args, **kwargs):
         workers = kwargs.pop("workers", "all")
 
         # extract Tabulate arguments
@@ -902,7 +1003,7 @@ class NornirTaskShell(filters, TabulateTableModel, NornirCommonArgs, ClientRunJo
             kwargs["FL"] = kwargs.pop("hosts")
         with RICHCONSOLE.status("[bold green]Running task", spinner="dots") as status:
             result = NFCLIENT.run_job(
-                "nornir", "task", workers=workers, args=args, kwargs=kwargs
+                "nornir", "task", workers=workers, args=args, kwargs=kwargs, uuid=uuid
             )
 
         result = log_error_or_result(result)
@@ -961,7 +1062,8 @@ class NornirTestShell(filters, TabulateTableModel, NornirCommonArgs, ClientRunJo
     )
 
     @staticmethod
-    def run(*args, **kwargs):
+    @listen_events
+    def run(uuid, *args, **kwargs):
         workers = kwargs.pop("workers", "all")
 
         # extract Tabulate arguments
@@ -979,7 +1081,7 @@ class NornirTestShell(filters, TabulateTableModel, NornirCommonArgs, ClientRunJo
             kwargs["FL"] = kwargs.pop("hosts")
         with RICHCONSOLE.status("[bold green]Running tests", spinner="dots") as status:
             result = NFCLIENT.run_job(
-                "nornir", "test", workers=workers, args=args, kwargs=kwargs
+                "nornir", "test", workers=workers, args=args, kwargs=kwargs, uuid=uuid
             )
 
         result = log_error_or_result(result)
@@ -1055,7 +1157,8 @@ class NornirNetworkPing(
         outputter = print_nornir_results
 
     @staticmethod
-    def run(*args, **kwargs):
+    @listen_events
+    def run(uuid, *args, **kwargs):
         kwargs["fun"] = "ping"
         workers = kwargs.pop("workers", "all")
 
@@ -1074,7 +1177,12 @@ class NornirNetworkPing(
             kwargs["FL"] = kwargs.pop("hosts")
         with RICHCONSOLE.status("[bold green]Running pings", spinner="dots") as status:
             result = NFCLIENT.run_job(
-                "nornir", "network", workers=workers, args=args, kwargs=kwargs
+                "nornir",
+                "network",
+                workers=workers,
+                args=args,
+                kwargs=kwargs,
+                uuid=uuid,
             )
 
         result = log_error_or_result(result)
@@ -1123,7 +1231,8 @@ class NornirNetworkDns(filters, TabulateTableModel, NornirCommonArgs, ClientRunJ
         outputter = print_nornir_results
 
     @staticmethod
-    def run(*args, **kwargs):
+    @listen_events
+    def run(uuid, *args, **kwargs):
         kwargs["fun"] = "resolve_dns"
         workers = kwargs.pop("workers", "all")
 
@@ -1142,7 +1251,12 @@ class NornirNetworkDns(filters, TabulateTableModel, NornirCommonArgs, ClientRunJ
             kwargs["FL"] = kwargs.pop("hosts")
         with RICHCONSOLE.status("[bold green]Running pings", spinner="dots") as status:
             result = NFCLIENT.run_job(
-                "nornir", "network", workers=workers, args=args, kwargs=kwargs
+                "nornir",
+                "network",
+                workers=workers,
+                args=args,
+                kwargs=kwargs,
+                uuid=uuid,
             )
 
         result = log_error_or_result(result)

@@ -1,0 +1,13 @@
+{% set prefix = "10.0.0.0/24" %}
+interface Loopback0
+  description RID for {{ host.name }} MGMT
+  ip address {{ prefix | nb_get_next_ip(description="{} MGMT".format(host.name), device=host.name, interface="Loopback0") }}
+!
+interface Loopback1
+  description RID for {{ host.name }} OSPF
+  ip address {{ prefix | nb_get_next_ip("{} MGMT".format(host.name), host.name, "Loopback0") }}
+!
+interface Loopback2
+  description RID for {{ host.name }} BGP
+  ip address {{ prefix | nb_get_next_ip }}
+!

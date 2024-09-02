@@ -220,6 +220,41 @@ def _get(worker, get_queue, destroy_event, base_dir_jobs):
         get_queue.task_done()
 
 
+def _event(worker, event_queue, destroy_event):
+    """Thread function to emit events to Clients"""
+    while not destroy_event.is_set():
+        try:
+            work = event_queue.get(block=True, timeout=0.1)
+        except queue.Empty:
+            continue
+
+        client_address = work[0]
+        suuid = work[1]
+        task = work[2]
+        data = work[3]
+
+        event = [
+            client_address,
+            b"",
+            suuid,
+            b"200",
+            json.dumps(
+                {
+                    "worker": worker.name,
+                    "service": worker.service.decode("utf-8"),
+                    "uuid": suuid.decode("utf-8"),
+                    "timestamp": time.ctime(),
+                    "task": task,
+                    "data": data,
+                }
+            ).encode("utf-8"),
+        ]
+
+        worker.send_to_broker(NFP.EVENT, event)
+
+        event_queue.task_done()
+
+
 def close(delete_queue, queue_filename, destroy_event, base_dir_jobs):
     pass
 
@@ -302,10 +337,12 @@ class NFPWorker:
         self.reply_thread = None
         self.close_thread = None
         self.recv_thread = None
+        self.event_thread = None
 
         self.post_queue = queue.Queue(maxsize=0)
         self.get_queue = queue.Queue(maxsize=0)
         self.delete_queue = queue.Queue(maxsize=0)
+        self.event_queue = queue.Queue(maxsize=0)
 
         # create queue file
         os.makedirs(self.base_dir, exist_ok=True)
@@ -369,6 +406,8 @@ class NFPWorker:
             msg = [b"", NFP.WORKER, NFP.DISCONNECT, self.service]
         elif command == NFP.RESPONSE:
             msg = [b"", NFP.WORKER, NFP.RESPONSE] + msg
+        elif command == NFP.EVENT:
+            msg = [b"", NFP.WORKER, NFP.EVENT] + msg
         else:
             log.error(
                 f"{self.name} - cannot send '{command}' to broker, command unsupported"
@@ -406,6 +445,8 @@ class NFPWorker:
             self.reply_thread.join()
         if self.close_thread is not None:
             self.close_thread.join()
+        if self.event_thread is not None:
+            self.event_thread.join()
         if self.recv_thread:
             self.recv_thread.join()
 
@@ -431,6 +472,16 @@ class NFPWorker:
                 f"{self.name} - worker '{url}' fetch file failed with status '{status}'"
             )
             return None
+
+    def event(self, data: Any = None) -> None:
+        self.event_queue.put(
+            [
+                self.current_job["client_address"],
+                self.current_job["juuid"],
+                self.current_job["task"],
+                data,
+            ]
+        )
 
     def work(self):
         # Start threads
@@ -466,6 +517,13 @@ class NFPWorker:
             ),
         )
         self.close_thread.start()
+        self.event_thread = threading.Thread(
+            target=_event,
+            daemon=True,
+            name=f"{self.name}_event_thread",
+            args=(self, self.event_queue, self.destroy_event),
+        )
+        self.event_thread.start()
         # start receive thread after other threads
         self.recv_thread = threading.Thread(
             target=recv,
@@ -505,6 +563,12 @@ class NFPWorker:
             task = data.pop("task")
             args = data.pop("args", [])
             kwargs = data.pop("kwargs", {})
+
+            self.current_job = {
+                "client_address": client_address,
+                "juuid": juuid,
+                "task": task,
+            }
 
             log.debug(
                 f"{self.name} - doing task '{task}', data: {data}, args: '{args}', "

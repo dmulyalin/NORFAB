@@ -51,6 +51,12 @@ log = logging.getLogger(__name__)
 # --------------------------------------------------------------------------------------------
 
 
+def event_filename(suuid: str, events_dir: str):
+    """Returns freshly allocated event filename for given UUID str"""
+    suuid = suuid.decode("utf-8") if isinstance(suuid, bytes) else suuid
+    return os.path.join(events_dir, f"{suuid}.json")
+
+
 def recv(client):
     """Thread to process receive messages from broker."""
     while not client.exit_event.is_set():
@@ -64,8 +70,12 @@ def recv(client):
         if items:
             msg = client.broker_socket.recv_multipart()
             log.debug(f"{client.name} - received '{msg}'")
-            client.recv_queue.put(msg)
-            client.stats_recv_from_broker += 1
+            if msg[2] == NFP.EVENT:
+                client.event_queue.put(msg)
+                client.stats_recv_event_from_broker += 1
+            else:
+                client.recv_queue.put(msg)
+                client.stats_recv_from_broker += 1
 
 
 class NFPClient(object):
@@ -85,8 +95,11 @@ class NFPClient(object):
     stats_send_to_broker = 0
     stats_recv_from_broker = 0
     stats_reconnect_to_broker = 0
+    stats_recv_event_from_broker = 0
 
-    def __init__(self, broker, name, log_level="WARNING", exit_event=None):
+    def __init__(
+        self, broker, name, log_level="WARNING", exit_event=None, event_queue=None
+    ):
         log.setLevel(log_level.upper())
         self.name = name
         self.zmq_name = f"{self.name}-{uuid4().hex}"
@@ -96,10 +109,14 @@ class NFPClient(object):
         self.reconnect_to_broker()
         self.base_dir = f"__norfab__/files/client/{self.name}/"
         self.base_dir_jobs = os.path.join(self.base_dir, "jobs")
+        self.events_dir = os.path.join(self.base_dir, "events")
 
-        # create queue file
+        # create all the folders
         os.makedirs(self.base_dir, exist_ok=True)
         os.makedirs(self.base_dir_jobs, exist_ok=True)
+        os.makedirs(self.events_dir, exist_ok=True)
+
+        # create queue file
         self.queue_filename = os.path.join(
             self.base_dir_jobs, f"{self.name}.jobsqueue.txt"
         )
@@ -109,6 +126,7 @@ class NFPClient(object):
 
         self.exit_event = exit_event or threading.Event()
         self.recv_queue = queue.Queue(maxsize=0)
+        self.event_queue = event_queue or queue.Queue(maxsize=1000)
 
         # start receive thread
         self.recv_thread = threading.Thread(
@@ -634,6 +652,7 @@ class NFPClient(object):
         self,
         service: str,
         task: str,
+        uuid: str = None,
         args: list = None,
         kwargs: dict = None,
         workers: str = "all",
@@ -644,11 +663,12 @@ class NFPClient(object):
 
         :param service: str, service name to send request to
         :param task: str, task name to run for given service
+        :param uuid: (str) Job ID to use
         :param args: list, task arguments
         :param kwargs: dict, task key-word arguments
         :param workers: str or list, worker names to target
         """
-        uuid = uuid4().hex
+        uuid = uuid or uuid4().hex
 
         # POST job to workers
         post_result = self.post(service, task, args, kwargs, workers, uuid, job_timeout)
@@ -669,6 +689,7 @@ class NFPClient(object):
         self,
         service: str,
         task: str,
+        uuid: str = None,
         args: list = None,
         kwargs: dict = None,
         workers: str = "all",
@@ -682,11 +703,12 @@ class NFPClient(object):
 
         :param service: str, service name to send request to
         :param task: str, task name to run for given service
+        :param uuid: (str) Job ID to use
         :param args: list, task arguments
         :param kwargs: dict, task key-word arguments
         :param workers: str or list, worker names to target
         """
-        uuid = uuid4().hex
+        uuid = uuid or uuid4().hex
 
         # POST job to workers
         post_result = self.post(service, task, args, kwargs, workers, uuid, job_timeout)

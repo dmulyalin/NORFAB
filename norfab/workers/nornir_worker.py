@@ -35,6 +35,7 @@ from nornir_salt.plugins.processors import (
     ToFileProcessor,
     DiffProcessor,
     DataProcessor,
+    NorFabEventProcessor,
 )
 from nornir_salt.utils.pydantic_models import modelTestsProcessorSuite
 from typing import Union
@@ -156,7 +157,7 @@ class NornirWorker(NFPWorker):
                 f"instance returned no hosts data, worker '{worker}'"
             )
 
-    def _add_processors(self, nr, kwargs):
+    def _add_processors(self, nr, kwargs: dict):
         """
         Helper function to extract processors arguments and add processors
         to Nornir.
@@ -188,6 +189,9 @@ class NornirWorker(NFPWorker):
         jmespath = kwargs.pop("jmespath", "")  # jmespath DataProcessor
         iplkp = kwargs.pop("iplkp", "")  # iplkp - ip lookup - DataProcessor
         ntfsm = kwargs.pop("ntfsm", False)  # ntfsm - ntc-templates TextFSM parsing
+        progress = kwargs.pop(
+            "progress", False
+        )  # Emit progress events using NorFabEventProcessor
 
         # add processors if any
         if dp:
@@ -255,6 +259,8 @@ class NornirWorker(NFPWorker):
                     index=self.name,
                 )
             )
+        if progress:
+            processors.append(NorFabEventProcessor(worker=self))
         # append ToFileProcessor as the last one in the sequence
         if tf and isinstance(tf, str):
             processors.append(
@@ -485,6 +491,7 @@ class NornirWorker(NFPWorker):
             if downloaded is None:
                 msg = f"{self.name} - TTP template download failed '{run_ttp}'"
                 raise FileNotFoundError(msg)
+            self.event(f"TTP Template downloaded '{run_ttp}'")
 
         nr = self._add_processors(filtered_nornir, kwargs)  # add processors
 
@@ -532,6 +539,22 @@ class NornirWorker(NFPWorker):
             _ = host_object.data.pop("__task__", None)
 
         return ret
+
+    def nb_get_next_ip(self, *args, **kwargs):
+        """Method to query next available IP address from Netbox service"""
+        print(f"!!!!!!! args {args}, kwargs {kwargs}")
+        reply = self.client.run_job(
+            "netbox",
+            "get_next_ip",
+            args=args,
+            kwargs=kwargs,
+            workers="any",
+            job_timeout=30,
+        )
+        # reply is a dict of {worker_name: results_dict}
+        result = list(reply.values())[0]
+
+        return result["result"]
 
     def cfg(
         self, config: list, plugin: str = "netmiko", cfg_dry_run: bool = False, **kwargs
@@ -592,7 +615,9 @@ class NornirWorker(NFPWorker):
             context = {"host": host_object}
             host_object.data["__task__"] = {"config": []}
             for command in downloaded_cfg:
-                renderer = Environment(loader="BaseLoader").from_string(command)
+                j2env = Environment(loader="BaseLoader")
+                j2env.filters["nb_get_next_ip"] = self.nb_get_next_ip
+                renderer = j2env.from_string(command)
                 host_object.data["__task__"]["config"].append(
                     renderer.render(**context)
                 )

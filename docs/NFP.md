@@ -173,7 +173,7 @@ Frame 1: “NFPB01” or “NFPW01” (six bytes, representing NFP/Broker or NFP
 Frame 2: 0x05 (one byte, representing RESPONSE)
 Frame 3: Service name (printable string)
 Frame 4: Job UUID (printable string)
-Frame 5: Status code, (explained below)
+Frame 5: Status code (explained below)
 Frames 6: Response body (opaque binary)
 ```
 
@@ -220,6 +220,26 @@ Frames 6: DELETE body (opaque binary)
 Client sends DELETE message to broker to distribute job delete requests to workers. 
 
 Broker relays DELETE message to individual workers to cancel the job.
+
+#### EVENT
+
+A EVENT command consists of 7 or more frames, formatted on the wire as follows:
+
+```
+EVENT command
+---------------------------------------------------------------
+Frame 0: Empty (zero bytes, invisible to REQ application)
+Frame 1: “NFPW01” (six bytes, representing NFP/Worker v0.1)
+Frame 2: 0x08 (one byte, representing EVENT)
+Frame 3: Service name (printable string)
+Frame 4: Topic (printable string e.g. Job UUID)
+Frame 5: Status code 200 (explained below)
+Frames 6: Event body (opaque binary)
+```
+
+Worker sends EVENT message to Broker to supply information about job execution. 
+
+Broker relays EVENT message to certain Client.
 
 ### Status Frames
 

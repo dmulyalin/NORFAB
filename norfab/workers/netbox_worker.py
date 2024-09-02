@@ -63,6 +63,13 @@ from norfab.core.worker import NFPWorker, Result
 from typing import Union
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 
+try:
+    import pynetbox
+
+    HAS_PYNETBOX = True
+except ImportError:
+    HAS_PYNETBOX = False
+
 log = logging.getLogger(__name__)
 
 # ----------------------------------------------------------------------
@@ -318,6 +325,11 @@ class NetboxWorker(NFPWorker):
 
     def _get_pynetbox(self, instance):
         """Helper function to instantiate pynetbox api object"""
+        if not HAS_PYNETBOX:
+            msg = f"{self.name} - failed to import pynetbox library, is it installed?"
+            log.error(msg)
+            raise Exception(msg)
+
         params = self._get_instance_params(instance)
 
         if params.get("ssl_verify") == False:
@@ -1134,13 +1146,36 @@ class NetboxWorker(NFPWorker):
     def get_next_ip(
         self,
         prefix: str,
+        description: str = None,
         device: str = None,
         interface: str = None,
+        vrf: str = None,
+        interface_create: bool = True,
         secondary: bool = False,
+        tags: list = None,
+        dns_name: str = None,
+        tenant: str = None,
+        comments: str = None,
         instance: str = None,
         dry_run: bool = False,
-        kwargs: dict = None,
     ):
         """
-        Method to allocate next available IP address in Netbox
+        Method to retrieve existing or allocate new IP address in Netbox.
+
+        :param prefix: IPv4 or IPv6 prefix e.g. ``10.0.0.0/24`` or prefix description
+            to allocate next available IP Address from
+        :param description: IP address description to record in Netbox database
+        :param device: device name to find interface for and link IP address with
+        :param interface: interface name to link IP address with, ``device`` attribute
+            also must be provided
+
         """
+        print(f"!!!!!!!!!!!! prefix {prefix}, description {description}")
+        nb = self._get_pynetbox(instance)
+        nb_prefix = nb.ipam.prefixes.get(prefix=prefix, vrf=vrf)
+        nb_ip = nb_prefix.available_ips.create()
+        if description is not None:
+            nb_ip.description = description
+        nb_ip.save()
+
+        return Result(result=str(nb_ip))

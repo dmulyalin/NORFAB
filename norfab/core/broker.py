@@ -213,6 +213,8 @@ class NFPBroker:
         # Stack routing and protocol envelopes to start of message
         if command == NFP.RESPONSE:
             msg = [client, b"", NFP.CLIENT, NFP.RESPONSE, service] + message
+        elif command == NFP.EVENT:
+            msg = [client, b"", NFP.CLIENT, NFP.EVENT, service] + message
         else:
             log.error(f"NFPBroker - invalid client command: {command}")
             return
@@ -239,6 +241,10 @@ class NFPBroker:
             worker.keepaliver.received_heartbeat([worker.address] + msg)
         elif NFP.DISCONNECT == command and worker.is_ready():
             self.delete_worker(worker, False)
+        elif NFP.EVENT == command and worker.is_ready():
+            client = msg.pop(0)
+            empty = msg.pop(0)
+            self.send_to_client(client, NFP.EVENT, worker.service.name, msg)
         elif not worker.is_ready():
             self.delete_worker(worker, disconnect=True)
         else:

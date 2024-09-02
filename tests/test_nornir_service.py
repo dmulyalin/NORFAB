@@ -255,19 +255,19 @@ class TestNornirCli:
             },
         )
         pprint.pprint(ret)
-        
+
         for worker, results in ret.items():
             for host, res in results["result"].items():
                 assert all(
-                    k in res 
+                    k in res
                     for k in [
-                        "show clock", 
+                        "show clock",
                         "show clock contains NTP..",
                         "show version",
                         "show version contains cEOS..",
                     ]
                 )
-                
+
     @pytest.mark.skip(reason="TBD")
     def test_commands_with_tf_processor(self, nfclient):
         pass

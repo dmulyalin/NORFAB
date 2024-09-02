@@ -17,6 +17,7 @@ POST = b"0x04"
 RESPONSE = b"0x05"
 GET = b"0x06"
 DELETE = b"0x07"
+EVENT = b"0x08"
 
 commands = [
     b"OPEN",
