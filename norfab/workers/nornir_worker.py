@@ -718,6 +718,16 @@ class NornirWorker(NFPWorker):
             msg = f"{self.name} - '{suite}' suite validation failed: '{e}'"
             raise RuntimeError(msg)
 
+        # download pattern, schema and custom function files
+        for host_name in tests.keys():
+            for index, item in enumerate(tests[host_name]):
+                for k in ["pattern", "schema", "function_file"]:
+                    if self.is_url(item.get(k)):
+                        item[k] = self.fetch_file(item[k], raise_on_fail=True)
+                        if k == "function_file":
+                            item["function_text"] = item.pop(k)
+                tests[host_name][index] = item
+
         # save per-host tests suite content before mutating it
         if return_tests_suite is True:
             return_suite = copy.deepcopy(tests)

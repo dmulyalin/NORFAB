@@ -457,20 +457,25 @@ class NFPWorker:
 
         log.info(f"{self.name} - worker destroyed, message: '{message}'")
 
-    def fetch_file(self, url: str):
+    def is_url(self, url: str) -> bool:
+        return any(str(url).startswith(k) for k in ["nf://"])
+
+    def fetch_file(self, url: str, raise_on_fail: bool = False) -> str:
         """
         Function to download file from broker File Sharing Service
 
         :param url: file location string in ``nf://<filepath>`` format
+        :param raise_on_fail: raise FIleNotFoundError if download fails
         """
         status, file_content = self.client.fetch_file(url=url, read=True)
+        msg = f"{self.name} - worker '{url}' fetch file failed with status '{status}'"
 
         if status == "200":
             return file_content
+        elif raise_on_fail is True:
+            raise FileNotFoundError(msg)
         else:
-            log.error(
-                f"{self.name} - worker '{url}' fetch file failed with status '{status}'"
-            )
+            log.error(msg)
             return None
 
     def event(self, data: Any = None) -> None:

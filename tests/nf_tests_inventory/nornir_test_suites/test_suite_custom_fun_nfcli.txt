@@ -1,0 +1,20 @@
+# This suite meant to be called using nfcli as a result path to 
+# function is different compared to test_suite_custom_fun.txt tests suite
+ 
+- test: custom
+  function_file: "nf://nornir_test_suites/cust_fun_3.py"
+  name: test_cust_fun_3
+  task: 
+    - show clock
+    - show ip int brief
+- test: custom
+  function_file: "nf://nornir_test_suites/cust_fun_2.py"
+  use_all_tasks: True
+  name: test_cust_fun_2
+  task: 
+    - show clock
+    - show ip int brief
+- test: custom
+  function_file: "nf://nornir_test_suites/cust_fun_1.py"
+  task: show clock
+  name: test_cust_fun_1

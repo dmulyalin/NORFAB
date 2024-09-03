@@ -293,18 +293,18 @@ class EnumTableTypes(str, Enum):
 class TabulateTableModel(BaseModel):
     table: Union[EnumTableTypes, Dict, StrictBool] = Field(
         None,
-        description="table format (brief, terse, extend) or parameters or True",
+        description="Table format (brief, terse, extend) or parameters or True",
         presence="brief",
     )
     headers: Union[StrictStr, List[StrictStr]] = Field(
-        None, description="table headers"
+        None, description="Table headers"
     )
     headers_exclude: Union[StrictStr, List[StrictStr]] = Field(
-        None, description="table headers to exclude"
+        None, description="Table headers to exclude"
     )
-    sortby: StrictStr = Field(None, description="table header column to sort by")
+    sortby: StrictStr = Field(None, description="Table header column to sort by")
     reverse: StrictBool = Field(
-        None, description="table reverse the sort by order", presence=True
+        None, description="Table reverse the sort by order", presence=True
     )
 
     def source_table():
