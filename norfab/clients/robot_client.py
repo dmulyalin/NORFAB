@@ -10,23 +10,32 @@ Robot Framework need to bs installed on the client::
 
     pip install robotframework
     
-Any Task
-++++++++
-
-* ``Service`` - mandatory, name of the service to target
-* ``Workers`` - optional, names of the workers to target, default is ``all``
-* ``Task`` - mandatory, name of the function to run
-* ``Arguments`` - optional, arguments for the task, positional and key-word
-    arguments supported
-
 Nornir Test
 +++++++++++
 
-* ``nr.test`` - run Nornir Service ``test`` function using 
-    provided tests suite
 * ``Hosts`` - ``Fx`` filters to target specific hosts, if not 
     provided targets all hosts
 * ``Workers`` - names of the workers to target, default is ``all``
+* ``nr.test`` - run Nornir Service ``test`` function using 
+    provided tests suite
+    
+Nornir CLI
++++++++++++
+
+* ``Hosts`` - ``Fx`` filters to target specific hosts, if not 
+    provided targets all hosts
+* ``Workers`` - names of the workers to target, default is ``all``
+* ``nr.cli`` - run Nornir Service ``cli`` function using 
+    provided commands and arguments
+    
+Nornir CFG
++++++++++++
+
+* ``Hosts`` - ``Fx`` filters to target specific hosts, if not 
+    provided targets all hosts
+* ``Workers`` - names of the workers to target, default is ``all``
+* ``nr.cfg`` - run Nornir Service ``cfg`` function using 
+    provided configuration commands and arguments
     
 Examples
 ++++++++
@@ -96,14 +105,6 @@ class NorFabRobot:
         print(f"NorFab ROBOT - Exiting")
         self.nf.destroy()
 
-    @keyword("Service")
-    def workers(self, *args, **kwargs):
-        """Collect service to target"""
-        if args:
-            DATA["service"] = args[0]
-        else:
-            DATA["service"] = kwargs["service"]
-
     @keyword("Workers")
     def workers(self, *args, **kwargs):
         """Collect workers to target"""
@@ -112,39 +113,13 @@ class NorFabRobot:
         else:
             DATA["workers"] = kwargs.pop("workers", "all")
 
-    @keyword("Arguments")
-    def arguments(self, *args, **kwargs):
-        """Run task"""
-        DATA["args"] = args
-        DATA["kwargs"] = kwargs
-
-    @keyword("Task")
-    def task(self, *args, **kwargs):
-        """Run task"""
-        if args:
-            task = args[0]
-        else:
-            task = kwargs["task"]
-
-        logger.info(f"Running '{task}' task with DATA '{DATA}'")
-
-        ret = self.client.run_job(
-            service=DATA["service"],
-            task=task,
-            workers=DATA.get("workers", "all"),
-            args=DATA.get("args", []),
-            kwargs=DATA.get("kwargs", {}),
-        )
-
-        if ret["errors"]:
-            raise ContinuableFailure("Task failed")
-
-        return ret
-
     @keyword("Hosts")
     def hosts(self, *args, **kwargs):
         """Collect hosts to target"""
-        DATA["hosts"] = {"FB": ", ".join(args) if args else "*", **kwargs}
+        if args:
+            DATA["hosts"] = {"FB": ", ".join(args), **kwargs}
+        else:
+            DATA["hosts"] = kwargs
 
     @keyword("nr.test")
     def nr_test(self, *args, **kwargs):
@@ -156,8 +131,8 @@ class NorFabRobot:
         if args:
             kwargs["suite"] = args[0]
         kwargs = {
-            **kwargs,
             **DATA.pop("hosts", {"FB": "*"}),
+            **kwargs,
             "remove_tasks": False,
             "add_details": True,
             "return_tests_suite": True,
@@ -303,4 +278,132 @@ class NorFabRobot:
         if has_errors:
             raise ContinuableFailure("Tests failed")
         # return test results with no errors in structured format
+        return ret
+
+    @keyword("nr.cli")
+    def nr_cli(self, *args, **kwargs):
+        """Run Nornir service cli task"""
+        log.info(
+            f"Running nr.cli with args '{args}', kwargs '{kwargs}', global DATA '{DATA}'"
+        )
+        has_errors = False
+        if args:
+            kwargs["commands"] = args
+        kwargs = {
+            **DATA.pop("hosts", {"FB": "*"}),
+            **kwargs,
+            "add_details": True,
+            "to_dict": False,
+        }
+        # run this function
+        ret = self.client.run_job(
+            service="nornir",
+            task="cli",
+            workers=DATA.get("workers", "all"),
+            kwargs=kwargs,
+        )
+        # extract results for the host
+        for worker, worker_results in ret.items():
+            for result in worker_results["result"]:
+                host = result["host"]
+                # evaluate and log results
+                if (
+                    result["failed"]
+                    or result["exception"]
+                    or "traceback" in str(result["result"]).lower()
+                ):
+                    has_errors = True
+                    logger.error(
+                        (
+                            f'<details><summary>{worker} worker, {host} device, comand "{result["name"]}" failed - '
+                            f'<span style="background-color: #CE3E01">"{result["exception"]}"</span></summary>'
+                            f'<p style="margin-left:20px;"><font face="courier new">{result["result"]}'
+                            f"</font></p></details>"
+                        ),
+                        html=True,
+                    )
+                else:
+                    logger.info(
+                        (
+                            f'<details><summary>{worker} worker, {host} device, command "{result["name"]}" - '
+                            f'<span style="background-color: #97BD61">success</span></summary>'
+                            f'<p style="margin-left:20px;"><font face="courier new">{result["result"]}'
+                            f"</font></p></details>"
+                        ),
+                        html=True,
+                    )
+        logger.info(
+            f"<details><summary>Workers results</summary>{pprint.pformat(ret)}</details>",
+            html=True,
+        )
+        # clean global state to prep for next test
+        clean_global_data()
+        # raise exception if cli command failed
+        if has_errors:
+            raise ContinuableFailure(ret)
+        # return ret with no errors in structured format
+        return ret
+
+    @keyword("nr.cfg")
+    def nr_cfg(self, *args, **kwargs):
+        """Run Nornir service cfg task"""
+        log.info(
+            f"Running nr.cfg with args '{args}', kwargs '{kwargs}', global DATA '{DATA}'"
+        )
+        if args:
+            kwargs["config"] = args
+        kwargs = {
+            **DATA.pop("hosts", {"FB": "*"}),
+            **kwargs,
+            "add_details": True,
+            "to_dict": False,
+        }
+        has_errors = False
+        # run this function
+        ret = self.client.run_job(
+            service="nornir",
+            task="cfg",
+            workers=DATA.get("workers", "all"),
+            kwargs=kwargs,
+        )
+        # extract results for the host
+        for worker, worker_results in ret.items():
+            for result in worker_results["result"]:
+                host = result["host"]
+                # evaluate and log results
+                if (
+                    result["failed"]
+                    or result["exception"]
+                    or "traceback" in str(result["result"]).lower()
+                ):
+                    has_errors = True
+                    logger.error(
+                        (
+                            f'<details><summary>{worker} worker, {host} device, "{result["name"]}" failed - '
+                            f'<span style="background-color: #CE3E01">"{result["exception"]}"</span></summary>'
+                            f'<p style="margin-left:20px;"><font face="courier new">{result["result"]}'
+                            f"</font></p></details>"
+                        ),
+                        html=True,
+                    )
+                else:
+                    logger.info(
+                        (
+                            f'<details><summary>{worker} worker, {host} device, "{result["name"]}" - '
+                            f'<span style="background-color: #97BD61">success</span></summary>'
+                            f'<p style="margin-left:20px;"><font face="courier new">{result["result"]}'
+                            f"</font></p></details>"
+                        ),
+                        html=True,
+                    )
+        logger.info(
+            f"<details><summary>Workers results</summary>{pprint.pformat(ret)}</details>",
+            html=True,
+        )
+        # clean global state to prep for next test
+        clean_global_data()
+        # raise exception if cli command failed
+        if has_errors:
+            raise ContinuableFailure(ret)
+        # return ret with no errors in structured format
         return ret

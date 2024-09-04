@@ -460,7 +460,7 @@ class NornirWorker(NFPWorker):
         to_dict = kwargs.pop("to_dict", True)  # ResultSerializer
         filters = {k: kwargs.pop(k) for k in list(kwargs.keys()) if k in FFun_functions}
         downloaded_cmds = []
-        ret = Result(name=f"{self.name}:task", result={} if to_dict else [])
+        ret = Result(name=f"{self.name}:cli", result={} if to_dict else [])
 
         # decide on what send commands task plugin to use
         if plugin == "netmiko":
@@ -572,7 +572,7 @@ class NornirWorker(NFPWorker):
         add_details = kwargs.pop("add_details", False)  # ResultSerializer
         to_dict = kwargs.pop("to_dict", True)  # ResultSerializer
         filters = {k: kwargs.pop(k) for k in list(kwargs.keys()) if k in FFun_functions}
-        ret = Result(name=f"{self.name}:task", result={} if to_dict else [])
+        ret = Result(name=f"{self.name}:cfg", result={} if to_dict else [])
 
         # decide on what send commands task plugin to use
         if plugin == "netmiko":

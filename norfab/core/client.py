@@ -678,12 +678,18 @@ class NFPClient(object):
             get_results = self.get(
                 service, task, [], {}, post_result["workers"], uuid, job_timeout
             )
-            return get_results["results"]
+            if get_results:
+                return get_results["results"]
+            else:
+                log.error(
+                    f"{self.name} - {service}:{task}:{uuid} GET returned no results"
+                )
         else:
             log.error(
                 f"{self.name} - {service}:{task} POST status to '{workers}' workers is not 200 - '{post_result}'"
             )
-            return None
+
+        return None
 
     def run_job_iter(
         self,

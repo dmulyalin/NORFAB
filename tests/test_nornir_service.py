@@ -985,22 +985,24 @@ class TestNornirTests:
             workers=["nornir-worker-1"],
             kwargs={
                 "suite": "nf://nf_tests_inventory/nornir_test_suites/test_suite_custom_fun.txt",
-                "FC": "ceos-spine-"
+                "FC": "ceos-spine-",
             },
         )
         pprint.pprint(ret)
-        
+
         for worker, results in ret.items():
             assert results, f"{worker} returned no test results"
             for host, res in results["result"].items():
                 for test_name in [
-                        'test_cust_fun_1',
-                        'test_cust_fun_2 show clock NTP',
-                        'test_cust_fun_2 show ip int brief NTP',
-                        'test_cust_fun_3 Test IP config',
-                        'test_cust_fun_3 Test NTP'                    
-                    ]:
-                    assert test_name in res, f"{worker}:{host} missing '{test_name}' results"
+                    "test_cust_fun_1",
+                    "test_cust_fun_2 show clock NTP",
+                    "test_cust_fun_2 show ip int brief NTP",
+                    "test_cust_fun_3 Test IP config",
+                    "test_cust_fun_3 Test NTP",
+                ]:
+                    assert (
+                        test_name in res
+                    ), f"{worker}:{host} missing '{test_name}' results"
                 for test_name, test_res in res.items():
                     assert (
                         "Traceback" not in test_res
@@ -1008,12 +1010,12 @@ class TestNornirTests:
                     assert test_res in [
                         "FAIL"
                     ], f"{worker}:{host}:{test_name} unexpected test result"
-        
+
     @pytest.mark.skip(reason="TBD")
     def test_nornir_test_suite_pattern_files(self, nfclient):
         pass
-        
-        
+
+
 # ----------------------------------------------------------------------------
 # NORNIR.NETWORK FUNCTION TESTS
 # ----------------------------------------------------------------------------
