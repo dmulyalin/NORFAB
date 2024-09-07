@@ -460,14 +460,17 @@ class NFPWorker:
     def is_url(self, url: str) -> bool:
         return any(str(url).startswith(k) for k in ["nf://"])
 
-    def fetch_file(self, url: str, raise_on_fail: bool = False) -> str:
+    def fetch_file(
+        self, url: str, raise_on_fail: bool = False, read: bool = True
+    ) -> str:
         """
         Function to download file from broker File Sharing Service
 
         :param url: file location string in ``nf://<filepath>`` format
         :param raise_on_fail: raise FIleNotFoundError if download fails
+        :param read: if True returns file content, return OS path to saved file otherwise
         """
-        status, file_content = self.client.fetch_file(url=url, read=True)
+        status, file_content = self.client.fetch_file(url=url, read=read)
         msg = f"{self.name} - worker '{url}' fetch file failed with status '{status}'"
 
         if status == "200":

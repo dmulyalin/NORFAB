@@ -536,13 +536,6 @@ class NFPClient(object):
         :param url: (str), path to file relative to ``base_dir``
         :param destination: (str), if provided destination to save file,
             returns file content otherwise
-
-        TODO:
-
-            - need to start with metadata exchange such as file md5 hash
-                to check if need to download file if it already exists
-                locally and to verify after download
-            - metadata for how many chunks will be delivered to print progress
         """
         uuid = str(uuid4().hex).encode("utf-8")
         total = 0  # Total bytes received

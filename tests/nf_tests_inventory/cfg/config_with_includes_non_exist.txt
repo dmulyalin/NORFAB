@@ -1,0 +1,4 @@
+interface Loopback1
+description MGMT for {{ host.name }}
+!
+{% include "non_exist.txt" %}

@@ -1,0 +1,4 @@
+interface Loopback1
+description MGMT for {{ host.name }}
+!
+{% include "config_with_includes_2.txt" %}

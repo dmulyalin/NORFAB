@@ -16,7 +16,8 @@ import copy
 import os
 import hashlib
 
-from jinja2 import Environment
+from jinja2 import Environment, FileSystemLoader
+from jinja2.nodes import Include
 from norfab.core.worker import NFPWorker, Result
 from norfab.core.inventory import merge_recursively
 from norfab.core.exceptions import UnsupportedPluginError
@@ -276,6 +277,30 @@ class NornirWorker(NFPWorker):
             )
 
         return nr.with_processors(processors)
+
+    def _download_jinja2(self, url: str) -> str:
+        """
+        Helper function to recursively download Jinja2 templates
+        out of "include" statements
+
+        :param url: ``nf://file/path`` like URL to download file
+        """
+        filepath = self.fetch_file(url, read=False)
+        if filepath is None:
+            msg = f"{self.name} - file download failed '{url}'"
+            raise FileNotFoundError(msg)
+
+        # download Jinja2 template "include" files
+        content = self.fetch_file(url, read=True)
+        j2env = Environment(loader="BaseLoader")
+        parsed_content = j2env.parse(content)
+        for node in parsed_content.body:
+            if isinstance(node, Include):
+                include_file = node.template.value
+                base_path = os.path.split(url)[0]
+                self._download_jinja2(os.path.join(base_path, include_file))
+
+        return filepath
 
     # ----------------------------------------------------------------------
     # Nornir Service Functions that exposed for calling
@@ -598,29 +623,25 @@ class NornirWorker(NFPWorker):
 
         nr = self._add_processors(filtered_nornir, kwargs)  # add processors
 
-        # download config from broker if needed
+        # download config from broker if needed and render it
         for command in config:
+            filepath = None
             if command.startswith("nf://"):
-                downloaded = self.fetch_file(command)
-                if downloaded is not None:
-                    downloaded_cfg.append(downloaded)
+                filepath = self._download_jinja2(command)
+                searchpath, template = os.path.split(filepath)
+            # render config using Jinja2 on a per-host basis
+            for host in nr.inventory.hosts.values():
+                context = {"host": host}
+                host.data.setdefault("__task__", {"config": []})
+                if filepath:
+                    j2env = Environment(loader=FileSystemLoader(searchpath))
+                    renderer = j2env.get_template(template)
                 else:
-                    msg = f"{self.name} - config download failed '{command}'"
-                    raise FileNotFoundError(msg)
-            else:
-                downloaded_cfg.append(command)
-
-        # render config using Jinja2 on a per-host basis
-        for host_name, host_object in nr.inventory.hosts.items():
-            context = {"host": host_object}
-            host_object.data["__task__"] = {"config": []}
-            for command in downloaded_cfg:
-                j2env = Environment(loader="BaseLoader")
+                    j2env = Environment(loader="BaseLoader")
+                    renderer = j2env.from_string(command)
+                # add custom filters
                 j2env.filters["nb_get_next_ip"] = self.nb_get_next_ip
-                renderer = j2env.from_string(command)
-                host_object.data["__task__"]["config"].append(
-                    renderer.render(**context)
-                )
+                host.data["__task__"]["config"].append(renderer.render(**context))
 
         # run task
         log.debug(
@@ -725,7 +746,7 @@ class NornirWorker(NFPWorker):
             for index, item in enumerate(tests[host_name]):
                 for k in ["pattern", "schema", "function_file"]:
                     if self.is_url(item.get(k)):
-                        item[k] = self.fetch_file(item[k], raise_on_fail=True)
+                        item[k] = self.fetch_file(item[k], raise_on_fail=True, read=True)
                         if k == "function_file":
                             item["function_text"] = item.pop(k)
                 tests[host_name][index] = item

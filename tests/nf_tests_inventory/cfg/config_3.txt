@@ -5,7 +5,7 @@ interface Loopback0
 !
 interface Loopback1
   description RID for {{ host.name }} OSPF
-  ip address {{ prefix | nb_get_next_ip("{} MGMT".format(host.name), host.name, "Loopback0") }}
+  ip address {{ prefix | nb_get_next_ip("{} MGMT".format(host.name), host.name, "Loopback1") }}
 !
 interface Loopback2
   description RID for {{ host.name }} BGP
