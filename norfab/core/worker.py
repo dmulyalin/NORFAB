@@ -42,7 +42,7 @@ class Result:
     :param failed: Whether the execution failed or not
     :param severity_level (logging.LEVEL): Severity level associated to the result of the execution
     :param errors: exception thrown during the execution of the task (if any)
-    :param name: Task function name that produced the results
+    :param task: Task function name that produced the results
     """
 
     def __init__(
@@ -50,17 +50,17 @@ class Result:
         result: Any = None,
         failed: bool = False,
         errors: Optional[List[str]] = None,
-        name: str = None,
+        task: str = None,
         messages: Optional[List[str]] = None,
     ) -> None:
-        self.name = name
+        self.task = task
         self.result = result
         self.failed = failed
         self.errors = errors or []
         self.messages = messages or []
 
     def __repr__(self) -> str:
-        return '{}: "{}"'.format(self.__class__.__name__, self.name)
+        return '{}: "{}"'.format(self.__class__.__name__, self.task)
 
     def __str__(self) -> str:
         if self.errors:
@@ -76,7 +76,7 @@ class Result:
             self.messages = [self.messages]
 
         return {
-            "name": self.name,
+            "task": self.task,
             "failed": self.failed,
             "errors": self.errors,
             "result": self.result,
@@ -588,9 +588,11 @@ class NFPWorker:
                         f"{self.name} - task '{task}' did not return Result object, data: {data}, args: '{args}', "
                         f"kwargs: '{kwargs}', client: '{client_address}', job uuid: '{juuid}'"
                     )
+                if not getattr(result, "task"):
+                    result.task = f"{self.name}:{task}"
             except Exception as e:
                 result = Result(
-                    name=f"{self.name}:{task}",
+                    task=f"{self.name}:{task}",
                     errors=[traceback.format_exc()],
                     messages=[f"Worker experienced error: '{e}'"],
                     failed=True,

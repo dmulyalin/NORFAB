@@ -1,0 +1,15 @@
+- test: eval
+  expr: assert str(result).count("Reply from") == 4, "Ping not ok"
+  name: check ping
+  task: ping
+  norfab:
+    nrtask: network
+    fun: ping
+    
+- task: show version
+  test: contains
+  pattern: cEOS
+  name: check version
+  norfab:
+    nrtask: cli
+    use_ps: True

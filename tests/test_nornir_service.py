@@ -751,7 +751,7 @@ class TestNornirCfg:
 # ----------------------------------------------------------------------------
 
 
-class TestNornirTests:
+class TestNornirTest:
     def test_nornir_test_suite(self, nfclient):
         ret = nfclient.run_job(
             b"nornir",
@@ -762,7 +762,7 @@ class TestNornirTests:
         pprint.pprint(ret)
 
         for worker, results in ret.items():
-            assert results, f"{worker} returned no test results"
+            assert results["result"], f"{worker} returned no test results"
             for host, res in results["result"].items():
                 for test_name, test_res in res.items():
                     assert (
@@ -783,7 +783,7 @@ class TestNornirTests:
         pprint.pprint(ret)
 
         for worker, results in ret.items():
-            assert results, f"{worker} returned no test results"
+            assert results["result"], f"{worker} returned no test results"
             for host, res in results["result"].items():
                 for test_name, test_res in res.items():
                     assert (
@@ -807,7 +807,7 @@ class TestNornirTests:
         pprint.pprint(ret)
 
         for worker, results in ret.items():
-            assert results, f"{worker} returned no test results"
+            assert results["result"], f"{worker} returned no test results"
             for host, res in results["result"].items():
                 assert (
                     len(res) == 1
@@ -829,7 +829,7 @@ class TestNornirTests:
         pprint.pprint(ret)
 
         for worker, results in ret.items():
-            assert results, f"{worker} returned no test results"
+            assert results["result"], f"{worker} returned no test results"
             for host, res in results["result"].items():
                 assert (
                     "tests_dry_run" in res
@@ -855,7 +855,7 @@ class TestNornirTests:
         pprint.pprint(ret)
 
         for worker, results in ret.items():
-            assert results, f"{worker} returned no test results"
+            assert results["result"], f"{worker} returned no test results"
             for host, res in results["result"].items():
                 for test_name, test_res in res.items():
                     assert (
@@ -920,7 +920,7 @@ class TestNornirTests:
         pprint.pprint(ret)
 
         for worker, results in ret.items():
-            assert results, f"{worker} returned no test results"
+            assert results["result"], f"{worker} returned no test results"
             for host, res in results["result"].items():
                 for test_name, test_res in res.items():
                     assert (
@@ -991,7 +991,7 @@ class TestNornirTests:
         pprint.pprint(ret)
 
         for worker, results in ret.items():
-            assert results, f"{worker} returned no test results"
+            assert results["result"], f"{worker} returned no test results"
             for host, res in results["result"].items():
                 for test_name in [
                     "test_cust_fun_1",
@@ -1010,6 +1010,51 @@ class TestNornirTests:
                     assert test_res in [
                         "FAIL"
                     ], f"{worker}:{host}:{test_name} unexpected test result"
+
+    def test_nornir_test_with_nftask_to_dict_false(self, nfclient):
+        ret = nfclient.run_job(
+            b"nornir",
+            "test",
+            workers=["nornir-worker-1"],
+            kwargs={
+                "suite": "nf://nf_tests_inventory/nornir_test_suites/test_nornir_test_with_nftask.txt",
+                "FC": "ceos-spine-",
+                "add_details": True,
+                "to_dict": False,
+            },
+        )
+        pprint.pprint(ret)
+        for worker, results in ret.items():
+            assert results["result"], f"{worker} returned no test results"
+            for i in results["result"]:
+                assert (
+                    i["result"] == "PASS"
+                ), f"{worker}:{i['host']}:{i['name']} unexpected test result"
+
+    def test_nornir_test_with_nftask_to_dict_true(self, nfclient):
+        ret = nfclient.run_job(
+            b"nornir",
+            "test",
+            workers=["nornir-worker-1"],
+            kwargs={
+                "suite": "nf://nf_tests_inventory/nornir_test_suites/test_nornir_test_with_nftask.txt",
+                "FC": "ceos-spine-",
+                "add_details": True,
+                "to_dict": True,
+            },
+        )
+        pprint.pprint(ret)
+
+        for worker, results in ret.items():
+            assert results["result"], f"{worker} returned no test results"
+            for host, res in results["result"].items():
+                for test_name, test_res in res.items():
+                    assert not test_res[
+                        "exception"
+                    ], f"{worker}:{host}:{test_name} test output contains error"
+                    assert (
+                        test_res["result"] == "PASS"
+                    ), f"{worker}:{host}:{test_name} unexpected test result"
 
     @pytest.mark.skip(reason="TBD")
     def test_nornir_test_suite_pattern_files(self, nfclient):

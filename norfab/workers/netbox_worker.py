@@ -242,10 +242,10 @@ class NetboxWorker(NFPWorker):
             except importlib.metadata.PackageNotFoundError:
                 pass
 
-        return Result(name=f"{self.name}:get_netbox_version", result=libs)
+        return Result(task=f"{self.name}:get_netbox_version", result=libs)
 
     def get_netbox_status(self, instance=None) -> Result:
-        ret = Result(result={}, name=f"{self.name}:get_netbox_status")
+        ret = Result(result={}, task=f"{self.name}:get_netbox_status")
         if instance:
             ret.result[instance] = self._query_netbox_status(instance)
         else:
@@ -254,7 +254,7 @@ class NetboxWorker(NFPWorker):
         return ret
 
     def get_compatibility(self) -> Result:
-        ret = Result(name=f"{self.name}:get_compatibility", result={})
+        ret = Result(task=f"{self.name}:get_compatibility", result={})
         netbox_status = self.get_netbox_status()
         for instance, params in netbox_status.result.items():
             if params["status"] is not True:
@@ -358,7 +358,7 @@ class NetboxWorker(NFPWorker):
         :param dry_run: only return query content, do not run it
         """
         nb_params = self._get_instance_params(instance)
-        ret = Result(name=f"{self.name}:graphql")
+        ret = Result(task=f"{self.name}:graphql")
 
         # form graphql query(ies) payload
         if queries:
@@ -484,7 +484,7 @@ class NetboxWorker(NFPWorker):
         :param devices: list of device names to query data for
         :return: dictionary keyed by device name with device data
         """
-        ret = Result(name=f"{self.name}:get_devices", result={})
+        ret = Result(task=f"{self.name}:get_devices", result={})
         instance = instance or self.default_instance
         filters = filters or []
 
@@ -574,7 +574,7 @@ class NetboxWorker(NFPWorker):
         """
         # form final result object
         ret = Result(
-            name=f"{self.name}:get_interfaces", result={d: {} for d in devices}
+            task=f"{self.name}:get_interfaces", result={d: {} for d in devices}
         )
         intf_fields = [
             "name",
@@ -704,7 +704,7 @@ class NetboxWorker(NFPWorker):
         """
         # form final result dictionary
         ret = Result(
-            name=f"{self.name}:get_connections", result={d: {} for d in devices}
+            task=f"{self.name}:get_connections", result={d: {} for d in devices}
         )
 
         # form lists of fields to request from netbox
@@ -908,7 +908,7 @@ class NetboxWorker(NFPWorker):
         :return: dictionary keyed by device name with circuits data
         """
         # form final result object
-        ret = Result(name=f"{self.name}:get_circuits", result={d: {} for d in devices})
+        ret = Result(task=f"{self.name}:get_circuits", result={d: {} for d in devices})
 
         device_sites_fields = ["site {slug}"]
         circuit_fields = [
@@ -1057,7 +1057,7 @@ class NetboxWorker(NFPWorker):
         """
         hosts = {}
         inventory = {"hosts": hosts}
-        ret = Result(name=f"{self.name}:get_nornir_inventory", result=inventory)
+        ret = Result(task=f"{self.name}:get_nornir_inventory", result=inventory)
 
         # check Netbox status
         netbox_status = self.get_netbox_status(instance=instance)

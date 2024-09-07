@@ -14,6 +14,7 @@ import yaml
 import time
 import copy
 import os
+import hashlib
 
 from jinja2 import Environment
 from norfab.core.worker import NFPWorker, Result
@@ -313,7 +314,7 @@ class NornirWorker(NFPWorker):
         filters = {k: kwargs.pop(k) for k in list(kwargs.keys()) if k in FFun_functions}
         filtered_nornir = FFun(self.nr, **filters)
         return Result(
-            result=filtered_nornir.inventory.dict(), name="get_nornir_inventory"
+            result=filtered_nornir.inventory.dict(), task="get_nornir_inventory"
         )
 
     def get_nornir_version(self):
@@ -362,7 +363,7 @@ class NornirWorker(NFPWorker):
             except importlib.metadata.PackageNotFoundError:
                 pass
 
-        return Result(result=libs)
+        return Result(result=libs, task="get_nornir_version")
 
     def task(self, plugin: str, **kwargs) -> Result:
         """
@@ -397,7 +398,7 @@ class NornirWorker(NFPWorker):
         add_details = kwargs.pop("add_details", False)  # ResultSerializer
         to_dict = kwargs.pop("to_dict", True)  # ResultSerializer
         filters = {k: kwargs.pop(k) for k in list(kwargs.keys()) if k in FFun_functions}
-        ret = Result(name=f"{self.name}:task", result={} if to_dict else [])
+        ret = Result(task=f"{self.name}:task", result={} if to_dict else [])
 
         # download task from broker and load it
         if plugin.startswith("nf://"):
@@ -460,7 +461,7 @@ class NornirWorker(NFPWorker):
         to_dict = kwargs.pop("to_dict", True)  # ResultSerializer
         filters = {k: kwargs.pop(k) for k in list(kwargs.keys()) if k in FFun_functions}
         downloaded_cmds = []
-        ret = Result(name=f"{self.name}:cli", result={} if to_dict else [])
+        ret = Result(task=f"{self.name}:cli", result={} if to_dict else [])
 
         # decide on what send commands task plugin to use
         if plugin == "netmiko":
@@ -542,7 +543,6 @@ class NornirWorker(NFPWorker):
 
     def nb_get_next_ip(self, *args, **kwargs):
         """Method to query next available IP address from Netbox service"""
-        print(f"!!!!!!! args {args}, kwargs {kwargs}")
         reply = self.client.run_job(
             "netbox",
             "get_next_ip",
@@ -572,7 +572,7 @@ class NornirWorker(NFPWorker):
         add_details = kwargs.pop("add_details", False)  # ResultSerializer
         to_dict = kwargs.pop("to_dict", True)  # ResultSerializer
         filters = {k: kwargs.pop(k) for k in list(kwargs.keys()) if k in FFun_functions}
-        ret = Result(name=f"{self.name}:cfg", result={} if to_dict else [])
+        ret = Result(task=f"{self.name}:cfg", result={} if to_dict else [])
 
         # decide on what send commands task plugin to use
         if plugin == "netmiko":
@@ -664,13 +664,15 @@ class NornirWorker(NFPWorker):
         :param return_tests_suite: if True returns rendered per-host tests suite
             content in addition to test results using dictionary with ``results``
             and ``suite`` keys
+        :param kwargs: any additional arguments to pass on to Nornir service task
         """
         downloaded_suite = None
         tests = {}  # dictionary to hold per-host test suites
         add_details = kwargs.get("add_details", False)  # ResultSerializer
         to_dict = kwargs.get("to_dict", True)  # ResultSerializer
         filters = {k: kwargs.pop(k) for k in list(kwargs.keys()) if k in FFun_functions}
-        ret = Result(name=f"{self.name}:test", result={} if to_dict else [])
+        ret = Result(task=f"{self.name}:test", result={} if to_dict else [])
+        suites = {}  # dictionary to hold combined test suites
 
         self.nr.data.reset_failed_hosts()  # reset failed hosts
         filtered_nornir = FFun(self.nr, **filters)  # filter hosts
@@ -732,8 +734,8 @@ class NornirWorker(NFPWorker):
         if return_tests_suite is True:
             return_suite = copy.deepcopy(tests)
 
-        # run task
         log.debug(f"{self.name} - running test '{suite}', is dry run - '{dry_run}'")
+        # run dry run task
         if dry_run is True:
             result = filtered_nornir.run(
                 task=nr_test, name="tests_dry_run", ret_data_per_host=tests
@@ -741,17 +743,51 @@ class NornirWorker(NFPWorker):
             ret.result = ResultSerializer(
                 result, to_dict=to_dict, add_details=add_details
             )
+        # combine per-host tests in suites based on task task and arguments
+        # Why - to run tests using any nornir service tasks with various arguments
         else:
-            test_kwargs = {
-                **kwargs,
-                **filters,
-                "tests": tests,
-                "remove_tasks": remove_tasks,
-                "failed_only": failed_only,
-                "subset": subset,
-            }
-            result = self.cli(**test_kwargs)  # returns Result object
-            ret.result = result.result
+            for host_name, host_tests in tests.items():
+                for test in host_tests:
+                    dhash = hashlib.md5()
+                    test_args = test.pop("norfab", {})
+                    nrtask = test_args.get("nrtask", "cli")
+                    assert nrtask in [
+                        "cli",
+                        "network",
+                        "cfg",
+                        "task",
+                    ], f"{self.name} - unsupported NorFab Nornir Service task '{nrtask}'"
+                    test_json = json.dumps(test_args, sort_keys=True).encode()
+                    dhash.update(test_json)
+                    test_hash = dhash.hexdigest()
+                    suites.setdefault(test_hash, {"params": test_args, "tests": {}})
+                    suites[test_hash]["tests"].setdefault(host_name, [])
+                    suites[test_hash]["tests"][host_name].append(test)
+            log.debug(
+                f"{self.name} - combined per-host tests suites based on NorFab Nornir Service task and arguments:\n{suites}"
+            )
+            # run test suites collecting output from devices
+            for tests_suite in suites.values():
+                nrtask = tests_suite["params"].pop("nrtask", "cli")
+                function_kwargs = {
+                    **tests_suite["params"],
+                    **kwargs,
+                    **filters,
+                    "tests": tests_suite["tests"],
+                    "remove_tasks": remove_tasks,
+                    "failed_only": failed_only,
+                    "subset": subset,
+                }
+                result = getattr(self, nrtask)(
+                    **function_kwargs
+                )  # returns Result object
+                # save test results into overall results
+                if to_dict == True:
+                    for host_name, host_res in result.result.items():
+                        ret.result.setdefault(host_name, {})
+                        ret.result[host_name].update(host_res)
+                else:
+                    ret.result.extend(result.result)
 
         # check if need to return tests suite content
         if return_tests_suite is True:
