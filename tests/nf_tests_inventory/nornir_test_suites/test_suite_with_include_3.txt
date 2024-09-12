@@ -1,0 +1,4 @@
+- task: "show ip interface brief"
+  test: contains
+  pattern: "loopbac0"
+  name: check loopback0 present

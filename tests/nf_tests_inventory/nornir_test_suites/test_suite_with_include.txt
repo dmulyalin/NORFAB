@@ -1,0 +1,6 @@
+- task: "show hostname"
+  test: contains
+  pattern: "{{ host.name }}"
+  name: check hostname value
+  
+{% include "test_suite_with_include_2.txt" %}

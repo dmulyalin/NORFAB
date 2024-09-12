@@ -1,0 +1,7 @@
+- task: "show version"
+  test: contains
+  pattern: "cEOS"
+  name: check version
+  
+{% include "test_suite_with_include_3.txt" %}
+  

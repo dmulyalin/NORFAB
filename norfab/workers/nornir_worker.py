@@ -278,7 +278,7 @@ class NornirWorker(NFPWorker):
 
         return nr.with_processors(processors)
 
-    def _download_jinja2(self, url: str) -> str:
+    def fetch_jinja2(self, url: str) -> str:
         """
         Helper function to recursively download Jinja2 templates
         out of "include" statements
@@ -290,15 +290,21 @@ class NornirWorker(NFPWorker):
             msg = f"{self.name} - file download failed '{url}'"
             raise FileNotFoundError(msg)
 
-        # download Jinja2 template "include" files
+        # download Jinja2 template "include"-ed files
         content = self.fetch_file(url, read=True)
         j2env = Environment(loader="BaseLoader")
-        parsed_content = j2env.parse(content)
+        try:
+            parsed_content = j2env.parse(content)
+        except Exception as e:
+            msg = f"{self.name} - Jinja2 template parsing failed '{url}', error: '{e}'"
+            raise Exception(msg)
+
+        # run recursion on include statements
         for node in parsed_content.body:
             if isinstance(node, Include):
                 include_file = node.template.value
                 base_path = os.path.split(url)[0]
-                self._download_jinja2(os.path.join(base_path, include_file))
+                self.fetch_jinja2(os.path.join(base_path, include_file))
 
         return filepath
 
@@ -627,13 +633,13 @@ class NornirWorker(NFPWorker):
         for command in config:
             filepath = None
             if command.startswith("nf://"):
-                filepath = self._download_jinja2(command)
+                filepath = self.fetch_jinja2(command)
                 searchpath, template = os.path.split(filepath)
             # render config using Jinja2 on a per-host basis
             for host in nr.inventory.hosts.values():
                 context = {"host": host}
                 host.data.setdefault("__task__", {"config": []})
-                if filepath:
+                if command.startswith("nf://"):
                     j2env = Environment(loader=FileSystemLoader(searchpath))
                     renderer = j2env.get_template(template)
                 else:
@@ -710,19 +716,16 @@ class NornirWorker(NFPWorker):
             return ret
 
         # download tests suite
-        downloaded_suite = self.fetch_file(suite)
-        if downloaded_suite is None:
-            msg = f"{self.name} - '{suite}' suite download failed"
-            raise FileNotFoundError(msg)
+        downloaded_suite = self.fetch_jinja2(suite)
 
         # generate per-host test suites
+        searchpath, template = os.path.split(downloaded_suite)
         for host_name, host_object in filtered_nornir.inventory.hosts.items():
             context = {"host": host_object}
             # render suite using Jinja2
             try:
-                renderer = Environment(loader="BaseLoader").from_string(
-                    downloaded_suite
-                )
+                j2env = Environment(loader=FileSystemLoader(searchpath))
+                renderer = j2env.get_template(template)
                 rendered_suite = renderer.render(**context)
             except Exception as e:
                 msg = f"{self.name} - '{suite}' Jinja2 rendering failed: '{e}'"
@@ -746,7 +749,9 @@ class NornirWorker(NFPWorker):
             for index, item in enumerate(tests[host_name]):
                 for k in ["pattern", "schema", "function_file"]:
                     if self.is_url(item.get(k)):
-                        item[k] = self.fetch_file(item[k], raise_on_fail=True, read=True)
+                        item[k] = self.fetch_file(
+                            item[k], raise_on_fail=True, read=True
+                        )
                         if k == "function_file":
                             item["function_text"] = item.pop(k)
                 tests[host_name][index] = item

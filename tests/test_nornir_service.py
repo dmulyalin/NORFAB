@@ -783,11 +783,12 @@ class TestNornirCfg:
             },
         )
         pprint.pprint(ret)
-        
+
         for worker, results in ret.items():
             assert results["failed"] == True, f"{worker}:{host} results not failed"
             assert "FileNotFoundError" in results["errors"][0]
-            
+
+
 # ----------------------------------------------------------------------------
 # NORNIR.TEST FUNCTION TESTS
 # ----------------------------------------------------------------------------
@@ -985,7 +986,7 @@ class TestNornirTest:
 
         for worker, results in ret.items():
             assert (
-                "suite download failed" in results["errors"][0]
+                "FileNotFoundError" in results["errors"][0]
             ), f"{worker} was expecting download to fail"
 
     def test_nornir_test_suite_bad_yaml_file(self, nfclient):
@@ -1017,7 +1018,7 @@ class TestNornirTest:
 
         for worker, results in ret.items():
             assert (
-                "Jinja2 rendering failed" in results["errors"][0]
+                "Jinja2 template parsing failed" in results["errors"][0]
             ), f"{worker} was expecting Jinja2 rendering to fail"
 
     def test_nornir_test_suite_custom_functions_files(self, nfclient):
@@ -1097,6 +1098,51 @@ class TestNornirTest:
                     assert (
                         test_res["result"] == "PASS"
                     ), f"{worker}:{host}:{test_name} unexpected test result"
+
+    def test_nornir_test_suite_with_includes_dry_run(self, nfclient):
+        ret = nfclient.run_job(
+            b"nornir",
+            "test",
+            workers=["nornir-worker-1"],
+            kwargs={
+                "suite": "nf://nf_tests_inventory/nornir_test_suites/test_suite_with_include.txt",
+                "FC": "ceos-spine-",
+                "dry_run": True,
+            },
+        )
+        pprint.pprint(ret)
+
+        for worker, results in ret.items():
+            assert results["result"], f"{worker} returned no test results"
+            for host, res in results["result"].items():
+                assert (
+                    len(res["tests_dry_run"]) == 3
+                ), f"{worker}:{host} not all tests rendered"
+                assert res["tests_dry_run"][0]["name"] == "check hostname value"
+                assert res["tests_dry_run"][1]["name"] == "check version"
+                assert res["tests_dry_run"][2]["name"] == "check loopback0 present"
+
+    def test_nornir_test_suite_with_includes(self, nfclient):
+        ret = nfclient.run_job(
+            b"nornir",
+            "test",
+            workers=["nornir-worker-1"],
+            kwargs={
+                "suite": "nf://nf_tests_inventory/nornir_test_suites/test_suite_with_include.txt",
+                "FC": "ceos-spine-",
+            },
+        )
+        pprint.pprint(ret)
+
+        for worker, results in ret.items():
+            assert results["result"], f"{worker} returned no test results"
+            for host, res in results["result"].items():
+                for test_name, test_res in res.items():
+                    assert test_name in [
+                        "check hostname value",
+                        "check loopback0 present",
+                        "check version",
+                    ], f"{worker}:{host}:{test_name} unexpected test result"
 
     @pytest.mark.skip(reason="TBD")
     def test_nornir_test_suite_pattern_files(self, nfclient):
