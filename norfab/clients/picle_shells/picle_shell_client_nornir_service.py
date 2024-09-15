@@ -487,7 +487,7 @@ class WatchDogModel(filters):
         return log_error_or_result(result)
 
 
-class NornirShowCommandsModel(filters):
+class NornirShowCommandsModel(filters, ClientRunJobArgs):
     inventory: Callable = Field(
         "get_nornir_inventory",
         description="show Nornir inventory data",

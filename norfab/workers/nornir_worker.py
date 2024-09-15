@@ -2,7 +2,12 @@
 
 ### Nornir Worker Inventory Reference
 
-TBD
+- ``watchdog_interval`` - watchdog run interval in seconds, default is 30
+- ``connections_idle_timeout`` - watchdog connection idle timeout, 
+    default is ``None`` - no timeout, connection always kept alive, 
+    if set to 0, connections disconnected imminently after task 
+    completed, if positive number, connection disconnected after 
+    not being used for over ``connections_idle_timeout``
 
 """
 
@@ -74,15 +79,16 @@ class WatchDog(Thread):
 
         # stats attributes
         self.runs = 0
-        self.connections_checked = 0
+        self.idle_connections_cleaned = 0
         self.dead_connections_cleaned = 0
 
     def stats(self):
         return {
             "runs": self.runs,
             "timestamp": time.ctime(),
-            "alive": time.time() - self.started_at,
+            "alive": int(time.time() - self.started_at),
             "dead_connections_cleaned": self.dead_connections_cleaned,
+            "idle_connections_cleaned": self.idle_connections_cleaned,
         }
 
     def configuration(self):
@@ -116,54 +122,65 @@ class WatchDog(Thread):
             f"{self.worker.name} - updated connections use timestamps for '{plugin}'"
         )
 
-    def clean_idle_connection(self):
+    def connections_clean(self):
         """
         Check if need to tear down connections that are idle -
         not being used over connections_idle_timeout
         """
+        # dictionary keyed by plugin name and value as a list of hosts
+        disconnect = {}
+        if not self.worker.connections_lock.acquire(blocking=False):
+            return
         try:
-            # get a list of hosts that aged beyond idle timeout
-            hosts_to_disconnect = []
+            # if idle timeout not set, connections don't age out
             if self.connections_idle_timeout is None:
-                return
-            if self.connections_idle_timeout > 0:
-                for host_name in list(self.connections_data.keys()):
-                    conn_data = self.connections_data[host_name]
-                    age = time.time() - time.strptime(conn_data["last_use"])
-                    if age > self.connections_idle_timeout:
-                        hosts_to_disconnect.append(host_name)
+                disconnect = {}
+            # disconnect all connections for all hosts
+            elif self.connections_idle_timeout == 0:
+                disconnect = {"all": list(self.connections_data.keys())}
+            # only disconnect aged/idle connections
+            elif self.connections_idle_timeout > 0:
+                for host_name, plugins in self.connections_data.items():
+                    for plugin, conn_data in plugins.items():
+                        last_use = time.mktime(time.strptime(conn_data["last_use"]))
+                        age = time.time() - last_use
+                        if age > self.connections_idle_timeout:
+                            disconnect.setdefault(plugin, [])
+                            disconnect[plugin].append(host_name)
             # run task to disconnect connections for aged hosts
-            if hosts_to_disconnect and self.worker.connections_lock.acquire(
-                block=False
-            ):
-                try:
-                    aged_hosts = FFun(self.worker.nr, FL=hosts_to_disconnect)
-                    aged_hosts.run(task=nr_connections, call="close", conn_name="all")
-                    log.debug(
-                        f"{self.worker.name} watchdog, disconnected: {hosts_to_disconnect}"
-                    )
-                    # remove disconnected hosts from stats
-                    for h_name in hosts_to_disconnect:
-                        nr["worker_connections"].pop(h_name)
-                except Exception as e:
-                    raise e
-                finally:
-                    nr["connections_lock"].release()
-        except:
-            log.error(
-                "Nornir-proxy MAIN PID {} watchdog, connections idle check error: {}".format(
-                    os.getpid(), traceback.format_exc()
+            for plugin, hosts in disconnect.items():
+                if not hosts:
+                    continue
+                aged_hosts = FFun(self.worker.nr, FL=hosts)
+                aged_hosts.run(task=nr_connections, call="close", conn_name=plugin)
+                log.debug(
+                    f"{self.worker.name} watchdog, disconnected '{plugin}' "
+                    f"connections for '{', '.join(hosts)}'"
                 )
-            )
+                self.idle_connections_cleaned += len(hosts)
+                # wipe out connections data if all connection closed
+                if plugin == "all":
+                    self.connections_data = {}
+                    break
+                # remove disconnected plugin from host's connections_data
+                for host in hosts:
+                    self.connections_data[host].pop(plugin)
+                    if not self.connections_data[host]:
+                        self.connections_data.pop(host)
+        except Exception as e:
+            msg = f"{self.worker.name} - watchdog failed to close idle connections, error: {e}"
+            log.error(msg)
+        finally:
+            self.worker.connections_lock.release()
 
-    def keepalive_connections(self):
+    def connections_keepalive(self):
         """Keepalive connections and clean up dead connections if any"""
-        if self.connections_idle_timeout is not None:
+        if self.connections_idle_timeout == 0:  # do not keepalive if idle is 0
             return
         if not self.worker.connections_lock.acquire(blocking=False):
             return
-        log.debug(f"{self.worker.name} - watchdog running connections keepalive")
         try:
+            log.debug(f"{self.worker.name} - watchdog running connections keepalive")
             stats = HostsKeepalive(self.worker.nr)
             self.dead_connections_cleaned += stats["dead_connections_cleaned"]
             # update connections statistics
@@ -187,7 +204,8 @@ class WatchDog(Thread):
                 continue
 
             # run the tasks
-            self.keepalive_connections()
+            self.connections_clean()
+            self.connections_keepalive()
 
             # update counters
             self.runs += 1
@@ -633,6 +651,8 @@ class NornirWorker(NFPWorker):
             result = nr.run(task=task_function, **kwargs)
         ret.result = ResultSerializer(result, to_dict=to_dict, add_details=add_details)
 
+        self.watchdog.connections_clean()
+
         return ret
 
     def cli(
@@ -715,11 +735,12 @@ class NornirWorker(NFPWorker):
 
         ret.result = ResultSerializer(result, to_dict=to_dict, add_details=add_details)
 
-        self.watchdog.connections_update(nr, plugin)
-
         # remove __task__ data
         for host_name, host_object in nr.inventory.hosts.items():
             _ = host_object.data.pop("__task__", None)
+
+        self.watchdog.connections_update(nr, plugin)
+        self.watchdog.connections_clean()
 
         return ret
 
@@ -807,6 +828,9 @@ class NornirWorker(NFPWorker):
         # remove __task__ data
         for host_name, host_object in nr.inventory.hosts.items():
             _ = host_object.data.pop("__task__", None)
+
+        self.watchdog.connections_update(nr, plugin)
+        self.watchdog.connections_clean()
 
         return ret
 
