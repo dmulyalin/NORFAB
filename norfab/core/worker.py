@@ -20,6 +20,8 @@ from . import NFP
 from uuid import uuid4
 from .client import NFPClient
 from .keepalives import KeepAliver
+from jinja2 import Environment, FileSystemLoader
+from jinja2.nodes import Include
 
 from typing import Any, Callable, Dict, List, Optional, Union
 
@@ -480,6 +482,36 @@ class NFPWorker:
         else:
             log.error(msg)
             return None
+
+    def fetch_jinja2(self, url: str) -> str:
+        """
+        Helper function to recursively download Jinja2 template together with
+        other templates referenced using "include" statements
+
+        :param url: ``nf://file/path`` like URL to download file
+        """
+        filepath = self.fetch_file(url, read=False)
+        if filepath is None:
+            msg = f"{self.name} - file download failed '{url}'"
+            raise FileNotFoundError(msg)
+
+        # download Jinja2 template "include"-ed files
+        content = self.fetch_file(url, read=True)
+        j2env = Environment(loader="BaseLoader")
+        try:
+            parsed_content = j2env.parse(content)
+        except Exception as e:
+            msg = f"{self.name} - Jinja2 template parsing failed '{url}', error: '{e}'"
+            raise Exception(msg)
+
+        # run recursion on include statements
+        for node in parsed_content.body:
+            if isinstance(node, Include):
+                include_file = node.template.value
+                base_path = os.path.split(url)[0]
+                self.fetch_jinja2(os.path.join(base_path, include_file))
+
+        return filepath
 
     def event(self, data: Any = None) -> None:
         self.event_queue.put(

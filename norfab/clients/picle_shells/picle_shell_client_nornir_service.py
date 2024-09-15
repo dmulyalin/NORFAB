@@ -449,6 +449,44 @@ class NornirShowHosts(filters, TabulateTableModel):
         return ret
 
 
+class WatchDogModel(filters):
+    statistics: Callable = Field(
+        "get_watchdog_stats",
+        description="show Nornir watchdog statistics",
+    )
+    configuration: Callable = Field(
+        "get_watchdog_configuration",
+        description="show Nornir watchdog configuration",
+    )
+    connections: Callable = Field(
+        "get_watchdog_connections",
+        description="show Nornir watchdog connections monitoring data",
+    )
+
+    class PicleConfig:
+        outputter = Outputters.outputter_rich_json
+
+    @staticmethod
+    def get_watchdog_stats(**kwargs):
+        workers = kwargs.pop("workers", "all")
+        result = NFCLIENT.run_job("nornir", "get_watchdog_stats", workers=workers)
+        return log_error_or_result(result)
+
+    @staticmethod
+    def get_watchdog_configuration(**kwargs):
+        workers = kwargs.pop("workers", "all")
+        result = NFCLIENT.run_job(
+            "nornir", "get_watchdog_configuration", workers=workers
+        )
+        return log_error_or_result(result)
+
+    @staticmethod
+    def get_watchdog_connections(**kwargs):
+        workers = kwargs.pop("workers", "all")
+        result = NFCLIENT.run_job("nornir", "get_watchdog_connections", workers=workers)
+        return log_error_or_result(result)
+
+
 class NornirShowCommandsModel(filters):
     inventory: Callable = Field(
         "get_nornir_inventory",
@@ -460,6 +498,10 @@ class NornirShowCommandsModel(filters):
     )
     version: Callable = Field(
         "get_nornir_version",
+        description="show Nornir service version report",
+    )
+    watchdog: WatchDogModel = Field(
+        None,
         description="show Nornir service version report",
     )
 

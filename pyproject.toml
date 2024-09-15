@@ -64,7 +64,7 @@ robotframework = { version = "7.0", optional = true }
 
 # Netbox Service Dependencies
 diskcache = { version = "5.6.3", optional = true }
-pynetbox = { version = "7.3.3", optional = true }
+pynetbox = { version = "7.4.0", optional = true }
 
 [tool.poetry.dev-dependencies]
 black = "22.3.*"

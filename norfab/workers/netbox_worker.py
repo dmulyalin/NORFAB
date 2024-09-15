@@ -225,7 +225,7 @@ class NetboxWorker(NFPWorker):
 
     def get_netbox_inventory(self) -> Result:
         return Result(
-            name=f"{self.name}:get_netbox_inventory", result=dict(self.inventory)
+            task=f"{self.name}:get_netbox_inventory", result=dict(self.inventory)
         )
 
     def get_netbox_version(self, **kwargs) -> Result:
@@ -289,6 +289,11 @@ class NetboxWorker(NFPWorker):
                 f"{params['url']}/api/status",
                 verify=params.get("ssl_verify", True),
                 timeout=(3, 600),
+                headers={
+                    "Content-Type": "application/json",
+                    "Accept": "application/json",
+                    "Authorization": f"Token {params['token']}",
+                },
             )
             response.raise_for_status()
             ret.update(response.json())

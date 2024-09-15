@@ -17,7 +17,6 @@ import os
 import hashlib
 
 from jinja2 import Environment, FileSystemLoader
-from jinja2.nodes import Include
 from norfab.core.worker import NFPWorker, Result
 from norfab.core.inventory import merge_recursively
 from norfab.core.exceptions import UnsupportedPluginError
@@ -30,8 +29,14 @@ from nornir_salt.plugins.tasks import (
     netmiko_send_config,
     scrapli_send_config,
     nr_test,
+    connections as nr_connections,
 )
-from nornir_salt.plugins.functions import FFun_functions, FFun, ResultSerializer
+from nornir_salt.plugins.functions import (
+    FFun_functions,
+    FFun,
+    ResultSerializer,
+    HostsKeepalive,
+)
 from nornir_salt.plugins.processors import (
     TestsProcessor,
     ToFileProcessor,
@@ -41,8 +46,153 @@ from nornir_salt.plugins.processors import (
 )
 from nornir_salt.utils.pydantic_models import modelTestsProcessorSuite
 from typing import Union
+from threading import Thread, Lock
 
 log = logging.getLogger(__name__)
+
+
+class WatchDog(Thread):
+    """
+    Class to monitor Nornir worker performance
+    """
+
+    def __init__(self, worker):
+        super().__init__()
+        self.worker = worker
+        self.watchdog_interval = worker.inventory.get("watchdog_interval", 30)
+        self.memory_threshold_mbyte = worker.inventory.get(
+            "memory_threshold_mbyte", 1000
+        )
+        self.memory_threshold_action = worker.inventory.get(
+            "memory_threshold_action", "log"
+        )
+        self.connections_idle_timeout = worker.inventory.get(
+            "connections_idle_timeout", None
+        )
+        self.connections_data = {}  # store connections use timestamps
+        self.started_at = time.time()
+
+        # stats attributes
+        self.runs = 0
+        self.connections_checked = 0
+        self.dead_connections_cleaned = 0
+
+    def stats(self):
+        return {
+            "runs": self.runs,
+            "timestamp": time.ctime(),
+            "alive": time.time() - self.started_at,
+            "dead_connections_cleaned": self.dead_connections_cleaned,
+        }
+
+    def configuration(self):
+        return {
+            "watchdog_interval": self.watchdog_interval,
+            "connections_idle_timeout": self.connections_idle_timeout,
+        }
+
+    def connections_get(self):
+        return {
+            "connections": self.connections_data,
+        }
+
+    def connections_update(self, nr, plugin: str) -> None:
+        """
+        Function to update connection use timestamps for each host
+
+        :param nr: Nornir object
+        :param plugin: connection plugin name
+        """
+        conn_stats = {
+            "last_use": None,
+            "last_keepealive": None,
+            "keepalive_count": 0,
+        }
+        for host_name in nr.inventory.hosts:
+            self.connections_data.setdefault(host_name, {})
+            self.connections_data[host_name].setdefault(plugin, conn_stats.copy())
+            self.connections_data[host_name][plugin]["last_use"] = time.ctime()
+        log.info(
+            f"{self.worker.name} - updated connections use timestamps for '{plugin}'"
+        )
+
+    def clean_idle_connection(self):
+        """
+        Check if need to tear down connections that are idle -
+        not being used over connections_idle_timeout
+        """
+        try:
+            # get a list of hosts that aged beyond idle timeout
+            hosts_to_disconnect = []
+            if self.connections_idle_timeout is None:
+                return
+            if self.connections_idle_timeout > 0:
+                for host_name in list(self.connections_data.keys()):
+                    conn_data = self.connections_data[host_name]
+                    age = time.time() - time.strptime(conn_data["last_use"])
+                    if age > self.connections_idle_timeout:
+                        hosts_to_disconnect.append(host_name)
+            # run task to disconnect connections for aged hosts
+            if hosts_to_disconnect and self.worker.connections_lock.acquire(
+                block=False
+            ):
+                try:
+                    aged_hosts = FFun(self.worker.nr, FL=hosts_to_disconnect)
+                    aged_hosts.run(task=nr_connections, call="close", conn_name="all")
+                    log.debug(
+                        f"{self.worker.name} watchdog, disconnected: {hosts_to_disconnect}"
+                    )
+                    # remove disconnected hosts from stats
+                    for h_name in hosts_to_disconnect:
+                        nr["worker_connections"].pop(h_name)
+                except Exception as e:
+                    raise e
+                finally:
+                    nr["connections_lock"].release()
+        except:
+            log.error(
+                "Nornir-proxy MAIN PID {} watchdog, connections idle check error: {}".format(
+                    os.getpid(), traceback.format_exc()
+                )
+            )
+
+    def keepalive_connections(self):
+        """Keepalive connections and clean up dead connections if any"""
+        if self.connections_idle_timeout is not None:
+            return
+        if not self.worker.connections_lock.acquire(blocking=False):
+            return
+        log.debug(f"{self.worker.name} - watchdog running connections keepalive")
+        try:
+            stats = HostsKeepalive(self.worker.nr)
+            self.dead_connections_cleaned += stats["dead_connections_cleaned"]
+            # update connections statistics
+            for plugins in self.connections_data.values():
+                for plugin in plugins.values():
+                    plugin["last_keepealive"] = time.ctime()
+                    plugin["keepalive_count"] += 1
+        except Exception as e:
+            msg = f"{self.worker.name} - watchdog HostsKeepalive check error: {e}"
+            log.error(msg)
+        finally:
+            self.worker.connections_lock.release()
+
+    def run(self):
+        slept = 0
+        while not self.worker.exit_event.is_set():
+            # continue sleeping for watchdog_interval
+            if slept < self.watchdog_interval:
+                time.sleep(0.1)
+                slept += 0.1
+                continue
+
+            # run the tasks
+            self.keepalive_connections()
+
+            # update counters
+            self.runs += 1
+
+            slept = 0  # reset to go to sleep
 
 
 class NornirWorker(NFPWorker):
@@ -68,6 +218,9 @@ class NornirWorker(NFPWorker):
         self.init_done_event = init_done_event
         self.tf_base_path = os.path.join(self.base_dir, "tf")
 
+        # misc attributes
+        self.connections_lock = Lock()
+
         # get inventory from broker
         self.inventory = self.load_inventory()
 
@@ -76,6 +229,10 @@ class NornirWorker(NFPWorker):
 
         # initiate Nornir
         self._init_nornir()
+
+        # initiate watchdog
+        self.watchdog = WatchDog(self)
+        self.watchdog.start()
 
         self.init_done_event.set()
         log.info(f"{self.name} - Started")
@@ -278,35 +435,32 @@ class NornirWorker(NFPWorker):
 
         return nr.with_processors(processors)
 
-    def fetch_jinja2(self, url: str) -> str:
+    def render_jinja2_templates(
+        self, templates: list[str], context: dict, filters: dict = None
+    ) -> list[str]:
         """
-        Helper function to recursively download Jinja2 templates
-        out of "include" statements
+        helper function to render a list of Jinja2 templates
 
-        :param url: ``nf://file/path`` like URL to download file
+        :param templates: list of template strings to render
+        :param context: Jinja2 context dictionary
+        :param filter: custom Jinja2 filters
+        :returns: list of rendered strings
         """
-        filepath = self.fetch_file(url, read=False)
-        if filepath is None:
-            msg = f"{self.name} - file download failed '{url}'"
-            raise FileNotFoundError(msg)
+        rendered = []
+        filters = filters or {}
+        for template in templates:
+            if template.startswith("nf://"):
+                filepath = self.fetch_jinja2(template)
+                searchpath, filename = os.path.split(filepath)
+                j2env = Environment(loader=FileSystemLoader(searchpath))
+                renderer = j2env.get_template(filename)
+            else:
+                j2env = Environment(loader="BaseLoader")
+                renderer = j2env.from_string(template)
+            j2env.filters.update(filters)  # add custom filters
+            rendered.append(renderer.render(**context))
 
-        # download Jinja2 template "include"-ed files
-        content = self.fetch_file(url, read=True)
-        j2env = Environment(loader="BaseLoader")
-        try:
-            parsed_content = j2env.parse(content)
-        except Exception as e:
-            msg = f"{self.name} - Jinja2 template parsing failed '{url}', error: '{e}'"
-            raise Exception(msg)
-
-        # run recursion on include statements
-        for node in parsed_content.body:
-            if isinstance(node, Include):
-                include_file = node.template.value
-                base_path = os.path.split(url)[0]
-                self.fetch_jinja2(os.path.join(base_path, include_file))
-
-        return filepath
+        return rendered
 
     # ----------------------------------------------------------------------
     # Nornir Service Functions that exposed for calling
@@ -394,7 +548,16 @@ class NornirWorker(NFPWorker):
             except importlib.metadata.PackageNotFoundError:
                 pass
 
-        return Result(result=libs, task="get_nornir_version")
+        return Result(result=libs)
+
+    def get_watchdog_stats(self):
+        return Result(result=self.watchdog.stats())
+
+    def get_watchdog_configuration(self):
+        return Result(result=self.watchdog.configuration())
+
+    def get_watchdog_connections(self):
+        return Result(result=self.watchdog.connections_get())
 
     def task(self, plugin: str, **kwargs) -> Result:
         """
@@ -466,7 +629,8 @@ class NornirWorker(NFPWorker):
 
         # run task
         log.debug(f"{self.name} - running Nornir task '{plugin}', kwargs '{kwargs}'")
-        result = nr.run(task=task_function, **kwargs)
+        with self.connections_lock:
+            result = nr.run(task=task_function, **kwargs)
         ret.result = ResultSerializer(result, to_dict=to_dict, add_details=add_details)
 
         return ret
@@ -527,31 +691,15 @@ class NornirWorker(NFPWorker):
 
         nr = self._add_processors(filtered_nornir, kwargs)  # add processors
 
-        # put a per-host list of commands to run
+        # render commands using Jinja2 on a per-host basis
         if commands:
             commands = commands if isinstance(commands, list) else [commands]
-
-            # download commands from broker if needed
-            for command in commands:
-                if command.startswith("nf://"):
-                    downloaded = self.fetch_file(command)
-                    if downloaded is not None:
-                        downloaded_cmds.append(downloaded)
-                    else:
-                        msg = f"{self.name} - command download failed '{command}'"
-                        raise FileNotFoundError(msg)
-                else:
-                    downloaded_cmds.append(command)
-
-            # render commands using Jinja2 on a per-host basis
-            for host_name, host_object in nr.inventory.hosts.items():
-                context = {"host": host_object, "norfab": self.client, "nornir": self}
-                rendered_commands = []
-                for command in downloaded_cmds:
-                    renderer = Environment(loader="BaseLoader").from_string(command)
-                    rendered_command = renderer.render(**context)
-                    rendered_commands.append(rendered_command)
-                host_object.data["__task__"] = {"commands": rendered_commands}
+            for host in nr.inventory.hosts.values():
+                rendered = self.render_jinja2_templates(
+                    templates=commands,
+                    context={"host": host, "norfab": self.client, "nornir": self},
+                )
+                host.data["__task__"] = {"commands": rendered}
 
         # run task
         log.debug(
@@ -562,9 +710,12 @@ class NornirWorker(NFPWorker):
                 task=nr_test, use_task_data="commands", name="cli_dry_run", **kwargs
             )
         else:
-            result = nr.run(task=task_plugin, **kwargs)
+            with self.connections_lock:
+                result = nr.run(task=task_plugin, **kwargs)
 
         ret.result = ResultSerializer(result, to_dict=to_dict, add_details=add_details)
+
+        self.watchdog.connections_update(nr, plugin)
 
         # remove __task__ data
         for host_name, host_object in nr.inventory.hosts.items():
@@ -629,25 +780,14 @@ class NornirWorker(NFPWorker):
 
         nr = self._add_processors(filtered_nornir, kwargs)  # add processors
 
-        # download config from broker if needed and render it
-        for command in config:
-            filepath = None
-            if command.startswith("nf://"):
-                filepath = self.fetch_jinja2(command)
-                searchpath, template = os.path.split(filepath)
-            # render config using Jinja2 on a per-host basis
-            for host in nr.inventory.hosts.values():
-                context = {"host": host}
-                host.data.setdefault("__task__", {"config": []})
-                if command.startswith("nf://"):
-                    j2env = Environment(loader=FileSystemLoader(searchpath))
-                    renderer = j2env.get_template(template)
-                else:
-                    j2env = Environment(loader="BaseLoader")
-                    renderer = j2env.from_string(command)
-                # add custom filters
-                j2env.filters["nb_get_next_ip"] = self.nb_get_next_ip
-                host.data["__task__"]["config"].append(renderer.render(**context))
+        # render config using Jinja2 on a per-host basis
+        for host in nr.inventory.hosts.values():
+            rendered = self.render_jinja2_templates(
+                templates=config,
+                context={"host": host, "norfab": self.client, "nornir": self},
+                filters={"nb_get_next_ip": self.nb_get_next_ip},
+            )
+            host.data["__task__"] = {"config": rendered}
 
         # run task
         log.debug(
@@ -658,7 +798,8 @@ class NornirWorker(NFPWorker):
                 task=nr_test, use_task_data="config", name="cfg_dry_run", **kwargs
             )
         else:
-            result = nr.run(task=task_plugin, **kwargs)
+            with self.connections_lock:
+                result = nr.run(task=task_plugin, **kwargs)
             ret.changed = True
 
         ret.result = ResultSerializer(result, to_dict=to_dict, add_details=add_details)
@@ -720,8 +861,8 @@ class NornirWorker(NFPWorker):
 
         # generate per-host test suites
         searchpath, template = os.path.split(downloaded_suite)
-        for host_name, host_object in filtered_nornir.inventory.hosts.items():
-            context = {"host": host_object}
+        for host_name, host in filtered_nornir.inventory.hosts.items():
+            context = {"host": host, "norfab": self.client, "nornir": self}
             # render suite using Jinja2
             try:
                 j2env = Environment(loader=FileSystemLoader(searchpath))

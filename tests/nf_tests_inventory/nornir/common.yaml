@@ -1,5 +1,6 @@
 service: nornir
 broker_endpoint: "tcp://127.0.0.1:5555"
+watchdog_interval: 10
 runner:
   plugin: RetryRunner
   options: 

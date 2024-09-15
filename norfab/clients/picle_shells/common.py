@@ -34,10 +34,10 @@ def log_error_or_result(data: dict) -> dict:
     for w_name, w_res in data.items():
         if w_res["errors"]:
             errors = "\n".join(w_res["errors"])
-            log.error(f"{w_name} '{w_res['name']}' errors:\n{errors}")
+            log.error(f"{w_name} '{w_res['task']}' errors:\n{errors}")
         elif w_res["messages"]:
             messages = "\n".join(w_res["messages"])
-            log.info(f"{w_name} '{w_res['name']}' messages:\n{messages}")
+            log.info(f"{w_name} '{w_res['task']}' messages:\n{messages}")
         else:
             ret[w_name] = w_res["result"]
 
