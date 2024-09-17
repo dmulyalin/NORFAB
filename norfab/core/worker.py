@@ -505,11 +505,10 @@ class NFPWorker:
             raise Exception(msg)
 
         # run recursion on include statements
-        for node in parsed_content.body:
-            if isinstance(node, Include):
-                include_file = node.template.value
-                base_path = os.path.split(url)[0]
-                self.fetch_jinja2(os.path.join(base_path, include_file))
+        for node in parsed_content.find_all(Include):
+            include_file = node.template.value
+            base_path = os.path.split(url)[0]
+            self.fetch_jinja2(os.path.join(base_path, include_file))
 
         return filepath
 

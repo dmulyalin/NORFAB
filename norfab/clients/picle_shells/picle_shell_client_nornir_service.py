@@ -16,6 +16,7 @@ from uuid import uuid4  # random uuid
 from rich.console import Console
 from rich.live import Live
 from rich.panel import Panel
+from rich.tree import Tree
 from rich import box
 from picle.models import PipeFunctionsModel, Outputters
 from enum import Enum
@@ -43,66 +44,56 @@ log = logging.getLogger(__name__)
 # ---------------------------------------------------------------------------------------------
 
 
-def generate_panel(message="", title=""):
-    return Panel(message, title=title, title_align="left", box=box.ROUNDED)
-
-
 def listen_events_thread(uuid, stop):
     """Helper function to pretty print events to command line"""
-    events = []
     start_time = time.time()
-    with Live(generate_panel(), refresh_per_second=10) as live:
-        while not (stop.is_set() or NFCLIENT.exit_event.is_set()):
-            try:
-                event = NFCLIENT.event_queue.get(block=True, timeout=0.1)
-                NFCLIENT.event_queue.task_done()
-            except queue.Empty:
-                continue
+    time_fmt = "%d-%b-%Y %H:%M:%S"
+    RICHCONSOLE.print(f"{time.strftime(time_fmt)} {uuid} job started")
+    while not (stop.is_set() or NFCLIENT.exit_event.is_set()):
+        try:
+            event = NFCLIENT.event_queue.get(block=True, timeout=0.1)
+            NFCLIENT.event_queue.task_done()
+        except queue.Empty:
+            continue
+        (
+            empty,
+            header,
+            command,
+            service,
+            job_uuid,
+            status,
+            data,
+        ) = event
+        if job_uuid != uuid.encode("utf-8"):
+            NFCLIENT.event_queue.put(event)
+            continue
 
-            (
-                empty,
-                header,
-                command,
-                service,
-                job_uuid,
-                status,
-                data,
-            ) = event
+        # extract event parameters
+        data = json.loads(data)
+        worker = data["worker"]
+        service = data["service"]
+        task = data["task"]
+        timestamp = data["data"]["timestamp"]
+        nr_task_name = data["data"]["task_name"]
+        nr_task_event = data["data"]["task_event"]
+        nr_task_type = data["data"]["task_type"]
+        nr_task_hosts = data["data"].get("hosts")
+        nr_task_status = data["data"]["status"]
+        nr_task_message = data["data"]["message"]
+        nr_parent_task = data["data"]["parent_task"]
 
-            if job_uuid != uuid.encode("utf-8"):
-                NFCLIENT.event_queue.put(event)
-                continue
+        nr_task_event = nr_task_event.replace("started", "[cyan]started[/cyan]")
+        nr_task_event = nr_task_event.replace("completed", "[green]completed[/green]")
 
-            # extract event parameters
-            data = json.loads(data)
-            worker = data["worker"]
-            service = data["service"]
-            task = data["task"]
-            timestamp = data["data"]["timestamp"]
-            nr_task_name = data["data"]["task_name"]
-            nr_task_event = data["data"]["task_event"]
-            nr_task_type = data["data"]["task_type"]
-            nr_task_hosts = data["data"].get("hosts")
-            nr_task_status = data["data"]["status"]
-            nr_task_message = data["data"]["message"]
-            nr_parent_task = data["data"]["parent_task"]
+        # log event message
+        RICHCONSOLE.print(
+            f"{timestamp} {worker} {nr_task_type:<14} {nr_task_event} {', '.join(nr_task_hosts)} '{nr_task_name}'"
+        )
 
-            events.append(
-                f"{timestamp}: {worker} {', '.join(nr_task_hosts)} '{nr_task_name}' "
-                f"{nr_task_type} {nr_task_event}"
-            )
-            if len(events) == 20:
-                events = events[1:]
-
-            time_delta = time.strftime(
-                "%H:%M:%S", time.gmtime(time.time() - start_time)
-            )
-            live.update(
-                generate_panel(
-                    message="\n".join(events),
-                    title=f"{service}.{task} {uuid} {time_delta}",
-                )
-            )
+    elapsed = int(time.time() - start_time)
+    RICHCONSOLE.print(
+        f"{time.strftime(time_fmt)} {uuid} job completed in {elapsed} seconds\n"
+    )
 
 
 def listen_events(fun):
@@ -156,6 +147,7 @@ def print_nornir_results(data: Union[list, dict]):
     if not isinstance(data, dict):
         data = data.replace("FAIL", "[bold red]FAIL[/bold red]")
         data = data.replace("PASS", "[bold green]PASS[/bold green]")
+        data = data.replace("ERROR", "[bold yellow]ERROR[/bold yellow]")
         RICHCONSOLE.print(data)
         return
 
@@ -512,7 +504,9 @@ class NornirShowCommandsModel(filters, ClientRunJobArgs):
     @staticmethod
     def get_nornir_inventory(**kwargs):
         workers = kwargs.pop("workers", "all")
-        result = NFCLIENT.run_job("nornir", "get_nornir_inventory", workers=workers)
+        result = NFCLIENT.run_job(
+            "nornir", "get_nornir_inventory", kwargs=kwargs, workers=workers
+        )
         return log_error_or_result(result)
 
     @staticmethod

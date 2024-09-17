@@ -788,6 +788,35 @@ class TestNornirCfg:
             assert results["failed"] == True, f"{worker}:{host} results not failed"
             assert "FileNotFoundError" in results["errors"][0]
 
+    def test_config_from_file_template_with_if_and_include(self, nfclient):
+        ret = nfclient.run_job(
+            b"nornir",
+            "cfg",
+            workers=["nornir-worker-1", "nornir-worker-2"],
+            kwargs={
+                "config": "nf://nf_tests_inventory/cfg/config_with_if_and_includes.txt",
+                "cfg_dry_run": True,
+            },
+        )
+        pprint.pprint(ret)
+
+        for worker, results in ret.items():
+            assert results["failed"] == False, f"{worker}:{host} results failed"
+            for host, res in results["result"].items():
+                assert "cfg_dry_run" in res, f"{worker}:{host} no cfg_dry_run output"
+                for item in res["cfg_dry_run"]:
+                    assert (
+                        "interface Loopback1" in item
+                    ), f"{worker}:{host} no config_with_includes.txt config"
+                    if "spine" in host:
+                        assert (
+                            "interface Loopback321" in item
+                        ), f"{worker}:{host} not correct spine config"
+                    elif "leaf" in host:
+                        assert (
+                            "interface Loopback123" in item
+                        ), f"{worker}:{host} not correct leaf config"
+
 
 # ----------------------------------------------------------------------------
 # NORNIR.TEST FUNCTION TESTS

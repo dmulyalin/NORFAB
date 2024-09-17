@@ -1,0 +1,3 @@
+interface Loopback321
+description RID for {{ host.name }}
+!

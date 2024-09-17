@@ -1,0 +1,8 @@
+interface Loopback1
+description MGMT for {{ host.name }}
+!
+{% if "spine" in host.name %}
+{% include "config_includes_spine.txt" %}
+{% elif "leaf" in host.name %}
+{% include "config_includes_leaf.txt" %}
+{% endif %}
