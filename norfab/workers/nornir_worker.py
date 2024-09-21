@@ -22,7 +22,7 @@ import os
 import hashlib
 
 from jinja2 import Environment, FileSystemLoader
-from norfab.core.worker import NFPWorker, Result
+from norfab.core.worker import NFPWorker, Result, WorkerWatchDog
 from norfab.core.inventory import merge_recursively
 from norfab.core.exceptions import UnsupportedPluginError
 from nornir import InitNornir
@@ -49,6 +49,7 @@ from nornir_salt.plugins.processors import (
     DataProcessor,
     NorFabEventProcessor,
 )
+from nornir_napalm.plugins.tasks import napalm_get
 from nornir_salt.utils.pydantic_models import modelTestsProcessorSuite
 from typing import Union
 from threading import Thread, Lock
@@ -56,21 +57,14 @@ from threading import Thread, Lock
 log = logging.getLogger(__name__)
 
 
-class WatchDog(Thread):
+class WatchDog(WorkerWatchDog):
     """
     Class to monitor Nornir worker performance
     """
 
     def __init__(self, worker):
-        super().__init__()
+        super().__init__(worker)
         self.worker = worker
-        self.watchdog_interval = worker.inventory.get("watchdog_interval", 30)
-        self.memory_threshold_mbyte = worker.inventory.get(
-            "memory_threshold_mbyte", 1000
-        )
-        self.memory_threshold_action = worker.inventory.get(
-            "memory_threshold_action", "log"
-        )
         self.connections_idle_timeout = worker.inventory.get(
             "connections_idle_timeout", None
         )
@@ -78,9 +72,14 @@ class WatchDog(Thread):
         self.started_at = time.time()
 
         # stats attributes
-        self.runs = 0
         self.idle_connections_cleaned = 0
         self.dead_connections_cleaned = 0
+
+        # list of tasks for watchdog to run in given order
+        self.watchdog_tasks = [
+            self.connections_clean,
+            self.connections_keepalive,
+        ]
 
     def stats(self):
         return {
@@ -89,6 +88,7 @@ class WatchDog(Thread):
             "alive": int(time.time() - self.started_at),
             "dead_connections_cleaned": self.dead_connections_cleaned,
             "idle_connections_cleaned": self.idle_connections_cleaned,
+            "ram_usage_mbyte": self.get_ram_usage(),
         }
 
     def configuration(self):
@@ -194,24 +194,6 @@ class WatchDog(Thread):
         finally:
             self.worker.connections_lock.release()
 
-    def run(self):
-        slept = 0
-        while not self.worker.exit_event.is_set():
-            # continue sleeping for watchdog_interval
-            if slept < self.watchdog_interval:
-                time.sleep(0.1)
-                slept += 0.1
-                continue
-
-            # run the tasks
-            self.connections_clean()
-            self.connections_keepalive()
-
-            # update counters
-            self.runs += 1
-
-            slept = 0  # reset to go to sleep
-
 
 class NornirWorker(NFPWorker):
     """
@@ -283,7 +265,7 @@ class NornirWorker(NFPWorker):
 
         # extract parameters from kwargs
         retry = kwargs.pop("retry", 3)
-        retry_interval = kwargs.pop("retry_interval", 5)
+        retry_timeout = kwargs.pop("retry_timeout", 100)
 
         # check if need to add devices list
         if "filters" not in kwargs and "devices" not in kwargs:
@@ -296,34 +278,22 @@ class NornirWorker(NFPWorker):
                 )
                 return
 
-        # get Nornir inventory from netbox
-        while retry:
-            if self.destroy_event.is_set():
-                return
-            retry -= 1
-            nb_inventory_data = self.client.run_job(
-                b"netbox",
-                "get_nornir_inventory",
-                workers="any",
-                kwargs=kwargs,
-                job_timeout=30,
-            )
-            if not nb_inventory_data:
-                continue
-            worker, data = nb_inventory_data.popitem()
-            if data["result"] and not data["failed"]:
-                break
-            log.warning(
-                f"{self.name} - Netbox service returned no Nornir "
-                f"inventory data, retrying..."
-            )
-            time.sleep(retry_interval)
-        else:
+        nb_inventory_data = self.client.run_job(
+            service="netbox",
+            task="get_nornir_inventory",
+            workers="any",
+            kwargs=kwargs,
+            job_timeout=retry_timeout * retry,
+            retry=retry,
+        )
+
+        if nb_inventory_data is None:
             log.error(
-                f"{self.name} - Netbox service returned no Nornir "
-                f"inventory data after 3 attempts, is it running?"
+                f"{self.name} - Netbox get_nornir_inventory no inventory returned"
             )
             return
+
+        worker, data = nb_inventory_data.popitem()
 
         # merge Netbox inventory into Nornir inventory
         if data["result"].get("hosts"):
@@ -760,7 +730,13 @@ class NornirWorker(NFPWorker):
         return result["result"]
 
     def cfg(
-        self, config: list, plugin: str = "netmiko", cfg_dry_run: bool = False, **kwargs
+        self,
+        config: list,
+        plugin: str = "netmiko",
+        cfg_dry_run: bool = False,
+        to_dict: bool = True,
+        add_details: bool = False,
+        **kwargs,
     ) -> dict:
         """
         Function to send configuration commands to devices using
@@ -772,8 +748,6 @@ class NornirWorker(NFPWorker):
         """
         downloaded_cfg = []
         config = config if isinstance(config, list) else [config]
-        add_details = kwargs.pop("add_details", False)  # ResultSerializer
-        to_dict = kwargs.pop("to_dict", True)  # ResultSerializer
         filters = {k: kwargs.pop(k) for k in list(kwargs.keys()) if k in FFun_functions}
         ret = Result(task=f"{self.name}:cfg", result={} if to_dict else [])
 
@@ -1024,3 +998,49 @@ class NornirWorker(NFPWorker):
             plugin="nornir_salt.plugins.tasks.network",
             **kwargs,
         )
+
+    def parse(
+        self,
+        plugin: str = "napalm",
+        getters: str = "get_facts",
+        template: str = None,
+        commands: list = None,
+        to_dict: bool = True,
+        add_details: bool = False,
+        **kwargs,
+    ):
+        """
+        Function to parse network devices show commands output
+
+        :param plugin: plugin name to use - ``napalm``, ``textfsm``, ``ttp``, ``genie``
+        :param getters: NAPALM getters to use
+        :param commands: TextFSM, TTP or Genie commands to send to devices
+        :param template: TextFSM or TTP parsing template string or path to file
+
+        For NAPALM plugin ``method`` can refer to a list of getters names.
+        """
+        filters = {k: kwargs.pop(k) for k in list(kwargs.keys()) if k in FFun_functions}
+        ret = Result(task=f"{self.name}:parse", result={} if to_dict else [])
+
+        self.nr.data.reset_failed_hosts()  # reset failed hosts
+        filtered_nornir = FFun(self.nr, **filters)  # filter hosts
+
+        # check if no hosts matched
+        if not filtered_nornir.inventory.hosts:
+            msg = (
+                f"{self.name} - nothing to do, no hosts matched by filters '{filters}'"
+            )
+            ret.messages.append(msg)
+            log.debug(msg)
+            return ret
+
+        nr = self._add_processors(filtered_nornir, kwargs)  # add processors
+
+        if plugin == "napalm":
+            result = nr.run(task=napalm_get, getters=getters, **kwargs)
+        else:
+            raise UnsupportedPluginError(f"Plugin '{plugin}' not supported")
+
+        ret.result = ResultSerializer(result, to_dict=to_dict, add_details=add_details)
+
+        return ret

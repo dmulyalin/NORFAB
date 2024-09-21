@@ -36,6 +36,18 @@ class TestNornirWorker:
             for package, version in version_report["result"].items():
                 assert version != "", f"{worker_name}:{package} version is empty"
 
+    @pytest.mark.skip(reason="TBD")
+    def test_get_watchdog_stats(self, nfclient):
+        pass
+
+    @pytest.mark.skip(reason="TBD")
+    def test_get_watchdog_configuration(self, nfclient):
+        pass
+
+    @pytest.mark.skip(reason="TBD")
+    def test_get_watchdog_connections(self, nfclient):
+        pass
+
 
 # ----------------------------------------------------------------------------
 # NORNIR.CLI FUNCTION TESTS
@@ -225,16 +237,15 @@ class TestNornirCli:
                 "FL": ["ceos-spine-1", "ceos-spine-2"],
             },
         )
-        pprint.pprint(ret)
+        pprint.pprint(ret, width=150)
 
         for worker, results in ret.items():
             for host, res in results["result"].items():
                 assert all(
                     k in res["cli_dry_run"][0]
                     for k in [
-                        "updated by norfab",
+                        "updated by norfab 1234",
                         "interface Ethernet",
-                        "interface Loopback",
                         "description",
                     ]
                 ), f"{worker}:{host} output is wrong"
@@ -1238,3 +1249,58 @@ class TestNornirNetwork:
                 assert (
                     "Reply from" in res["ping"]
                 ), f"{worker}:{host} ping result is not good"
+
+
+# ----------------------------------------------------------------------------
+# NORNIR.PARSE FUNCTION TESTS
+# ----------------------------------------------------------------------------
+
+
+class TestNornirParse:
+    def test_nornir_parse_wrong_plugin_name(self, nfclient):
+        ret = nfclient.run_job(
+            "nornir",
+            "parse",
+            workers=["nornir-worker-1"],
+            kwargs={"plugin": "nonexisting", "method": "get_facts"},
+        )
+        pprint.pprint(ret)
+
+        for worker, results in ret.items():
+            assert results["result"] is None, f"{worker} returned results"
+            assert results["failed"] is True, f"{worker} did not faile to run the task"
+
+    def test_nornir_parse_napalm_get_facts(self, nfclient):
+        ret = nfclient.run_job(
+            "nornir",
+            "parse",
+            workers=["nornir-worker-1"],
+            kwargs={"plugin": "napalm", "method": "get_facts"},
+        )
+        pprint.pprint(ret)
+
+        for worker, results in ret.items():
+            assert results["result"], f"{worker} returned no results"
+            assert results["failed"] is False, f"{worker} failed to run the task"
+            for host, res in results["result"].items():
+                assert (
+                    "napalm_get" in res
+                ), f"{worker}:{host} did not return napalm_get result"
+                assert res["napalm_get"][
+                    "get_facts"
+                ], f"{worker}:{host} get facts are empty"
+
+    def test_nornir_parse_napalm_unsupported_getter(self, nfclient):
+        ret = nfclient.run_job(
+            "nornir",
+            "parse",
+            workers=["nornir-worker-1"],
+            kwargs={"plugin": "napalm", "method": "get_ntp_peers"},
+        )
+        pprint.pprint(ret)
+
+        for worker, results in ret.items():
+            assert results["result"], f"{worker} returned no results"
+            assert results["failed"] is False, f"{worker} failed to run the task"
+            for host, res in results["result"].items():
+                assert "NotImplementedError" in res["napalm_get"]

@@ -245,7 +245,7 @@ class NFPClient(object):
         uuid = uuid or uuid4().hex
         args = args or []
         kwargs = kwargs or {}
-        ret = {"status": "200", "workers": [], "errors": []}
+        ret = {"status": b"200", "workers": [], "errors": []}
 
         if not isinstance(service, bytes):
             service = service.encode("utf-8")
@@ -326,7 +326,10 @@ class NFPClient(object):
             ret["status"] = b"408"
 
         ret["workers"] = list(workers_acked)
+        ret["status"] = ret["status"].decode("utf-8")
+
         log.debug(f"{self.name} - '{uuid}' job POST request completed '{ret}'")
+
         return ret
 
     def get(
@@ -359,7 +362,13 @@ class NFPClient(object):
         uuid = uuid or uuid4().hex
         args = args or []
         kwargs = kwargs or {}
-        ret = {"status": "200", "results": {}, "errors": []}
+        wkrs = {
+            "requested": workers,
+            "done": set(),
+            "dispatched": set(),
+            "pending": set(),
+        }
+        ret = {"status": b"200", "results": {}, "errors": [], "workers": wkrs}
 
         if not isinstance(service, bytes):
             service = service.encode("utf-8")
@@ -375,7 +384,6 @@ class NFPClient(object):
 
         # run GET response loop
         start_time = time.time()
-        workers_done = set()
         while timeout > time.time() - start_time:
             # check if need to stop
             if self.exit_event.is_set():
@@ -383,20 +391,20 @@ class NFPClient(object):
             # dispatch GET request to workers
             self.send_to_broker(NFP.GET, service, workers, uuid, request)
             status, get_response = self.rcv_from_broker(NFP.RESPONSE, service, uuid)
+            ret["status"] = status
             # received actual GET request results from broker e.g. MMI, SID or FSS services
             if status == b"200":
-                ret = get_response.decode("utf-8")
+                ret["results"] = get_response.decode("utf-8")
                 break
             # received DISPATCH response from broker
             if status != b"202":
                 msg = f"{status}, {self.name} job '{uuid}' GET Request not accepted by broker '{get_response}'"
                 log.error(msg)
                 ret["errors"].append(msg)
-                ret["status"] = status
                 break
             get_response = json.loads(get_response)
-            workers_dispatched = set(get_response["workers"])
-            # collect GET responses from workers
+            wkrs["dispatched"] = set(get_response["workers"])
+            # collect GET responses from individual workers
             workers_responded = set()
             while timeout > time.time() - start_time:
                 # check if need to stop
@@ -413,11 +421,16 @@ class NFPClient(object):
                         f"{self.name} - job '{uuid}' results returned by worker '{response}'"
                     )
                     for w in response.keys():
-                        workers_done.add(w)
+                        wkrs["done"].add(w)
                         workers_responded.add(w)
-                    if workers_done == workers_dispatched:
+                        if w in wkrs["pending"]:
+                            wkrs["pending"].remove(w)
+                    if wkrs["done"] == wkrs["dispatched"]:
                         break
                 elif status == b"300":  # PENDING
+                    # set status to pending if at least one worker is pending
+                    ret["status"] = b"300"
+                    wkrs["pending"].add(response["worker"])
                     workers_responded.add(response["worker"])
                 else:
                     if response.get("worker"):
@@ -428,9 +441,9 @@ class NFPClient(object):
                     )
                     log.error(msg)
                     ret["errors"].append(msg)
-                if workers_responded == workers_dispatched:
+                if workers_responded == wkrs["dispatched"]:
                     break
-            if workers_done == workers_dispatched:
+            if wkrs["done"] == wkrs["dispatched"]:
                 break
             time.sleep(0.2)
         else:
@@ -438,6 +451,8 @@ class NFPClient(object):
             log.error(msg)
             ret["errors"].append(msg)
             ret["status"] = b"408"
+
+        ret["status"] = ret["status"].decode("utf-8")
 
         return ret
 
@@ -650,6 +665,7 @@ class NFPClient(object):
         kwargs: dict = None,
         workers: str = "all",
         job_timeout: int = 600,
+        retry=10,
     ):
         """
         Run job and return results produced by workers.
@@ -660,29 +676,53 @@ class NFPClient(object):
         :param args: list, task arguments
         :param kwargs: dict, task key-word arguments
         :param workers: str or list, worker names to target
+        :param job_timeout: overall job timeout in seconds
+        :param retry: number of times to try and GET job results
         """
         uuid = uuid or uuid4().hex
+        start_time = int(time.time())
 
         # POST job to workers
         post_result = self.post(service, task, args, kwargs, workers, uuid, job_timeout)
+        if post_result["status"] != "200":
+            log.error(
+                f"{self.name}:run_job - {service}:{task} POST status "
+                f"to '{workers}' workers is not 200 - '{post_result}'"
+            )
+            return None
+
+        remaining_timeout = job_timeout - (time.time() - start_time)
+        get_timeout = remaining_timeout / retry
 
         # GET job results
-        if post_result["status"] == "200":
-            get_results = self.get(
-                service, task, [], {}, post_result["workers"], uuid, job_timeout
+        while retry:
+            get = self.get(
+                service, task, [], {}, post_result["workers"], uuid, get_timeout
             )
-            if get_results:
-                return get_results["results"]
+            if self.exit_event.is_set():
+                break
+            elif get["status"] == "300":  # PENDING
+                retry -= 1
+                log.debug(
+                    f"{self.name}:run_job - {service}:{task}:{uuid} GET "
+                    f"results pending, keep waiting"
+                )
+                continue
+            elif get["status"] == "408":  # TIMEOUT
+                retry -= 1
+                log.debug(
+                    f"{self.name}:run_job - {service}:{task}:{uuid} GET "
+                    f"results {get_timeout}s timeout expired, keep waiting"
+                )
+                continue
+            elif get["status"] in ["200", "202"]:  # OK
+                return get["results"]
             else:
                 log.error(
-                    f"{self.name} - {service}:{task}:{uuid} GET returned no results"
+                    f"{self.name}:run_job - {service}:{task}:{uuid} "
+                    f"stopping, GET returned unexpected results - '{get}'"
                 )
-        else:
-            log.error(
-                f"{self.name} - {service}:{task} POST status to '{workers}' workers is not 200 - '{post_result}'"
-            )
-
-        return None
+                return None
 
     def run_job_iter(
         self,

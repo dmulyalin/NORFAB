@@ -4,11 +4,11 @@ import time
 from uuid import uuid4
 
 
-class TestBrokerUtils:
+class TestClientApi:
     def test_show_workers(self, nfclient):
         reply = nfclient.get(b"mmi.service.broker", "show_workers")
 
-        ret = json.loads(reply)
+        ret = json.loads(reply["results"])
         pprint.pprint(ret)
 
         for worker in ret:
@@ -17,7 +17,7 @@ class TestBrokerUtils:
     def test_show_broker(self, nfclient):
         reply = nfclient.get(b"mmi.service.broker", "show_broker")
 
-        ret = json.loads(reply)
+        ret = json.loads(reply["results"])
         pprint.pprint(ret)
 
         for k, v in {

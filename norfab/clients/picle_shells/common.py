@@ -31,6 +31,11 @@ def log_error_or_result(data: dict) -> dict:
     :param data: result returned bu NFPCLIENT.run_job function
     """
     ret = {}
+
+    if not isinstance(data, dict):
+        log.error(f"Data is not a dictioney but '{type(data)}'")
+        return data
+
     for w_name, w_res in data.items():
         if w_res["errors"]:
             errors = "\n".join(w_res["errors"])

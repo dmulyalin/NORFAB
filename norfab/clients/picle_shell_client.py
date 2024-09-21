@@ -68,7 +68,7 @@ class ShowWorkersModel(BaseModel):
         reply = NFCLIENT.get(
             "mmi.service.broker", "show_workers", args=args, kwargs=kwargs
         )
-        return json.loads(reply)
+        return json.loads(reply["results"])
 
 
 class ShowCommandsModel(BaseModel):
@@ -92,7 +92,7 @@ class ShowCommandsModel(BaseModel):
     @staticmethod
     def show_broker():
         reply = NFCLIENT.get("mmi.service.broker", "show_broker")
-        return json.loads(reply)
+        return json.loads(reply["results"])
 
     @staticmethod
     def show_client():

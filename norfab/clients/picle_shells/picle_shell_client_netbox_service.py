@@ -49,7 +49,7 @@ class Targeting(BaseModel):
             args=[],
             kwargs={"service": "netbox", "status": "alive"},
         )
-        return [i["name"] for i in json.loads(reply)]
+        return [i["name"] for i in json.loads(reply["results"])]
 
     @staticmethod
     def source_instance():

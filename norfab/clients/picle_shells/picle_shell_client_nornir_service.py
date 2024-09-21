@@ -11,6 +11,7 @@ import queue
 import threading
 import functools
 import time
+import pprint
 
 from uuid import uuid4  # random uuid
 from rich.console import Console
@@ -166,6 +167,8 @@ def print_nornir_results(data: Union[list, dict]):
                             print(f"{2*indent}{line}")
                     elif isinstance(result, dict):
                         for k, v in result.items():
+                            if isinstance(v, (dict, list)):
+                                v = json.dumps(v, indent=indent)
                             lines = str(v).splitlines()
                             if len(lines) == 0:
                                 RICHCONSOLE.print(
@@ -180,7 +183,7 @@ def print_nornir_results(data: Union[list, dict]):
                                     f"{2*indent}[bold yellow]{k}[/bold yellow]"
                                 )
                                 for line in lines:
-                                    print(f"{3*indent}{line}")
+                                    RICHCONSOLE.print(f"{3*indent}{line}")
                     elif isinstance(result, list):
                         for i in result:
                             if isinstance(i, str):
@@ -356,7 +359,7 @@ class filters(BaseModel):
     @staticmethod
     def source_workers():
         reply = NFCLIENT.get("mmi.service.broker", "show_workers")
-        reply = json.loads(reply)
+        reply = json.loads(reply["results"])
         return [w["name"] for w in reply if w["service"].startswith("nornir")]
 
     @staticmethod
@@ -1329,6 +1332,83 @@ class NornirNetworkShell(BaseModel):
 
 
 # ---------------------------------------------------------------------------------------------
+# NORNIR PARSE FUNCTIONS SHELL MODEL
+# ---------------------------------------------------------------------------------------------
+
+
+class NapalmGettersEnum(str, Enum):
+    get_arp_table = "get_arp_table"
+    get_bgp_config = "get_bgp_config"
+    get_bgp_neighbors = "get_bgp_neighbors"
+    get_bgp_neighbors_detail = "get_bgp_neighbors_detail"
+    get_config = "get_config"
+    get_environment = "get_environment"
+    get_facts = "get_facts"
+    get_firewall_policies = "get_firewall_policies"
+    get_interfaces = "get_interfaces"
+    get_interfaces_counters = "get_interfaces_counters"
+    get_interfaces_ip = "get_interfaces_ip"
+    get_ipv6_neighbors_table = "get_ipv6_neighbors_table"
+    get_lldp_neighbors = "get_lldp_neighbors"
+    get_lldp_neighbors_detail = "get_lldp_neighbors_detail"
+    get_mac_address_table = "get_mac_address_table"
+    get_network_instances = "get_network_instances"
+    get_ntp_peers = "get_ntp_peers"
+    get_ntp_servers = "get_ntp_servers"
+    get_ntp_stats = "get_ntp_stats"
+    get_optics = "get_optics"
+    get_probes_config = "get_probes_config"
+    get_probes_results = "get_probes_results"
+    get_route_to = "get_route_to"
+    get_snmp_information = "get_snmp_information"
+    get_users = "get_users"
+    get_vlans = "get_vlans"
+    is_alive = "is_alive"
+    ping = "ping"
+    traceroute = "traceroute"
+
+
+class NapalmGettersModel(filters, NornirCommonArgs, ClientRunJobArgs):
+    getters: NapalmGettersEnum = Field(None, description="Select NAPALM getters")
+
+    @staticmethod
+    @listen_events
+    def run(uuid, *args, **kwargs):
+        workers = kwargs.pop("workers", "all")
+
+        if kwargs.get("hosts"):
+            kwargs["FL"] = kwargs.pop("hosts")
+
+        with RICHCONSOLE.status(
+            "[bold green]Parsing devices", spinner="dots"
+        ) as status:
+            result = NFCLIENT.run_job(
+                "nornir",
+                "parse",
+                workers=workers,
+                args=args,
+                kwargs={"plugin": "napalm", **kwargs},
+                uuid=uuid,
+            )
+
+        return log_error_or_result(result)
+
+    class PicleConfig:
+        outputter = print_nornir_results
+
+
+class NornirParseShell(BaseModel):
+    napalm: NapalmGettersModel = Field(
+        None, description="Parse devices output using NAPALM getters"
+    )
+
+    class PicleConfig:
+        subshell = True
+        prompt = "nf[nornir-parse]#"
+        outputter = print_nornir_results
+
+
+# ---------------------------------------------------------------------------------------------
 # NORNIR SERVICE MAIN SHELL MODEL
 # ---------------------------------------------------------------------------------------------
 
@@ -1343,6 +1423,7 @@ class NornirServiceCommands(BaseModel):
     network: NornirNetworkShell = Field(
         None, description="Network utility functions - ping, dns etc."
     )
+    parse: NornirParseShell = Field(None, description="Parse network devices output")
 
     # netconf:
     # file:

@@ -14,6 +14,7 @@ import threading
 import queue
 import os
 import pickle
+import psutil
 
 from .zhelpers import dump
 from . import NFP
@@ -26,6 +27,77 @@ from jinja2.nodes import Include
 from typing import Any, Callable, Dict, List, Optional, Union
 
 log = logging.getLogger(__name__)
+
+# --------------------------------------------------------------------------------------------
+# NORFAB Worker watchdog Object
+# --------------------------------------------------------------------------------------------
+
+
+class WorkerWatchDog(threading.Thread):
+    """
+    Class to monitor worker performance
+    """
+
+    def __init__(self, worker):
+        super().__init__()
+        self.worker = worker
+        self.worker_process = psutil.Process(os.getpid())
+
+        # extract inventory attributes
+        self.watchdog_interval = worker.inventory.get("watchdog_interval", 30)
+        self.memory_threshold_mbyte = worker.inventory.get(
+            "memory_threshold_mbyte", 1000
+        )
+        self.memory_threshold_action = worker.inventory.get(
+            "memory_threshold_action", "log"
+        )
+
+        # initiate variables
+        self.runs = 0
+        self.watchdog_tasks = []
+
+    def check_ram(self):
+        mem_usage = self.get_ram_usage()
+        """Return RAM usage in Mbyte"""
+        if mem_usage > self.memory_threshold_mbyte:
+            if self.memory_threshold_action == "log":
+                log.warning(
+                    f"{self.name} watchdog, '{self.memory_threshold_mbyte}' "
+                    f"memory_threshold_mbyte exceeded, memory usage "
+                    f"{mem_usage}MByte"
+                )
+            elif self.memory_threshold_action == "shutdown":
+                raise SystemExit(
+                    f"{self.name} watchdog, '{self.memory_threshold_mbyte}' "
+                    f"memory_threshold_mbyte exceeded, memory usage "
+                    f"{mem_usage}MByte, killing myself"
+                )
+
+    def get_ram_usage(self):
+        """Return RAM usage in Mbyte"""
+        return self.worker_process.memory_info().rss / 1024000
+
+    def run(self):
+        slept = 0
+        while not self.worker.exit_event.is_set():
+            # continue sleeping for watchdog_interval
+            if slept < self.watchdog_interval:
+                time.sleep(0.1)
+                slept += 0.1
+                continue
+
+            # run built in tasks:
+            self.check_ram()
+
+            # run child classes tasks
+            for task in self.watchdog_tasks:
+                task()
+
+            # update counters
+            self.runs += 1
+
+            slept = 0  # reset to go to sleep
+
 
 # --------------------------------------------------------------------------------------------
 # NORFAB Worker Results Object
@@ -431,8 +503,8 @@ class NFPWorker:
 
         log.debug(f"{self.name} - worker received invenotry data {inventory_data}")
 
-        if inventory_data:
-            return json.loads(inventory_data)
+        if inventory_data["results"]:
+            return json.loads(inventory_data["results"])
         else:
             return {}
 
