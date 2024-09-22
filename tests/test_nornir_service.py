@@ -39,15 +39,14 @@ class TestNornirWorker:
     @pytest.mark.skip(reason="TBD")
     def test_get_watchdog_stats(self, nfclient):
         pass
-
+        
     @pytest.mark.skip(reason="TBD")
     def test_get_watchdog_configuration(self, nfclient):
-        pass
-
+        pass  
+        
     @pytest.mark.skip(reason="TBD")
     def test_get_watchdog_connections(self, nfclient):
-        pass
-
+        pass 
 
 # ----------------------------------------------------------------------------
 # NORNIR.CLI FUNCTION TESTS
@@ -1257,6 +1256,7 @@ class TestNornirNetwork:
 
 
 class TestNornirParse:
+
     def test_nornir_parse_wrong_plugin_name(self, nfclient):
         ret = nfclient.run_job(
             "nornir",
@@ -1265,40 +1265,38 @@ class TestNornirParse:
             kwargs={"plugin": "nonexisting", "method": "get_facts"},
         )
         pprint.pprint(ret)
-
+        
         for worker, results in ret.items():
             assert results["result"] is None, f"{worker} returned results"
             assert results["failed"] is True, f"{worker} did not faile to run the task"
-
+            
+            
     def test_nornir_parse_napalm_get_facts(self, nfclient):
         ret = nfclient.run_job(
             "nornir",
             "parse",
             workers=["nornir-worker-1"],
-            kwargs={"plugin": "napalm", "method": "get_facts"},
+            kwargs={"plugin": "napalm", "getters": "get_facts"},
         )
         pprint.pprint(ret)
-
+        
         for worker, results in ret.items():
             assert results["result"], f"{worker} returned no results"
             assert results["failed"] is False, f"{worker} failed to run the task"
             for host, res in results["result"].items():
-                assert (
-                    "napalm_get" in res
-                ), f"{worker}:{host} did not return napalm_get result"
-                assert res["napalm_get"][
-                    "get_facts"
-                ], f"{worker}:{host} get facts are empty"
-
+                assert "napalm_get" in res, f"{worker}:{host} did not return napalm_get result"
+                assert res["napalm_get"]["get_facts"], f"{worker}:{host} get facts are empty"
+                
+                
     def test_nornir_parse_napalm_unsupported_getter(self, nfclient):
         ret = nfclient.run_job(
             "nornir",
             "parse",
             workers=["nornir-worker-1"],
-            kwargs={"plugin": "napalm", "method": "get_ntp_peers"},
+            kwargs={"plugin": "napalm", "getters": "get_ntp_peers"},
         )
         pprint.pprint(ret)
-
+        
         for worker, results in ret.items():
             assert results["result"], f"{worker} returned no results"
             assert results["failed"] is False, f"{worker} failed to run the task"

@@ -49,7 +49,11 @@ def listen_events_thread(uuid, stop):
     """Helper function to pretty print events to command line"""
     start_time = time.time()
     time_fmt = "%d-%b-%Y %H:%M:%S"
-    RICHCONSOLE.print(f"{time.strftime(time_fmt)} {uuid} job started")
+    RICHCONSOLE.print(
+        f"# " + "-"* 100 + "\n"
+        f"# {time.strftime(time_fmt)} {uuid} job started\n"
+        f"# " + "-"* 100
+    )
     while not (stop.is_set() or NFCLIENT.exit_event.is_set()):
         try:
             event = NFCLIENT.event_queue.get(block=True, timeout=0.1)
@@ -91,9 +95,11 @@ def listen_events_thread(uuid, stop):
             f"{timestamp} {worker} {nr_task_type:<14} {nr_task_event} {', '.join(nr_task_hosts)} '{nr_task_name}'"
         )
 
-    elapsed = int(time.time() - start_time)
+    elapsed = round(time.time() - start_time, 3)
     RICHCONSOLE.print(
-        f"{time.strftime(time_fmt)} {uuid} job completed in {elapsed} seconds\n"
+        f"# " + "-"* 100 + "\n"
+        f"# {time.strftime(time_fmt)} {uuid} job completed in {elapsed} seconds\n"
+        f"# " + "-"* 100 + "\n"
     )
 
 

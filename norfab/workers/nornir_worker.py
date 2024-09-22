@@ -1012,9 +1012,9 @@ class NornirWorker(NFPWorker):
         """
         Function to parse network devices show commands output
 
-        :param plugin: plugin name to use - ``napalm``, ``textfsm``, ``ttp``, ``genie``
+        :param plugin: plugin name to use - ``napalm``, ``textfsm``, ``ttp``
         :param getters: NAPALM getters to use
-        :param commands: TextFSM, TTP or Genie commands to send to devices
+        :param commands: commands to send to devices for TextFSM or TTP template
         :param template: TextFSM or TTP parsing template string or path to file
 
         For NAPALM plugin ``method`` can refer to a list of getters names.
