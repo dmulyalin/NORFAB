@@ -39,14 +39,15 @@ class TestNornirWorker:
     @pytest.mark.skip(reason="TBD")
     def test_get_watchdog_stats(self, nfclient):
         pass
-        
+
     @pytest.mark.skip(reason="TBD")
     def test_get_watchdog_configuration(self, nfclient):
-        pass  
-        
+        pass
+
     @pytest.mark.skip(reason="TBD")
     def test_get_watchdog_connections(self, nfclient):
-        pass 
+        pass
+
 
 # ----------------------------------------------------------------------------
 # NORNIR.CLI FUNCTION TESTS
@@ -1256,7 +1257,6 @@ class TestNornirNetwork:
 
 
 class TestNornirParse:
-
     def test_nornir_parse_wrong_plugin_name(self, nfclient):
         ret = nfclient.run_job(
             "nornir",
@@ -1265,12 +1265,11 @@ class TestNornirParse:
             kwargs={"plugin": "nonexisting", "method": "get_facts"},
         )
         pprint.pprint(ret)
-        
+
         for worker, results in ret.items():
             assert results["result"] is None, f"{worker} returned results"
             assert results["failed"] is True, f"{worker} did not faile to run the task"
-            
-            
+
     def test_nornir_parse_napalm_get_facts(self, nfclient):
         ret = nfclient.run_job(
             "nornir",
@@ -1279,15 +1278,18 @@ class TestNornirParse:
             kwargs={"plugin": "napalm", "getters": "get_facts"},
         )
         pprint.pprint(ret)
-        
+
         for worker, results in ret.items():
             assert results["result"], f"{worker} returned no results"
             assert results["failed"] is False, f"{worker} failed to run the task"
             for host, res in results["result"].items():
-                assert "napalm_get" in res, f"{worker}:{host} did not return napalm_get result"
-                assert res["napalm_get"]["get_facts"], f"{worker}:{host} get facts are empty"
-                
-                
+                assert (
+                    "napalm_get" in res
+                ), f"{worker}:{host} did not return napalm_get result"
+                assert res["napalm_get"][
+                    "get_facts"
+                ], f"{worker}:{host} get facts are empty"
+
     def test_nornir_parse_napalm_unsupported_getter(self, nfclient):
         ret = nfclient.run_job(
             "nornir",
@@ -1296,9 +1298,130 @@ class TestNornirParse:
             kwargs={"plugin": "napalm", "getters": "get_ntp_peers"},
         )
         pprint.pprint(ret)
-        
+
         for worker, results in ret.items():
             assert results["result"], f"{worker} returned no results"
             assert results["failed"] is False, f"{worker} failed to run the task"
             for host, res in results["result"].items():
                 assert "NotImplementedError" in res["napalm_get"]
+
+    def test_nornir_parse_napalm_multiple_getters(self, nfclient):
+        ret = nfclient.run_job(
+            "nornir",
+            "parse",
+            workers=["nornir-worker-1"],
+            kwargs={"plugin": "napalm", "getters": ["get_facts", "get_interfaces"]},
+        )
+        pprint.pprint(ret)
+
+        for worker, results in ret.items():
+            assert results["result"], f"{worker} returned no results"
+            assert results["failed"] is False, f"{worker} failed to run the task"
+            for host, res in results["result"].items():
+                assert (
+                    "napalm_get" in res
+                ), f"{worker}:{host} did not return napalm_get result"
+                assert res["napalm_get"][
+                    "get_interfaces"
+                ], f"{worker}:{host} get_interfaces are empty"
+                assert res["napalm_get"][
+                    "get_facts"
+                ], f"{worker}:{host} get_facts are empty"
+
+    def test_nornir_parse_ttp_templates_template_with_commands(self, nfclient):
+        ret = nfclient.run_job(
+            "nornir",
+            "parse",
+            workers=["nornir-worker-1"],
+            kwargs={
+                "plugin": "ttp",
+                "template": "ttp://platform/arista_eos_show_hostname.txt",
+                "commands": "show hostname",
+            },
+        )
+        pprint.pprint(ret)
+
+        for worker, results in ret.items():
+            assert results["result"], f"{worker} returned no results"
+            assert results["failed"] is False, f"{worker} failed to run the task"
+            for host, res in results["result"].items():
+                assert (
+                    "run_ttp" in res
+                ), f"{worker}:{host} did not return TTP parsing result"
+                assert res["run_ttp"][
+                    0
+                ], f"{worker}:{host} TTP parsing results are empty"
+
+    def test_nornir_parse_ttp_templates_template(self, nfclient):
+        ret = nfclient.run_job(
+            "nornir",
+            "parse",
+            workers=["nornir-worker-1"],
+            kwargs={
+                "plugin": "ttp",
+                "template": "ttp://misc/Netbox/parse_arista_eos_config.txt",
+            },
+        )
+        pprint.pprint(ret)
+
+        for worker, results in ret.items():
+            assert results["result"], f"{worker} returned no results"
+            assert results["failed"] is False, f"{worker} failed to run the task"
+            for host, res in results["result"].items():
+                assert (
+                    "run_ttp" in res
+                ), f"{worker}:{host} did not return TTP parsing result"
+                assert res["run_ttp"][
+                    0
+                ], f"{worker}:{host} TTP parsing results are empty"
+
+    def test_nornir_parse_ttp_file_template(self, nfclient):
+        ret = nfclient.run_job(
+            "nornir",
+            "parse",
+            workers=["nornir-worker-1"],
+            kwargs={
+                "plugin": "ttp",
+                "template": "nf://nf_tests_inventory/ttp/parse_eos_intf.txt",
+                "enable": True,
+            },
+        )
+        pprint.pprint(ret)
+
+        for worker, results in ret.items():
+            assert results["result"], f"{worker} returned no results"
+            assert results["failed"] is False, f"{worker} failed to run the task"
+            for host, res in results["result"].items():
+                assert (
+                    "run_ttp" in res
+                ), f"{worker}:{host} did not return TTP parsing result"
+                assert res["run_ttp"][
+                    0
+                ], f"{worker}:{host} TTP parsing results are empty"
+
+    def test_nornir_parse_inline_ttp_template(self, nfclient):
+        ret = nfclient.run_job(
+            "nornir",
+            "parse",
+            workers=["nornir-worker-1"],
+            kwargs={
+                "plugin": "ttp",
+                "template": "Clock source: {{ source }}",
+                "commands": "show clock",
+            },
+        )
+        pprint.pprint(ret)
+
+        for worker, results in ret.items():
+            assert results["result"], f"{worker} returned no results"
+            assert results["failed"] is False, f"{worker} failed to run the task"
+            for host, res in results["result"].items():
+                assert (
+                    "run_ttp" in res
+                ), f"{worker}:{host} did not return TTP parsing result"
+                assert res["run_ttp"][
+                    0
+                ], f"{worker}:{host} TTP parsing results are empty"
+                assert (
+                    "source" in res["run_ttp"][0]
+                ), f"{worker}:{host} TTP parsing results are wrong"

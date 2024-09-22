@@ -50,9 +50,9 @@ def listen_events_thread(uuid, stop):
     start_time = time.time()
     time_fmt = "%d-%b-%Y %H:%M:%S"
     RICHCONSOLE.print(
-        f"# " + "-"* 100 + "\n"
+        f"# " + "-" * 100 + "\n"
         f"# {time.strftime(time_fmt)} {uuid} job started\n"
-        f"# " + "-"* 100
+        f"# " + "-" * 100
     )
     while not (stop.is_set() or NFCLIENT.exit_event.is_set()):
         try:
@@ -97,9 +97,9 @@ def listen_events_thread(uuid, stop):
 
     elapsed = round(time.time() - start_time, 3)
     RICHCONSOLE.print(
-        f"# " + "-"* 100 + "\n"
+        f"# " + "-" * 100 + "\n"
         f"# {time.strftime(time_fmt)} {uuid} job completed in {elapsed} seconds\n"
-        f"# " + "-"* 100 + "\n"
+        f"# " + "-" * 100 + "\n"
     )
 
 
@@ -1386,7 +1386,7 @@ class NapalmGettersModel(filters, NornirCommonArgs, ClientRunJobArgs):
             kwargs["FL"] = kwargs.pop("hosts")
 
         with RICHCONSOLE.status(
-            "[bold green]Parsing devices", spinner="dots"
+            "[bold green]Parsing devices output", spinner="dots"
         ) as status:
             result = NFCLIENT.run_job(
                 "nornir",
@@ -1403,9 +1403,46 @@ class NapalmGettersModel(filters, NornirCommonArgs, ClientRunJobArgs):
         outputter = print_nornir_results
 
 
+class TTPParseModel(filters, NornirCommonArgs, ClientRunJobArgs):
+    template: StrictStr = Field(
+        None, description="TTP Template to parse commands output"
+    )
+    commands: Union[List[StrictStr], StrictStr] = Field(
+        None, description="Commands to collect form devices"
+    )
+
+    @staticmethod
+    @listen_events
+    def run(uuid, *args, **kwargs):
+        workers = kwargs.pop("workers", "all")
+
+        if kwargs.get("hosts"):
+            kwargs["FL"] = kwargs.pop("hosts")
+
+        with RICHCONSOLE.status(
+            "[bold green]Parsing devices output", spinner="dots"
+        ) as status:
+            result = NFCLIENT.run_job(
+                "nornir",
+                "parse",
+                workers=workers,
+                args=args,
+                kwargs={"plugin": "ttp", **kwargs},
+                uuid=uuid,
+            )
+
+        return log_error_or_result(result)
+
+    class PicleConfig:
+        outputter = print_nornir_results
+
+
 class NornirParseShell(BaseModel):
     napalm: NapalmGettersModel = Field(
         None, description="Parse devices output using NAPALM getters"
+    )
+    ttp: TTPParseModel = Field(
+        None, description="Parse devices output using TTP templates"
     )
 
     class PicleConfig:

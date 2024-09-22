@@ -670,14 +670,16 @@ class NornirWorker(NFPWorker):
             ret.messages.append(msg)
             return ret
 
-        # download TTP template if needed
+        # download TTP template
         if run_ttp and run_ttp.startswith("nf://"):
             downloaded = self.fetch_file(run_ttp)
             kwargs["run_ttp"] = downloaded
             if downloaded is None:
                 msg = f"{self.name} - TTP template download failed '{run_ttp}'"
                 raise FileNotFoundError(msg)
-            self.event(f"TTP Template downloaded '{run_ttp}'")
+        # use TTP template as is - inline template or ttp://xyz path
+        elif run_ttp:
+            kwargs["run_ttp"] = run_ttp
 
         nr = self._add_processors(filtered_nornir, kwargs)  # add processors
 
@@ -1034,13 +1036,36 @@ class NornirWorker(NFPWorker):
             log.debug(msg)
             return ret
 
-        nr = self._add_processors(filtered_nornir, kwargs)  # add processors
-
         if plugin == "napalm":
+            nr = self._add_processors(filtered_nornir, kwargs)  # add processors
             result = nr.run(task=napalm_get, getters=getters, **kwargs)
+            ret.result = ResultSerializer(
+                result, to_dict=to_dict, add_details=add_details
+            )
+        elif plugin == "ttp":
+            result = self.cli(
+                commands=commands or [],
+                run_ttp=template,
+                **filters,
+                **kwargs,
+                to_dict=to_dict,
+                add_details=add_details,
+                plugin="netmiko",
+            )
+            ret.result = result.result
+        elif plugin == "textfsm":
+            result = self.cli(
+                commands=commands,
+                **filters,
+                **kwargs,
+                to_dict=to_dict,
+                add_details=add_details,
+                use_textfsm=True,
+                textfsm_template=template,
+                plugin="netmiko",
+            )
+            ret.result = result.result
         else:
             raise UnsupportedPluginError(f"Plugin '{plugin}' not supported")
-
-        ret.result = ResultSerializer(result, to_dict=to_dict, add_details=add_details)
 
         return ret
