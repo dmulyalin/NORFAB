@@ -264,8 +264,8 @@ class NornirWorker(NFPWorker):
             return
 
         # extract parameters from kwargs
-        retry = kwargs.pop("retry", 3)
-        retry_timeout = kwargs.pop("retry_timeout", 100)
+        retry = max(1, kwargs.pop("retry", 3))
+        retry_timeout = max(10, kwargs.pop("retry_timeout", 100))
 
         # check if need to add devices list
         if "filters" not in kwargs and "devices" not in kwargs:
@@ -296,7 +296,7 @@ class NornirWorker(NFPWorker):
         worker, data = nb_inventory_data.popitem()
 
         # merge Netbox inventory into Nornir inventory
-        if data["result"].get("hosts"):
+        if data and data["result"].get("hosts"):
             merge_recursively(self.inventory, data["result"])
         else:
             log.warning(

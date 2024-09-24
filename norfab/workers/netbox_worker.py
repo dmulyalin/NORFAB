@@ -1148,6 +1148,61 @@ class NetboxWorker(NFPWorker):
 
         return ret
 
+    def update_device_facts(
+        self,
+        instance: str = None,
+        dry_run: bool = False,
+        via: str = "nornir",
+        job_timeout: int = 60,
+        **kwargs,
+    ):
+        """
+        Function to update device facts in Netbox using information
+        provided by NAPALM get_facts getter:
+
+        - serial number
+        - software version
+        -
+
+        :param instance: Netbox instance name
+        :param dry_run: return information that would be pushed to Netbox but do not push it
+        :param via: service name to use to retrieve devices' data, default is nornir parse task
+        :param job_timeout: seconds to wait before timeout data retrieval job
+        :param kwargs: any additional arguments to send to service for device data retrieval
+        """
+        result = {}
+        ret = Result(task=f"{self.name}:push_device_facts", result=result)
+        nb = self._get_pynetbox(instance)
+
+        if via == "nornir":
+            data = self.client.run_job(
+                "nornir",
+                "parse",
+                kwargs=kwargs,
+                workers="all",
+                job_timeout=job_timeout,
+            )
+            for worker, results in data.items():
+                for host, host_data in results["result"].items():
+                    facts = host_data["napalm_get"]["get_facts"]
+                    nb_device = nb.dcim.devices.get(name=host)
+                    if not nb_device:
+                        raise Exception(f"'{host}' does not exist in Netbox")
+                    nb_device.serial = facts["serial_number"]
+                    if "OS Version" not in nb_device.comments:
+                        nb_device.comments += f"\nOS Version: {facts['os_version']}"
+                    nb_device.save()
+                    result[host] = {
+                        "update_device_facts": {
+                            "serial": facts["serial_number"],
+                            "os_version": facts["os_version"],
+                        }
+                    }
+        else:
+            raise UnsupportedServiceError(f"'{via}' service not supported")
+
+        return ret
+
     def get_next_ip(
         self,
         prefix: str,

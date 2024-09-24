@@ -1472,7 +1472,6 @@ class NornirServiceCommands(BaseModel):
     # file:
     # gnmi:
     # snmp:
-    # netbox:
     # inventory:
 
     show: NornirShowCommandsModel = Field(

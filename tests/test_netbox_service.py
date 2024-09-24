@@ -1314,6 +1314,34 @@ class TestGetCircuits:
                         ), f"{worker}:{device}:{cid} not all circuit data returned"
 
 
+class TestPushDeviceFacts:
+    def test_push_device_fact_via_nornir(self, nfclient):
+        ret = nfclient.run_job(
+            "netbox",
+            "update_device_facts",
+            workers="any",
+            kwargs={
+                "via": "nornir",
+                "FC": "spine",
+            },
+        )
+        pprint.pprint(ret, width=200)
+        for worker, res in ret.items():
+            assert (
+                "ceos-spine-1" in res["result"]
+            ), f"{worker} returned no results for ceos-spine-1"
+            assert (
+                "ceos-spine-2" in res["result"]
+            ), f"{worker} returned no results for ceos-spine-2"
+            for device, device_data in res["result"].items():
+                assert device_data["update_device_facts"][
+                    "os_version"
+                ], f"{worker}:{device} no OS version updated"
+                assert device_data["update_device_facts"][
+                    "serial"
+                ], f"{worker}:{device} no serial number updated"
+
+
 class TestGetNextIP:
     nb_version = None
 

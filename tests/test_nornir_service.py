@@ -1425,3 +1425,11 @@ class TestNornirParse:
                 assert (
                     "source" in res["run_ttp"][0]
                 ), f"{worker}:{host} TTP parsing results are wrong"
+
+    @pytest.mark.skip(reason="TBD")
+    def test_nornir_parse_textfsm_file_template(self, nfclient):
+        pass
+
+    @pytest.mark.skip(reason="TBD")
+    def test_nornir_parse_textfsm_template(self, nfclient):
+        pass
