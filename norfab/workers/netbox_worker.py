@@ -1153,7 +1153,7 @@ class NetboxWorker(NFPWorker):
         instance: str = None,
         dry_run: bool = False,
         via: str = "nornir",
-        job_timeout: int = 60,
+        timeout: int = 60,
         **kwargs,
     ):
         """
@@ -1167,7 +1167,7 @@ class NetboxWorker(NFPWorker):
         :param instance: Netbox instance name
         :param dry_run: return information that would be pushed to Netbox but do not push it
         :param via: service name to use to retrieve devices' data, default is nornir parse task
-        :param job_timeout: seconds to wait before timeout data retrieval job
+        :param timeout: seconds to wait before timeout data retrieval job
         :param kwargs: any additional arguments to send to service for device data retrieval
         """
         result = {}
@@ -1180,7 +1180,7 @@ class NetboxWorker(NFPWorker):
                 "parse",
                 kwargs=kwargs,
                 workers="all",
-                job_timeout=job_timeout,
+                timeout=timeout,
             )
             for worker, results in data.items():
                 for host, host_data in results["result"].items():

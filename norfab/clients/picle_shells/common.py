@@ -55,7 +55,7 @@ def log_error_or_result(data: dict) -> dict:
 
 
 class ClientRunJobArgs(BaseModel):
-    job_timeout: Optional[StrictInt] = Field(None, description="Job timeout")
+    timeout: Optional[StrictInt] = Field(None, description="Job timeout")
     workers: Union[StrictStr, List[StrictStr]] = Field(
         "all", description="Filter worker to target"
     )

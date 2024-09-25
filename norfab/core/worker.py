@@ -305,7 +305,8 @@ def _event(worker, event_queue, destroy_event):
         client_address = work[0]
         suuid = work[1]
         task = work[2]
-        data = work[3]
+        timeout = work[3]
+        data = work[4]
 
         event = [
             client_address,
@@ -320,6 +321,7 @@ def _event(worker, event_queue, destroy_event):
                     "timestamp": time.ctime(),
                     "task": task,
                     "data": data,
+                    "timeout": timeout,
                 }
             ).encode("utf-8"),
         ]
@@ -590,6 +592,7 @@ class NFPWorker:
                 self.current_job["client_address"],
                 self.current_job["juuid"],
                 self.current_job["task"],
+                self.current_job["timeout"],
                 data,
             ]
         )
@@ -674,16 +677,19 @@ class NFPWorker:
             task = data.pop("task")
             args = data.pop("args", [])
             kwargs = data.pop("kwargs", {})
+            timeout = data.pop("timeout", 60)
 
             self.current_job = {
                 "client_address": client_address,
                 "juuid": juuid,
                 "task": task,
+                "timeout": timeout,
             }
 
             log.debug(
-                f"{self.name} - doing task '{task}', data: {data}, args: '{args}', "
-                f"kwargs: '{kwargs}', client: '{client_address}', job uuid: '{juuid}'"
+                f"{self.name} - doing task '{task}', timeout: '{timeout}', data: "
+                f"'{data}', args: '{args}', kwargs: '{kwargs}', client: "
+                f"'{client_address}', job uuid: '{juuid}'"
             )
 
             # run the actual job

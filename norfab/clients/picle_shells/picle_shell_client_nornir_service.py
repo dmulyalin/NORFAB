@@ -92,7 +92,7 @@ def listen_events_thread(uuid, stop):
 
         # log event message
         RICHCONSOLE.print(
-            f"{timestamp} {worker} {nr_task_type:<14} {nr_task_event} {', '.join(nr_task_hosts)} '{nr_task_name}'"
+            f"{timestamp} {worker} {', '.join(nr_task_hosts)} {nr_task_type} {nr_task_event} - '{nr_task_name}'"
         )
 
     elapsed = round(time.time() - start_time, 3)
@@ -259,7 +259,7 @@ class NornirCommonArgs(BaseModel):
     )
     run_creds_retry: Optional[List] = Field(
         None,
-        description="RetryRunner ist of connection credentials and parameters to retry",
+        description="RetryRunner list of connection credentials and parameters to retry",
     )
     tf: Optional[StrictStr] = Field(
         None,
@@ -386,8 +386,14 @@ class filters(BaseModel):
     @staticmethod
     def get_nornir_hosts(**kwargs):
         workers = kwargs.pop("workers", "all")
+        timeout = kwargs.pop("timeout", 600)
+
         result = NFCLIENT.run_job(
-            "nornir", "get_nornir_hosts", workers=workers, kwargs=kwargs
+            "nornir",
+            "get_nornir_hosts",
+            workers=workers,
+            kwargs=kwargs,
+            timeout=timeout,
         )
         result = log_error_or_result(result)
         return result
@@ -398,7 +404,7 @@ class filters(BaseModel):
 # ---------------------------------------------------------------------------------------------
 
 
-class NornirShowHosts(filters, TabulateTableModel):
+class NornirShowHostsModel(filters, TabulateTableModel):
     details: Optional[StrictBool] = Field(
         None, description="show hosts details", presence=True
     )
@@ -450,7 +456,7 @@ class NornirShowHosts(filters, TabulateTableModel):
         return ret
 
 
-class WatchDogModel(filters):
+class ShowWatchDogModel(filters):
     statistics: Callable = Field(
         "get_watchdog_stats",
         description="show Nornir watchdog statistics",
@@ -488,12 +494,32 @@ class WatchDogModel(filters):
         return log_error_or_result(result)
 
 
-class NornirShowCommandsModel(filters, ClientRunJobArgs):
-    inventory: Callable = Field(
-        "get_nornir_inventory",
+class NornirShowInventoryModel(filters, ClientRunJobArgs):
+    class PicleConfig:
+        outputter = Outputters.outputter_rich_json
+        pipe = PipeFunctionsModel
+
+    @staticmethod
+    def run(*args, **kwargs):
+        workers = kwargs.pop("workers", "all")
+        timeout = kwargs.pop("timeout", 600)
+
+        result = NFCLIENT.run_job(
+            "nornir",
+            "get_nornir_inventory",
+            kwargs=kwargs,
+            workers=workers,
+            timeout=timeout,
+        )
+        return log_error_or_result(result)
+
+
+class NornirShowCommandsModel(BaseModel):
+    inventory: NornirShowInventoryModel = Field(
+        None,
         description="show Nornir inventory data",
     )
-    hosts: NornirShowHosts = Field(
+    hosts: NornirShowHostsModel = Field(
         "print_nornir_hosts",
         description="show Nornir hosts",
     )
@@ -501,7 +527,7 @@ class NornirShowCommandsModel(filters, ClientRunJobArgs):
         "get_nornir_version",
         description="show Nornir service version report",
     )
-    watchdog: WatchDogModel = Field(
+    watchdog: ShowWatchDogModel = Field(
         None,
         description="show Nornir service version report",
     )
@@ -509,14 +535,6 @@ class NornirShowCommandsModel(filters, ClientRunJobArgs):
     class PicleConfig:
         outputter = Outputters.outputter_rich_json
         pipe = PipeFunctionsModel
-
-    @staticmethod
-    def get_nornir_inventory(**kwargs):
-        workers = kwargs.pop("workers", "all")
-        result = NFCLIENT.run_job(
-            "nornir", "get_nornir_inventory", kwargs=kwargs, workers=workers
-        )
-        return log_error_or_result(result)
 
     @staticmethod
     def get_nornir_version(**kwargs):
@@ -604,6 +622,11 @@ class NrCliPluginNetmiko(BaseModel):
     use_ps: Optional[StrictBool] = Field(
         None,
         description="Use send command promptless method",
+        json_schema_extra={"presence": True},
+    )
+    use_ps_timeout: Optional[StrictInt] = Field(
+        None,
+        description="Promptless mode absolute timeout",
         json_schema_extra={"presence": True},
     )
     split_lines: Optional[StrictBool] = Field(
@@ -752,6 +775,11 @@ class NornirCliShell(filters, TabulateTableModel, NornirCommonArgs, ClientRunJob
     @listen_events
     def run(uuid, *args, **kwargs):
         workers = kwargs.pop("workers", "all")
+        timeout = kwargs.pop("timeout", 600)
+
+        # covert use_ps_timeout to timeout as use_ps expects "timeout" argument
+        if kwargs.get("use_ps") and "use_ps_timeout" in kwargs:
+            kwargs["timeout"] = kwargs.pop("use_ps_timeout")
 
         # extract Tabulate arguments
         table = kwargs.pop("table", {})  # tabulate
@@ -769,7 +797,13 @@ class NornirCliShell(filters, TabulateTableModel, NornirCommonArgs, ClientRunJob
 
         # run the job
         result = NFCLIENT.run_job(
-            "nornir", "cli", workers=workers, args=args, kwargs=kwargs, uuid=uuid
+            "nornir",
+            "cli",
+            workers=workers,
+            args=args,
+            kwargs=kwargs,
+            uuid=uuid,
+            timeout=timeout,
         )
         result = log_error_or_result(result)
 
@@ -968,6 +1002,7 @@ class NornirCfgShell(filters, TabulateTableModel, NornirCommonArgs, ClientRunJob
     @listen_events
     def run(uuid, *args, **kwargs):
         workers = kwargs.pop("workers", "all")
+        timeout = kwargs.pop("timeout", 600)
 
         # extract Tabulate arguments
         table = kwargs.pop("table", {})  # tabulate
@@ -986,7 +1021,13 @@ class NornirCfgShell(filters, TabulateTableModel, NornirCommonArgs, ClientRunJob
             "[bold green]Configuring devices", spinner="dots"
         ) as status:
             result = NFCLIENT.run_job(
-                "nornir", "cfg", workers=workers, args=args, kwargs=kwargs, uuid=uuid
+                "nornir",
+                "cfg",
+                workers=workers,
+                args=args,
+                kwargs=kwargs,
+                uuid=uuid,
+                timeout=timeout,
             )
 
         result = log_error_or_result(result)
@@ -1032,6 +1073,7 @@ class NornirTaskShell(filters, TabulateTableModel, NornirCommonArgs, ClientRunJo
     @listen_events
     def run(uuid, *args, **kwargs):
         workers = kwargs.pop("workers", "all")
+        timeout = kwargs.pop("timeout", 600)
 
         # extract Tabulate arguments
         table = kwargs.pop("table", {})  # tabulate
@@ -1048,7 +1090,13 @@ class NornirTaskShell(filters, TabulateTableModel, NornirCommonArgs, ClientRunJo
             kwargs["FL"] = kwargs.pop("hosts")
         with RICHCONSOLE.status("[bold green]Running task", spinner="dots") as status:
             result = NFCLIENT.run_job(
-                "nornir", "task", workers=workers, args=args, kwargs=kwargs, uuid=uuid
+                "nornir",
+                "task",
+                workers=workers,
+                args=args,
+                kwargs=kwargs,
+                uuid=uuid,
+                timeout=timeout,
             )
 
         result = log_error_or_result(result)
@@ -1110,6 +1158,7 @@ class NornirTestShell(filters, TabulateTableModel, NornirCommonArgs, ClientRunJo
     @listen_events
     def run(uuid, *args, **kwargs):
         workers = kwargs.pop("workers", "all")
+        timeout = kwargs.pop("timeout", 600)
 
         # extract Tabulate arguments
         table = kwargs.pop("table", {})  # tabulate
@@ -1126,7 +1175,13 @@ class NornirTestShell(filters, TabulateTableModel, NornirCommonArgs, ClientRunJo
             kwargs["FL"] = kwargs.pop("hosts")
         with RICHCONSOLE.status("[bold green]Running tests", spinner="dots") as status:
             result = NFCLIENT.run_job(
-                "nornir", "test", workers=workers, args=args, kwargs=kwargs, uuid=uuid
+                "nornir",
+                "test",
+                workers=workers,
+                args=args,
+                kwargs=kwargs,
+                uuid=uuid,
+                timeout=timeout,
             )
 
         result = log_error_or_result(result)
@@ -1171,7 +1226,7 @@ class NornirNetworkPing(
         json_schema_extra={"presence": True},
     )
     count: StrictInt = Field(None, description="Number of pings to run")
-    timeout: StrictInt = Field(
+    ping_timeout: StrictInt = Field(
         None,
         description="Time in seconds before considering each non-arrived reply permanently lost",
     )
@@ -1206,6 +1261,10 @@ class NornirNetworkPing(
     def run(uuid, *args, **kwargs):
         kwargs["fun"] = "ping"
         workers = kwargs.pop("workers", "all")
+        timeout = kwargs.pop("timeout", 600)
+
+        if "ping_timeout" in kwargs:
+            kwargs["timeout"] = kwargs.pop("ping_timeout")
 
         # extract Tabulate arguments
         table = kwargs.pop("table", {})  # tabulate
@@ -1228,6 +1287,7 @@ class NornirNetworkPing(
                 args=args,
                 kwargs=kwargs,
                 uuid=uuid,
+                timeout=timeout,
             )
 
         result = log_error_or_result(result)
@@ -1262,7 +1322,7 @@ class NornirNetworkDns(filters, TabulateTableModel, NornirCommonArgs, ClientRunJ
     servers: Union[StrictStr, List[StrictStr]] = Field(
         None, description="List of DNS servers to use"
     )
-    timeout: StrictInt = Field(
+    dns_timeout: StrictInt = Field(
         None, description="Time in seconds before considering request lost"
     )
     ipv4: StrictBool = Field(
@@ -1280,6 +1340,10 @@ class NornirNetworkDns(filters, TabulateTableModel, NornirCommonArgs, ClientRunJ
     def run(uuid, *args, **kwargs):
         kwargs["fun"] = "resolve_dns"
         workers = kwargs.pop("workers", "all")
+        timeout = kwargs.pop("timeout", 600)
+
+        if "dns_timeout" in kwargs:
+            kwargs["timeout"] = kwargs.pop("dns_timeout")
 
         # extract Tabulate arguments
         table = kwargs.pop("table", {})  # tabulate
@@ -1302,6 +1366,7 @@ class NornirNetworkDns(filters, TabulateTableModel, NornirCommonArgs, ClientRunJ
                 args=args,
                 kwargs=kwargs,
                 uuid=uuid,
+                timeout=timeout,
             )
 
         result = log_error_or_result(result)
@@ -1381,6 +1446,7 @@ class NapalmGettersModel(filters, NornirCommonArgs, ClientRunJobArgs):
     @listen_events
     def run(uuid, *args, **kwargs):
         workers = kwargs.pop("workers", "all")
+        timeout = kwargs.pop("timeout", 600)
 
         if kwargs.get("hosts"):
             kwargs["FL"] = kwargs.pop("hosts")
@@ -1395,6 +1461,7 @@ class NapalmGettersModel(filters, NornirCommonArgs, ClientRunJobArgs):
                 args=args,
                 kwargs={"plugin": "napalm", **kwargs},
                 uuid=uuid,
+                timeout=timeout,
             )
 
         return log_error_or_result(result)
@@ -1415,6 +1482,7 @@ class TTPParseModel(filters, NornirCommonArgs, ClientRunJobArgs):
     @listen_events
     def run(uuid, *args, **kwargs):
         workers = kwargs.pop("workers", "all")
+        timeout = kwargs.pop("timeout", 600)
 
         if kwargs.get("hosts"):
             kwargs["FL"] = kwargs.pop("hosts")
@@ -1429,6 +1497,7 @@ class TTPParseModel(filters, NornirCommonArgs, ClientRunJobArgs):
                 args=args,
                 kwargs={"plugin": "ttp", **kwargs},
                 uuid=uuid,
+                timeout=timeout,
             )
 
         return log_error_or_result(result)

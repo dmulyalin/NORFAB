@@ -283,7 +283,7 @@ class NornirWorker(NFPWorker):
             task="get_nornir_inventory",
             workers="any",
             kwargs=kwargs,
-            job_timeout=retry_timeout * retry,
+            timeout=retry_timeout * retry,
             retry=retry,
         )
 
@@ -646,13 +646,19 @@ class NornirWorker(NFPWorker):
         to_dict = kwargs.pop("to_dict", True)  # ResultSerializer
         filters = {k: kwargs.pop(k) for k in list(kwargs.keys()) if k in FFun_functions}
         downloaded_cmds = []
+        timeout = self.current_job["timeout"] * 0.9
         ret = Result(task=f"{self.name}:cli", result={} if to_dict else [])
 
         # decide on what send commands task plugin to use
         if plugin == "netmiko":
             task_plugin = netmiko_send_commands
+            if kwargs.get("use_ps"):
+                kwargs.setdefault("timeout", timeout)
+            else:
+                kwargs.setdefault("read_timeout", timeout)
         elif plugin == "scrapli":
             task_plugin = scrapli_send_commands
+            kwargs.setdefault("timeout_ops", timeout)
         elif plugin == "napalm":
             task_plugin = napalm_send_commands
         else:
@@ -724,7 +730,7 @@ class NornirWorker(NFPWorker):
             args=args,
             kwargs=kwargs,
             workers="any",
-            job_timeout=30,
+            timeout=30,
         )
         # reply is a dict of {worker_name: results_dict}
         result = list(reply.values())[0]
@@ -752,6 +758,7 @@ class NornirWorker(NFPWorker):
         config = config if isinstance(config, list) else [config]
         filters = {k: kwargs.pop(k) for k in list(kwargs.keys()) if k in FFun_functions}
         ret = Result(task=f"{self.name}:cfg", result={} if to_dict else [])
+        timeout = self.current_job["timeout"]
 
         # decide on what send commands task plugin to use
         if plugin == "netmiko":

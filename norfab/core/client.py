@@ -62,7 +62,7 @@ def recv(client):
     while not client.exit_event.is_set():
         # Poll socket for messages every timeout interval
         try:
-            items = client.poller.poll(client.timeout)
+            items = client.poller.poll(1000)
         except KeyboardInterrupt:
             break  # Interrupted
         except:
@@ -89,8 +89,6 @@ class NFPClient(object):
     ctx = None
     broker_socket = None
     poller = None
-    timeout = 2500
-    retries = 3
     name = None
     stats_send_to_broker = 0
     stats_recv_from_broker = 0
@@ -176,13 +174,13 @@ class NFPClient(object):
 
     def rcv_from_broker(self, command, service, uuid):
         """Wait for response from broker."""
-        retries = self.retries
+        retries = 3
         while retries > 0:
             # check if need to stop
             if self.exit_event.is_set():
                 break
             try:
-                msg = self.recv_queue.get(block=True, timeout=self.timeout / 1000)
+                msg = self.recv_queue.get(block=True, timeout=3)
                 self.recv_queue.task_done()
             except queue.Empty:
                 if retries:
@@ -222,7 +220,7 @@ class NFPClient(object):
         else:
             log.error(
                 f"{self.name} - '{uuid}:{service}:{command}' job, "
-                f"client {self.retries} retries attempts exceeded"
+                f"client {retries} retries attempts exceeded"
             )
             return b"408", b'{"status": "Request Timeout"}'
 
@@ -234,7 +232,7 @@ class NFPClient(object):
         kwargs: dict = None,
         workers: str = "all",
         uuid: hex = None,
-        timeout: int = 60,
+        timeout: int = 600,
     ):
         """
         Send job request to broker.
@@ -340,7 +338,7 @@ class NFPClient(object):
         kwargs: dict = None,
         workers: str = "all",
         uuid: hex = None,
-        timeout: int = 60,
+        timeout: int = 600,
     ):
         """S
         end job reply message to broker requesting job results.
@@ -464,7 +462,7 @@ class NFPClient(object):
         kwargs: dict = None,
         workers: str = "all",
         uuid: hex = None,
-        timeout: int = 60,
+        timeout: int = 600,
     ):
         """Send job reply message to broker requesting job results."""
         uuid = uuid or uuid4().hex
@@ -542,7 +540,7 @@ class NFPClient(object):
         destination: str = None,
         chunk_size: int = 250000,
         pipiline: int = 10,
-        timeout: int = 60,
+        timeout: int = 600,
         read: bool = False,
     ):
         """
@@ -664,7 +662,7 @@ class NFPClient(object):
         args: list = None,
         kwargs: dict = None,
         workers: str = "all",
-        job_timeout: int = 600,
+        timeout: int = 600,
         retry=10,
     ):
         """
@@ -676,14 +674,14 @@ class NFPClient(object):
         :param args: list, task arguments
         :param kwargs: dict, task key-word arguments
         :param workers: str or list, worker names to target
-        :param job_timeout: overall job timeout in seconds
+        :param timeout: overall job timeout in seconds
         :param retry: number of times to try and GET job results
         """
         uuid = uuid or uuid4().hex
         start_time = int(time.time())
 
         # POST job to workers
-        post_result = self.post(service, task, args, kwargs, workers, uuid, job_timeout)
+        post_result = self.post(service, task, args, kwargs, workers, uuid, timeout)
         if post_result["status"] != "200":
             log.error(
                 f"{self.name}:run_job - {service}:{task} POST status "
@@ -691,7 +689,7 @@ class NFPClient(object):
             )
             return None
 
-        remaining_timeout = job_timeout - (time.time() - start_time)
+        remaining_timeout = timeout - (time.time() - start_time)
         get_timeout = remaining_timeout / retry
 
         # GET job results
@@ -732,7 +730,7 @@ class NFPClient(object):
         args: list = None,
         kwargs: dict = None,
         workers: str = "all",
-        job_timeout: int = 600,
+        timeout: int = 600,
     ):
         """
         Iter run_job allows to return job results from workers progressively
@@ -750,12 +748,11 @@ class NFPClient(object):
         uuid = uuid or uuid4().hex
 
         # POST job to workers
-        post_result = self.post(service, task, args, kwargs, workers, uuid, job_timeout)
-        yield post_result
+        post_result = self.post(service, task, args, kwargs, workers, uuid, timeout)
 
         # GET job results
         for result in self.get_iter(
-            service, task, [], {}, post_result["workers"], uuid, job_timeout
+            service, task, [], {}, post_result["workers"], uuid, timeout
         ):
             yield result
 
