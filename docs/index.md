@@ -55,11 +55,13 @@ superpowers managing modern network and making their life better.
 
 Key actors of the system include
 
-- Workers - form Services
-- Clients - consume Services
-- Broker - middleman between Clients and Services
+- **WORKERS** - form services, processes that run anywhere and act as resource proxy agents
+- **CLIENTS** - consume services, processes that run on client machine and connect to broker
+- **BROKER** - provides access to services for clients
+- **RESOURCES** - entities managed by workers, e.g. network devices, databases, file system
+- **SERVICES** - a collection of workers and managed resources
 
-Clients communicate with broker to run the jobs, broker distributes 
+Clients communicate with broker to submit jobs, broker distributes 
 jobs across workers comprising the service, workers run jobs producing 
 results later on retrieved by clients. In other words *Services* 
 hosted by *Workers* and expose functionality consumed by *Clients* 
