@@ -1,0 +1,11 @@
+{% if "spine" in host.name and job_data.some_conditional == True %}
+- task: "show version"
+  test: contains
+  pattern: "cEOS"
+  name: check ceos version
+{% elif "spine" in host.name and job_data.some_conditional == False %}
+- test: contains_lines
+  pattern: ["1.1.1.1"]
+  task: "show ntp associations"
+  name: check NTP status
+{% endif %}

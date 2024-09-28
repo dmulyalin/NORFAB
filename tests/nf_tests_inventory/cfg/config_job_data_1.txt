@@ -1,0 +1,3 @@
+commands: 
+  - interface loopback 555
+  - description foobar

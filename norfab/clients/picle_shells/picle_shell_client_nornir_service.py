@@ -770,6 +770,9 @@ class NornirCliShell(filters, TabulateTableModel, NornirCommonArgs, ClientRunJob
         None, description="Enter exec mode", json_schema_extra={"presence": True}
     )
     run_ttp: Optional[StrictStr] = Field(None, description="TTP Template to run")
+    job_data: Optional[StrictStr] = Field(
+        None, description="Path to YAML file with job data"
+    )
 
     @staticmethod
     @listen_events
@@ -997,6 +1000,9 @@ class NornirCfgShell(filters, TabulateTableModel, NornirCommonArgs, ClientRunJob
         json_schema_extra={"multiline": True},
     )
     plugin: NrCfgPlugins = Field(None, description="Configuration plugin parameters")
+    job_data: Optional[StrictStr] = Field(
+        None, description="Path to YAML file with job data"
+    )
 
     @staticmethod
     @listen_events
@@ -1152,6 +1158,9 @@ class NornirTestShell(filters, TabulateTableModel, NornirCommonArgs, ClientRunJo
         None,
         description="Include/Exclude tested task results",
         json_schema_extra={"presence": True},
+    )
+    job_data: Optional[StrictStr] = Field(
+        None, description="Path to YAML file with job data"
     )
 
     @staticmethod

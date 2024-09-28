@@ -1,0 +1,3 @@
+{% for command in job_data.commands %}
+{{ command }}
+{% endfor %}

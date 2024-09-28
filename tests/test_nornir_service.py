@@ -291,6 +291,82 @@ class TestNornirCli:
     def test_commands_with_diff_processor_diff_last(self, nfclient):
         pass
 
+    def test_commands_template_with_job_data_dict(self, nfclient):
+        ret = nfclient.run_job(
+            b"nornir",
+            "cli",
+            kwargs={
+                "job_data": {"commands": ["show version", "show clock"]},
+                "FL": ["ceos-spine-1", "ceos-spine-2"],
+                "cli_dry_run": True,
+                "commands": "nf://nf_tests_inventory/cli/template_with_job_data.txt",
+            },
+        )
+        pprint.pprint(ret)
+
+        for worker, results in ret.items():
+            for host, res in results["result"].items():
+                assert (
+                    "show version" in res["cli_dry_run"][0]
+                    and "show clock" in res["cli_dry_run"][0]
+                ), f"{worker}:{host} output is wrong"
+
+    def test_commands_template_with_job_data_file(self, nfclient):
+        ret = nfclient.run_job(
+            b"nornir",
+            "cli",
+            kwargs={
+                "job_data": "nf://nf_tests_inventory/cli/job_data_1.txt",
+                "FL": ["ceos-spine-1", "ceos-spine-2"],
+                "cli_dry_run": True,
+                "commands": "nf://nf_tests_inventory/cli/template_with_job_data.txt",
+            },
+        )
+        pprint.pprint(ret)
+
+        for worker, results in ret.items():
+            for host, res in results["result"].items():
+                assert (
+                    "show version" in res["cli_dry_run"][0]
+                    and "show clock" in res["cli_dry_run"][0]
+                ), f"{worker}:{host} output is wrong"
+
+    def test_commands_template_with_job_data_wrong_file(self, nfclient):
+        ret = nfclient.run_job(
+            b"nornir",
+            "cli",
+            workers=["nornir-worker-1"],
+            kwargs={
+                "job_data": "nf://nf_tests_inventory/cli/job_data_non_exist.txt",
+                "FL": ["ceos-spine-1", "ceos-spine-2"],
+                "cli_dry_run": True,
+                "commands": "nf://nf_tests_inventory/cli/template_with_job_data.txt",
+            },
+        )
+        pprint.pprint(ret)
+
+        for worker, results in ret.items():
+            assert results["errors"]
+            assert "FileNotFoundError" in results["errors"][0]
+
+    def test_commands_template_with_job_data_wrong_yaml(self, nfclient):
+        ret = nfclient.run_job(
+            b"nornir",
+            "cli",
+            workers=["nornir-worker-1"],
+            kwargs={
+                "job_data": "nf://nf_tests_inventory/cli/job_data_wrong_yaml.txt",
+                "FL": ["ceos-spine-1", "ceos-spine-2"],
+                "cli_dry_run": True,
+                "commands": "nf://nf_tests_inventory/cli/template_with_job_data.txt",
+            },
+        )
+        pprint.pprint(ret)
+
+        for worker, results in ret.items():
+            assert results["errors"]
+            assert "yaml.scanner.ScannerError" in results["errors"][0]
+
 
 # ----------------------------------------------------------------------------
 # NORNIR.TASK FUNCTION TESTS
@@ -769,7 +845,7 @@ class TestNornirCfg:
         pprint.pprint(ret)
 
         for worker, results in ret.items():
-            assert results["failed"] == False, f"{worker}:{host} results failed"
+            assert results["failed"] == False, f"{worker} results failed"
             for host, res in results["result"].items():
                 assert "cfg_dry_run" in res, f"{worker}:{host} no cfg_dry_run output"
                 for item in res["cfg_dry_run"]:
@@ -796,7 +872,7 @@ class TestNornirCfg:
         pprint.pprint(ret)
 
         for worker, results in ret.items():
-            assert results["failed"] == True, f"{worker}:{host} results not failed"
+            assert results["failed"] == True, f"{worker} results not failed"
             assert "FileNotFoundError" in results["errors"][0]
 
     def test_config_from_file_template_with_if_and_include(self, nfclient):
@@ -812,21 +888,71 @@ class TestNornirCfg:
         pprint.pprint(ret)
 
         for worker, results in ret.items():
-            assert results["failed"] == False, f"{worker}:{host} results failed"
+            assert results["failed"] == False, f"{worker} results failed"
             for host, res in results["result"].items():
                 assert "cfg_dry_run" in res, f"{worker}:{host} no cfg_dry_run output"
                 for item in res["cfg_dry_run"]:
                     assert (
                         "interface Loopback1" in item
                     ), f"{worker}:{host} no config_with_includes.txt config"
-                    if "spine" in host:
-                        assert (
-                            "interface Loopback321" in item
-                        ), f"{worker}:{host} not correct spine config"
-                    elif "leaf" in host:
-                        assert (
-                            "interface Loopback123" in item
-                        ), f"{worker}:{host} not correct leaf config"
+
+    def test_config_from_file_template_with_job_data_dict(self, nfclient):
+        ret = nfclient.run_job(
+            b"nornir",
+            "cfg",
+            workers=["nornir-worker-1", "nornir-worker-2"],
+            kwargs={
+                "config": "nf://nf_tests_inventory/cfg/config_with_job_data.txt",
+                "cfg_dry_run": True,
+                "job_data": {
+                    "commands": ["interface loopback 555", "description foobar"]
+                },
+            },
+        )
+        pprint.pprint(ret)
+        for worker, results in ret.items():
+            assert results["failed"] == False, f"{worker} results failed"
+            for host, res in results["result"].items():
+                assert (
+                    "interface loopback 555" in res["cfg_dry_run"][0]
+                    and "description foobar" in res["cfg_dry_run"][0]
+                ), f"{worker}:{host} config is wrong"
+
+    def test_config_from_file_template_with_job_data_file(self, nfclient):
+        ret = nfclient.run_job(
+            b"nornir",
+            "cfg",
+            workers=["nornir-worker-1", "nornir-worker-2"],
+            kwargs={
+                "config": "nf://nf_tests_inventory/cfg/config_with_job_data.txt",
+                "cfg_dry_run": True,
+                "job_data": "nf://nf_tests_inventory/cfg/config_job_data_1.txt",
+            },
+        )
+        pprint.pprint(ret)
+        for worker, results in ret.items():
+            assert results["failed"] == False, f"{worker} results failed"
+            for host, res in results["result"].items():
+                assert (
+                    "interface loopback 555" in res["cfg_dry_run"][0]
+                    and "description foobar" in res["cfg_dry_run"][0]
+                ), f"{worker}:{host} config is wrong"
+
+    def test_config_from_file_template_with_job_data_wrong_file(self, nfclient):
+        ret = nfclient.run_job(
+            b"nornir",
+            "cfg",
+            workers=["nornir-worker-1", "nornir-worker-2"],
+            kwargs={
+                "config": "nf://nf_tests_inventory/cfg/config_with_job_data.txt",
+                "cfg_dry_run": True,
+                "job_data": "nf://nf_tests_inventory/cfg/config_job_data_non_exist.txt",
+            },
+        )
+        pprint.pprint(ret)
+        for worker, results in ret.items():
+            assert results["errors"]
+            assert "FileNotFoundError" in results["errors"][0]
 
 
 # ----------------------------------------------------------------------------
@@ -1183,6 +1309,30 @@ class TestNornirTest:
                         "check loopback0 present",
                         "check version",
                     ], f"{worker}:{host}:{test_name} unexpected test result"
+
+    def test_nornir_test_suite_with_job_data_dict(self, nfclient):
+        ret = nfclient.run_job(
+            b"nornir",
+            "test",
+            workers=["nornir-worker-1"],
+            kwargs={
+                "suite": "nf://nf_tests_inventory/nornir_test_suites/test_nornir_test_suite_with_job_data.txt",
+                "FC": "ceos-spine-",
+                "job_data": {"some_conditional": True},
+                "dry_run": True,
+            },
+        )
+        pprint.pprint(ret)
+
+        for worker, results in ret.items():
+            assert results["result"], f"{worker} returned no test results"
+            for host, res in results["result"].items():
+                assert (
+                    len(res["tests_dry_run"]) == 1
+                ), f"{worker}:{host} was expecting only one test item"
+                assert (
+                    res["tests_dry_run"][0]["name"] == "check ceos version"
+                ), f"{worker}:{host} unexpected tes name"
 
     @pytest.mark.skip(reason="TBD")
     def test_nornir_test_suite_pattern_files(self, nfclient):

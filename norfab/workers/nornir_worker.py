@@ -450,6 +450,21 @@ class NornirWorker(NFPWorker):
 
         return rendered
 
+    def load_job_data(self, job_data: str):
+        """
+        Helper function to download job data and load it using YAML
+
+        :param job_data: URL to job data
+        """
+        if self.is_url(job_data):
+            job_data = self.fetch_file(job_data)
+            if job_data is None:
+                msg = f"{self.name} - '{job_data}' job data file download failed"
+                raise FileNotFoundError(msg)
+            job_data = yaml.safe_load(job_data)
+
+        return job_data
+
     # ----------------------------------------------------------------------
     # Nornir Service Functions that exposed for calling
     # ----------------------------------------------------------------------
@@ -631,6 +646,9 @@ class NornirWorker(NFPWorker):
         plugin: str = "netmiko",
         cli_dry_run: bool = False,
         run_ttp: str = None,
+        job_data: str = None,
+        to_dict: bool = True,
+        add_details: bool = False,
         **kwargs,
     ) -> dict:
         """
@@ -640,10 +658,14 @@ class NornirWorker(NFPWorker):
         :param commands: list of commands to send to devices
         :param plugin: plugin name to use - ``netmiko``, ``scrapli``, ``napalm``
         :param cli_dry_run: do not send commands to devices just return them
+        :param job_data: URL to YAML file with data or dictionary/list of data
+            to pass on to Jinja2 rendering context
+        :param add_details: if True will add task execution details to the results
+        :param to_dict: default is True - produces dictionary results, if False
+            will produce results list
         :param run_ttp: TTP Template to run
         """
-        add_details = kwargs.pop("add_details", False)  # ResultSerializer
-        to_dict = kwargs.pop("to_dict", True)  # ResultSerializer
+        job_data = job_data or {}
         filters = {k: kwargs.pop(k) for k in list(kwargs.keys()) if k in FFun_functions}
         downloaded_cmds = []
         timeout = self.current_job["timeout"] * 0.9
@@ -677,7 +699,7 @@ class NornirWorker(NFPWorker):
             return ret
 
         # download TTP template
-        if run_ttp and run_ttp.startswith("nf://"):
+        if self.is_url(run_ttp):
             downloaded = self.fetch_file(run_ttp)
             kwargs["run_ttp"] = downloaded
             if downloaded is None:
@@ -687,6 +709,9 @@ class NornirWorker(NFPWorker):
         elif run_ttp:
             kwargs["run_ttp"] = run_ttp
 
+        # download job data
+        job_data = self.load_job_data(job_data)
+
         nr = self._add_processors(filtered_nornir, kwargs)  # add processors
 
         # render commands using Jinja2 on a per-host basis
@@ -695,7 +720,12 @@ class NornirWorker(NFPWorker):
             for host in nr.inventory.hosts.values():
                 rendered = self.render_jinja2_templates(
                     templates=commands,
-                    context={"host": host, "norfab": self.client, "nornir": self},
+                    context={
+                        "host": host,
+                        "norfab": self.client,
+                        "nornir": self,
+                        "job_data": job_data,
+                    },
                 )
                 host.data["__task__"] = {"commands": rendered}
 
@@ -744,6 +774,7 @@ class NornirWorker(NFPWorker):
         cfg_dry_run: bool = False,
         to_dict: bool = True,
         add_details: bool = False,
+        job_data: str = None,
         **kwargs,
     ) -> dict:
         """
@@ -753,6 +784,11 @@ class NornirWorker(NFPWorker):
         :param config: list of commands to send to devices
         :param plugin: plugin name to use - ``netmiko``, ``scrapli``, ``napalm``
         :param cfg_dry_run: do not send commands to devices just return them
+        :param job_data: URL to YAML file with data or dictionary/list of data
+            to pass on to Jinja2 rendering context
+        :param add_details: if True will add task execution details to the results
+        :param to_dict: default is True - produces dictionary results, if False
+            will produce results list
         """
         downloaded_cfg = []
         config = config if isinstance(config, list) else [config]
@@ -782,13 +818,20 @@ class NornirWorker(NFPWorker):
             log.debug(msg)
             return ret
 
+        job_data = self.load_job_data(job_data)
+
         nr = self._add_processors(filtered_nornir, kwargs)  # add processors
 
         # render config using Jinja2 on a per-host basis
         for host in nr.inventory.hosts.values():
             rendered = self.render_jinja2_templates(
                 templates=config,
-                context={"host": host, "norfab": self.client, "nornir": self},
+                context={
+                    "host": host,
+                    "norfab": self.client,
+                    "nornir": self,
+                    "job_data": job_data,
+                },
                 filters={"nb_get_next_ip": self.nb_get_next_ip},
             )
             host.data["__task__"] = {"config": rendered}
@@ -825,6 +868,7 @@ class NornirWorker(NFPWorker):
         remove_tasks: bool = True,
         failed_only: bool = False,
         return_tests_suite: bool = False,
+        job_data: str = None,
         **kwargs,
     ) -> dict:
         """
@@ -839,6 +883,8 @@ class NornirWorker(NFPWorker):
         :param return_tests_suite: if True returns rendered per-host tests suite
             content in addition to test results using dictionary with ``results``
             and ``suite`` keys
+        :param job_data: URL to YAML file with data or dictionary/list of data
+            to pass on to Jinja2 rendering context
         :param kwargs: any additional arguments to pass on to Nornir service task
         """
         downloaded_suite = None
@@ -866,10 +912,18 @@ class NornirWorker(NFPWorker):
         # download tests suite
         downloaded_suite = self.fetch_jinja2(suite)
 
+        # download job data
+        job_data = self.load_job_data(job_data)
+
         # generate per-host test suites
         searchpath, template = os.path.split(downloaded_suite)
         for host_name, host in filtered_nornir.inventory.hosts.items():
-            context = {"host": host, "norfab": self.client, "nornir": self}
+            context = {
+                "host": host,
+                "norfab": self.client,
+                "nornir": self,
+                "job_data": job_data,
+            }
             # render suite using Jinja2
             try:
                 j2env = Environment(loader=FileSystemLoader(searchpath))
