@@ -21,7 +21,7 @@ we need to provide worker with.
 To do the mapping between worker name and inventory files we can put this
 in NorFab inventory (`inventory.yaml`) file:
 
-``` yaml title=inventory.yaml
+``` 
 workers:
   nornir-*:
     - nornir/common.yaml  
@@ -60,7 +60,7 @@ For example, we have a group of two workers with names `netbox-wroker-1.1` and
 `netbox-worker-1.2` and we want to map `netbox_common.yaml` to both of the workers,
 in that case NorFab inventory (`inventory.yaml`) file could have this content:
 
-``` yaml title=inventory.yaml
+```
 workers:
   netbox-worker-1.*:
     - nornir/netbox_common.yaml  

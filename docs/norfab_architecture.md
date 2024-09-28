@@ -26,4 +26,4 @@ There are multiple job flows implemented:
 
 Above flows depicted on the diagram.
 
-![Hobs Flow](images/ArcOverview-Jobs Flow.png)
+![Jobs Flow](images/ArcOverview-Jobs Flow.png)

@@ -1130,3 +1130,4 @@ class NornirWorker(NFPWorker):
             raise UnsupportedPluginError(f"Plugin '{plugin}' not supported")
 
         return ret
+       

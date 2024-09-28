@@ -64,3 +64,5 @@ jobs across workers comprising the service, workers run jobs producing
 results later on retrieved by clients. In other words *Services* 
 hosted by *Workers* and expose functionality consumed by *Clients* 
 via *Broker*.
+
+![Network Automations Fabric Architecture](images/Overview_Architecture.jpg)

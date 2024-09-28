@@ -2,7 +2,7 @@ Once NorFab installed, next step is to create a folder that will
 hold your environment and start creating inventory files
 with required configurations.
 
-Create ``nftry`` folder and inside of it create ``inventory.yaml`` 
+Create ``norfab`` folder and inside of it create ``inventory.yaml`` 
 file with this content:
 
 ``` yaml title="inventory.yaml"
@@ -26,7 +26,7 @@ topology: # (6)!
 3.  Workers configuration section
 4.  [glob pattern](https://docs.python.org/3/library/fnmatch.html) that will match 
     all workers with ``nornir-`` in the name and map ``common.yaml`` context for 
-	each such a worker
+    each such a worker
 5.  Worker definition to map inventory file to a specific worker that has name ``nornir-worker-1``
 6.  Topology section to define what components to run
 7.  Start broker process
@@ -76,7 +76,7 @@ hosts:
 This is how files structure will look like:
 
 ``` yaml
-└───nftry
+└───norfab
     │   inventory.yaml
     │
     └───nornir
@@ -89,15 +89,15 @@ Client - NFCLI. Open terminal window, navigate to the folder
 where ``inventory.yaml`` located and start NFCLI:
 
 ```
-C:\>cd nftry
-C:\nftry>nfcli
+C:\>cd norfab
+C:\norfab>nfcli
 nf#
 ```
 
 this will start the NorFab broker process, Nornir worker process, instantiate
 NFCLI client and drop you into interactive command line shell :shell:
 
-```
+``` yaml
 nf#? # (1)!
  file      File sharing service
  netbox    Netbox service
@@ -107,11 +107,11 @@ nf#? # (1)!
  help      Print help message
  pwd       Print current shell path
  top       Exit to top shell
-nf#show workers
+nf#show workers # (2)!
  name             service  status  holdtime  keepalives tx/rx  alive (s)
  nornir-worker-1  nornir   alive   12.8      58 / 58           149
 nf#
-nf#nornir # (2)!
+nf#nornir # (3)!
 nf[nornir]#?
  cfg     Configure devices over CLI interface
  cli     Send CLI commands to devices
@@ -135,7 +135,8 @@ Exiting...
 ```
 
 1. Question mark plus enter to print commands help
-2. Drop into Nornir Service command shell
+2. Run show command
+3. Drop into Nornir Service command shell
 
 NorFab CLI supports Tab completions, question mark help together with
 sub-shells, read more about NorFab CLI and how to use it [here](norfab_cli_overview.md).
