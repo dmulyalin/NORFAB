@@ -1329,11 +1329,13 @@ superpowers managing modern network and making their life better.</p>
 <h2 id="architecture">Architecture<a class="headerlink" href="#architecture" title="Permanent link">¤</a></h2>
 <p>Key actors of the system include</p>
 <ul>
-<li>Workers - form Services</li>
-<li>Clients - consume Services</li>
-<li>Broker - middleman between Clients and Services</li>
+<li><strong>WORKERS</strong> - form services, processes that run anywhere and act as resource proxy agents</li>
+<li><strong>CLIENTS</strong> - consume services, processes that run on client machine and connect to broker</li>
+<li><strong>BROKER</strong> - provides access to services for clients</li>
+<li><strong>RESOURCES</strong> - entities managed by workers, e.g. network devices, databases, file system</li>
+<li><strong>SERVICES</strong> - a collection of workers and managed resources</li>
 </ul>
-<p>Clients communicate with broker to run the jobs, broker distributes 
+<p>Clients communicate with broker to submit jobs, broker distributes 
 jobs across workers comprising the service, workers run jobs producing 
 results later on retrieved by clients. In other words <em>Services</em> 
 hosted by <em>Workers</em> and expose functionality consumed by <em>Clients</em> 
