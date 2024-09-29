@@ -1,31 +1,15 @@
 """
-NorFab Majordomo Protocol - NMP
+## CUDOS
 
-Modified Majordomo Protocol Client API, Python version.
+Inspired by Majordomo Protocol Client API, ZeroMQ, Python version.
 
 Original MDP/Client spec
-Location: http:#rfc.zeromq.org/spec:7.
+
+Location: http://rfc.zeromq.org/spec:7.
+
 Author: Min RK <benjaminrk@gmail.com>
+
 Based on Java example by Arkadiusz Orzechowski
-
-NorFab Majordomo Protocol Client
-================================
-
-A REQUEST command consists of a multipart message of 6 or more frames, formatted on the wire as follows:
-
-Frame 0: Empty (zero bytes, invisible to REQ application)
-Frame 1: “MDPC01” (six bytes, representing MDP/Client v0.1)
-Frame 2: Service name (printable string)
-Frame 3: Worker(s) name (printable string)
-Frames 4+: Request body (opaque binary)
-
-A REPLY command consists of a multipart message of 4 or more frames, formatted on the wire as follows:
-
-Frame 0: Empty (zero bytes, invisible to REQ application)
-Frame 1: “MDPC01” (six bytes, representing MDP/Client v0.1)
-Frame 2: Service name (printable string)
-Frame 3: Worker(s) name (printable string)
-Frames 4+: Reply body (opaque binary)
 """
 
 import logging

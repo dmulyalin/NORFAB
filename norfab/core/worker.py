@@ -1,8 +1,14 @@
-"""Majordomo Protocol Worker API, Python version
+"""
+## CUDOS
 
-Implements the MDP/Worker spec at http:#rfc.zeromq.org/spec:7.
+Inspired by Majordomo Protocol Worker API, ZeroMQ, Python version.
+
+Original MDP/Worker spec 
+
+Location: http://rfc.zeromq.org/spec:7.
 
 Author: Min RK <benjaminrk@gmail.com>
+
 Based on Java example by Arkadiusz Orzechowski
 """
 import logging

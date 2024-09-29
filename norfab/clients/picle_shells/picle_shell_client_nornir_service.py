@@ -1056,8 +1056,8 @@ class NornirCfgShell(filters, TabulateTableModel, NornirCommonArgs, ClientRunJob
         else:
             ret = result
 
-        return ret
-
+        return ret        
+        
     class PicleConfig:
         subshell = True
         prompt = "nf[nornir-cfg]#"
