@@ -518,7 +518,7 @@ class NFPBroker:
                         "exists": exists,
                     }
                 )
-            #provide list of all files from all subdirectories
+            # provide list of all files from all subdirectories
             elif task == "walk":
                 full_path = os.path.join(self.base_dir, url_path)
                 if os.path.exists(full_path) and os.path.isdir(full_path):
