@@ -28,7 +28,7 @@ from pydantic import (
     StrictFloat,
     StrictStr,
     conlist,
-    root_validator,
+    model_validator,
     Field,
 )
 from .common import ClientRunJobArgs, log_error_or_result
@@ -398,7 +398,13 @@ class filters(BaseModel):
         result = log_error_or_result(result)
         return result
 
-
+    @model_validator(mode='before')
+    def convert_filters_to_strings(cls, data: Any) -> Any:
+        for k in list(data.keys()):
+            if k.startswith("F"):
+                data[k] = str(data[k])         
+        return data
+    
 # ---------------------------------------------------------------------------------------------
 # NORNIR SERVICE SHELL SHOW COMMANDS MODELS
 # ---------------------------------------------------------------------------------------------
@@ -1002,8 +1008,8 @@ class NornirCfgShell(filters, TabulateTableModel, NornirCommonArgs, ClientRunJob
     plugin: NrCfgPlugins = Field(None, description="Configuration plugin parameters")
     job_data: Optional[StrictStr] = Field(
         None, description="Path to YAML file with job data"
-    )
-
+    )        
+    
     @staticmethod
     @listen_events
     def run(uuid, *args, **kwargs):
@@ -1163,6 +1169,14 @@ class NornirTestShell(filters, TabulateTableModel, NornirCommonArgs, ClientRunJo
         None, description="Path to YAML file with job data"
     )
 
+
+    @staticmethod
+    def source_suite():
+        broker_files = reply = NFCLIENT.get(
+            "fss.service.broker", "walk", kwargs={"url": "nf://"}
+        )
+        return json.loads(broker_files["results"])
+        
     @staticmethod
     @listen_events
     def run(uuid, *args, **kwargs):

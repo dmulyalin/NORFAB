@@ -518,6 +518,29 @@ class NFPBroker:
                         "exists": exists,
                     }
                 )
+            #provide list of all files from all subdirectories
+            elif task == "walk":
+                full_path = os.path.join(self.base_dir, url_path)
+                if os.path.exists(full_path) and os.path.isdir(full_path):
+                    reply = []
+                    for root, dirs, files in os.walk(full_path):
+                        # skip path containing folders like __folders__
+                        if root.count("__") >= 2:
+                            continue
+                        root = root.replace(self.base_dir, "")
+                        root = root.lstrip("\\")
+                        root = root.replace("\\", "/")
+                        for file in files:
+                            # skip hidden/system files
+                            if file.startswith("."):
+                                continue
+                            if root:
+                                reply.append(f"nf://{root}/{file}")
+                            else:
+                                reply.append(f"nf://{file}")
+                    reply = json.dumps(reply).encode("utf-8")
+                else:
+                    reply = json.dumps(["Directory Not Found"]).encode("utf-8")
         else:
             reply = f"fss.service.broker - unsupported url '{url}', task '{task}'"
             log.error(reply)

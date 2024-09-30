@@ -40,7 +40,7 @@ your laptop or on a server, centralized or fully distributed,
 lightweight and feature reach. Capable of doing any use cases 
 without the need to throw gazillions of dollars and man hours at 
 it. Always ready to serve the purpose of unlocking engineers 
-superpowers managing modern network and making their life better.
+superpowers managing modern networks and making engineers life better.
 
 ## How (The Features) :gear:
 

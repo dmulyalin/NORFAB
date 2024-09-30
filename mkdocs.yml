@@ -16,13 +16,15 @@ markdown_extensions:
     permalink: "¤"
 nav:
 - NORFAB: 
-    - Overview: index.md
+    - Welcome to NORFAB: index.md
+    - Why use NORFAB: why_use_norfab.md
+    - Help with NORFAB: help_with_norfab.md
     - Installation: norfab_installation.md
     - Getting Started: norfab_getting_started.md
     - NORFAB CLI: norfab_cli_overview.md
     - Python API: norfab_python_api_overview.md
     - REST API: norfab_rest_api_overview.md
-    - Release Notes: norfab_release_notes.md
+    - Changelog: changelog.md
 - Services:
     - Nornir: nornir_service.md
     - Netbox: netbox_service.md
@@ -36,13 +38,14 @@ nav:
       - Broker: norfab_broker_reference.md
       - Worker: norfab_worker_reference.md
       - Client: norfab_client_reference.md
-      - Simple Inventory: norfab_inventory_reference.md
+      - Simple Inventory: norfab_simple_inventory_reference.md
       - Exceptions: norfab_exceptions_reference.md
     - Built-in Workers:
       - Nornir Worker: nornir_worker_api_reference.md
       - Netbox Worker: netbox_worker_api_reference.md
     - Built-in Clients:
       - NFCLI (PICLE Shell) Client: nfcli_client_api_reference.md
+      - ROBOT: robot_client_api_reference.md
 plugins:
 - search
 - mkdocstrings:
