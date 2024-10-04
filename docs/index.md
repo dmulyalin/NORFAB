@@ -9,7 +9,9 @@
 
 Hi :smile:, thank you for getting here.
 
-## Why (The Story) :book:
+NORFAB is a distributed task execution fabric focused on network automations.
+
+## Why - The Story :book:
 
 In a world devoid of network automations, the streets were silent 
 and grey. Without network automations, network engineers' lives 
@@ -24,7 +26,7 @@ the sheer volume of repetitive tasks...
 
 Let us introduce you to the world of Network Automations Fabric.
 
-## What (The Idea) :bulb:
+## What - The Idea :bulb:
 
 NorFab purpose is to augment engineers capabilities with automation 
 superpowers.
@@ -42,7 +44,7 @@ without the need to throw gazillions of dollars and man hours at
 it. Always ready to serve the purpose of unlocking engineers 
 superpowers managing modern networks and making engineers life better.
 
-## How (The Features) :gear:
+## How - The Features :gear:
 
 - **Run Anywhere** - locally on Windows, MAC or Linux, in a container, on a VM, in the cloud, centralized or distributed
 - **Extend Anything** - extendability is in the core of NorFab
@@ -55,15 +57,16 @@ superpowers managing modern networks and making engineers life better.
 
 Key actors of the system include
 
-- **WORKERS** - form services, processes that run anywhere and act as resource proxy agents
-- **CLIENTS** - consume services, processes that run on client machine and connect to broker
-- **BROKER** - provides access to services for clients
-- **RESOURCES** - entities managed by workers, e.g. network devices, databases, file system
 - **SERVICES** - a collection of workers and managed resources
+- **CLIENTS** - consume services, processes that run on client machine and connect to broker
+- **WORKERS** - form services, processes that run anywhere and act as resource proxy agents
+- **BROKER** - provides access to services for clients
+- **RESOURCES** - entities managed by workers, e.g. network devices, databases, file systems
+
 
 Clients communicate with broker to submit jobs, broker distributes 
 jobs across workers comprising the service, workers run jobs producing 
-results later on retrieved by clients. In other words *Services* 
+results retrieved by clients. In other words, *Services* 
 hosted by *Workers* and expose functionality consumed by *Clients* 
 via *Broker*.
 

@@ -1,8 +1,7 @@
 # Nornir Service
 
-Nornir Service is built on the [Nornir](https://github.com/nornir-automation/nornir)
-library, a well adopted open-source tool for automating network operations.
-
+Nornir Service is built using [Nornir](https://github.com/nornir-automation/nornir)
+library - a well adopted open-source tool for automating network devices operations.
  
 ![Nornir Service Architecture](images/Nornir_Service.jpg) 
 
@@ -15,4 +14,3 @@ Additionally, Nornir Service supports various interfaces and libraries for
 seamless integration. For instance, the `cli` task can interact with devices 
 via the Command Line Interface (CLI) using popular libraries like Netmiko, 
 Scrapli, and NAPALM, providing flexibility for diverse network environments.
-

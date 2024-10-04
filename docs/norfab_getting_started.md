@@ -2,8 +2,9 @@ Once NorFab installed, next step is to create a folder that will
 hold your environment and start creating inventory files
 with required configurations.
 
-Create ``norfab`` folder and inside of it create ``inventory.yaml`` 
-file with this content:
+Create ``norfab`` folder and inside of it create ``inventory.yaml``, 
+file name is important as NORFAB by default searches
+for ``inventory.yaml``, file content is:
 
 ``` yaml title="inventory.yaml"
 broker: # (1)!
@@ -21,12 +22,12 @@ topology: # (6)!
     - nornir-worker-1
 ```
 
-1.  Broker configuration section
+1.  Broker configuration inventory section
 2.  URL to listen for connections on - ``localhost`` port ``5555`` in this case
-3.  Workers configuration section
+3.  Workers configuration inventory section
 4.  [glob pattern](https://docs.python.org/3/library/fnmatch.html) that will match 
-    all workers with ``nornir-`` in the name and map ``common.yaml`` context for 
-    each such a worker
+    all workers with ``nornir-`` in the name and map ``common.yaml`` file content for 
+    each of them
 5.  Worker definition to map inventory file to a specific worker that has name ``nornir-worker-1``
 6.  Topology section to define what components to run
 7.  Start broker process
@@ -34,10 +35,9 @@ topology: # (6)!
 
 In this example we are working with Nornir service.
 
-Create ``nornir`` folder and inside of it create two files.
-
-First file ``common.yaml`` to host configuration common for all
-Nornir service workers:
+Create ``nornir`` folder (folder name is arbitrary and can be anything) 
+and inside of it create two files. First file ``common.yaml`` to host 
+configuration common for all Nornir service workers:
 
 ``` yaml title="common.yaml"
 service: nornir # (1)!
