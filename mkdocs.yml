@@ -98,9 +98,10 @@ nav:
             - Netbox UPDATE Device Facts: services_netbox_service_tasks_update_device_facts.md
 - Clients:
     - Clients Overview: clients_overview.md
-    - NORFAB CLI: norfab_cli_overview.md
-    - Python API: norfab_python_api_overview.md
-    - REST API: norfab_rest_api_overview.md
+    - NORFAB CLI: clients_nfcli_overview.md
+    - Python API: clients_python_api_overview.md
+    - REST API: clients_rest_api_overview.md
+    - ROBOT: clients_robot_client_overview.md
 - Reference:
     - NORFAB Inventory: reference_norfab_inventory.md
     - API Reference:
