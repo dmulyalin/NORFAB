@@ -12,13 +12,13 @@
         <meta name="author" content="Denis Mulyalin">
       
       
-        <link rel="canonical" href="https://dmulyalin.github.io/NORFAB/services_nornir_service_tasks_cfg/">
+        <link rel="canonical" href="https://dmulyalin.github.io/NORFAB/clients_python_api_overview/">
       
       
-        <link rel="prev" href="../services_nornir_service_tasks_cli/">
+        <link rel="prev" href="../clients_nfcli_overview/">
       
       
-        <link rel="next" href="../services_nornir_service_tasks_test/">
+        <link rel="next" href="../clients_rest_api_overview/">
       
       
       <link rel="icon" href="../assets/images/favicon.png">
@@ -26,7 +26,7 @@
     
     
       
-        <title>Nornir Cfg - NORFAB Documentation</title>
+        <title>Python API - NORFAB Documentation</title>
       
     
     
@@ -79,6 +79,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#norfab-python-api" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -111,7 +116,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Nornir Cfg
+              Python API
             
           </span>
         </div>
@@ -228,12 +233,10 @@
         
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
+      <li class="md-tabs__item">
         <a href="../services_overview/" class="md-tabs__link">
           
   
@@ -248,10 +251,12 @@
         
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
+      <li class="md-tabs__item md-tabs__item--active">
         <a href="../clients_overview/" class="md-tabs__link">
           
   
@@ -509,30 +514,25 @@
       
   
   
-    
   
   
-  
     
     
     
-      
-        
-        
       
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
         
           
-          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
             
   
   <span class="md-ellipsis">
@@ -543,7 +543,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_2">
             <span class="md-nav__icon md-icon"></span>
             Services
@@ -575,30 +575,25 @@
                 
   
   
-    
   
   
-  
     
     
     
       
       
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2" >
         
           
-          
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2" checked>
-        
-          
-          <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="">
+          <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="0">
             
   
   <span class="md-ellipsis">
@@ -609,7 +604,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_2_2">
             <span class="md-nav__icon md-icon"></span>
             Nornir Service
@@ -641,8 +636,6 @@
                 
   
   
-    
-  
   
   
     
@@ -654,11 +647,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2_2" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2_2" >
         
           
           <label class="md-nav__link" for="__nav_2_2_2" id="__nav_2_2_2_label" tabindex="0">
@@ -672,7 +665,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_2_2_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_2_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_2_2_2">
             <span class="md-nav__icon md-icon"></span>
             Tasks
@@ -725,17 +718,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../services_nornir_service_tasks_cfg/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -744,7 +730,6 @@
   
 
       </a>
-      
     </li>
   
 
@@ -841,20 +826,17 @@
       
       
         
-          
-          
-        
       
     
     
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_3" >
         
           
-          <label class="md-nav__link" for="__nav_2_3" id="__nav_2_3_label" tabindex="">
+          <label class="md-nav__link" for="__nav_2_3" id="__nav_2_3_label" tabindex="0">
             
   
   <span class="md-ellipsis">
@@ -1149,25 +1131,30 @@
       
   
   
+    
   
   
+  
     
     
     
+      
+        
+        
       
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
         
           
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
             
   
   <span class="md-ellipsis">
@@ -1178,7 +1165,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             Clients
@@ -1231,10 +1218,19 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../clients_python_api_overview/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -1243,6 +1239,7 @@
   
 
       </a>
+      
     </li>
   
 
@@ -1874,6 +1871,8 @@
   
   
   
+    
+  
   
 </nav>
                   </div>
@@ -1891,9 +1890,37 @@
   
 
 
-  <h1>Nornir Cfg</h1>
+<h1 id="norfab-python-api">NORFAB Python API<a class="headerlink" href="#norfab-python-api" title="Permanent link">¤</a></h1>
+<p>NorFab python API exists to run the Automations fabric, components
+that need to be started defined in <code>inventory.yaml</code> file. To start
+working with NorFab need to import core object and instantiate it.</p>
+<div class="highlight"><pre><span></span><code>from norfab.core.nfapi import NorFab
 
+nf = NorFab(inventory=&quot;./inventory.yaml&quot;)
+nf.start()
+nf.destroy()
+</code></pre></div>
+<p>Refer to <a href="../norfab_getting_started/">Getting Started</a> section on 
+how to construct  <code>inventory.yaml</code> file.</p>
+<p>All interaction with NorFab happens via client. On NorFab start an 
+instance of local client created automatically and can be used to 
+submit the jobs</p>
+<div class="highlight"><pre><span></span><code>import pprint
+from norfab.core.nfapi import NorFab
 
+nf = NorFab(inventory=&quot;./inventory.yaml&quot;)
+nf.start()
+
+result = nf.client.run_job(
+    service=&quot;nornir&quot;,
+    task=&quot;cli&quot;,
+    kwargs={&quot;commands&quot;: [&quot;show version&quot;, &quot;show clock&quot;]}
+)
+
+pprint.pprint(ret)
+
+nf.destroy()
+</code></pre></div>
 
 
 
