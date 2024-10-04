@@ -12,13 +12,13 @@
         <meta name="author" content="Denis Mulyalin">
       
       
-        <link rel="canonical" href="https://dmulyalin.github.io/NORFAB/norfab_python_api_overview/">
+        <link rel="canonical" href="https://dmulyalin.github.io/NORFAB/clients_robot_client_overview/">
       
       
-        <link rel="prev" href="../norfab_cli_overview/">
+        <link rel="prev" href="../clients_rest_api_overview/">
       
       
-        <link rel="next" href="../norfab_rest_api_overview/">
+        <link rel="next" href="../reference_norfab_inventory/">
       
       
       <link rel="icon" href="../assets/images/favicon.png">
@@ -26,7 +26,7 @@
     
     
       
-        <title>Python API - NORFAB Documentation</title>
+        <title>ROBOT - NORFAB Documentation</title>
       
     
     
@@ -79,11 +79,6 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
-        
-        <a href="#norfab-python-api" class="md-skip">
-          Skip to content
-        </a>
-      
     </div>
     <div data-md-component="announce">
       
@@ -116,7 +111,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Python API
+              ROBOT
             
           </span>
         </div>
@@ -1200,11 +1195,53 @@
   
   
     <li class="md-nav__item">
-      <a href="../norfab_cli_overview/" class="md-nav__link">
+      <a href="../clients_nfcli_overview/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
     NORFAB CLI
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../clients_python_api_overview/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Python API
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../clients_rest_api_overview/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    REST API
   </span>
   
 
@@ -1227,40 +1264,17 @@
       <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
       
       
-        
-      
       
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
-    Python API
+    ROBOT
   </span>
   
 
       </a>
       
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../norfab_rest_api_overview/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    REST API
-  </span>
-  
-
-      </a>
     </li>
   
 
@@ -1850,8 +1864,6 @@
   
   
   
-    
-  
   
 </nav>
                   </div>
@@ -1869,37 +1881,9 @@
   
 
 
-<h1 id="norfab-python-api">NORFAB Python API<a class="headerlink" href="#norfab-python-api" title="Permanent link">¤</a></h1>
-<p>NorFab python API exists to run the Automations fabric, components
-that need to be started defined in <code>inventory.yaml</code> file. To start
-working with NorFab need to import core object and instantiate it.</p>
-<div class="highlight"><pre><span></span><code>from norfab.core.nfapi import NorFab
+  <h1>ROBOT</h1>
 
-nf = NorFab(inventory=&quot;./inventory.yaml&quot;)
-nf.start()
-nf.destroy()
-</code></pre></div>
-<p>Refer to <a href="../norfab_getting_started/">Getting Started</a> section on 
-how to construct  <code>inventory.yaml</code> file.</p>
-<p>All interaction with NorFab happens via client. On NorFab start an 
-instance of local client created automatically and can be used to 
-submit the jobs</p>
-<div class="highlight"><pre><span></span><code>import pprint
-from norfab.core.nfapi import NorFab
 
-nf = NorFab(inventory=&quot;./inventory.yaml&quot;)
-nf.start()
-
-result = nf.client.run_job(
-    service=&quot;nornir&quot;,
-    task=&quot;cli&quot;,
-    kwargs={&quot;commands&quot;: [&quot;show version&quot;, &quot;show clock&quot;]}
-)
-
-pprint.pprint(ret)
-
-nf.destroy()
-</code></pre></div>
 
 
 

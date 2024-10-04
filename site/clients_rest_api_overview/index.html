@@ -12,13 +12,13 @@
         <meta name="author" content="Denis Mulyalin">
       
       
-        <link rel="canonical" href="https://dmulyalin.github.io/NORFAB/norfab_cli_overview/">
+        <link rel="canonical" href="https://dmulyalin.github.io/NORFAB/clients_rest_api_overview/">
       
       
-        <link rel="prev" href="../clients_overview/">
+        <link rel="prev" href="../clients_python_api_overview/">
       
       
-        <link rel="next" href="../norfab_python_api_overview/">
+        <link rel="next" href="../clients_robot_client_overview/">
       
       
       <link rel="icon" href="../assets/images/favicon.png">
@@ -26,7 +26,7 @@
     
     
       
-        <title>NORFAB CLI - NORFAB Documentation</title>
+        <title>REST API - NORFAB Documentation</title>
       
     
     
@@ -111,7 +111,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              NORFAB CLI
+              REST API
             
           </span>
         </div>
@@ -1192,17 +1192,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../clients_nfcli_overview/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1211,7 +1204,6 @@
   
 
       </a>
-      
     </li>
   
 
@@ -1224,7 +1216,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../norfab_python_api_overview/" class="md-nav__link">
+      <a href="../clients_python_api_overview/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1242,14 +1234,43 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../norfab_rest_api_overview/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
     REST API
+  </span>
+  
+
+      </a>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../clients_robot_client_overview/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ROBOT
   </span>
   
 
@@ -1860,21 +1881,9 @@
   
 
 
-  <h1>NORFAB CLI</h1>
+  <h1>REST API</h1>
 
-<p>NorFab CLI designed as a <em>modal</em> operating system. The term modal 
-describes a system that has various modes of operation, each having its own 
-domain of operation. The CLI uses a hierarchical structure for the modes.</p>
-<p>You can access a lower-level mode only from a higher-level mode. For example, 
-to access the Nornir mode, you must be in the privileged EXEC mode. Each mode 
-is used to accomplish particular tasks and has a specific set of commands that 
-are available in this mode. For example, to configure a router interface, you 
-must be in Nornir configuration mode. All configurations that you enter in 
-configuration mode apply only to this function.</p>
-<p>NorFab CLI build using <a href="https://github.com/dmulyalin/picle">PICLE package</a>.</p>
-<p>It is important to remember that in PICLE Shell, when you enter a command, the 
-command is executed. If you enter an incorrect command in a production environment, 
-it can negatively affect it.</p>
+
 
 
 
