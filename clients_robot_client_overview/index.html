@@ -26,7 +26,7 @@
     
     
       
-        <title>ROBOT - NORFAB Documentation</title>
+        <title>ROBOT Client - NORFAB Documentation</title>
       
     
     
@@ -79,6 +79,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#norfab-robot-client" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -111,7 +116,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              ROBOT
+              ROBOT Client
             
           </span>
         </div>
@@ -273,11 +278,28 @@
         <a href="../reference_norfab_inventory/" class="md-tabs__link">
           
   
-  Reference
+  References
 
         </a>
       </li>
     
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../tags/" class="md-tabs__link">
+        
+  
+    
+  
+  Tags
+
+      </a>
+    </li>
   
 
       
@@ -1199,7 +1221,7 @@
         
   
   <span class="md-ellipsis">
-    NORFAB CLI
+    NORFAB CLI Client
   </span>
   
 
@@ -1220,7 +1242,7 @@
         
   
   <span class="md-ellipsis">
-    Python API
+    Python API Client
   </span>
   
 
@@ -1241,7 +1263,7 @@
         
   
   <span class="md-ellipsis">
-    REST API
+    REST API Client
   </span>
   
 
@@ -1264,16 +1286,66 @@
       <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
       
       
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    ROBOT Client
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
-    ROBOT
+    ROBOT Client
   </span>
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#supported-robot-keywords" class="md-nav__link">
+    <span class="md-ellipsis">
+      Supported ROBOT Keywords
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#nornir-tests-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      Nornir Tests Examples
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -1313,7 +1385,7 @@
             
   
   <span class="md-ellipsis">
-    Reference
+    References
   </span>
   
 
@@ -1323,7 +1395,7 @@
         <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
-            Reference
+            References
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
@@ -1703,7 +1775,7 @@
         
   
   <span class="md-ellipsis">
-    NFCLI Client
+    NFCLI Client API
   </span>
   
 
@@ -1724,7 +1796,7 @@
         
   
   <span class="md-ellipsis">
-    ROBOT Client
+    ROBOT Client API
   </span>
   
 
@@ -1847,6 +1919,26 @@
   
 
     
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tags/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Tags
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
   </ul>
 </nav>
                   </div>
@@ -1864,6 +1956,34 @@
   
   
   
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#supported-robot-keywords" class="md-nav__link">
+    <span class="md-ellipsis">
+      Supported ROBOT Keywords
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#nornir-tests-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      Nornir Tests Examples
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
   
 </nav>
                   </div>
@@ -1876,12 +1996,57 @@
               <article class="md-content__inner md-typeset">
                 
                   
+  
+<nav class="md-tags" >
+  
+    
+    
+    
+      <a href="../tags/#robot" class="md-tag">robot</a>
+    
+  
+</nav>
+
 
   
   
 
 
-  <h1>ROBOT</h1>
+<h1 id="norfab-robot-client">NorFab Robot Client<a class="headerlink" href="#norfab-robot-client" title="Permanent link">¤</a></h1>
+<p>NORFAB Robot Client integrates with ROBOT framework to interact 
+with NORFAB, allowing to construct workflows and tasks using 
+ROBOT domain specific language (DSL).</p>
+<p>Robot Framework needs to be installed on the client:</p>
+<div class="highlight"><pre><span></span><code>pip install robotframework
+</code></pre></div>
+<h2 id="supported-robot-keywords">Supported ROBOT Keywords<a class="headerlink" href="#supported-robot-keywords" title="Permanent link">¤</a></h2>
+<ul>
+<li><code>Hosts</code> - <code>Fx</code> filters to target specific hosts, if not 
+    provided targets all hosts</li>
+<li><code>Workers</code> - names of the workers to target, default is <code>all</code></li>
+<li><code>nr.test</code> - run Nornir Service <code>test</code> task using 
+    provided Nornir tests suite</li>
+<li><code>nr.cli</code> - run Nornir Service <code>cli</code> task using 
+    provided show commands and arguments</li>
+<li><code>nr.cfg</code> - run Nornir Service <code>cfg</code> task using 
+    provided configuration commands and arguments</li>
+</ul>
+<h2 id="nornir-tests-examples">Nornir Tests Examples<a class="headerlink" href="#nornir-tests-examples" title="Permanent link">¤</a></h2>
+<p>This ROBOT framework test suite runs two tests using <code>nr.test</code>:</p>
+<div class="highlight"><span class="filename">/path/to/robot_suite.robot</span><pre><span></span><code><span class="err">***</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Settings ***</span>
+<span class="l l-Scalar l-Scalar-Plain">Library    norfab.NorFabRobot</span>
+
+<span class="l l-Scalar l-Scalar-Plain">*** Test Cases ***</span>
+<span class="l l-Scalar l-Scalar-Plain">Test NTP</span>
+<span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">nr.test    suite=nf://tests/test_ntp_config.yaml</span>
+
+<span class="l l-Scalar l-Scalar-Plain">Test Software Version</span>
+<span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">Hosts      FM=arista_eos</span>
+<span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">nr.test    suite=nf://tests/test_version.yaml</span>
+</code></pre></div>
+<p>Run test suite from client using <code>robot</code> command line tool:</p>
+<div class="highlight"><pre><span></span><code>robot /path/to/robot_suite.robot
+</code></pre></div>
 
 
 
@@ -1889,7 +2054,8 @@
 
 
 
-
+  
+  
 
 
 
