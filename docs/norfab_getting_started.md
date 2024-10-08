@@ -1,3 +1,8 @@
+---
+tags:
+  - norfab
+---
+
 Once NorFab installed, next step is to create a folder that will 
 hold your environment and start creating inventory files
 with required configurations.

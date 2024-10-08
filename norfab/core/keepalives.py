@@ -80,7 +80,13 @@ class KeepAliver:
                 else:
                     msg = [b"", self.whoami, NFP.KEEPALIVE, self.service]
                 with self.socket_lock:
-                    self.socket.send_multipart(msg)
+                    try:
+                        self.socket.send_multipart(msg)
+                    except Exception as e:
+                        msg = f"{self.name} - failed to send keepalive, trigerring exit event, error '{e}'"
+                        log.error(msg)
+                        self.exit_event.set()
+                        break
                 self.keepalive_at = time.time() + 0.001 * self.keepalive
                 self.keepalives_send += 1
                 log.debug(f"{self.name} - send keepalive '{msg}'")

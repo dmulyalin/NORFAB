@@ -750,4 +750,7 @@ class NFPWorker:
                                 qf.write(f"{entry}\n".encode("utf-8"))
 
         # make sure to clean up
-        self.destroy()
+        self.destroy(
+            f"{self.name} - exit event is set '{self.exit_event.is_set()}', "
+            f"destroy event is set '{self.destroy_event.is_set()}'"
+        )

@@ -1,3 +1,8 @@
+---
+tags:
+  - nfcli
+---
+
 NORFAB comes with interactive command line shell interface called ``nfcli`` 
 which users can invoke to work with the system.
 

@@ -15,16 +15,18 @@ markdown_extensions:
 - toc:
     permalink: "¤"
 plugins:
-- search
-- mkdocstrings:
-    handlers:
-      python:
-        options:
-          show_root_toc_entry: false
-          docstring_section_style: table
-          docstring_style: sphinx
-          members_order: source
-          merge_init_into_class: true
+    - search
+    - tags:
+        tags_file: tags.md
+    - mkdocstrings:
+        handlers:
+          python:
+            options:
+              show_root_toc_entry: false
+              docstring_section_style: table
+              docstring_style: sphinx
+              members_order: source
+              merge_init_into_class: true
 repo_name: dmulyalin/norfab
 repo_url: https://github.com/dmulyalin/norfab
 site_author: Denis Mulyalin
@@ -98,11 +100,11 @@ nav:
             - Netbox UPDATE Device Facts: services_netbox_service_tasks_update_device_facts.md
 - Clients:
     - Clients Overview: clients_overview.md
-    - NORFAB CLI: clients_nfcli_overview.md
-    - Python API: clients_python_api_overview.md
-    - REST API: clients_rest_api_overview.md
-    - ROBOT: clients_robot_client_overview.md
-- Reference:
+    - NORFAB CLI Client: clients_nfcli_overview.md
+    - Python API Client: clients_python_api_overview.md
+    - REST API Client: clients_rest_api_overview.md
+    - ROBOT Client: clients_robot_client_overview.md
+- References:
     - NORFAB Inventory: reference_norfab_inventory.md
     - API Reference:
         - CORE:
@@ -116,8 +118,9 @@ nav:
           - Nornir Worker: api_reference_workers_nornir_worker.md
           - Netbox Worker: api_reference_workers_netbox_worker.md
         - Built-in Clients:
-          - NFCLI Client: api_reference_clients_nfcli_client.md
-          - ROBOT Client: api_reference_clients_robot_client.md
+          - NFCLI Client API: api_reference_clients_nfcli_client.md
+          - ROBOT Client API: api_reference_clients_robot_client.md
     - Architecture:
         - NORFAB Architecture: reference_architecture_norfab.md
         - NORFAB Protocol RFC: reference_architecture_nfp.md 
+- Tags: tags.md

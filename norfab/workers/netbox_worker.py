@@ -205,6 +205,10 @@ class NetboxWorker(NFPWorker):
             "instances"
         ), f"{self.name} - inventory has no Netbox instances"
 
+        # extract parameters
+        self.netbox_connect_timeout = self.inventory.get("netbox_connect_timeout", 10)
+        self.netbox_read_timeout = self.inventory.get("netbox_read_timeout", 300)
+
         # find default instance
         for name, params in self.inventory["instances"].items():
             if params.get("default") is True:
@@ -288,7 +292,7 @@ class NetboxWorker(NFPWorker):
             response = requests.get(
                 f"{params['url']}/api/status",
                 verify=params.get("ssl_verify", True),
-                timeout=(3, 600),
+                timeout=(self.netbox_connect_timeout, self.netbox_read_timeout),
                 headers={
                     "Content-Type": "application/json",
                     "Accept": "application/json",
@@ -418,7 +422,7 @@ class NetboxWorker(NFPWorker):
             },
             data=payload,
             verify=nb_params.get("ssl_verify", True),
-            timeout=(3, 600),
+            timeout=(self.netbox_connect_timeout, self.netbox_read_timeout),
         )
         try:
             req.raise_for_status()
@@ -1097,6 +1101,11 @@ class NetboxWorker(NFPWorker):
             # add netbox data to host's data
             if nbdata is True:
                 host["data"].update(device)
+
+        # return if no hosts found for provided parameters
+        if not hosts:
+            log.warning(f"{self.name} - no viable hosts returned by Netbox")
+            return ret
 
         # add interfaces data
         if interfaces:

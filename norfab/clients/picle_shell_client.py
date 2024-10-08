@@ -246,9 +246,13 @@ def start_picle_shell(
         setattr(picle_shell_client_nornir_service, "NFCLIENT", NFCLIENT)
         setattr(picle_shell_client_netbox_service, "NFCLIENT", NFCLIENT)
 
-        # start PICLE interactive shell
-        shell = App(NorFabShell)
-        shell.start()
+        try:
+            # start PICLE interactive shell
+            shell = App(NorFabShell)
+            shell.start()
 
-        print("Exiting...")
-        nf.destroy()
+            print("\nExiting...")
+            nf.destroy()
+        except KeyboardInterrupt:
+            print("\nInterrupted by user...")
+            nf.destroy()

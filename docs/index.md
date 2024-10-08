@@ -9,7 +9,7 @@
 
 Hi :smile:, thank you for getting here.
 
-NORFAB is a distributed task execution fabric focused on network automations.
+NORFAB is a distributed task execution framework focused on network automations.
 
 ## Why - The Story :book:
 

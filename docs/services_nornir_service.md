@@ -1,3 +1,8 @@
+---
+tags:
+  - nornir
+---
+
 # Nornir Service
 
 Nornir Service is built using [Nornir](https://github.com/nornir-automation/nornir)

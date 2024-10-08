@@ -293,15 +293,15 @@ class NornirWorker(NFPWorker):
             )
             return
 
-        worker, data = nb_inventory_data.popitem()
+        wname, wdata = nb_inventory_data.popitem()
 
         # merge Netbox inventory into Nornir inventory
-        if data and data["result"].get("hosts"):
-            merge_recursively(self.inventory, data["result"])
+        if wdata["failed"] is False and wdata["result"].get("hosts"):
+            merge_recursively(self.inventory, wdata["result"])
         else:
             log.warning(
                 f"{self.name} - '{kwargs.get('instance', 'default')}' Netbox "
-                f"instance returned no hosts data, worker '{worker}'"
+                f"instance returned no hosts data, worker '{wname}'"
             )
 
     def _add_processors(self, nr, kwargs: dict):

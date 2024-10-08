@@ -8,7 +8,7 @@ license = "MIT"
 readme = "README.md"
 homepage = "https://github.com/dmulyalin/norfab"
 repository = "https://github.com/dmulyalin/norfab"
-documentation = "https://norfab.readthedocs.io/"
+documentation = "https://dmulyalin.github.io/NORFAB/"
 keywords = ["Network", "Automation", "DevOps"]
 classifiers = [
     "Topic :: Utilities",

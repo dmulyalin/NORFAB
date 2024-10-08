@@ -1,5 +1,7 @@
 service: netbox
 broker_endpoint: "tcp://127.0.0.1:5555"
+netbox_connect_timeout: 10
+netbox_read_timeout: 300
 instances:
   prod:
     default: True
