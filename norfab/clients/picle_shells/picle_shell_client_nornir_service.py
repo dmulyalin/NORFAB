@@ -782,6 +782,27 @@ class NornirCliShell(filters, TabulateTableModel, NornirCommonArgs, ClientRunJob
     )
 
     @staticmethod
+    def source_commands():
+        broker_files = reply = NFCLIENT.get(
+            "fss.service.broker", "walk", kwargs={"url": "nf://"}
+        )
+        return json.loads(broker_files["results"])
+
+    @staticmethod
+    def source_run_ttp():
+        broker_files = reply = NFCLIENT.get(
+            "fss.service.broker", "walk", kwargs={"url": "nf://"}
+        )
+        return json.loads(broker_files["results"])
+
+    @staticmethod
+    def source_job_data():
+        broker_files = reply = NFCLIENT.get(
+            "fss.service.broker", "walk", kwargs={"url": "nf://"}
+        )
+        return json.loads(broker_files["results"])
+
+    @staticmethod
     @listen_events
     def run(uuid, *args, **kwargs):
         workers = kwargs.pop("workers", "all")
@@ -1012,6 +1033,20 @@ class NornirCfgShell(filters, TabulateTableModel, NornirCommonArgs, ClientRunJob
     )
 
     @staticmethod
+    def source_config():
+        broker_files = reply = NFCLIENT.get(
+            "fss.service.broker", "walk", kwargs={"url": "nf://"}
+        )
+        return json.loads(broker_files["results"])
+
+    @staticmethod
+    def source_job_data():
+        broker_files = reply = NFCLIENT.get(
+            "fss.service.broker", "walk", kwargs={"url": "nf://"}
+        )
+        return json.loads(broker_files["results"])
+
+    @staticmethod
     @listen_events
     def run(uuid, *args, **kwargs):
         workers = kwargs.pop("workers", "all")
@@ -1081,6 +1116,13 @@ class NornirTaskShell(filters, TabulateTableModel, NornirCommonArgs, ClientRunJo
         None,
         description="Nornir task.plugin.name to import or nf://path/to/plugin/file.py",
     )
+
+    @staticmethod
+    def source_plugin():
+        broker_files = reply = NFCLIENT.get(
+            "fss.service.broker", "walk", kwargs={"url": "nf://"}
+        )
+        return json.loads(broker_files["results"])
 
     @staticmethod
     @listen_events
@@ -1172,6 +1214,13 @@ class NornirTestShell(filters, TabulateTableModel, NornirCommonArgs, ClientRunJo
 
     @staticmethod
     def source_suite():
+        broker_files = reply = NFCLIENT.get(
+            "fss.service.broker", "walk", kwargs={"url": "nf://"}
+        )
+        return json.loads(broker_files["results"])
+
+    @staticmethod
+    def source_job_data():
         broker_files = reply = NFCLIENT.get(
             "fss.service.broker", "walk", kwargs={"url": "nf://"}
         )

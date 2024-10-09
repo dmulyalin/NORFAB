@@ -1583,3 +1583,54 @@ class TestNornirParse:
     @pytest.mark.skip(reason="TBD")
     def test_nornir_parse_textfsm_template(self, nfclient):
         pass
+
+
+# ----------------------------------------------------------------------------
+# NORNIR JINJA2 FILTERS
+# ----------------------------------------------------------------------------
+
+
+class TestNornirJinja2Filters:
+    def test_network_hosts(self, nfclient):
+        ret = nfclient.run_job(
+            "nornir",
+            "cli",
+            workers=["nornir-worker-1"],
+            kwargs={
+                "commands": "nf://nf_tests_inventory/cli/test_network_hosts.txt",
+                "cli_dry_run": True,
+            },
+        )
+        pprint.pprint(ret)
+
+        for worker, results in ret.items():
+            assert results["result"], f"{worker} returned no results"
+            assert results["failed"] is False, f"{worker} failed to run the task"
+            for host, res in results["result"].items():
+                assert "192.168.1.1/30" in res["cli_dry_run"][0]
+                assert "192.168.1.2/30" in res["cli_dry_run"][0]
+
+    def test_network_hosts_no_prefixlen(self, nfclient):
+        ret = nfclient.run_job(
+            "nornir",
+            "cli",
+            workers=["nornir-worker-1"],
+            kwargs={
+                "commands": "nf://nf_tests_inventory/cli/test_network_hosts_no_prefixlen.txt",
+                "cli_dry_run": True,
+            },
+        )
+        pprint.pprint(ret)
+
+        for worker, results in ret.items():
+            assert results["result"], f"{worker} returned no results"
+            assert results["failed"] is False, f"{worker} failed to run the task"
+            for host, res in results["result"].items():
+                assert (
+                    "192.168.1.1" in res["cli_dry_run"][0]
+                    and "/" not in res["cli_dry_run"][0]
+                )
+                assert (
+                    "192.168.1.2" in res["cli_dry_run"][0]
+                    and "/" not in res["cli_dry_run"][0]
+                )

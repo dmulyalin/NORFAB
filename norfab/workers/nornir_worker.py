@@ -20,6 +20,7 @@ import time
 import copy
 import os
 import hashlib
+import ipaddress
 
 from jinja2 import Environment, FileSystemLoader
 from norfab.core.worker import NFPWorker, Result, WorkerWatchDog
@@ -441,11 +442,12 @@ class NornirWorker(NFPWorker):
                 filepath = self.fetch_jinja2(template)
                 searchpath, filename = os.path.split(filepath)
                 j2env = Environment(loader=FileSystemLoader(searchpath))
+                j2env.filters.update(filters)  # add custom filters
                 renderer = j2env.get_template(filename)
             else:
                 j2env = Environment(loader="BaseLoader")
+                j2env.filters.update(filters)  # add custom filters
                 renderer = j2env.from_string(template)
-            j2env.filters.update(filters)  # add custom filters
             rendered.append(renderer.render(**context))
 
         return rendered
@@ -464,6 +466,25 @@ class NornirWorker(NFPWorker):
             job_data = yaml.safe_load(job_data)
 
         return job_data
+
+    # ----------------------------------------------------------------------
+    # Nornir Service Jinja2 Filters
+    # ----------------------------------------------------------------------
+
+    def _jinja2_network_hosts(self, network, pfxlen=True):
+        """Return a list of hosts for given network"""
+        ret = []
+        ip_interface = ipaddress.ip_interface(network)
+        prefixlen = ip_interface.network.prefixlen
+        for ip in ip_interface.network.hosts():
+            ret.append(f"{ip}/{prefixlen}" if pfxlen else str(ip))
+        return ret
+
+    def add_jinja2_filters(self):
+        return {
+            "nb_get_next_ip": self.nb_get_next_ip,
+            "network_hosts": self._jinja2_network_hosts,
+        }
 
     # ----------------------------------------------------------------------
     # Nornir Service Functions that exposed for calling
@@ -726,6 +747,7 @@ class NornirWorker(NFPWorker):
                         "nornir": self,
                         "job_data": job_data,
                     },
+                    filters=self.add_jinja2_filters(),
                 )
                 host.data["__task__"] = {"commands": rendered}
 
@@ -832,7 +854,7 @@ class NornirWorker(NFPWorker):
                     "nornir": self,
                     "job_data": job_data,
                 },
-                filters={"nb_get_next_ip": self.nb_get_next_ip},
+                filters=self.add_jinja2_filters(),
             )
             host.data["__task__"] = {"config": rendered}
 
@@ -887,7 +909,6 @@ class NornirWorker(NFPWorker):
             to pass on to Jinja2 rendering context
         :param kwargs: any additional arguments to pass on to Nornir service task
         """
-        downloaded_suite = None
         tests = {}  # dictionary to hold per-host test suites
         add_details = kwargs.get("add_details", False)  # ResultSerializer
         to_dict = kwargs.get("to_dict", True)  # ResultSerializer
@@ -909,26 +930,24 @@ class NornirWorker(NFPWorker):
                 ret.result = {"test_results": [], "suite": {}}
             return ret
 
-        # download tests suite
-        downloaded_suite = self.fetch_jinja2(suite)
-
         # download job data
         job_data = self.load_job_data(job_data)
 
         # generate per-host test suites
-        searchpath, template = os.path.split(downloaded_suite)
         for host_name, host in filtered_nornir.inventory.hosts.items():
-            context = {
-                "host": host,
-                "norfab": self.client,
-                "nornir": self,
-                "job_data": job_data,
-            }
             # render suite using Jinja2
             try:
-                j2env = Environment(loader=FileSystemLoader(searchpath))
-                renderer = j2env.get_template(template)
-                rendered_suite = renderer.render(**context)
+                rendered_suite = self.render_jinja2_templates(
+                    templates=[suite],
+                    context={
+                        "host": host,
+                        "norfab": self.client,
+                        "nornir": self,
+                        "job_data": job_data,
+                    },
+                    filters=self.add_jinja2_filters(),
+                )
+                rendered_suite = rendered_suite[0]
             except Exception as e:
                 msg = f"{self.name} - '{suite}' Jinja2 rendering failed: '{e}'"
                 raise RuntimeError(msg)
@@ -971,7 +990,7 @@ class NornirWorker(NFPWorker):
             ret.result = ResultSerializer(
                 result, to_dict=to_dict, add_details=add_details
             )
-        # combine per-host tests in suites based on task task and arguments
+        # combine per-host tests in suites based on task and arguments
         # Why - to run tests using any nornir service tasks with various arguments
         else:
             for host_name, host_tests in tests.items():

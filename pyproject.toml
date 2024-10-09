@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "norfab"
-version = "0.2.0-alpha.0"
+version = "0.0.0-alpha.0"
 description = "Network Automations Fabric (NorFab) - module for communication networks automations"
 authors = ["Denis Mulyalin <d.mulyalin@gmail.com>"]
 maintainers = ["Denis Mulyalin <d.mulyalin@gmail.com>"]

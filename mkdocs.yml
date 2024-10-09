@@ -86,6 +86,7 @@ nav:
             - Nornir Test: services_nornir_service_tasks_test.md
             - Nornir Network: services_nornir_service_tasks_network.md
             - Nornir Parse: services_nornir_service_tasks_parse.md
+        - Jina2 Filters: services_nornir_service_jinja2_filters.md
     - Netbox Service: 
         - Overview: services_netbox_service.md
         - Tasks: 

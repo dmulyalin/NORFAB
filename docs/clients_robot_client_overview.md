@@ -33,7 +33,7 @@ This ROBOT framework test suite runs two tests using ``nr.test``:
 
 ``` yaml title="/path/to/robot_suite.robot"
 *** Settings ***
-Library    norfab.NorFabRobot
+Library    norfab.clients.robot_client.NorFabRobot
 
 *** Test Cases ***
 Test NTP

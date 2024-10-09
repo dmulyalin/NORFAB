@@ -82,6 +82,9 @@ class NorFab:
         self.inventory = NorFabInventory(inventory)
         self.log_level = log_level
         self.broker_endpoint = self.inventory.get("broker", {}).get("endpoint")
+        self.workers_init_timeout = self.inventory.topology.get(
+            "workers_init_timeout", 300
+        )
         self.broker_exit_event = Event()
         self.workers_exit_event = Event()
         self.clients_exit_event = Event()
@@ -196,6 +199,18 @@ class NorFab:
 
             time.sleep(0.01)
 
+        # wait for workers to initialize
+        start_time = time.time()
+        while self.workers_init_timeout > time.time() - start_time:
+            if all(w["init_done"].is_set() for w in self.workers_processes.values()):
+                break
+        else:
+            log.error(
+                f"TimeoutError - {self.workers_init_timeout}s "
+                f"workers init timeout expired"
+            )
+            self.destroy()
+
         # make the API client
         self.make_client()
 
@@ -205,7 +220,8 @@ class NorFab:
         """
         # stop client
         self.clients_exit_event.set()
-        self.client.destroy()
+        if self.client:
+            self.client.destroy()
         # stop workers
         self.workers_exit_event.set()
         while self.workers_processes:
