@@ -91,10 +91,10 @@ nfcli = 'norfab.utils:nfcli'
 
 [tool.poetry.extras]
 nfcli = [
-	"picle",
+    "picle",
     "rich",
     "tabulate",
-	"pydantic",
+    "pydantic",
 ]
 nornirservice = [
     "nornir",
@@ -124,21 +124,21 @@ nornirservice = [
     "N2G",
     "dnspython",
     "pythonping",
-	"tabulate",
-	"pydantic",
+    "tabulate",
+    "pydantic",
 ]
 netboxservice = [
-	"requests",
-	"pynetbox",
+    "requests",
+    "pynetbox",
 ]
 robot = [
     "robot"
 ]
 full = [
-	"picle",
+    "picle",
     "rich",
     "tabulate",
-	"pydantic",
+    "pydantic",
     "nornir",
     "nornir-salt",
     "cerberus",
@@ -166,9 +166,9 @@ full = [
     "N2G",
     "dnspython",
     "pythonping",
-	"tabulate",
-	"pydantic",
-	"requests",
-	"pynetbox",
-	"robotframework",
+    "tabulate",
+    "pydantic",
+    "requests",
+    "pynetbox",
+    "robotframework",
 ]

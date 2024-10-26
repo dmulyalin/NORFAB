@@ -239,7 +239,7 @@ def start_picle_shell(
     # initiate NorFab
     nf = NorFab(inventory=inventory, log_level=log_level)
     nf.start(start_broker=start_broker, workers=workers)
-    NFCLIENT = nf.client
+    NFCLIENT = nf.make_client()
 
     if NFCLIENT is not None:
         # inject NFCLINET to imported models global space

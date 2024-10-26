@@ -12,5 +12,5 @@ def nfclient():
     nf = NorFab(inventory="./nf_tests_inventory/inventory.yaml")
     nf.start()
     time.sleep(3)  # wait for workers to start
-    yield nf.client  # return nf client
+    yield nf.make_client()  # return nf client
     nf.destroy()  # teardown

@@ -907,6 +907,7 @@ class NetboxWorker(NFPWorker):
         devices: list,
         instance: str = None,
         dry_run: bool = False,
+        cid: list = None,
     ):
         """
         Function to retrieve device circuits data from Netbox using GraphQL API.
@@ -914,6 +915,7 @@ class NetboxWorker(NFPWorker):
         :param devices: list of devices to retrieve interface for
         :param instance: Netbox instance name
         :param dry_run: only return query content, do not run it
+        :param cid: list of circuit identifiers to retrieve data for
         :return: dictionary keyed by device name with circuits data
         """
         # form final result object
@@ -953,6 +955,9 @@ class NetboxWorker(NFPWorker):
         # retrieve all circuits for devices' sites
         if self.nb_version[0] == 4:
             circuits_filters_dict = {"site": sites}
+            if cid:
+                cid_list = '["{cl}"]'.format(cl='", "'.join(cid))
+                circuits_filters_dict["cid"] = f"{{in_list: {cid_list}}}"
         elif self.nb_version[0] == 3:
             circuits_filters_dict = {"site": sites}
 

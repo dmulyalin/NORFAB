@@ -1,0 +1,4 @@
+{% set hosts = "192.168.1.0/30" | network_hosts(pfxlen=True) %}
+{% for host in hosts %}
+{{ host }}
+{% endfor %}

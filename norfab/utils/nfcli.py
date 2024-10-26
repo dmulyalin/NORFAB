@@ -3,6 +3,7 @@ import logging
 import os
 
 from norfab.clients.picle_shell_client import start_picle_shell
+from norfab.core.nfapi import NorFab
 
 # setup logging
 LOG_DIR = os.path.join(os.getcwd(), "__norfab__", "logs")
@@ -47,21 +48,28 @@ def nfcli():
         help="OS Path to YAML file with NORFAB inventory data",
     )
     run_options.add_argument(
-        "-w",
-        "--workers",
-        action="store",
-        dest="WORKERS",
-        default=None,
-        type=str,
-        help="Comma separated list of worker names to start processes for",
-    )
-    run_options.add_argument(
         "-b",
         "--broker",
         action="store_true",
         dest="BROKER",
         default=None,
         help="Start NorFab broker process",
+    )
+    run_options.add_argument(
+        "-w",
+        "--workers",
+        action="store_true",
+        dest="WORKERS",
+        default=None,
+        help="Start NorFab worker processes as defined in inventory file",
+    )
+    run_options.add_argument(
+        "-c",
+        "--client",
+        action="store_true",
+        dest="CLIENT",
+        default=False,
+        help="Start NorFab interactive shell client",
     )
     run_options.add_argument(
         "-l",
@@ -77,7 +85,7 @@ def nfcli():
         action="store_true",
         dest="SHELL",
         default=True,
-        help="Start NorFab interactive shell",
+        help="Start local NorFab broker, workers and client interactive shell",
     )
     # extract argparser arguments:
     args = argparser.parse_args()
@@ -87,17 +95,33 @@ def nfcli():
     BROKER = args.BROKER
     LOGLEVEL = args.LOGLEVEL
     SHELL = args.SHELL
+    CLIENT = args.CLIENT
 
     log.setLevel(LOGLEVEL.upper())
 
-    if WORKERS is not None:
-        WORKERS = [i.strip() for i in args.WORKERS.split(",")]
-
-    # start interactive shell
-    if SHELL:
+    # start broker only
+    if BROKER:
+        nf = NorFab(inventory=INVENTORY, log_level=LOGLEVEL)
+        nf.start(start_broker=True, workers=False)
+        nf.run()
+    # start workers only
+    elif WORKERS:
+        nf = NorFab(inventory=INVENTORY, log_level=LOGLEVEL)
+        nf.start(start_broker=False, workers=True)
+        nf.run()
+    # start interactive client shell only
+    elif CLIENT:
         start_picle_shell(
             inventory=INVENTORY,
-            workers=WORKERS,
-            start_broker=BROKER,
+            workers=False,
+            start_broker=False,
+            log_level=LOGLEVEL,
+        )
+    # start interactive shell with broker and all workers
+    elif SHELL:
+        start_picle_shell(
+            inventory=INVENTORY,
+            workers=True,
+            start_broker=True,
             log_level=LOGLEVEL,
         )

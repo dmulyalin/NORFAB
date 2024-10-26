@@ -1313,6 +1313,23 @@ class TestGetCircuits:
                             ]
                         ), f"{worker}:{device}:{cid} not all circuit data returned"
 
+    def test_get_circuits_by_cid(self, nfclient):
+        ret = nfclient.run_job(
+            b"netbox",
+            "get_circuits",
+            workers="any",
+            kwargs={"devices": ["fceos4", "fceos5"], "cid": ["CID1"]},
+        )
+        pprint.pprint(ret, width=200)
+        for worker, res in ret.items():
+            assert "fceos5" in res["result"], f"{worker} returned no results for fceos5"
+            assert "fceos4" in res["result"], f"{worker} returned no results for fceos4"
+            for device, device_data in res["result"].items():
+                for cid, cid_data in device_data.items():
+                    assert (
+                        cid == "CID1"
+                    ), f"{worker}:{device}:{cid} wrong circuit returned, was expecting 'CID1' only"
+
 
 class TestPushDeviceFacts:
     def test_push_device_fact_via_nornir(self, nfclient):

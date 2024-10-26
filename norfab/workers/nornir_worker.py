@@ -471,7 +471,7 @@ class NornirWorker(NFPWorker):
     # Nornir Service Jinja2 Filters
     # ----------------------------------------------------------------------
 
-    def _jinja2_network_hosts(self, network, pfxlen=True):
+    def _jinja2_network_hosts(self, network, pfxlen=False):
         """Return a list of hosts for given network"""
         ret = []
         ip_interface = ipaddress.ip_interface(network)

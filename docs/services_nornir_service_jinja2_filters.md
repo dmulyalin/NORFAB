@@ -1,3 +1,8 @@
+---
+tags:
+  - nornir
+---
+
 # Nornir Service Jinja2 Filters
 
 Below listed additional Jinja2 filters that supported by 
