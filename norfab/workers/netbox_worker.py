@@ -1168,6 +1168,7 @@ class NetboxWorker(NFPWorker):
         dry_run: bool = False,
         via: str = "nornir",
         timeout: int = 60,
+        devices: list = None,
         **kwargs,
     ):
         """
@@ -1176,7 +1177,6 @@ class NetboxWorker(NFPWorker):
 
         - serial number
         - software version
-        -
 
         :param instance: Netbox instance name
         :param dry_run: return information that would be pushed to Netbox but do not push it
@@ -1189,6 +1189,8 @@ class NetboxWorker(NFPWorker):
         nb = self._get_pynetbox(instance)
 
         if via == "nornir":
+            if devices:
+                kwargs["FL"] = devices
             data = self.client.run_job(
                 "nornir",
                 "parse",
@@ -1202,12 +1204,17 @@ class NetboxWorker(NFPWorker):
                     nb_device = nb.dcim.devices.get(name=host)
                     if not nb_device:
                         raise Exception(f"'{host}' does not exist in Netbox")
+                    # update serial number
                     nb_device.serial = facts["serial_number"]
+                    # update OS version details
                     if "OS Version" not in nb_device.comments:
                         nb_device.comments += f"\nOS Version: {facts['os_version']}"
-                    nb_device.save()
+                    if dry_run is not True:
+                        nb_device.save()
                     result[host] = {
-                        "update_device_facts": {
+                        "update_device_facts_dry_run"
+                        if dry_run
+                        else "update_device_facts": {
                             "serial": facts["serial_number"],
                             "os_version": facts["os_version"],
                         }

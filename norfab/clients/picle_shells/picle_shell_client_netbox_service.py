@@ -23,6 +23,7 @@ from pydantic import (
 )
 from typing import Union, Optional, List, Any, Dict, Callable, Tuple
 from .common import ClientRunJobArgs, log_error_or_result
+from .picle_shell_client_nornir_service import NornirCommonArgs, NorniHostsFilters
 
 NFCLIENT = None  # NFCLIENT updated by parent shell
 RICHCONSOLE = Console()
@@ -35,7 +36,7 @@ log = logging.getLogger(__name__)
 # ---------------------------------------------------------------------------------------------
 
 
-class Targeting(BaseModel):
+class NetboxTargeting(BaseModel):
     instance: Optional[StrictStr] = Field(
         None,
         description="Netbox instance name to target",
@@ -63,7 +64,7 @@ class Targeting(BaseModel):
 # ---------------------------------------------------------------------------------------------
 
 
-class GrapQLCommands(Targeting, ClientRunJobArgs):
+class GrapQLCommands(NetboxTargeting, ClientRunJobArgs):
     dry_run: Optional[StrictBool] = Field(
         None,
         description="Only return query content, do not run it",
@@ -89,6 +90,9 @@ class GrapQLCommands(Targeting, ClientRunJobArgs):
         None,
         description="Complete GraphQL query string to send as is",
     )
+    workers: Union[StrictStr, List[StrictStr]] = Field(
+        "any", description="Filter worker to target"
+    )
 
     @staticmethod
     def run(*args, **kwargs):
@@ -110,7 +114,7 @@ class GrapQLCommands(Targeting, ClientRunJobArgs):
 # ---------------------------------------------------------------------------------------------
 
 
-class NetboxShowCommandsModel(Targeting):
+class NetboxShowCommandsModel(NetboxTargeting, ClientRunJobArgs):
     inventory: Callable = Field(
         "get_netbox_inventory",
         description="show Netbox inventory data",
@@ -126,6 +130,9 @@ class NetboxShowCommandsModel(Targeting):
     compatibility: Callable = Field(
         "get_compatibility",
         description="show Netbox compatibility",
+    )
+    workers: Union[StrictStr, List[StrictStr]] = Field(
+        "any", description="Filter worker to target"
     )
 
     class PicleConfig:
@@ -170,7 +177,7 @@ class NetboxShowCommandsModel(Targeting):
 # ---------------------------------------------------------------------------------------------
 
 
-class GetInterfaces(Targeting, ClientRunJobArgs):
+class GetInterfaces(NetboxTargeting, ClientRunJobArgs):
     devices: Union[StrictStr, List] = Field(
         ..., description="Devices to retrieve interface for"
     )
@@ -189,15 +196,24 @@ class GetInterfaces(Targeting, ClientRunJobArgs):
         description="Only return query content, do not run it",
         json_schema_extra={"presence": True},
     )
+    workers: Union[StrictStr, List[StrictStr]] = Field(
+        "any", description="Filter worker to target"
+    )
 
     @staticmethod
     def run(*args, **kwargs):
         workers = kwargs.pop("workers", "any")
+        timeout = kwargs.pop("timeout", 600)
         if isinstance(kwargs["devices"], str):
             kwargs["devices"] = [kwargs["devices"]]
         with RICHCONSOLE.status("[bold green]Running query", spinner="dots") as status:
             result = NFCLIENT.run_job(
-                "netbox", "get_interfaces", workers=workers, args=args, kwargs=kwargs
+                "netbox",
+                "get_interfaces",
+                workers=workers,
+                args=args,
+                kwargs=kwargs,
+                timeout=timeout,
             )
         result = log_error_or_result(result)
         return result
@@ -220,6 +236,85 @@ class GetCommands(BaseModel):
 
 
 # ---------------------------------------------------------------------------------------------
+# NETBOX SERVICE UPDATE SHELL MODEL
+# ---------------------------------------------------------------------------------------------
+
+
+class UpdateViaNornirServiceCommands(NorniHostsFilters, NornirCommonArgs):
+    @staticmethod
+    def run(*args, **kwargs):
+        kwargs["via"] = "nornir"
+        return UpdateDeviceCommands.run(*args, **kwargs)
+
+    class PicleConfig:
+        outputter = Outputters.outputter_rich_json
+
+
+class UpdateViaServices(BaseModel):
+    nornir: UpdateViaNornirServiceCommands = Field(
+        None,
+        description="Use Nornir service to retrieve data from devices",
+    )
+
+
+class UpdateDeviceCommands(NetboxTargeting, ClientRunJobArgs):
+    via: UpdateViaServices = Field(
+        None,
+        description="Service to use to retrieve device data",
+    )
+    dry_run: Optional[StrictBool] = Field(
+        None,
+        description="Return information that would be pushed to Netbox but do not push it",
+        json_schema_extra={"presence": True},
+    )
+    facts: StrictBool = Field(
+        None,
+        description="Update device serial, OS version",
+        json_schema_extra={"presence": True},
+    )
+    devices: Union[List[StrictStr], StrictStr] = Field(
+        None,
+        description="Devices to update",
+    )
+    workers: Union[StrictStr, List[StrictStr]] = Field(
+        "any", description="Filter worker to target"
+    )
+
+    @staticmethod
+    def run(**kwargs):
+        workers = kwargs.pop("workers", "any")
+        timeout = kwargs.pop("timeout", 600)
+        facts = kwargs.pop("facts", False)
+
+        if facts:
+            with RICHCONSOLE.status(
+                "[bold green]Updating devices facts", spinner="dots"
+            ) as status:
+                result = NFCLIENT.run_job(
+                    "netbox",
+                    "update_device_facts",
+                    workers=workers,
+                    kwargs=kwargs,
+                    timeout=timeout,
+                )
+
+            result = log_error_or_result(result)
+
+            return result
+
+    class PicleConfig:
+        outputter = Outputters.outputter_rich_json
+
+
+class UpdateComands(BaseModel):
+    device: UpdateDeviceCommands = Field(None, description="Update device data")
+
+    class PicleConfig:
+        subshell = True
+        prompt = "nf[netbox-update]#"
+
+
+# ---------------------------------------------------------------------------------------------
 # NETBOX SERVICE MAIN SHELL MODEL
 # ---------------------------------------------------------------------------------------------
 
@@ -230,6 +325,7 @@ class NetboxServiceCommands(BaseModel):
     )
     graphql: GrapQLCommands = Field(None, description="Query Netbox GrapQL API")
     get: GetCommands = Field(None, description="Query data from Netbox")
+    update: UpdateComands = Field(None, description="Update Netbox data")
 
     # rest
     # get devices

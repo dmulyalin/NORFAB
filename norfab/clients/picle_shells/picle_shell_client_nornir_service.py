@@ -312,7 +312,7 @@ class TabulateTableModel(BaseModel):
         return ["brief", "terse", "extend", "True"]
 
 
-class filters(BaseModel):
+class NorniHostsFilters(BaseModel):
     """
     Model to list common filter arguments for FFun function
     """
@@ -381,7 +381,7 @@ class filters(BaseModel):
 
     @staticmethod
     def source_FL():
-        return filters.source_hosts()
+        return NorniHostsFilters.source_hosts()
 
     @staticmethod
     def get_nornir_hosts(**kwargs):
@@ -411,7 +411,7 @@ class filters(BaseModel):
 # ---------------------------------------------------------------------------------------------
 
 
-class NornirShowHostsModel(filters, TabulateTableModel):
+class NornirShowHostsModel(NorniHostsFilters, TabulateTableModel):
     details: Optional[StrictBool] = Field(
         None, description="show hosts details", presence=True
     )
@@ -430,7 +430,7 @@ class NornirShowHostsModel(filters, TabulateTableModel):
         reverse = kwargs.pop("reverse", False)  # tabulate
 
         # run task
-        result = filters.get_nornir_hosts(**kwargs)
+        result = NorniHostsFilters.get_nornir_hosts(**kwargs)
 
         # form table results
         if table:
@@ -463,7 +463,7 @@ class NornirShowHostsModel(filters, TabulateTableModel):
         return ret
 
 
-class ShowWatchDogModel(filters):
+class ShowWatchDogModel(NorniHostsFilters):
     statistics: Callable = Field(
         "get_watchdog_stats",
         description="show Nornir watchdog statistics",
@@ -501,7 +501,7 @@ class ShowWatchDogModel(filters):
         return log_error_or_result(result)
 
 
-class NornirShowInventoryModel(filters, ClientRunJobArgs):
+class NornirShowInventoryModel(NorniHostsFilters, ClientRunJobArgs):
     class PicleConfig:
         outputter = Outputters.outputter_rich_json
         pipe = PipeFunctionsModel
@@ -766,7 +766,9 @@ class NrCliPlugins(BaseModel):
     )
 
 
-class NornirCliShell(filters, TabulateTableModel, NornirCommonArgs, ClientRunJobArgs):
+class NornirCliShell(
+    NorniHostsFilters, TabulateTableModel, NornirCommonArgs, ClientRunJobArgs
+):
     commands: Optional[Union[StrictStr, List[StrictStr]]] = Field(
         None,
         description="List of commands to collect form devices",
@@ -1021,7 +1023,9 @@ class NrCfgPlugins(BaseModel):
     )
 
 
-class NornirCfgShell(filters, TabulateTableModel, NornirCommonArgs, ClientRunJobArgs):
+class NornirCfgShell(
+    NorniHostsFilters, TabulateTableModel, NornirCommonArgs, ClientRunJobArgs
+):
     cfg_dry_run: Optional[StrictBool] = Field(
         None, description="Dry run cfg function", json_schema_extra={"presence": True}
     )
@@ -1114,7 +1118,9 @@ class NornirCfgShell(filters, TabulateTableModel, NornirCommonArgs, ClientRunJob
 # ---------------------------------------------------------------------------------------------
 
 
-class NornirTaskShell(filters, TabulateTableModel, NornirCommonArgs, ClientRunJobArgs):
+class NornirTaskShell(
+    NorniHostsFilters, TabulateTableModel, NornirCommonArgs, ClientRunJobArgs
+):
     plugin: StrictStr = Field(
         None,
         description="Nornir task.plugin.name to import or nf://path/to/plugin/file.py",
@@ -1190,7 +1196,9 @@ class NornirTaskShell(filters, TabulateTableModel, NornirCommonArgs, ClientRunJo
 # ---------------------------------------------------------------------------------------------
 
 
-class NornirTestShell(filters, TabulateTableModel, NornirCommonArgs, ClientRunJobArgs):
+class NornirTestShell(
+    NorniHostsFilters, TabulateTableModel, NornirCommonArgs, ClientRunJobArgs
+):
     suite: StrictStr = Field(None, description="Nornir suite nf://path/to/file.py")
     dry_run: Optional[StrictBool] = Field(
         None,
@@ -1293,7 +1301,7 @@ class NornirTestShell(filters, TabulateTableModel, NornirCommonArgs, ClientRunJo
 
 
 class NornirNetworkPing(
-    filters, TabulateTableModel, NornirCommonArgs, ClientRunJobArgs
+    NorniHostsFilters, TabulateTableModel, NornirCommonArgs, ClientRunJobArgs
 ):
     use_host_name: StrictBool = Field(
         None,
@@ -1388,7 +1396,9 @@ class NornirNetworkPing(
         return ret
 
 
-class NornirNetworkDns(filters, TabulateTableModel, NornirCommonArgs, ClientRunJobArgs):
+class NornirNetworkDns(
+    NorniHostsFilters, TabulateTableModel, NornirCommonArgs, ClientRunJobArgs
+):
     use_host_name: StrictBool = Field(
         None,
         description="Ping host's name instead of host's hostname",
@@ -1514,7 +1524,7 @@ class NapalmGettersEnum(str, Enum):
     traceroute = "traceroute"
 
 
-class NapalmGettersModel(filters, NornirCommonArgs, ClientRunJobArgs):
+class NapalmGettersModel(NorniHostsFilters, NornirCommonArgs, ClientRunJobArgs):
     getters: NapalmGettersEnum = Field(None, description="Select NAPALM getters")
 
     @staticmethod
@@ -1545,7 +1555,7 @@ class NapalmGettersModel(filters, NornirCommonArgs, ClientRunJobArgs):
         outputter = print_nornir_results
 
 
-class TTPParseModel(filters, NornirCommonArgs, ClientRunJobArgs):
+class TTPParseModel(NorniHostsFilters, NornirCommonArgs, ClientRunJobArgs):
     template: StrictStr = Field(
         None, description="TTP Template to parse commands output"
     )
