@@ -1185,7 +1185,7 @@ class NetboxWorker(NFPWorker):
         :param kwargs: any additional arguments to send to service for device data retrieval
         """
         result = {}
-        ret = Result(task=f"{self.name}:push_device_facts", result=result)
+        ret = Result(task=f"{self.name}:update_device_facts", result=result)
         nb = self._get_pynetbox(instance)
 
         if via == "nornir":
@@ -1219,6 +1219,97 @@ class NetboxWorker(NFPWorker):
                             "os_version": facts["os_version"],
                         }
                     }
+        else:
+            raise UnsupportedServiceError(f"'{via}' service not supported")
+
+        return ret
+
+    def update_device_interfaces(
+        self,
+        instance: str = None,
+        dry_run: bool = False,
+        via: str = "nornir",
+        timeout: int = 60,
+        devices: list = None,
+        create: bool = True,
+        **kwargs,
+    ):
+        """
+        Function to update device interfaces in Netbox using information
+        provided by NAPALM get_interfaces getter:
+
+        - interface names
+        - interface description
+        - mtu
+        - mac address
+        - admin status
+        - speed
+
+        :param instance: Netbox instance name
+        :param dry_run: return information that would be pushed to Netbox but do not push it
+        :param via: service name to use to retrieve devices' data, default is nornir parse task
+        :param timeout: seconds to wait before timeout data retrieval job
+        :param create: create missing interfaces
+        :param kwargs: any additional arguments to send to service for device data retrieval
+        """
+        result = {}
+        ret = Result(task=f"{self.name}:update_device_interfaces", result=result)
+        nb = self._get_pynetbox(instance)
+
+        if via == "nornir":
+            if devices:
+                kwargs["FL"] = devices
+            kwargs["getters"] = "get_interfaces"
+            data = self.client.run_job(
+                "nornir",
+                "parse",
+                kwargs=kwargs,
+                workers="all",
+                timeout=timeout,
+            )
+            for worker, results in data.items():
+                for host, host_data in results["result"].items():
+                    updated = {}
+                    result[host] = {
+                        "update_device_interfaces_dry_run"
+                        if dry_run
+                        else "update_device_interfaces": updated
+                    }
+                    interfaces = host_data["napalm_get"]["get_interfaces"]
+                    nb_device = nb.dcim.devices.get(name=host)
+                    if not nb_device:
+                        raise Exception(f"'{host}' does not exist in Netbox")
+                    nb_interfaces = nb.dcim.interfaces.filter(device_id=nb_device.id)
+                    # update existing interfaces
+                    for nb_interface in nb_interfaces:
+                        if nb_interface.name not in interfaces:
+                            continue
+                        interface = interfaces.pop(nb_interface.name)
+                        nb_interface.description = interface["description"]
+                        nb_interface.mtu = interface["mtu"]
+                        nb_interface.speed = interface["speed"] * 1000
+                        nb_interface.mac_address = interface["mac_address"]
+                        nb_interface.enabled = interface["is_enabled"]
+                        if dry_run is not True:
+                            nb_interface.save()
+                        updated[nb_interface.name] = interface
+                    # create new interfaces
+                    if create is not True:
+                        continue
+                    for interface_name, interface in interfaces.items():
+                        nb_interface = nb.dcim.interfaces.create(
+                            name=interface_name,
+                            device={"name": nb_device.name},
+                            type="other",
+                        )
+                        nb_interface.description = interface["description"]
+                        nb_interface.mtu = interface["mtu"]
+                        nb_interface.speed = interface["speed"] * 1000
+                        nb_interface.mac_address = interface["mac_address"]
+                        nb_interface.enabled = interface["is_enabled"]
+                        if dry_run is not True:
+                            nb_interface.save()
+                        updated[interface_name] = interface
         else:
             raise UnsupportedServiceError(f"'{via}' service not supported")
 

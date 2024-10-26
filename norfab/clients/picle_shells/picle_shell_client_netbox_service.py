@@ -244,7 +244,7 @@ class UpdateViaNornirServiceCommands(NorniHostsFilters, NornirCommonArgs):
     @staticmethod
     def run(*args, **kwargs):
         kwargs["via"] = "nornir"
-        return UpdateDeviceCommands.run(*args, **kwargs)
+        return UpdateDeviceFactsCommand.run(*args, **kwargs)
 
     class PicleConfig:
         outputter = Outputters.outputter_rich_json
@@ -257,7 +257,7 @@ class UpdateViaServices(BaseModel):
     )
 
 
-class UpdateDeviceCommands(NetboxTargeting, ClientRunJobArgs):
+class UpdateDeviceFactsCommand(NetboxTargeting, ClientRunJobArgs):
     via: UpdateViaServices = Field(
         None,
         description="Service to use to retrieve device data",
@@ -265,11 +265,6 @@ class UpdateDeviceCommands(NetboxTargeting, ClientRunJobArgs):
     dry_run: Optional[StrictBool] = Field(
         None,
         description="Return information that would be pushed to Netbox but do not push it",
-        json_schema_extra={"presence": True},
-    )
-    facts: StrictBool = Field(
-        None,
-        description="Update device serial, OS version",
         json_schema_extra={"presence": True},
     )
     devices: Union[List[StrictStr], StrictStr] = Field(
@@ -284,26 +279,75 @@ class UpdateDeviceCommands(NetboxTargeting, ClientRunJobArgs):
     def run(**kwargs):
         workers = kwargs.pop("workers", "any")
         timeout = kwargs.pop("timeout", 600)
-        facts = kwargs.pop("facts", False)
+        kwargs["timeout"] = timeout * 0.9
 
-        if facts:
-            with RICHCONSOLE.status(
-                "[bold green]Updating devices facts", spinner="dots"
-            ) as status:
-                result = NFCLIENT.run_job(
-                    "netbox",
-                    "update_device_facts",
-                    workers=workers,
-                    kwargs=kwargs,
-                    timeout=timeout,
-                )
+        with RICHCONSOLE.status(
+            "[bold green]Updating devices facts", spinner="dots"
+        ) as status:
+            result = NFCLIENT.run_job(
+                "netbox",
+                "update_device_facts",
+                workers=workers,
+                kwargs=kwargs,
+                timeout=timeout,
+            )
 
-            result = log_error_or_result(result)
+        result = log_error_or_result(result)
 
-            return result
+        return result
 
     class PicleConfig:
         outputter = Outputters.outputter_rich_json
+
+
+class UpdateDeviceInterfacesCommand(NetboxTargeting, ClientRunJobArgs):
+    dry_run: Optional[StrictBool] = Field(
+        None,
+        description="Return information that would be pushed to Netbox but do not push it",
+        json_schema_extra={"presence": True},
+    )
+    devices: Union[List[StrictStr], StrictStr] = Field(
+        None,
+        description="Devices to update",
+    )
+    workers: Union[StrictStr, List[StrictStr]] = Field(
+        "any", description="Filter worker to target"
+    )
+
+    @staticmethod
+    def run(**kwargs):
+        workers = kwargs.pop("workers", "any")
+        timeout = kwargs.pop("timeout", 600)
+        kwargs["timeout"] = timeout * 0.9
+
+        with RICHCONSOLE.status(
+            "[bold green]Updating devices interfaces", spinner="dots"
+        ) as status:
+            result = NFCLIENT.run_job(
+                "netbox",
+                "update_device_interfaces",
+                workers=workers,
+                kwargs=kwargs,
+                timeout=timeout,
+            )
+
+        result = log_error_or_result(result)
+
+        return result
+
+    class PicleConfig:
+        outputter = Outputters.outputter_rich_json
+
+
+class UpdateDeviceCommands(BaseModel):
+    facts: UpdateDeviceFactsCommand = Field(
+        None,
+        description="Update device serial, OS version",
+    )
+    interfaces: UpdateDeviceInterfacesCommand = Field(
+        None,
+        description="Update device interfaces",
+    )
 
 
 class UpdateComands(BaseModel):
