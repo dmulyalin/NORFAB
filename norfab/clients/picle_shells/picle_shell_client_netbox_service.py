@@ -22,7 +22,7 @@ from pydantic import (
     Field,
 )
 from typing import Union, Optional, List, Any, Dict, Callable, Tuple
-from .common import ClientRunJobArgs, log_error_or_result
+from .common import ClientRunJobArgs, log_error_or_result, listen_events
 from .picle_shell_client_nornir_service import NornirCommonArgs, NorniHostsFilters
 
 NFCLIENT = None  # NFCLIENT updated by parent shell
@@ -36,10 +36,13 @@ log = logging.getLogger(__name__)
 # ---------------------------------------------------------------------------------------------
 
 
-class NetboxTargeting(BaseModel):
+class NetboxCommonArgs(BaseModel):
     instance: Optional[StrictStr] = Field(
         None,
         description="Netbox instance name to target",
+    )
+    workers: Union[StrictStr, List[StrictStr]] = Field(
+        "any", description="Filter workers to target"
     )
 
     @staticmethod
@@ -64,7 +67,7 @@ class NetboxTargeting(BaseModel):
 # ---------------------------------------------------------------------------------------------
 
 
-class GrapQLCommands(NetboxTargeting, ClientRunJobArgs):
+class GrapQLCommands(ClientRunJobArgs, NetboxCommonArgs):
     dry_run: Optional[StrictBool] = Field(
         None,
         description="Only return query content, do not run it",
@@ -90,9 +93,6 @@ class GrapQLCommands(NetboxTargeting, ClientRunJobArgs):
         None,
         description="Complete GraphQL query string to send as is",
     )
-    workers: Union[StrictStr, List[StrictStr]] = Field(
-        "any", description="Filter worker to target"
-    )
 
     @staticmethod
     def run(*args, **kwargs):
@@ -114,7 +114,7 @@ class GrapQLCommands(NetboxTargeting, ClientRunJobArgs):
 # ---------------------------------------------------------------------------------------------
 
 
-class NetboxShowCommandsModel(NetboxTargeting, ClientRunJobArgs):
+class NetboxShowCommandsModel(ClientRunJobArgs, NetboxCommonArgs):
     inventory: Callable = Field(
         "get_netbox_inventory",
         description="show Netbox inventory data",
@@ -130,9 +130,6 @@ class NetboxShowCommandsModel(NetboxTargeting, ClientRunJobArgs):
     compatibility: Callable = Field(
         "get_compatibility",
         description="show Netbox compatibility",
-    )
-    workers: Union[StrictStr, List[StrictStr]] = Field(
-        "any", description="Filter worker to target"
     )
 
     class PicleConfig:
@@ -177,7 +174,7 @@ class NetboxShowCommandsModel(NetboxTargeting, ClientRunJobArgs):
 # ---------------------------------------------------------------------------------------------
 
 
-class GetInterfaces(NetboxTargeting, ClientRunJobArgs):
+class GetInterfaces(ClientRunJobArgs, NetboxCommonArgs):
     devices: Union[StrictStr, List] = Field(
         ..., description="Devices to retrieve interface for"
     )
@@ -195,9 +192,6 @@ class GetInterfaces(NetboxTargeting, ClientRunJobArgs):
         None,
         description="Only return query content, do not run it",
         json_schema_extra={"presence": True},
-    )
-    workers: Union[StrictStr, List[StrictStr]] = Field(
-        "any", description="Filter worker to target"
     )
 
     @staticmethod
@@ -257,7 +251,7 @@ class UpdateViaServices(BaseModel):
     )
 
 
-class UpdateDeviceFactsCommand(NetboxTargeting, ClientRunJobArgs):
+class UpdateDeviceFactsCommand(ClientRunJobArgs, NetboxCommonArgs):
     via: UpdateViaServices = Field(
         None,
         description="Service to use to retrieve device data",
@@ -271,11 +265,14 @@ class UpdateDeviceFactsCommand(NetboxTargeting, ClientRunJobArgs):
         None,
         description="Devices to update",
     )
-    workers: Union[StrictStr, List[StrictStr]] = Field(
-        "any", description="Filter worker to target"
+    progress: Optional[StrictBool] = Field(
+        None,
+        description="Emit execution progress",
+        json_schema_extra={"presence": True},
     )
 
     @staticmethod
+    @listen_events
     def run(**kwargs):
         workers = kwargs.pop("workers", "any")
         timeout = kwargs.pop("timeout", 600)
@@ -300,7 +297,7 @@ class UpdateDeviceFactsCommand(NetboxTargeting, ClientRunJobArgs):
         outputter = Outputters.outputter_rich_json
 
 
-class UpdateDeviceInterfacesCommand(NetboxTargeting, ClientRunJobArgs):
+class UpdateDeviceInterfacesCommand(ClientRunJobArgs, NetboxCommonArgs):
     dry_run: Optional[StrictBool] = Field(
         None,
         description="Return information that would be pushed to Netbox but do not push it",
@@ -310,11 +307,14 @@ class UpdateDeviceInterfacesCommand(NetboxTargeting, ClientRunJobArgs):
         None,
         description="Devices to update",
     )
-    workers: Union[StrictStr, List[StrictStr]] = Field(
-        "any", description="Filter worker to target"
+    progress: Optional[StrictBool] = Field(
+        None,
+        description="Emit execution progress",
+        json_schema_extra={"presence": True},
     )
 
     @staticmethod
+    @listen_events
     def run(**kwargs):
         workers = kwargs.pop("workers", "any")
         timeout = kwargs.pop("timeout", 600)

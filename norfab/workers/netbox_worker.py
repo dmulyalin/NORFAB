@@ -1219,6 +1219,7 @@ class NetboxWorker(NFPWorker):
                             "os_version": facts["os_version"],
                         }
                     }
+
         else:
             raise UnsupportedServiceError(f"'{via}' service not supported")
 

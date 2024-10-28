@@ -1318,10 +1318,7 @@ class TestGetCircuits:
             b"netbox",
             "get_circuits",
             workers="any",
-            kwargs={
-                "devices": ["fceos4", "fceos5"],
-                "cid": ["CID1"]
-            },
+            kwargs={"devices": ["fceos4", "fceos5"], "cid": ["CID1"]},
         )
         pprint.pprint(ret, width=200)
         for worker, res in ret.items():
@@ -1329,9 +1326,11 @@ class TestGetCircuits:
             assert "fceos4" in res["result"], f"{worker} returned no results for fceos4"
             for device, device_data in res["result"].items():
                 for cid, cid_data in device_data.items():
-                    assert cid == "CID1", f"{worker}:{device}:{cid} wrong circuit returned, was expecting 'CID1' only"
-                        
-        
+                    assert (
+                        cid == "CID1"
+                    ), f"{worker}:{device}:{cid} wrong circuit returned, was expecting 'CID1' only"
+
+
 class TestUpdateDeviceFacts:
     def test_update_device_fact_via_nornir(self, nfclient):
         ret = nfclient.run_job(
@@ -1362,16 +1361,16 @@ class TestUpdateDeviceFacts:
     @pytest.mark.skip(reason="TBD")
     def test_update_device_fact_non_existing_device(self, nfclient):
         pass
-        
+
     @pytest.mark.skip(reason="TBD")
     def test_update_device_interfaces(self, nfclient):
         pass
-        
+
     @pytest.mark.skip(reason="TBD")
     def test_update_device_interfaces_non_exisintg_device(self, nfclient):
         pass
-        
-        
+
+
 class TestGetNextIP:
     nb_version = None
 

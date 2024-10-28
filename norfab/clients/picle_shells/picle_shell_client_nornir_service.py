@@ -12,7 +12,10 @@ import threading
 import functools
 import time
 import pprint
+import os
+import copy
 
+from fnmatch import fnmatchcase
 from uuid import uuid4  # random uuid
 from rich.console import Console
 from rich.live import Live
@@ -31,9 +34,24 @@ from pydantic import (
     model_validator,
     Field,
 )
-from .common import ClientRunJobArgs, log_error_or_result
+from .common import ClientRunJobArgs, log_error_or_result, listen_events
 from typing import Union, Optional, List, Any, Dict, Callable, Tuple
 from nornir_salt.plugins.functions import TabulateFormatter
+
+try:
+    import N2G
+
+    HAS_N2G = True
+except ImportError:
+    HAS_N2G = False
+
+try:
+    from ttp import ttp
+    from ttp_templates import list_templates as list_ttp_templates
+
+    HAS_TTP = True
+except ImportError:
+    HAS_TTP = False
 
 NFCLIENT = None  # NFCLIENT updated by parent shell
 RICHCONSOLE = Console()
@@ -43,97 +61,6 @@ log = logging.getLogger(__name__)
 # ---------------------------------------------------------------------------------------------
 # HELPER FUNCTIONS
 # ---------------------------------------------------------------------------------------------
-
-
-def listen_events_thread(uuid, stop):
-    """Helper function to pretty print events to command line"""
-    start_time = time.time()
-    time_fmt = "%d-%b-%Y %H:%M:%S"
-    RICHCONSOLE.print(
-        f"# " + "-" * 100 + "\n"
-        f"# {time.strftime(time_fmt)} {uuid} job started\n"
-        f"# " + "-" * 100
-    )
-    while not (stop.is_set() or NFCLIENT.exit_event.is_set()):
-        try:
-            event = NFCLIENT.event_queue.get(block=True, timeout=0.1)
-            NFCLIENT.event_queue.task_done()
-        except queue.Empty:
-            continue
-        (
-            empty,
-            header,
-            command,
-            service,
-            job_uuid,
-            status,
-            data,
-        ) = event
-        if job_uuid != uuid.encode("utf-8"):
-            NFCLIENT.event_queue.put(event)
-            continue
-
-        # extract event parameters
-        data = json.loads(data)
-        worker = data["worker"]
-        service = data["service"]
-        task = data["task"]
-        timestamp = data["data"]["timestamp"]
-        nr_task_name = data["data"]["task_name"]
-        nr_task_event = data["data"]["task_event"]
-        nr_task_type = data["data"]["task_type"]
-        nr_task_hosts = data["data"].get("hosts")
-        nr_task_status = data["data"]["status"]
-        nr_task_message = data["data"]["message"]
-        nr_parent_task = data["data"]["parent_task"]
-
-        nr_task_event = nr_task_event.replace("started", "[cyan]started[/cyan]")
-        nr_task_event = nr_task_event.replace("completed", "[green]completed[/green]")
-
-        # log event message
-        RICHCONSOLE.print(
-            f"{timestamp} {worker} {', '.join(nr_task_hosts)} {nr_task_type} {nr_task_event} - '{nr_task_name}'"
-        )
-
-    elapsed = round(time.time() - start_time, 3)
-    RICHCONSOLE.print(
-        f"# " + "-" * 100 + "\n"
-        f"# {time.strftime(time_fmt)} {uuid} job completed in {elapsed} seconds\n"
-        f"# " + "-" * 100 + "\n"
-    )
-
-
-def listen_events(fun):
-    @functools.wraps(fun)
-    def wrapper(*args, **kwargs):
-        events_thread_stop = threading.Event()
-        progress = kwargs.get("progress")
-        uuid = uuid4().hex
-
-        # start events thread to handle job events printing
-        if progress:
-            events_thread = threading.Thread(
-                target=listen_events_thread,
-                name="NornirCliShell_events_listen_thread",
-                args=(
-                    uuid,
-                    events_thread_stop,
-                ),
-            )
-            events_thread.start()
-
-        # run decorated function
-        try:
-            res = fun(uuid, *args, **kwargs)
-        finally:
-            # stop events thread
-            if progress:
-                events_thread_stop.set()
-                events_thread.join()
-
-        return res
-
-    return wrapper
 
 
 def print_stats(data: dict):
@@ -1606,6 +1533,191 @@ class NornirParseShell(BaseModel):
 
 
 # ---------------------------------------------------------------------------------------------
+# NORNIR SERVICE DIAGRAMMING SHELL MODEL
+# ---------------------------------------------------------------------------------------------
+
+
+class N2GDiagramAppEnum(str, Enum):
+    yed = "yed"
+    drawio = "drawio"
+    v3d = "v3d"
+
+
+class N2GLayer3Diagram(NorniHostsFilters, NornirCommonArgs):
+    group_links: StrictBool = Field(
+        None,
+        description="Group links between same nodes",
+        json_schema_extra={"presence": True},
+    )
+    add_arp: StrictBool = Field(
+        None,
+        description="Add IP nodes from ARP cache parsing results",
+        json_schema_extra={"presence": True},
+    )
+    label_interface: StrictBool = Field(
+        None,
+        description="Add interface name to the link’s source and target labels",
+        json_schema_extra={"presence": True},
+    )
+    label_vrf: StrictBool = Field(
+        None,
+        description="Add VRF name to the link’s source and target labels",
+        json_schema_extra={"presence": True},
+    )
+    collapse_ptp: StrictBool = Field(
+        None,
+        description="Combines links for /31 and /30 IPv4 and /127 IPv6 subnets into a single link",
+        json_schema_extra={"presence": True},
+    )
+    add_fhrp: StrictBool = Field(
+        None,
+        description="Add HSRP and VRRP IP addresses to the diagram",
+        json_schema_extra={"presence": True},
+    )
+    bottom_label_length: StrictInt = Field(
+        None,
+        description="Length of interface description to use for subnet labels, if 0, label not set",
+    )
+    lbl_next_to_subnet: StrictBool = Field(
+        None,
+        description="Put link port:vrf:ip label next to subnet node",
+        json_schema_extra={"presence": True},
+    )
+
+    @staticmethod
+    def run(*args, **kwargs):
+        kwargs["data_plugin"] = "layer3"
+        n2g_kwargs = {}
+        kwargs["n2g_kwargs"] = n2g_kwargs
+        if "group_links" in kwargs:
+            n2g_kwargs = kwargs.pop("group_links")
+        if "add_arp" in kwargs:
+            n2g_kwargs = kwargs.pop("add_arp")
+        if "label_interface" in kwargs:
+            n2g_kwargs = kwargs.pop("label_interface")
+        if "label_vrf" in kwargs:
+            n2g_kwargs = kwargs.pop("label_vrf")
+        if "collapse_ptp" in kwargs:
+            n2g_kwargs = kwargs.pop("collapse_ptp")
+        if "add_fhrp" in kwargs:
+            n2g_kwargs = kwargs.pop("add_fhrp")
+        if "bottom_label_length" in kwargs:
+            n2g_kwargs = kwargs.pop("bottom_label_length")
+        if "lbl_next_to_subnet" in kwargs:
+            n2g_kwargs = kwargs.pop("lbl_next_to_subnet")
+
+        return NornirDiagramShell.run(*args, **kwargs)
+
+    class PicleConfig:
+        outputter = Outputters.outputter_rich_print
+
+
+class NornirDiagramShell(ClientRunJobArgs):
+    format: N2GDiagramAppEnum = Field("yed", description="Diagram application format")
+    layer3: N2GLayer3Diagram = Field(
+        None, description="Create L3 Network diagram using IP data"
+    )
+    # layer2
+    # isis
+    # ospf
+
+    filename: StrictStr = Field(
+        None, description="Name of the file to save diagram content"
+    )
+
+    @staticmethod
+    @listen_events
+    def run(uuid, *args, **kwargs):
+        if not (HAS_N2G and HAS_TTP):
+            return f"Failed importing N2G and TTP modules, are they installed?"
+
+        workers = kwargs.pop("workers", "all")
+        timeout = kwargs.pop("timeout", 600)
+        ctime = time.strftime("%Y-%m-%d_%H-%M-%S")
+        FM = kwargs.pop("FM", [])
+        n2g_data = {}  # to store collected from devices data
+        diagram_plugin = kwargs.pop("format")
+        data_plugin = kwargs.pop("data_plugin")
+        n2g_kwargs = kwargs.pop("n2g_kwargs")
+
+        if kwargs.get("hosts"):
+            kwargs["FL"] = kwargs.pop("hosts")
+
+        drawing_plugin, ext = {
+            "yed": (N2G.yed_diagram, "graphml"),
+            "drawio": (N2G.drawio_diagram, "drawio"),
+            "v3d": (N2G.v3d_diagramm, "json"),
+        }[diagram_plugin]
+
+        template_dir, n2g_data_plugin = {
+            "layer2": ("cli_l2_data", N2G.cli_l2_data),
+            "layer3": ("cli_ip_data", N2G.cli_ip_data),
+            "isis": ("cli_isis_data", N2G.cli_isis_data),
+            "ospf": ("cli_ospf_data", N2G.cli_ospf_data),
+        }[data_plugin]
+
+        filename = kwargs.pop("filename", f"./{data_plugin}_{ctime}.{ext}")
+        out_folder, out_filename = os.path.split(filename)
+        out_folder = out_folder or "."
+
+        # form list of platforms to collect output for
+        n2g_supported_platorms = [
+            ".".join(i.split(".")[:-1])
+            for i in list_ttp_templates()["misc"]["N2G"][template_dir]
+        ]
+        # if FM filter provided, leave only supported platforms
+        platforms = set(
+            [p for p in n2g_supported_platorms if any(fnmatchcase(p, fm) for fm in FM)]
+            if FM
+            else n2g_supported_platorms
+        )
+
+        # retrieve output on a per-platform basis
+        for platform in platforms:
+            n2g_data.setdefault(platform, [])
+            cli_kwargs = copy.deepcopy(kwargs)
+            cli_kwargs["FM"] = [platform]
+            cli_kwargs["enable"] = True
+            # use N2G ttp templates to get list of commands
+            parser = ttp(
+                template=f"ttp://misc/N2G/{template_dir}/{platform}.txt",
+                log_level="CRITICAL",
+            )
+            ttp_inputs_load = parser.get_input_load()
+            for template_name, inputs in ttp_inputs_load.items():
+                for input_name, input_params in inputs.items():
+                    cli_kwargs["commands"] = input_params["commands"]
+            # collect commands output from devices
+            job_results = NFCLIENT.run_job(
+                "nornir",
+                "cli",
+                workers=workers,
+                kwargs=cli_kwargs,
+                uuid=uuid,
+                timeout=timeout,
+            )
+            # populate n2g data dictionary keyed by platform and save results to files
+            for worker, results in job_results.items():
+                if results["failed"]:
+                    log.error(f"{worker} failed to collect output")
+                    continue
+                for host_name, host_result in results["result"].items():
+                    n2g_data[platform].append("\n".join(host_result.values()))
+
+        # create, populate and save diagram
+        drawing = drawing_plugin()
+        drawer = n2g_data_plugin(drawing, **n2g_kwargs)
+        drawer.work(n2g_data)
+        drawing.dump_file(folder=out_folder, filename=out_filename)
+
+        return f" '{data_plugin}' diagram in '{diagram_plugin}' format saved at '{os.path.join(out_folder, out_filename)}'"
+
+    class PicleConfig:
+        subshell = True
+        prompt = "nf[nornir-diagram]#"
+
+
+# ---------------------------------------------------------------------------------------------
 # NORNIR SERVICE MAIN SHELL MODEL
 # ---------------------------------------------------------------------------------------------
 
@@ -1621,6 +1733,7 @@ class NornirServiceCommands(BaseModel):
         None, description="Network utility functions - ping, dns etc."
     )
     parse: NornirParseShell = Field(None, description="Parse network devices output")
+    diagram: NornirDiagramShell = Field(None, description="Produce network diagrams")
 
     # netconf:
     # file:
