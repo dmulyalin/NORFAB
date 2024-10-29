@@ -106,3 +106,8 @@ class TestNornirCli:
     @pytest.mark.skip(reason="TBD")
     def test_commands_table_sortby(self):
         pass
+
+class TestNornirDiagram:
+    @pytest.mark.skip(reason="TBD")
+    def test_nornir_diagram(self):
+        pass

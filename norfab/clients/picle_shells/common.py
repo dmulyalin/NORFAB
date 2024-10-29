@@ -80,8 +80,11 @@ def listen_events_thread(uuid, stop, NFCLIENT):
             )
             # log event message
             richconsole.print(
-                f"{timestamp} {worker} {', '.join(nr_task_hosts)} {nr_task_type} {nr_task_event} - '{nr_task_name}'"
+                f"{timestamp} {service} {worker} {', '.join(nr_task_hosts)} {nr_task_type} {nr_task_event} - '{nr_task_name}'"
             )
+        elif isinstance(data["data"], (str, int, float)):
+            timestamp = data["timestamp"]
+            richconsole.print(f"{timestamp} {service} {worker} {task} - {data['data']}")
 
     elapsed = round(time.time() - start_time, 3)
     richconsole.print(

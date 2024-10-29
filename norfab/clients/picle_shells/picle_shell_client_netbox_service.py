@@ -251,7 +251,7 @@ class UpdateViaServices(BaseModel):
     )
 
 
-class UpdateDeviceFactsCommand(ClientRunJobArgs, NetboxCommonArgs):
+class UpdateDeviceFactsCommand(NetboxCommonArgs, ClientRunJobArgs):
     via: UpdateViaServices = Field(
         None,
         description="Service to use to retrieve device data",
@@ -273,21 +273,19 @@ class UpdateDeviceFactsCommand(ClientRunJobArgs, NetboxCommonArgs):
 
     @staticmethod
     @listen_events
-    def run(**kwargs):
+    def run(uuid, **kwargs):
         workers = kwargs.pop("workers", "any")
         timeout = kwargs.pop("timeout", 600)
         kwargs["timeout"] = timeout * 0.9
 
-        with RICHCONSOLE.status(
-            "[bold green]Updating devices facts", spinner="dots"
-        ) as status:
-            result = NFCLIENT.run_job(
-                "netbox",
-                "update_device_facts",
-                workers=workers,
-                kwargs=kwargs,
-                timeout=timeout,
-            )
+        result = NFCLIENT.run_job(
+            "netbox",
+            "update_device_facts",
+            workers=workers,
+            kwargs=kwargs,
+            timeout=timeout,
+            uuid=uuid,
+        )
 
         result = log_error_or_result(result)
 
@@ -297,7 +295,7 @@ class UpdateDeviceFactsCommand(ClientRunJobArgs, NetboxCommonArgs):
         outputter = Outputters.outputter_rich_json
 
 
-class UpdateDeviceInterfacesCommand(ClientRunJobArgs, NetboxCommonArgs):
+class UpdateDeviceInterfacesCommand(NetboxCommonArgs, ClientRunJobArgs):
     dry_run: Optional[StrictBool] = Field(
         None,
         description="Return information that would be pushed to Netbox but do not push it",
@@ -315,21 +313,19 @@ class UpdateDeviceInterfacesCommand(ClientRunJobArgs, NetboxCommonArgs):
 
     @staticmethod
     @listen_events
-    def run(**kwargs):
+    def run(uuid, **kwargs):
         workers = kwargs.pop("workers", "any")
         timeout = kwargs.pop("timeout", 600)
         kwargs["timeout"] = timeout * 0.9
 
-        with RICHCONSOLE.status(
-            "[bold green]Updating devices interfaces", spinner="dots"
-        ) as status:
-            result = NFCLIENT.run_job(
-                "netbox",
-                "update_device_interfaces",
-                workers=workers,
-                kwargs=kwargs,
-                timeout=timeout,
-            )
+        result = NFCLIENT.run_job(
+            "netbox",
+            "update_device_interfaces",
+            workers=workers,
+            kwargs=kwargs,
+            timeout=timeout,
+            uuid=uuid,
+        )
 
         result = log_error_or_result(result)
 

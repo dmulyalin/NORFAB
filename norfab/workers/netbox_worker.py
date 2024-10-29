@@ -1219,7 +1219,7 @@ class NetboxWorker(NFPWorker):
                             "os_version": facts["os_version"],
                         }
                     }
-
+                    self.event(f"{host} - facts updated")
         else:
             raise UnsupportedServiceError(f"'{via}' service not supported")
 
@@ -1294,6 +1294,7 @@ class NetboxWorker(NFPWorker):
                         if dry_run is not True:
                             nb_interface.save()
                         updated[nb_interface.name] = interface
+                        self.event(f"{host} - updated interface {nb_interface.name}")
                     # create new interfaces
                     if create is not True:
                         continue
@@ -1311,6 +1312,7 @@ class NetboxWorker(NFPWorker):
                         if dry_run is not True:
                             nb_interface.save()
                         updated[interface_name] = interface
+                        self.event(f"{host} - created interface {nb_interface.name}")
         else:
             raise UnsupportedServiceError(f"'{via}' service not supported")
 

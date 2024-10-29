@@ -1612,15 +1612,156 @@ class N2GLayer3Diagram(NorniHostsFilters, NornirCommonArgs):
         outputter = Outputters.outputter_rich_print
 
 
+class N2GLayer2Diagram(NorniHostsFilters, NornirCommonArgs):
+    add_interfaces_data: StrictBool = Field(
+        None,
+        description="Add interfaces configuration and state data to links",
+        json_schema_extra={"presence": True},
+    )
+    group_links: StrictBool = Field(
+        None,
+        description="Group links between nodes",
+        json_schema_extra={"presence": True},
+    )
+    add_lag: StrictBool = Field(
+        None,
+        description="Add LAG/MLAG links to diagram",
+        json_schema_extra={"presence": True},
+    )
+    add_all_connected: StrictBool = Field(
+        None,
+        description="Add all nodes connected to devices based on interfaces state",
+        json_schema_extra={"presence": True},
+    )
+    combine_peers: StrictBool = Field(
+        None,
+        description="Combine CDP/LLDP peers behind same interface by adding L2 node",
+        json_schema_extra={"presence": True},
+    )
+    skip_lag: StrictBool = Field(
+        None,
+        description="Skip CDP peers for LAG, some platforms send CDP/LLDP PDU from LAG ports",
+        json_schema_extra={"presence": True},
+    )
+
+    @staticmethod
+    def run(*args, **kwargs):
+        kwargs["data_plugin"] = "layer2"
+        n2g_kwargs = {}
+        kwargs["n2g_kwargs"] = n2g_kwargs
+        if "add_interfaces_data" in kwargs:
+            n2g_kwargs = kwargs.pop("add_interfaces_data")
+        if "group_links" in kwargs:
+            n2g_kwargs = kwargs.pop("group_links")
+        if "add_lag" in kwargs:
+            n2g_kwargs = kwargs.pop("add_lag")
+        if "add_all_connected" in kwargs:
+            n2g_kwargs = kwargs.pop("add_all_connected")
+        if "combine_peers" in kwargs:
+            n2g_kwargs = kwargs.pop("combine_peers")
+        if "skip_lag" in kwargs:
+            n2g_kwargs = kwargs.pop("skip_lag")
+
+        return NornirDiagramShell.run(*args, **kwargs)
+
+    class PicleConfig:
+        outputter = Outputters.outputter_rich_print
+
+
+class N2GISISDiagram(NorniHostsFilters, NornirCommonArgs):
+    ip_lookup_data: StrictStr = Field(
+        None,
+        description="IP Lookup dictionary or OS path to CSV file",
+    )
+    add_connected: StrictBool = Field(
+        None,
+        description="Add connected subnets as nodes",
+        json_schema_extra={"presence": True},
+    )
+    ptp_filter: Union[StrictStr, List[StrictStr]] = Field(
+        None,
+        description="List of glob patterns to filter point-to-point links based on link IP",
+    )
+    add_data: StrictBool = Field(
+        None,
+        description="Add data information to nodes and links",
+        json_schema_extra={"presence": True},
+    )
+
+    @staticmethod
+    def run(*args, **kwargs):
+        kwargs["data_plugin"] = "isis"
+        n2g_kwargs = {}
+        kwargs["n2g_kwargs"] = n2g_kwargs
+        if "ip_lookup_data" in kwargs:
+            n2g_kwargs = kwargs.pop("ip_lookup_data")
+        if "add_connected" in kwargs:
+            n2g_kwargs = kwargs.pop("add_connected")
+        if "ptp_filter" in kwargs:
+            n2g_kwargs = kwargs.pop("ptp_filter")
+        if "add_data" in kwargs:
+            n2g_kwargs = kwargs.pop("add_data")
+
+        return NornirDiagramShell.run(*args, **kwargs)
+
+    class PicleConfig:
+        outputter = Outputters.outputter_rich_print
+
+
+class N2GOSPFDiagram(NorniHostsFilters, NornirCommonArgs):
+    ip_lookup_data: StrictStr = Field(
+        None,
+        description="IP Lookup dictionary or OS path to CSV file",
+    )
+    add_connected: StrictBool = Field(
+        None,
+        description="Add connected subnets as nodes",
+        json_schema_extra={"presence": True},
+    )
+    ptp_filter: Union[StrictStr, List[StrictStr]] = Field(
+        None,
+        description="List of glob patterns to filter point-to-point links based on link IP",
+    )
+    add_data: StrictBool = Field(
+        None,
+        description="Add data information to nodes and links",
+        json_schema_extra={"presence": True},
+    )
+
+    @staticmethod
+    def run(*args, **kwargs):
+        kwargs["data_plugin"] = "ospf"
+        n2g_kwargs = {}
+        kwargs["n2g_kwargs"] = n2g_kwargs
+        if "ip_lookup_data" in kwargs:
+            n2g_kwargs = kwargs.pop("ip_lookup_data")
+        if "add_connected" in kwargs:
+            n2g_kwargs = kwargs.pop("add_connected")
+        if "ptp_filter" in kwargs:
+            n2g_kwargs = kwargs.pop("ptp_filter")
+        if "add_data" in kwargs:
+            n2g_kwargs = kwargs.pop("add_data")
+
+        return NornirDiagramShell.run(*args, **kwargs)
+
+    class PicleConfig:
+        outputter = Outputters.outputter_rich_print
+
+
 class NornirDiagramShell(ClientRunJobArgs):
     format: N2GDiagramAppEnum = Field("yed", description="Diagram application format")
     layer3: N2GLayer3Diagram = Field(
         None, description="Create L3 Network diagram using IP data"
     )
-    # layer2
-    # isis
-    # ospf
-
+    layer2: N2GLayer2Diagram = Field(
+        None, description="Create L2 Network diagram using CDP/LLDP data"
+    )
+    isis: N2GISISDiagram = Field(
+        None, description="Create ISIS Network diagram using LSDB data"
+    )
+    ospf: N2GOSPFDiagram = Field(
+        None, description="Create OSPF Network diagram using LSDB data"
+    )
     filename: StrictStr = Field(
         None, description="Name of the file to save diagram content"
     )
@@ -1639,6 +1780,7 @@ class NornirDiagramShell(ClientRunJobArgs):
         diagram_plugin = kwargs.pop("format")
         data_plugin = kwargs.pop("data_plugin")
         n2g_kwargs = kwargs.pop("n2g_kwargs")
+        hosts_processed = set()
 
         if kwargs.get("hosts"):
             kwargs["FL"] = kwargs.pop("hosts")
@@ -1656,9 +1798,11 @@ class NornirDiagramShell(ClientRunJobArgs):
             "ospf": ("cli_ospf_data", N2G.cli_ospf_data),
         }[data_plugin]
 
-        filename = kwargs.pop("filename", f"./{data_plugin}_{ctime}.{ext}")
+        # compose filename and make sure out folders are created
+        filename = kwargs.pop("filename", f"./diagrams/{data_plugin}_{ctime}.{ext}")
         out_folder, out_filename = os.path.split(filename)
         out_folder = out_folder or "."
+        os.makedirs(out_folder, exist_ok=True)
 
         # form list of platforms to collect output for
         n2g_supported_platorms = [
@@ -1703,6 +1847,7 @@ class NornirDiagramShell(ClientRunJobArgs):
                     continue
                 for host_name, host_result in results["result"].items():
                     n2g_data[platform].append("\n".join(host_result.values()))
+                    hosts_processed.add(host_name)
 
         # create, populate and save diagram
         drawing = drawing_plugin()
@@ -1710,7 +1855,10 @@ class NornirDiagramShell(ClientRunJobArgs):
         drawer.work(n2g_data)
         drawing.dump_file(folder=out_folder, filename=out_filename)
 
-        return f" '{data_plugin}' diagram in '{diagram_plugin}' format saved at '{os.path.join(out_folder, out_filename)}'"
+        return (
+            f" '{data_plugin}' diagram in '{diagram_plugin}' format saved at '{os.path.join(out_folder, out_filename)}'\n"
+            f" hosts: {', '.join(hosts_processed)}"
+        )
 
     class PicleConfig:
         subshell = True
