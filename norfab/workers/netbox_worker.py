@@ -1176,7 +1176,6 @@ class NetboxWorker(NFPWorker):
         provided by NAPALM get_facts getter:
 
         - serial number
-        - software version
 
         :param instance: Netbox instance name
         :param dry_run: return information that would be pushed to Netbox but do not push it
@@ -1187,6 +1186,7 @@ class NetboxWorker(NFPWorker):
         result = {}
         ret = Result(task=f"{self.name}:update_device_facts", result=result)
         nb = self._get_pynetbox(instance)
+        kwargs["add_details"] = True
 
         if via == "nornir":
             if devices:
@@ -1200,23 +1200,25 @@ class NetboxWorker(NFPWorker):
             )
             for worker, results in data.items():
                 for host, host_data in results["result"].items():
-                    facts = host_data["napalm_get"]["get_facts"]
+                    if host_data["napalm_get"]["failed"]:
+                        log.error(
+                            f"{host} - facts update failed: '{host_data['napalm_get']['exception']}'"
+                        )
+                        self.event(f"{host} - facts update failed")
+                        continue
                     nb_device = nb.dcim.devices.get(name=host)
                     if not nb_device:
                         raise Exception(f"'{host}' does not exist in Netbox")
+                    facts = host_data["napalm_get"]["result"]["get_facts"]
                     # update serial number
                     nb_device.serial = facts["serial_number"]
-                    # update OS version details
-                    if "OS Version" not in nb_device.comments:
-                        nb_device.comments += f"\nOS Version: {facts['os_version']}"
-                    if dry_run is not True:
+                    if not dry_run:
                         nb_device.save()
                     result[host] = {
                         "update_device_facts_dry_run"
                         if dry_run
                         else "update_device_facts": {
                             "serial": facts["serial_number"],
-                            "os_version": facts["os_version"],
                         }
                     }
                     self.event(f"{host} - facts updated")

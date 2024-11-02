@@ -1352,9 +1352,6 @@ class TestUpdateDeviceFacts:
             ), f"{worker} returned no results for ceos-spine-2"
             for device, device_data in res["result"].items():
                 assert device_data["update_device_facts"][
-                    "os_version"
-                ], f"{worker}:{device} no OS version updated"
-                assert device_data["update_device_facts"][
                     "serial"
                 ], f"{worker}:{device} no serial number updated"
 
