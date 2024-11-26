@@ -5,14 +5,14 @@ netbox_read_timeout: 300
 instances:
   prod:
     default: True
-    url: "http://192.168.4.130:8000/"
+    url: "http://192.168.1.130:8000/"
     token: "0123456789abcdef0123456789abcdef01234567"
     ssl_verify: False
   dev:
-    url: "http://192.168.4.130:8000/"
+    url: "http://192.168.1.130:8000/"
     token: "0123456789abcdef0123456789abcdef01234567"
     ssl_verify: False
   preprod:
-    url: "http://192.168.4.130:8000/"
+    url: "http://192.168.1.130:8000/"
     token: "0123456789abcdef0123456789abcdef01234567"
     ssl_verify: False

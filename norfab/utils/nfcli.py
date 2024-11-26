@@ -7,7 +7,6 @@ from norfab.utils.loggingutils import setup_logging
 
 log = setup_logging(__name__)
 
-
 def nfcli():
     # form argparser menu:
     description_text = """

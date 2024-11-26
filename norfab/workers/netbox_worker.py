@@ -1241,7 +1241,7 @@ class NetboxWorker(NFPWorker):
         Function to update device interfaces in Netbox using information
         provided by NAPALM get_interfaces getter:
 
-        - interface names
+        - interface name
         - interface description
         - mtu
         - mac address

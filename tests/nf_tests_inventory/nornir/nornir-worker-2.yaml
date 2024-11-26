@@ -1,6 +1,6 @@
 hosts: 
   ceos-leaf-1:
-    hostname: 192.168.4.130
+    hostname: 192.168.1.130
     platform: arista_eos
     username: admin
     password: admin
@@ -18,7 +18,7 @@ hosts:
       ncclient:
         port: 8302
   ceos-leaf-2:
-    hostname: 192.168.4.130
+    hostname: 192.168.1.130
     platform: arista_eos
     username: admin
     password: admin
@@ -36,7 +36,7 @@ hosts:
       ncclient:
         port: 8303
   ceos-leaf-3:
-    hostname: 192.168.4.130
+    hostname: 192.168.1.130
     platform: arista_eos
     username: admin
     password: admin

@@ -86,6 +86,7 @@ nav:
             - Nornir Test: services_nornir_service_tasks_test.md
             - Nornir Network: services_nornir_service_tasks_network.md
             - Nornir Parse: services_nornir_service_tasks_parse.md
+            - Nornir Diagram: services_nornir_service_tasks_diagram.md
         - Jina2 Filters: services_nornir_service_jinja2_filters.md
     - Netbox Service: 
         - Overview: services_netbox_service.md
@@ -99,6 +100,7 @@ nav:
             - Netbox GET Nornir Inventory: services_netbox_service_tasks_get_nornir_inventory.md
             - Netbox GET Next IP: services_netbox_service_tasks_get_next_ip.md
             - Netbox UPDATE Device Facts: services_netbox_service_tasks_update_device_facts.md
+            - Netbox UPDATE Device Interfaces: services_netbox_service_tasks_update_device_interfaces.md
 - Clients:
     - Clients Overview: clients_overview.md
     - NORFAB CLI Client: clients_nfcli_overview.md

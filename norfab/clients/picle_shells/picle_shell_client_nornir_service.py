@@ -184,6 +184,15 @@ class NornirCommonArgs(BaseModel):
         description="RetryRunner perform reconnect to host on task failure",
         json_schema_extra={"presence": True},
     )
+    run_connect_check: Optional[StrictBool] = Field(
+        None,
+        description="RetryRunner test TCP connection before opening actual connection",
+        json_schema_extra={"presence": True},
+    )
+    run_connect_timeout: Optional[StrictInt] = Field(
+        None,
+        description="RetryRunner timeout in seconds to wait for test TCP connection to establish",
+    )
     run_creds_retry: Optional[List] = Field(
         None,
         description="RetryRunner list of connection credentials and parameters to retry",
