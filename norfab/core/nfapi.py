@@ -150,73 +150,78 @@ class NorFab:
         """
         Main entry method to start NorFab components.
 
-        :param start_broker: if True, starts broker process
-        :param workers: list of worker names to start processes for
+        :param start_broker: if True, starts broker process as defined in inventory
+            ``topology`` section
+        :param workers: list of worker names to start processes for or boolean, if True
+            starts all workers defined in inventory ``topology`` sections
         :param client: If true return and instance of NorFab client
         """
         # start the broker
-        if start_broker is True:
+        if start_broker is True and self.inventory.topology.get("broker") is True:
             self.start_broker()
 
-        # if workers is True use all the workers defined in inventory
-        if workers is True:
-            workers = self.inventory.topology.get("workers", [])
+        # decide on a set of workers to start
+        if workers is False or workers is None:
+            workers = []
+        elif isinstance(workers, list) and workers:
+            workers = workers
+        # start workers defined in inventory
+        elif workers is True and self.inventory.topology.get("workers"):
+            workers = self.inventory.topology["workers"]
+
         # start worker processes
-        if workers:
-            # form a list of workers to start
-            workers_to_start = set()
-            for worker_name in workers:
-                if isinstance(worker_name, dict):
-                    worker_name = tuple(worker_name)[0]
-                workers_to_start.add(worker_name)
+        if not workers:
+            return
 
-            while workers_to_start != set(self.workers_processes.keys()):
-                for worker in workers:
-                    # extract worker name and data/params
-                    if isinstance(worker, dict):
-                        worker_name = tuple(worker)[0]
-                        worker_data = worker[worker_name]
-                    else:
-                        worker_name = worker
-                        worker_data = {}
-                    # verify if need to start this worker
-                    if worker_name not in workers_to_start:
-                        continue
-                    # start worker
-                    try:
-                        self.start_worker(worker_name, worker_data)
-                    # if failed to start remove from workers to start
-                    except KeyError:
-                        workers_to_start.remove(worker_name)
-                        log.error(
-                            f"'{worker_name}' - failed to start worker, no inventory data found"
-                        )
-                    except FileNotFoundError as e:
-                        workers_to_start.remove(worker_name)
-                        log.error(
-                            f"'{worker_name}' - failed to start worker, inventory file not found '{e}'"
-                        )
-                    except Exception as e:
-                        workers_to_start.remove(worker_name)
-                        log.error(
-                            f"'{worker_name}' - failed to start worker, error '{e}'"
-                        )
+        # form a list of workers to start
+        workers_to_start = set()
+        for worker_name in workers:
+            if isinstance(worker_name, dict):
+                worker_name = tuple(worker_name)[0]
+            workers_to_start.add(worker_name)
 
-                time.sleep(0.01)
+        while workers_to_start != set(self.workers_processes.keys()):
+            for worker in workers:
+                # extract worker name and data/params
+                if isinstance(worker, dict):
+                    worker_name = tuple(worker)[0]
+                    worker_data = worker[worker_name]
+                else:
+                    worker_name = worker
+                    worker_data = {}
+                # verify if need to start this worker
+                if worker_name not in workers_to_start:
+                    continue
+                # start worker
+                try:
+                    self.start_worker(worker_name, worker_data)
+                # if failed to start remove from workers to start
+                except KeyError:
+                    workers_to_start.remove(worker_name)
+                    log.error(
+                        f"'{worker_name}' - failed to start worker, no inventory data found"
+                    )
+                except FileNotFoundError as e:
+                    workers_to_start.remove(worker_name)
+                    log.error(
+                        f"'{worker_name}' - failed to start worker, inventory file not found '{e}'"
+                    )
+                except Exception as e:
+                    workers_to_start.remove(worker_name)
+                    log.error(f"'{worker_name}' - failed to start worker, error '{e}'")
 
-            # wait for workers to initialize
-            start_time = time.time()
-            while self.workers_init_timeout > time.time() - start_time:
-                if all(
-                    w["init_done"].is_set() for w in self.workers_processes.values()
-                ):
-                    break
-            else:
-                log.error(
-                    f"TimeoutError - {self.workers_init_timeout}s "
-                    f"workers init timeout expired"
-                )
-                self.destroy()
+            time.sleep(0.01)
+
+        # wait for workers to initialize
+        start_time = time.time()
+        while self.workers_init_timeout > time.time() - start_time:
+            if all(w["init_done"].is_set() for w in self.workers_processes.values()):
+                break
+        else:
+            log.error(
+                f"TimeoutError - {self.workers_init_timeout}s workers init timeout expired"
+            )
+            self.destroy()
 
     def run(self):
         """

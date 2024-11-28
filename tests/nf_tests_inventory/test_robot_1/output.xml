@@ -1,0 +1,360 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot generator="Robot 7.0 (Python 3.9.13 on win32)" generated="2024-11-28T21:13:51.301429" rpa="false" schemaversion="5">
+<suite id="s1" name="Suite Nr Test" source="C:\Users\Denis\YandexDisk\Python\NORFAB\tests\nf_tests_inventory\robot\suite_nr_test.robot">
+<test id="s1-t1" name="Run Tests" line="5">
+<kw name="Hosts" owner="norfab.clients.robot_client.NorFabRobot">
+<arg>FB=*spine*</arg>
+<doc>Collect hosts to target</doc>
+<status status="PASS" start="2024-11-28T21:14:01.756825" elapsed="0.000000"/>
+</kw>
+<kw name="nr.test" owner="norfab.clients.robot_client.NorFabRobot">
+<msg time="2024-11-28T21:14:01.756825" level="INFO">Running nr.test with kwargs '{'FB': '*spine*', 'suite': 'nf://nornir_test_suites/suite_1.txt', 'remove_tasks': False, 'add_details': True, 'return_tests_suite': True, 'to_dict': False}', global DATA '{}'</msg>
+<msg time="2024-11-28T21:14:02.830052" level="INFO" html="true">nornir-worker-1 worker, ceos-spine-2 test "check ceos version" - &lt;span style="background-color: #97BD61"&gt;success&lt;/span&gt;</msg>
+<msg time="2024-11-28T21:14:02.830052" level="ERROR" html="true">nornir-worker-1 worker, ceos-spine-2 test "check NTP status" - &lt;span style="background-color: #CE3E01"&gt;"Pattern not in output"&lt;/span&gt;</msg>
+<msg time="2024-11-28T21:14:02.831484" level="INFO" html="true">nornir-worker-1 worker, ceos-spine-1 test "check ceos version" - &lt;span style="background-color: #97BD61"&gt;success&lt;/span&gt;</msg>
+<msg time="2024-11-28T21:14:02.831484" level="ERROR" html="true">nornir-worker-1 worker, ceos-spine-1 test "check NTP status" - &lt;span style="background-color: #CE3E01"&gt;"Pattern not in output"&lt;/span&gt;</msg>
+<msg time="2024-11-28T21:14:02.835259" level="INFO" html="true">&lt;details&gt;&lt;summary&gt;Workers results&lt;/summary&gt;{'nornir-worker-1': {'errors': [],
+                     'failed': False,
+                     'messages': [],
+                     'result': {'suite': {'ceos-spine-1': [{'name': 'check '
+                                                                    'ceos '
+                                                                    'version',
+                                                            'pattern': 'cEOS',
+                                                            'task': 'show '
+                                                                    'version',
+                                                            'test': 'contains'},
+                                                           {'name': 'check NTP '
+                                                                    'status',
+                                                            'pattern': ['1.1.1.1'],
+                                                            'task': 'show ntp '
+                                                                    'associations',
+                                                            'test': 'contains_lines'}],
+                                          'ceos-spine-2': [{'name': 'check '
+                                                                    'ceos '
+                                                                    'version',
+                                                            'pattern': 'cEOS',
+                                                            'task': 'show '
+                                                                    'version',
+                                                            'test': 'contains'},
+                                                           {'name': 'check NTP '
+                                                                    'status',
+                                                            'pattern': ['1.1.1.1'],
+                                                            'task': 'show ntp '
+                                                                    'associations',
+                                                            'test': 'contains_lines'}]},
+                                'test_results': [{'changed': False,
+                                                  'connection_retry': 0,
+                                                  'diff': '',
+                                                  'exception': None,
+                                                  'failed': False,
+                                                  'host': 'ceos-spine-2',
+                                                  'name': 'show version',
+                                                  'result': 'Arista cEOSLab\n'
+                                                            'Hardware '
+                                                            'version: \n'
+                                                            'Serial number: '
+                                                            'BF31A02B9D88ACC3E737E1E82A87620D\n'
+                                                            'Hardware MAC '
+                                                            'address: '
+                                                            '001c.7314.8495\n'
+                                                            'System MAC '
+                                                            'address: '
+                                                            '001c.7314.8495\n'
+                                                            '\n'
+                                                            'Software image '
+                                                            'version: '
+                                                            '4.30.0F-31408673.4300F '
+                                                            '(engineering '
+                                                            'build)\n'
+                                                            'Architecture: '
+                                                            'x86_64\n'
+                                                            'Internal build '
+                                                            'version: '
+                                                            '4.30.0F-31408673.4300F\n'
+                                                            'Internal build '
+                                                            'ID: '
+                                                            'a35f0dc7-2d65-4f2a-a010-279cf445fd8c\n'
+                                                            'Image format '
+                                                            'version: 1.0\n'
+                                                            'Image '
+                                                            'optimization: '
+                                                            'None\n'
+                                                            '\n'
+                                                            'cEOS tools '
+                                                            'version: '
+                                                            '(unknown)\n'
+                                                            'Kernel version: '
+                                                            '5.15.0-124-generic\n'
+                                                            '\n'
+                                                            'Uptime: 36 '
+                                                            'minutes\n'
+                                                            'Total memory: '
+                                                            '16336800 kB\n'
+                                                            'Free memory: '
+                                                            '6897364 kB\n',
+                                                  'task_retry': 0},
+                                                 {'changed': False,
+                                                  'connection_retry': 0,
+                                                  'diff': '',
+                                                  'exception': None,
+                                                  'failed': False,
+                                                  'host': 'ceos-spine-2',
+                                                  'name': 'show ntp '
+                                                          'associations',
+                                                  'result': 'NTP is disabled.\n'
+                                                            '     '
+                                                            'remote          '
+                                                            'refid      st t '
+                                                            'when  poll '
+                                                            'reach   delay   '
+                                                            'offset  jitter\n'
+                                                            '==============================================================================',
+                                                  'task_retry': 0},
+                                                 {'changed': False,
+                                                  'connection_retry': 0,
+                                                  'criteria': 'cEOS',
+                                                  'diff': '',
+                                                  'exception': None,
+                                                  'failed': False,
+                                                  'host': 'ceos-spine-2',
+                                                  'name': 'check ceos version',
+                                                  'result': 'PASS',
+                                                  'success': True,
+                                                  'task': 'show version',
+                                                  'task_retry': 0,
+                                                  'test': 'contains'},
+                                                 {'changed': False,
+                                                  'connection_retry': 0,
+                                                  'criteria': '1.1.1.1',
+                                                  'diff': '',
+                                                  'exception': 'Pattern not in '
+                                                               'output',
+                                                  'failed': True,
+                                                  'host': 'ceos-spine-2',
+                                                  'name': 'check NTP status',
+                                                  'result': 'FAIL',
+                                                  'success': False,
+                                                  'task': 'show ntp '
+                                                          'associations',
+                                                  'task_retry': 0,
+                                                  'test': 'contains_lines'},
+                                                 {'changed': False,
+                                                  'connection_retry': 0,
+                                                  'diff': '',
+                                                  'exception': None,
+                                                  'failed': False,
+                                                  'host': 'ceos-spine-1',
+                                                  'name': 'show version',
+                                                  'result': 'Arista cEOSLab\n'
+                                                            'Hardware '
+                                                            'version: \n'
+                                                            'Serial number: '
+                                                            'C1DE3FC0E6261AE1B236F350E06E5933\n'
+                                                            'Hardware MAC '
+                                                            'address: '
+                                                            '001c.7329.a714\n'
+                                                            'System MAC '
+                                                            'address: '
+                                                            '001c.7329.a714\n'
+                                                            '\n'
+                                                            'Software image '
+                                                            'version: '
+                                                            '4.30.0F-31408673.4300F '
+                                                            '(engineering '
+                                                            'build)\n'
+                                                            'Architecture: '
+                                                            'x86_64\n'
+                                                            'Internal build '
+                                                            'version: '
+                                                            '4.30.0F-31408673.4300F\n'
+                                                            'Internal build '
+                                                            'ID: '
+                                                            'a35f0dc7-2d65-4f2a-a010-279cf445fd8c\n'
+                                                            'Image format '
+                                                            'version: 1.0\n'
+                                                            'Image '
+                                                            'optimization: '
+                                                            'None\n'
+                                                            '\n'
+                                                            'cEOS tools '
+                                                            'version: '
+                                                            '(unknown)\n'
+                                                            'Kernel version: '
+                                                            '5.15.0-124-generic\n'
+                                                            '\n'
+                                                            'Uptime: 36 '
+                                                            'minutes\n'
+                                                            'Total memory: '
+                                                            '16336800 kB\n'
+                                                            'Free memory: '
+                                                            '6897364 kB\n',
+                                                  'task_retry': 0},
+                                                 {'changed': False,
+                                                  'connection_retry': 0,
+                                                  'diff': '',
+                                                  'exception': None,
+                                                  'failed': False,
+                                                  'host': 'ceos-spine-1',
+                                                  'name': 'show ntp '
+                                                          'associations',
+                                                  'result': 'NTP is disabled.\n'
+                                                            '     '
+                                                            'remote          '
+                                                            'refid      st t '
+                                                            'when  poll '
+                                                            'reach   delay   '
+                                                            'offset  jitter\n'
+                                                            '==============================================================================',
+                                                  'task_retry': 0},
+                                                 {'changed': False,
+                                                  'connection_retry': 0,
+                                                  'criteria': 'cEOS',
+                                                  'diff': '',
+                                                  'exception': None,
+                                                  'failed': False,
+                                                  'host': 'ceos-spine-1',
+                                                  'name': 'check ceos version',
+                                                  'result': 'PASS',
+                                                  'success': True,
+                                                  'task': 'show version',
+                                                  'task_retry': 0,
+                                                  'test': 'contains'},
+                                                 {'changed': False,
+                                                  'connection_retry': 0,
+                                                  'criteria': '1.1.1.1',
+                                                  'diff': '',
+                                                  'exception': 'Pattern not in '
+                                                               'output',
+                                                  'failed': True,
+                                                  'host': 'ceos-spine-1',
+                                                  'name': 'check NTP status',
+                                                  'result': 'FAIL',
+                                                  'success': False,
+                                                  'task': 'show ntp '
+                                                          'associations',
+                                                  'task_retry': 0,
+                                                  'test': 'contains_lines'}]},
+                     'task': 'nornir-worker-1:test'},
+ 'nornir-worker-2': {'errors': [],
+                     'failed': False,
+                     'messages': ['nornir-worker-2 - nothing to do, no hosts '
+                                  "matched by filters '{'FB': '*spine*'}'"],
+                     'result': {'suite': {}, 'test_results': []},
+                     'task': 'nornir-worker-2:test'},
+ 'nornir-worker-4': {'errors': [],
+                     'failed': False,
+                     'messages': ['nornir-worker-4 - nothing to do, no hosts '
+                                  "matched by filters '{'FB': '*spine*'}'"],
+                     'result': {'suite': {}, 'test_results': []},
+                     'task': 'nornir-worker-4:test'},
+ 'nornir-worker-5': {'errors': [],
+                     'failed': False,
+                     'messages': ['nornir-worker-5 - nothing to do, no hosts '
+                                  "matched by filters '{'FB': '*spine*'}'"],
+                     'result': {'suite': {}, 'test_results': []},
+                     'task': 'nornir-worker-5:test'}}&lt;/details&gt;</msg>
+<msg time="2024-11-28T21:14:02.835259" level="INFO" html="true">&lt;details&gt;&lt;summary&gt;Test suite results details&lt;/summary&gt;&lt;p&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;&lt;th&gt;worker         &lt;/th&gt;&lt;th&gt;host        &lt;/th&gt;&lt;th&gt;name              &lt;/th&gt;&lt;th&gt;result  &lt;/th&gt;&lt;th&gt;failed  &lt;/th&gt;&lt;th&gt;task                 &lt;/th&gt;&lt;th&gt;test          &lt;/th&gt;&lt;th&gt;criteria  &lt;/th&gt;&lt;th&gt;exception            &lt;/th&gt;&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;&lt;td&gt;nornir-worker-1&lt;/td&gt;&lt;td&gt;ceos-spine-2&lt;/td&gt;&lt;td&gt;check ceos version&lt;/td&gt;&lt;td&gt;PASS    &lt;/td&gt;&lt;td&gt;False   &lt;/td&gt;&lt;td&gt;show version         &lt;/td&gt;&lt;td&gt;contains      &lt;/td&gt;&lt;td&gt;cEOS      &lt;/td&gt;&lt;td&gt;                     &lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;nornir-worker-1&lt;/td&gt;&lt;td&gt;ceos-spine-2&lt;/td&gt;&lt;td&gt;check NTP status  &lt;/td&gt;&lt;td&gt;FAIL    &lt;/td&gt;&lt;td&gt;True    &lt;/td&gt;&lt;td&gt;show ntp associations&lt;/td&gt;&lt;td&gt;contains_lines&lt;/td&gt;&lt;td&gt;1.1.1.1   &lt;/td&gt;&lt;td&gt;Pattern not in output&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;nornir-worker-1&lt;/td&gt;&lt;td&gt;ceos-spine-1&lt;/td&gt;&lt;td&gt;check ceos version&lt;/td&gt;&lt;td&gt;PASS    &lt;/td&gt;&lt;td&gt;False   &lt;/td&gt;&lt;td&gt;show version         &lt;/td&gt;&lt;td&gt;contains      &lt;/td&gt;&lt;td&gt;cEOS      &lt;/td&gt;&lt;td&gt;                     &lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;nornir-worker-1&lt;/td&gt;&lt;td&gt;ceos-spine-1&lt;/td&gt;&lt;td&gt;check NTP status  &lt;/td&gt;&lt;td&gt;FAIL    &lt;/td&gt;&lt;td&gt;True    &lt;/td&gt;&lt;td&gt;show ntp associations&lt;/td&gt;&lt;td&gt;contains_lines&lt;/td&gt;&lt;td&gt;1.1.1.1   &lt;/td&gt;&lt;td&gt;Pattern not in output&lt;/td&gt;&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;&lt;/p&gt;&lt;/details&gt;</msg>
+<msg time="2024-11-28T21:14:02.835259" level="INFO" html="true">&lt;details&gt;&lt;summary&gt;Test suite results CSV table&lt;/summary&gt;&lt;p&gt;"worker","host","name","result","failed","task","test","criteria","exception"
+"nornir-worker-1","ceos-spine-2","check ceos version","PASS","False","show version","contains","cEOS","None"
+"nornir-worker-1","ceos-spine-2","check NTP status","FAIL","True","show ntp associations","contains_lines","1.1.1.1","Pattern not in output"
+"nornir-worker-1","ceos-spine-1","check ceos version","PASS","False","show version","contains","cEOS","None"
+"nornir-worker-1","ceos-spine-1","check NTP status","FAIL","True","show ntp associations","contains_lines","1.1.1.1","Pattern not in output"&lt;/p&gt;&lt;/details&gt;</msg>
+<msg time="2024-11-28T21:14:02.835259" level="INFO" html="true">&lt;details&gt;&lt;summary&gt;Devices tests suites content&lt;/summary&gt;&lt;p&gt;&lt;details&gt;&lt;summary&gt;ceos-spine-1 (2 tests)&lt;/summary&gt;&lt;p style="margin-left:20px;"&gt;- name: check ceos version
+  pattern: cEOS
+  task: show version
+  test: contains
+- name: check NTP status
+  pattern:
+  - 1.1.1.1
+  task: show ntp associations
+  test: contains_lines
+&lt;/p&gt;&lt;/details&gt;&lt;/p&gt;&lt;p&gt;&lt;details&gt;&lt;summary&gt;ceos-spine-2 (2 tests)&lt;/summary&gt;&lt;p style="margin-left:20px;"&gt;- name: check ceos version
+  pattern: cEOS
+  task: show version
+  test: contains
+- name: check NTP status
+  pattern:
+  - 1.1.1.1
+  task: show ntp associations
+  test: contains_lines
+&lt;/p&gt;&lt;/details&gt;&lt;/p&gt;&lt;/details&gt;</msg>
+<msg time="2024-11-28T21:14:02.835259" level="INFO" html="true">&lt;details&gt;&lt;summary&gt;Collected devices output&lt;/summary&gt;&lt;p&gt;&lt;details&gt;&lt;summary&gt;ceos-spine-1 (2 commands)&lt;/summary&gt;&lt;p&gt;&lt;p&gt;&lt;details style="margin-left:20px;"&gt;&lt;summary&gt;show version&lt;/summary&gt;&lt;p style="margin-left:20px;"&gt;&lt;font face="courier new"&gt;Arista cEOSLab
+Hardware version: 
+Serial number: C1DE3FC0E6261AE1B236F350E06E5933
+Hardware MAC address: 001c.7329.a714
+System MAC address: 001c.7329.a714
+
+Software image version: 4.30.0F-31408673.4300F (engineering build)
+Architecture: x86_64
+Internal build version: 4.30.0F-31408673.4300F
+Internal build ID: a35f0dc7-2d65-4f2a-a010-279cf445fd8c
+Image format version: 1.0
+Image optimization: None
+
+cEOS tools version: (unknown)
+Kernel version: 5.15.0-124-generic
+
+Uptime: 36 minutes
+Total memory: 16336800 kB
+Free memory: 6897364 kB
+&lt;/font&gt;&lt;/p&gt;&lt;/details&gt;&lt;/p&gt;&lt;p&gt;&lt;details style="margin-left:20px;"&gt;&lt;summary&gt;show ntp associations&lt;/summary&gt;&lt;p style="margin-left:20px;"&gt;&lt;font face="courier new"&gt;NTP is disabled.
+     remote          refid      st t when  poll reach   delay   offset  jitter
+==============================================================================&lt;/font&gt;&lt;/p&gt;&lt;/details&gt;&lt;/p&gt;&lt;/p&gt;&lt;/details&gt;&lt;/p&gt;&lt;p&gt;&lt;details&gt;&lt;summary&gt;ceos-spine-2 (2 commands)&lt;/summary&gt;&lt;p&gt;&lt;p&gt;&lt;details style="margin-left:20px;"&gt;&lt;summary&gt;show version&lt;/summary&gt;&lt;p style="margin-left:20px;"&gt;&lt;font face="courier new"&gt;Arista cEOSLab
+Hardware version: 
+Serial number: BF31A02B9D88ACC3E737E1E82A87620D
+Hardware MAC address: 001c.7314.8495
+System MAC address: 001c.7314.8495
+
+Software image version: 4.30.0F-31408673.4300F (engineering build)
+Architecture: x86_64
+Internal build version: 4.30.0F-31408673.4300F
+Internal build ID: a35f0dc7-2d65-4f2a-a010-279cf445fd8c
+Image format version: 1.0
+Image optimization: None
+
+cEOS tools version: (unknown)
+Kernel version: 5.15.0-124-generic
+
+Uptime: 36 minutes
+Total memory: 16336800 kB
+Free memory: 6897364 kB
+&lt;/font&gt;&lt;/p&gt;&lt;/details&gt;&lt;/p&gt;&lt;p&gt;&lt;details style="margin-left:20px;"&gt;&lt;summary&gt;show ntp associations&lt;/summary&gt;&lt;p style="margin-left:20px;"&gt;&lt;font face="courier new"&gt;NTP is disabled.
+     remote          refid      st t when  poll reach   delay   offset  jitter
+==============================================================================&lt;/font&gt;&lt;/p&gt;&lt;/details&gt;&lt;/p&gt;&lt;/p&gt;&lt;/details&gt;&lt;/p&gt;&lt;/details&gt;</msg>
+<msg time="2024-11-28T21:14:02.835259" level="INFO" html="true">Tests completed - 4, &lt;span style="background-color: #97BD61"&gt;success - 2&lt;/span&gt;, &lt;span style="background-color: #CE3E01"&gt;failed - 2&lt;/span&gt;</msg>
+<msg time="2024-11-28T21:14:02.836278" level="FAIL">Tests failed</msg>
+<arg>suite=nf://nornir_test_suites/suite_1.txt</arg>
+<doc>Run nr.test  task</doc>
+<status status="FAIL" start="2024-11-28T21:14:01.756825" elapsed="1.079522">Tests failed</status>
+</kw>
+<status status="FAIL" start="2024-11-28T21:14:01.756825" elapsed="1.079522">Tests failed</status>
+</test>
+<status status="FAIL" start="2024-11-28T21:13:51.302447" elapsed="11.536201"/>
+</suite>
+<statistics>
+<total>
+<stat pass="0" fail="1" skip="0">All Tests</stat>
+</total>
+<tag>
+</tag>
+<suite>
+<stat pass="0" fail="1" skip="0" id="s1" name="Suite Nr Test">Suite Nr Test</stat>
+</suite>
+</statistics>
+<errors>
+<msg time="2024-11-28T21:13:52.463240" level="ERROR">C:\Users\Denis\YandexDisk\Python\NORFAB\tests\nf_tests_inventory\nornir/nornir-worker-3-non-existing-data.yaml - file not found</msg>
+<msg time="2024-11-28T21:13:52.463240" level="ERROR">'nornir-worker-3' - failed to start worker, inventory file not found 'C:\Users\Denis\YandexDisk\Python\NORFAB\tests\nf_tests_inventory\nornir/nornir-worker-3-non-existing-data.yaml'</msg>
+<msg time="2024-11-28T21:14:02.830052" level="ERROR" html="true">nornir-worker-1 worker, ceos-spine-2 test "check NTP status" - &lt;span style="background-color: #CE3E01"&gt;"Pattern not in output"&lt;/span&gt;</msg>
+<msg time="2024-11-28T21:14:02.831484" level="ERROR" html="true">nornir-worker-1 worker, ceos-spine-1 test "check NTP status" - &lt;span style="background-color: #CE3E01"&gt;"Pattern not in output"&lt;/span&gt;</msg>
+</errors>
+</robot>

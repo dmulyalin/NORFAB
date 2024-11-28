@@ -28,16 +28,14 @@ class NorFabRobot:
     def __init__(
         self,
         inventory="./inventory.yaml",
-        workers=None,
-        start_broker=None,
         log_level="WARNING",
     ):
         self.ROBOT_LIBRARY_LISTENER = self
 
         # initiate NorFab
         self.nf = NorFab(inventory=inventory, log_level=log_level)
-        self.nf.start(start_broker=start_broker, workers=workers)
-        self.client = self.nf.client
+        self.nf.start()
+        self.client = self.nf.make_client()
 
     def start_suite(self, data, result):
         pass
