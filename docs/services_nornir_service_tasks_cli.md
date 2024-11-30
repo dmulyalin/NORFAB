@@ -5,28 +5,63 @@ tags:
 
 # Overview
 
-The purpose of Nornir service `cli` function is to retrieve show commands 
-output from devices.
+The purpose of Nornir service `cli` task designed to retrieve show commands 
+output from devices using SSH and Telnet. Nornir `cli` uses Netmiko, Scrapli 
+and NAPALM libraries to communicate with devices.
 
-# Command Line Shell
+## Nornir CLI Sample Usage
 
-NorFab shell allows to call Nornir `cli` function using command line interface.
+Example of retrieving commands output from devices.
 
-## NORFAB Nornir CLI Shell Reference
+!!! example
 
-NorFab shell supports these command options for Nornir `cli` function:
+    === "CLI"
+    
+        ```
+        TBD
+        ```
+        
+    === "CLI Demo"
+    
+    
+    === "Python"
+    
+		This code is complete and can run as is
+		
+        ```
+		import pprint
+		
+        from norfab.core.nfapi import NorFab
+		
+		nf = NorFab(inventory="inventory.yaml")
+		nf.start()
+		
+		client = nf.make_client()
+		
+        res = nfclient.run_job(
+            service="nornir",
+            task="cli",
+            kwargs={
+				"commands": ["show clock", "show version"],
+				"FC": "ceos-spine"				
+			}
+        )
+		
+		pprint.pprint(res)
+		
+		nf.destroy()
+        ```
 
-TBD
+		Once executed, above code should produce this output:
+		
+		```
+		TBD
+		```
+		
+		Refer to [Getting Started](norfab_getting_started.md) section on 
+		how to construct  `inventory.yaml` file.
 
-## Nornir CLI Function Sample Usage
-
-Example of retrieving `show clock` command output:
-
-```
-
-```
-
-## Invoking Different Plugins
+## Using Different Connection Plugins
 
 ## Outputting Text Tables
 
@@ -46,13 +81,11 @@ Example of retrieving `show clock` command output:
 
 ## Sending New Line Character
 
-# Python API
+## NORFAB Nornir CLI Shell Reference
 
-Example how to invoke Nornir Service `cli` function from Python API
+NorFab shell supports these command options for Nornir `cli` task:
 
-```
-
-```
+TBD
 
 ## Python API Reference
 
