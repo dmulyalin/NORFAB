@@ -87,7 +87,9 @@ class NFPClient(object):
         self.name = name
         self.zmq_name = f"{self.name}-{uuid4().hex}"
         self.broker = broker
-        self.base_dir = f"__norfab__/files/client/{self.name}/"
+        self.base_dir = os.path.join(
+            os.getcwd(), "__norfab__", "files", "client", self.name
+        )
         self.base_dir_jobs = os.path.join(self.base_dir, "jobs")
         self.events_dir = os.path.join(self.base_dir, "events")
 
@@ -97,14 +99,20 @@ class NFPClient(object):
         os.makedirs(self.events_dir, exist_ok=True)
 
         # generate certificates and create directories
-        generate_certificates(self.base_dir)
-        self.public_keys_dir = os.path.join(self.base_dir, 'public_keys')
-        self.secret_keys_dir = os.path.join(self.base_dir, 'private_keys')
-    
+        generate_certificates(
+            self.base_dir,
+            cert_name=self.name,
+            broker_keys_dir=os.path.join(
+                os.getcwd(), "__norfab__", "files", "broker", "public_keys"
+            ),
+        )
+        self.public_keys_dir = os.path.join(self.base_dir, "public_keys")
+        self.secret_keys_dir = os.path.join(self.base_dir, "private_keys")
+
         self.ctx = zmq.Context()
         self.poller = zmq.Poller()
         self.reconnect_to_broker()
-        
+
         # create queue file
         self.queue_filename = os.path.join(
             self.base_dir_jobs, f"{self.name}.jobsqueue.txt"
@@ -138,22 +146,24 @@ class NFPClient(object):
         if self.broker_socket:
             self.poller.unregister(self.broker_socket)
             self.broker_socket.close()
-            
+
         self.broker_socket = self.ctx.socket(zmq.DEALER)
-        
+
         # We need two certificates, one for the client and one for
         # the server. The client must know the server's public key
         # to make a CURVE connection.
-        client_secret_file = os.path.join(self.secret_keys_dir, "client.key_secret")
+        client_secret_file = os.path.join(
+            self.secret_keys_dir, f"{self.name}.key_secret"
+        )
         client_public, client_secret = zmq.auth.load_certificate(client_secret_file)
         self.broker_socket.curve_secretkey = client_secret
         self.broker_socket.curve_publickey = client_public
-    
+
         # The client must know the server's public key to make a CURVE connection.
-        server_public_file = os.path.join(self.public_keys_dir, "server.key")
+        server_public_file = os.path.join(self.public_keys_dir, "broker.key")
         server_public, _ = zmq.auth.load_certificate(server_public_file)
         self.broker_socket.curve_serverkey = server_public
-        
+
         self.broker_socket.setsockopt_unicode(zmq.IDENTITY, self.zmq_name, "utf8")
         self.broker_socket.linger = 0
         self.broker_socket.connect(self.broker)

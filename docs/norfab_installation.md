@@ -1,10 +1,14 @@
-## NorFab Core
+## Install NorFab
 
-Install NorFab core from PyPI
+Install NorFab from PyPI
 
 ```
 pip install norfab
 ```
+
+NorFab core runs equally well on both Windows and Linux. Some 
+services might work only on one or the other, in that case that
+will be noted in service deployment details.
 
 ## Extras
 
@@ -40,3 +44,11 @@ To install Netbox service dependencies
 ```
 pip install norfab[netbox_service]
 ```
+
+## Operating Systems Support
+
+| Component      | Windows      | Linux        | MacOS        |
+| -------------- | ------------ | ------------ | ------------ |
+| NorFab Core    | :check_mark: | :check_mark: | :check_mark: |
+| Nornir Service | :check_mark: | :check_mark: | :check_mark: |
+| Netbox Service | :check_mark: | :check_mark: | :check_mark: |

@@ -110,7 +110,6 @@ class NFPBroker:
         log_level: str = "WARNING",
         multiplier: int = 6,
         keepalive: int = 2500,
-        base_dir: str = "",
     ):
         """Initialize broker state."""
         log.setLevel(log_level.upper())
@@ -123,28 +122,26 @@ class NFPBroker:
         self.exit_event = exit_event
         self.inventory = inventory
 
-        self.base_dir = base_dir or os.getcwd()
+        self.base_dir = os.getcwd()
         self.broker_base_dir = f"{self.base_dir}/__norfab__/files/broker/"
         os.makedirs(self.base_dir, exist_ok=True)
         os.makedirs(self.broker_base_dir, exist_ok=True)
-        
+
         # generate certificates, create directories and load certs
-        generate_certificates(self.broker_base_dir)
-        keys_dir = os.path.join(self.broker_base_dir, 'certificates')
-        public_keys_dir = os.path.join(self.broker_base_dir, 'public_keys')
-        secret_keys_dir = os.path.join(self.broker_base_dir, 'private_keys')
-        server_secret_file = os.path.join(secret_keys_dir, "server.key_secret")
+        generate_certificates(self.broker_base_dir, cert_name="broker")
+        secret_keys_dir = os.path.join(self.broker_base_dir, "private_keys")
+        server_secret_file = os.path.join(secret_keys_dir, "broker.key_secret")
         server_public, server_secret = zmq.auth.load_certificate(server_secret_file)
-        
+
         self.ctx = zmq.Context()
-        
+
         # Start an authenticator for this context.
         self.auth = ThreadAuthenticator(self.ctx)
         self.auth.start()
         self.auth.allow("127.0.0.1")
         # Tell the authenticator how to handle CURVE requests
-        self.auth.configure_curve(domain='*', location=zmq.auth.CURVE_ALLOW_ANY)
-    
+        self.auth.configure_curve(domain="*", location=zmq.auth.CURVE_ALLOW_ANY)
+
         self.socket = self.ctx.socket(zmq.ROUTER)
         self.socket.curve_secretkey = server_secret
         self.socket.curve_publickey = server_public
@@ -156,7 +153,7 @@ class NFPBroker:
         self.socket_lock = (
             threading.Lock()
         )  # used for keepalives to protect socket object
-    
+
         log.debug(f"NFPBroker - is read and listening on {endpoint}")
 
     def mediate(self):

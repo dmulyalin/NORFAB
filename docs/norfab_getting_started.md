@@ -3,13 +3,16 @@ tags:
   - norfab
 ---
 
+The simplest way to start with NorFab is to do local installation 
+when broker, workers and client run locally, this is what we going 
+to demonstrate in this guide.
+
 Once NorFab installed, next step is to create a folder that will 
-hold your environment and start creating inventory files
-with required configurations.
+hold your environment and start creating inventory files.
 
 Create ``norfab`` folder and inside of it create ``inventory.yaml``, 
-file name is important as NORFAB by default searches
-for ``inventory.yaml``, file content is:
+file name is important as NORFAB by default searches for 
+``inventory.yaml``, file content is:
 
 ``` yaml title="inventory.yaml"
 broker: # (1)!
@@ -147,4 +150,3 @@ NorFab CLI supports Tab completions, question mark help together with
 sub-shells, read more about NorFab CLI and how to use it [here](norfab_cli_overview.md).
 
 :star: That's it :star:
- 

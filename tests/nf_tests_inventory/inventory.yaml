@@ -15,8 +15,8 @@ workers:
     - nornir/nornir-worker-3-non-existing-data.yaml
   nornir-worker-4:
     - nornir/nornir-worker-4.yaml
-  # nornir-worker-5:
-  #   - nornir/nornir-worker-5.yaml
+  nornir-worker-5:
+    - nornir/nornir-worker-5.yaml
   netbox-worker-1.*:
     - netbox/common.yaml  
   pyats-*:
@@ -34,8 +34,8 @@ topology:
     - nornir-worker-2 # ContainerLab devices
     - nornir-worker-3 # Worker with no Nornir Hosts Inventory
     - nornir-worker-4 # FakeNOS devices
-    # - nornir-worker-5: # Worker to test Netbox Inventory
-    #     depends_on: 
-    #       - netbox-worker-1.1
-    #       - netbox-worker-1.2
+    - nornir-worker-5: # Worker to test Netbox Inventory
+        depends_on: 
+          - netbox-worker-1.1
+          - netbox-worker-1.2
     # - pyats-worker-1
