@@ -89,7 +89,7 @@ class WatchDog(WorkerWatchDog):
             "alive": int(time.time() - self.started_at),
             "dead_connections_cleaned": self.dead_connections_cleaned,
             "idle_connections_cleaned": self.idle_connections_cleaned,
-            "ram_usage_mbyte": self.get_ram_usage(),
+            "worker_ram_usage_mbyte": self.get_ram_usage(),
         }
 
     def configuration(self):
