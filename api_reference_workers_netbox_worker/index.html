@@ -485,6 +485,48 @@
   
   
     <li class="md-nav__item">
+      <a href="../norfab_distributed_deployment/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Distributed Deployment
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../norfab_docker_deployment/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Docker Deployment
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../norfab_help_with_norfab/" class="md-nav__link">
         
   
@@ -815,6 +857,27 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../services_nornir_service_tasks_diagram/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Nornir Diagram
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1133,6 +1196,27 @@
   
   <span class="md-ellipsis">
     Netbox UPDATE Device Facts
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../services_netbox_service_tasks_update_device_interfaces/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Netbox UPDATE Device Interfaces
   </span>
   
 
@@ -1826,20 +1910,14 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="update_device_facts">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#norfab.workers.netbox_worker.NetboxWorker.update_device_facts--software-version" class="md-nav__link">
-    <span class="md-ellipsis">
-      software version
-    </span>
-  </a>
-  
 </li>
         
-      </ul>
-    </nav>
+          <li class="md-nav__item">
+  <a href="#norfab.workers.netbox_worker.NetboxWorker.update_device_interfaces" class="md-nav__link">
+    <span class="md-ellipsis">
+      update_device_interfaces
+    </span>
+  </a>
   
 </li>
         
@@ -2229,20 +2307,14 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="update_device_facts">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#norfab.workers.netbox_worker.NetboxWorker.update_device_facts--software-version" class="md-nav__link">
-    <span class="md-ellipsis">
-      software version
-    </span>
-  </a>
-  
 </li>
         
-      </ul>
-    </nav>
+          <li class="md-nav__item">
+  <a href="#norfab.workers.netbox_worker.NetboxWorker.update_device_interfaces" class="md-nav__link">
+    <span class="md-ellipsis">
+      update_device_interfaces
+    </span>
+  </a>
   
 </li>
         
@@ -4170,7 +4242,7 @@
 
 
 <h3 id="norfab.workers.netbox_worker.NetboxWorker.get_circuits" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">get_circuits</span><span class="p">(</span><span class="n">devices</span><span class="p">,</span> <span class="n">instance</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dry_run</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+            <code class="highlight language-python"><span class="n">get_circuits</span><span class="p">(</span><span class="n">devices</span><span class="p">,</span> <span class="n">instance</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dry_run</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">cid</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
 
 <a href="#norfab.workers.netbox_worker.NetboxWorker.get_circuits" class="headerlink" title="Permanent link">¤</a></h3>
 
@@ -4231,6 +4303,20 @@
             </td>
             <td>
                   <code>False</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code>cid</code></td>
+            <td>
+                  <code>list</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>list of circuit identifiers to retrieve data for</p>
+              </div>
+            </td>
+            <td>
+                  <code>None</code>
             </td>
           </tr>
       </tbody>
@@ -4406,11 +4492,17 @@
 <span class="normal">1048</span>
 <span class="normal">1049</span>
 <span class="normal">1050</span>
-<span class="normal">1051</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_circuits</span><span class="p">(</span>
+<span class="normal">1051</span>
+<span class="normal">1052</span>
+<span class="normal">1053</span>
+<span class="normal">1054</span>
+<span class="normal">1055</span>
+<span class="normal">1056</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_circuits</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">devices</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span>
     <span class="n">instance</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">dry_run</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">cid</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Function to retrieve device circuits data from Netbox using GraphQL API.</span>
@@ -4418,6 +4510,7 @@
 <span class="sd">    :param devices: list of devices to retrieve interface for</span>
 <span class="sd">    :param instance: Netbox instance name</span>
 <span class="sd">    :param dry_run: only return query content, do not run it</span>
+<span class="sd">    :param cid: list of circuit identifiers to retrieve data for</span>
 <span class="sd">    :return: dictionary keyed by device name with circuits data</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># form final result object</span>
@@ -4457,6 +4550,9 @@
     <span class="c1"># retrieve all circuits for devices&#39; sites</span>
     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">nb_version</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
         <span class="n">circuits_filters_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;site&quot;</span><span class="p">:</span> <span class="n">sites</span><span class="p">}</span>
+        <span class="k">if</span> <span class="n">cid</span><span class="p">:</span>
+            <span class="n">cid_list</span> <span class="o">=</span> <span class="s1">&#39;[&quot;</span><span class="si">{cl}</span><span class="s1">&quot;]&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cl</span><span class="o">=</span><span class="s1">&#39;&quot;, &quot;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cid</span><span class="p">))</span>
+            <span class="n">circuits_filters_dict</span><span class="p">[</span><span class="s2">&quot;cid&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">{{</span><span class="s2">in_list: </span><span class="si">{</span><span class="n">cid_list</span><span class="si">}</span><span class="se">}}</span><span class="s2">&quot;</span>
     <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">nb_version</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
         <span class="n">circuits_filters_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;site&quot;</span><span class="p">:</span> <span class="n">sites</span><span class="p">}</span>
 
@@ -4574,12 +4670,7 @@
 
             <details class="quote">
               <summary>Source code in <code>norfab\workers\netbox_worker.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1053</span>
-<span class="normal">1054</span>
-<span class="normal">1055</span>
-<span class="normal">1056</span>
-<span class="normal">1057</span>
-<span class="normal">1058</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1058</span>
 <span class="normal">1059</span>
 <span class="normal">1060</span>
 <span class="normal">1061</span>
@@ -4679,7 +4770,12 @@
 <span class="normal">1155</span>
 <span class="normal">1156</span>
 <span class="normal">1157</span>
-<span class="normal">1158</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_nornir_inventory</span><span class="p">(</span>
+<span class="normal">1158</span>
+<span class="normal">1159</span>
+<span class="normal">1160</span>
+<span class="normal">1161</span>
+<span class="normal">1162</span>
+<span class="normal">1163</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_nornir_inventory</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">filters</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">devices</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -4795,7 +4891,7 @@
 
 
 <h3 id="norfab.workers.netbox_worker.NetboxWorker.update_device_facts" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">update_device_facts</span><span class="p">(</span><span class="n">instance</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dry_run</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">via</span><span class="o">=</span><span class="s1">&#39;nornir&#39;</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">60</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code>
+            <code class="highlight language-python"><span class="n">update_device_facts</span><span class="p">(</span><span class="n">instance</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dry_run</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">via</span><span class="o">=</span><span class="s1">&#39;nornir&#39;</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">60</span><span class="p">,</span> <span class="n">devices</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code>
 
 <a href="#norfab.workers.netbox_worker.NetboxWorker.update_device_facts" class="headerlink" title="Permanent link">¤</a></h3>
 
@@ -4806,9 +4902,6 @@
 provided by NAPALM get_facts getter:</p>
 <ul>
 <li>serial number</li>
-<li>
-<h5 id="norfab.workers.netbox_worker.NetboxWorker.update_device_facts--software-version">software version<a class="headerlink" href="#norfab.workers.netbox_worker.NetboxWorker.update_device_facts--software-version" title="Permanent link">¤</a></h5>
-</li>
 </ul>
 
 
@@ -4897,12 +4990,7 @@ provided by NAPALM get_facts getter:</p>
 
             <details class="quote">
               <summary>Source code in <code>norfab\workers\netbox_worker.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1160</span>
-<span class="normal">1161</span>
-<span class="normal">1162</span>
-<span class="normal">1163</span>
-<span class="normal">1164</span>
-<span class="normal">1165</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1165</span>
 <span class="normal">1166</span>
 <span class="normal">1167</span>
 <span class="normal">1168</span>
@@ -4950,12 +5038,28 @@ provided by NAPALM get_facts getter:</p>
 <span class="normal">1210</span>
 <span class="normal">1211</span>
 <span class="normal">1212</span>
-<span class="normal">1213</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">update_device_facts</span><span class="p">(</span>
+<span class="normal">1213</span>
+<span class="normal">1214</span>
+<span class="normal">1215</span>
+<span class="normal">1216</span>
+<span class="normal">1217</span>
+<span class="normal">1218</span>
+<span class="normal">1219</span>
+<span class="normal">1220</span>
+<span class="normal">1221</span>
+<span class="normal">1222</span>
+<span class="normal">1223</span>
+<span class="normal">1224</span>
+<span class="normal">1225</span>
+<span class="normal">1226</span>
+<span class="normal">1227</span>
+<span class="normal">1228</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">update_device_facts</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">instance</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">dry_run</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">via</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;nornir&quot;</span><span class="p">,</span>
     <span class="n">timeout</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">60</span><span class="p">,</span>
+    <span class="n">devices</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -4963,8 +5067,6 @@ provided by NAPALM get_facts getter:</p>
 <span class="sd">    provided by NAPALM get_facts getter:</span>
 
 <span class="sd">    - serial number</span>
-<span class="sd">    - software version</span>
-<span class="sd">    -</span>
 
 <span class="sd">    :param instance: Netbox instance name</span>
 <span class="sd">    :param dry_run: return information that would be pushed to Netbox but do not push it</span>
@@ -4973,10 +5075,13 @@ provided by NAPALM get_facts getter:</p>
 <span class="sd">    :param kwargs: any additional arguments to send to service for device data retrieval</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">result</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="n">ret</span> <span class="o">=</span> <span class="n">Result</span><span class="p">(</span><span class="n">task</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">:push_device_facts&quot;</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="n">result</span><span class="p">)</span>
+    <span class="n">ret</span> <span class="o">=</span> <span class="n">Result</span><span class="p">(</span><span class="n">task</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">:update_device_facts&quot;</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="n">result</span><span class="p">)</span>
     <span class="n">nb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_pynetbox</span><span class="p">(</span><span class="n">instance</span><span class="p">)</span>
+    <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;add_details&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
 
     <span class="k">if</span> <span class="n">via</span> <span class="o">==</span> <span class="s2">&quot;nornir&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">devices</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;FL&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">devices</span>
         <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">run_job</span><span class="p">(</span>
             <span class="s2">&quot;nornir&quot;</span><span class="p">,</span>
             <span class="s2">&quot;parse&quot;</span><span class="p">,</span>
@@ -4986,20 +5091,339 @@ provided by NAPALM get_facts getter:</p>
         <span class="p">)</span>
         <span class="k">for</span> <span class="n">worker</span><span class="p">,</span> <span class="n">results</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">for</span> <span class="n">host</span><span class="p">,</span> <span class="n">host_data</span> <span class="ow">in</span> <span class="n">results</span><span class="p">[</span><span class="s2">&quot;result&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="n">facts</span> <span class="o">=</span> <span class="n">host_data</span><span class="p">[</span><span class="s2">&quot;napalm_get&quot;</span><span class="p">][</span><span class="s2">&quot;get_facts&quot;</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">host_data</span><span class="p">[</span><span class="s2">&quot;napalm_get&quot;</span><span class="p">][</span><span class="s2">&quot;failed&quot;</span><span class="p">]:</span>
+                    <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">host</span><span class="si">}</span><span class="s2"> - facts update failed: &#39;</span><span class="si">{</span><span class="n">host_data</span><span class="p">[</span><span class="s1">&#39;napalm_get&#39;</span><span class="p">][</span><span class="s1">&#39;exception&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
+                    <span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">event</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">host</span><span class="si">}</span><span class="s2"> - facts update failed&quot;</span><span class="p">)</span>
+                    <span class="k">continue</span>
                 <span class="n">nb_device</span> <span class="o">=</span> <span class="n">nb</span><span class="o">.</span><span class="n">dcim</span><span class="o">.</span><span class="n">devices</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">host</span><span class="p">)</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">nb_device</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">host</span><span class="si">}</span><span class="s2">&#39; does not exist in Netbox&quot;</span><span class="p">)</span>
+                <span class="n">facts</span> <span class="o">=</span> <span class="n">host_data</span><span class="p">[</span><span class="s2">&quot;napalm_get&quot;</span><span class="p">][</span><span class="s2">&quot;result&quot;</span><span class="p">][</span><span class="s2">&quot;get_facts&quot;</span><span class="p">]</span>
+                <span class="c1"># update serial number</span>
                 <span class="n">nb_device</span><span class="o">.</span><span class="n">serial</span> <span class="o">=</span> <span class="n">facts</span><span class="p">[</span><span class="s2">&quot;serial_number&quot;</span><span class="p">]</span>
-                <span class="k">if</span> <span class="s2">&quot;OS Version&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">nb_device</span><span class="o">.</span><span class="n">comments</span><span class="p">:</span>
-                    <span class="n">nb_device</span><span class="o">.</span><span class="n">comments</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">OS Version: </span><span class="si">{</span><span class="n">facts</span><span class="p">[</span><span class="s1">&#39;os_version&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
-                <span class="n">nb_device</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">dry_run</span><span class="p">:</span>
+                    <span class="n">nb_device</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
                 <span class="n">result</span><span class="p">[</span><span class="n">host</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-                    <span class="s2">&quot;update_device_facts&quot;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s2">&quot;update_device_facts_dry_run&quot;</span>
+                    <span class="k">if</span> <span class="n">dry_run</span>
+                    <span class="k">else</span> <span class="s2">&quot;update_device_facts&quot;</span><span class="p">:</span> <span class="p">{</span>
                         <span class="s2">&quot;serial&quot;</span><span class="p">:</span> <span class="n">facts</span><span class="p">[</span><span class="s2">&quot;serial_number&quot;</span><span class="p">],</span>
-                        <span class="s2">&quot;os_version&quot;</span><span class="p">:</span> <span class="n">facts</span><span class="p">[</span><span class="s2">&quot;os_version&quot;</span><span class="p">],</span>
                     <span class="p">}</span>
                 <span class="p">}</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">event</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">host</span><span class="si">}</span><span class="s2"> - facts updated&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">UnsupportedServiceError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">via</span><span class="si">}</span><span class="s2">&#39; service not supported&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">ret</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="norfab.workers.netbox_worker.NetboxWorker.update_device_interfaces" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">update_device_interfaces</span><span class="p">(</span><span class="n">instance</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dry_run</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">via</span><span class="o">=</span><span class="s1">&#39;nornir&#39;</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">60</span><span class="p">,</span> <span class="n">devices</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">create</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code>
+
+<a href="#norfab.workers.netbox_worker.NetboxWorker.update_device_interfaces" class="headerlink" title="Permanent link">¤</a></h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Function to update device interfaces in Netbox using information
+provided by NAPALM get_interfaces getter:</p>
+<ul>
+<li>interface name</li>
+<li>interface description</li>
+<li>mtu</li>
+<li>mac address</li>
+<li>admin status</li>
+<li>speed</li>
+</ul>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td><code>instance</code></td>
+            <td>
+                  <code>str</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Netbox instance name</p>
+              </div>
+            </td>
+            <td>
+                  <code>None</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code>dry_run</code></td>
+            <td>
+                  <code>bool</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>return information that would be pushed to Netbox but do not push it</p>
+              </div>
+            </td>
+            <td>
+                  <code>False</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code>via</code></td>
+            <td>
+                  <code>str</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>service name to use to retrieve devices' data, default is nornir parse task</p>
+              </div>
+            </td>
+            <td>
+                  <code>&#39;nornir&#39;</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code>timeout</code></td>
+            <td>
+                  <code>int</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>seconds to wait before timeout data retrieval job</p>
+              </div>
+            </td>
+            <td>
+                  <code>60</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code>create</code></td>
+            <td>
+                  <code>bool</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>create missing interfaces</p>
+              </div>
+            </td>
+            <td>
+                  <code>True</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code>kwargs</code></td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>any additional arguments to send to service for device data retrieval</p>
+              </div>
+            </td>
+            <td>
+                  <code>{}</code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+            <details class="quote">
+              <summary>Source code in <code>norfab\workers\netbox_worker.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1230</span>
+<span class="normal">1231</span>
+<span class="normal">1232</span>
+<span class="normal">1233</span>
+<span class="normal">1234</span>
+<span class="normal">1235</span>
+<span class="normal">1236</span>
+<span class="normal">1237</span>
+<span class="normal">1238</span>
+<span class="normal">1239</span>
+<span class="normal">1240</span>
+<span class="normal">1241</span>
+<span class="normal">1242</span>
+<span class="normal">1243</span>
+<span class="normal">1244</span>
+<span class="normal">1245</span>
+<span class="normal">1246</span>
+<span class="normal">1247</span>
+<span class="normal">1248</span>
+<span class="normal">1249</span>
+<span class="normal">1250</span>
+<span class="normal">1251</span>
+<span class="normal">1252</span>
+<span class="normal">1253</span>
+<span class="normal">1254</span>
+<span class="normal">1255</span>
+<span class="normal">1256</span>
+<span class="normal">1257</span>
+<span class="normal">1258</span>
+<span class="normal">1259</span>
+<span class="normal">1260</span>
+<span class="normal">1261</span>
+<span class="normal">1262</span>
+<span class="normal">1263</span>
+<span class="normal">1264</span>
+<span class="normal">1265</span>
+<span class="normal">1266</span>
+<span class="normal">1267</span>
+<span class="normal">1268</span>
+<span class="normal">1269</span>
+<span class="normal">1270</span>
+<span class="normal">1271</span>
+<span class="normal">1272</span>
+<span class="normal">1273</span>
+<span class="normal">1274</span>
+<span class="normal">1275</span>
+<span class="normal">1276</span>
+<span class="normal">1277</span>
+<span class="normal">1278</span>
+<span class="normal">1279</span>
+<span class="normal">1280</span>
+<span class="normal">1281</span>
+<span class="normal">1282</span>
+<span class="normal">1283</span>
+<span class="normal">1284</span>
+<span class="normal">1285</span>
+<span class="normal">1286</span>
+<span class="normal">1287</span>
+<span class="normal">1288</span>
+<span class="normal">1289</span>
+<span class="normal">1290</span>
+<span class="normal">1291</span>
+<span class="normal">1292</span>
+<span class="normal">1293</span>
+<span class="normal">1294</span>
+<span class="normal">1295</span>
+<span class="normal">1296</span>
+<span class="normal">1297</span>
+<span class="normal">1298</span>
+<span class="normal">1299</span>
+<span class="normal">1300</span>
+<span class="normal">1301</span>
+<span class="normal">1302</span>
+<span class="normal">1303</span>
+<span class="normal">1304</span>
+<span class="normal">1305</span>
+<span class="normal">1306</span>
+<span class="normal">1307</span>
+<span class="normal">1308</span>
+<span class="normal">1309</span>
+<span class="normal">1310</span>
+<span class="normal">1311</span>
+<span class="normal">1312</span>
+<span class="normal">1313</span>
+<span class="normal">1314</span>
+<span class="normal">1315</span>
+<span class="normal">1316</span>
+<span class="normal">1317</span>
+<span class="normal">1318</span>
+<span class="normal">1319</span>
+<span class="normal">1320</span>
+<span class="normal">1321</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">update_device_interfaces</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">instance</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">dry_run</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">via</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;nornir&quot;</span><span class="p">,</span>
+    <span class="n">timeout</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">60</span><span class="p">,</span>
+    <span class="n">devices</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">create</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Function to update device interfaces in Netbox using information</span>
+<span class="sd">    provided by NAPALM get_interfaces getter:</span>
+
+<span class="sd">    - interface name</span>
+<span class="sd">    - interface description</span>
+<span class="sd">    - mtu</span>
+<span class="sd">    - mac address</span>
+<span class="sd">    - admin status</span>
+<span class="sd">    - speed</span>
+
+<span class="sd">    :param instance: Netbox instance name</span>
+<span class="sd">    :param dry_run: return information that would be pushed to Netbox but do not push it</span>
+<span class="sd">    :param via: service name to use to retrieve devices&#39; data, default is nornir parse task</span>
+<span class="sd">    :param timeout: seconds to wait before timeout data retrieval job</span>
+<span class="sd">    :param create: create missing interfaces</span>
+<span class="sd">    :param kwargs: any additional arguments to send to service for device data retrieval</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">ret</span> <span class="o">=</span> <span class="n">Result</span><span class="p">(</span><span class="n">task</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">:update_device_interfaces&quot;</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="n">result</span><span class="p">)</span>
+    <span class="n">nb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_pynetbox</span><span class="p">(</span><span class="n">instance</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">via</span> <span class="o">==</span> <span class="s2">&quot;nornir&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">devices</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;FL&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">devices</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;getters&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;get_interfaces&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">run_job</span><span class="p">(</span>
+            <span class="s2">&quot;nornir&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;parse&quot;</span><span class="p">,</span>
+            <span class="n">kwargs</span><span class="o">=</span><span class="n">kwargs</span><span class="p">,</span>
+            <span class="n">workers</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">,</span>
+            <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">for</span> <span class="n">worker</span><span class="p">,</span> <span class="n">results</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">host</span><span class="p">,</span> <span class="n">host_data</span> <span class="ow">in</span> <span class="n">results</span><span class="p">[</span><span class="s2">&quot;result&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">updated</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="n">result</span><span class="p">[</span><span class="n">host</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="s2">&quot;update_device_interfaces_dry_run&quot;</span>
+                    <span class="k">if</span> <span class="n">dry_run</span>
+                    <span class="k">else</span> <span class="s2">&quot;update_device_interfaces&quot;</span><span class="p">:</span> <span class="n">updated</span>
+                <span class="p">}</span>
+                <span class="n">interfaces</span> <span class="o">=</span> <span class="n">host_data</span><span class="p">[</span><span class="s2">&quot;napalm_get&quot;</span><span class="p">][</span><span class="s2">&quot;get_interfaces&quot;</span><span class="p">]</span>
+                <span class="n">nb_device</span> <span class="o">=</span> <span class="n">nb</span><span class="o">.</span><span class="n">dcim</span><span class="o">.</span><span class="n">devices</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">host</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">nb_device</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">host</span><span class="si">}</span><span class="s2">&#39; does not exist in Netbox&quot;</span><span class="p">)</span>
+                <span class="n">nb_interfaces</span> <span class="o">=</span> <span class="n">nb</span><span class="o">.</span><span class="n">dcim</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">device_id</span><span class="o">=</span><span class="n">nb_device</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+                <span class="c1"># update existing interfaces</span>
+                <span class="k">for</span> <span class="n">nb_interface</span> <span class="ow">in</span> <span class="n">nb_interfaces</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">nb_interface</span><span class="o">.</span><span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">interfaces</span><span class="p">:</span>
+                        <span class="k">continue</span>
+                    <span class="n">interface</span> <span class="o">=</span> <span class="n">interfaces</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">nb_interface</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+                    <span class="n">nb_interface</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="n">interface</span><span class="p">[</span><span class="s2">&quot;description&quot;</span><span class="p">]</span>
+                    <span class="n">nb_interface</span><span class="o">.</span><span class="n">mtu</span> <span class="o">=</span> <span class="n">interface</span><span class="p">[</span><span class="s2">&quot;mtu&quot;</span><span class="p">]</span>
+                    <span class="n">nb_interface</span><span class="o">.</span><span class="n">speed</span> <span class="o">=</span> <span class="n">interface</span><span class="p">[</span><span class="s2">&quot;speed&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">1000</span>
+                    <span class="n">nb_interface</span><span class="o">.</span><span class="n">mac_address</span> <span class="o">=</span> <span class="n">interface</span><span class="p">[</span><span class="s2">&quot;mac_address&quot;</span><span class="p">]</span>
+                    <span class="n">nb_interface</span><span class="o">.</span><span class="n">enabled</span> <span class="o">=</span> <span class="n">interface</span><span class="p">[</span><span class="s2">&quot;is_enabled&quot;</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="n">dry_run</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">True</span><span class="p">:</span>
+                        <span class="n">nb_interface</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+                    <span class="n">updated</span><span class="p">[</span><span class="n">nb_interface</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">interface</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">event</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">host</span><span class="si">}</span><span class="s2"> - updated interface </span><span class="si">{</span><span class="n">nb_interface</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="c1"># create new interfaces</span>
+                <span class="k">if</span> <span class="n">create</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">True</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="k">for</span> <span class="n">interface_name</span><span class="p">,</span> <span class="n">interface</span> <span class="ow">in</span> <span class="n">interfaces</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="n">nb_interface</span> <span class="o">=</span> <span class="n">nb</span><span class="o">.</span><span class="n">dcim</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+                        <span class="n">name</span><span class="o">=</span><span class="n">interface_name</span><span class="p">,</span>
+                        <span class="n">device</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">nb_device</span><span class="o">.</span><span class="n">name</span><span class="p">},</span>
+                        <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;other&quot;</span><span class="p">,</span>
+                    <span class="p">)</span>
+                    <span class="n">nb_interface</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="n">interface</span><span class="p">[</span><span class="s2">&quot;description&quot;</span><span class="p">]</span>
+                    <span class="n">nb_interface</span><span class="o">.</span><span class="n">mtu</span> <span class="o">=</span> <span class="n">interface</span><span class="p">[</span><span class="s2">&quot;mtu&quot;</span><span class="p">]</span>
+                    <span class="n">nb_interface</span><span class="o">.</span><span class="n">speed</span> <span class="o">=</span> <span class="n">interface</span><span class="p">[</span><span class="s2">&quot;speed&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">1000</span>
+                    <span class="n">nb_interface</span><span class="o">.</span><span class="n">mac_address</span> <span class="o">=</span> <span class="n">interface</span><span class="p">[</span><span class="s2">&quot;mac_address&quot;</span><span class="p">]</span>
+                    <span class="n">nb_interface</span><span class="o">.</span><span class="n">enabled</span> <span class="o">=</span> <span class="n">interface</span><span class="p">[</span><span class="s2">&quot;is_enabled&quot;</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="n">dry_run</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">True</span><span class="p">:</span>
+                        <span class="n">nb_interface</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+                    <span class="n">updated</span><span class="p">[</span><span class="n">interface_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">interface</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">event</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">host</span><span class="si">}</span><span class="s2"> - created interface </span><span class="si">{</span><span class="n">nb_interface</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">UnsupportedServiceError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">via</span><span class="si">}</span><span class="s2">&#39; service not supported&quot;</span><span class="p">)</span>
 
@@ -5096,42 +5520,42 @@ provided by NAPALM get_facts getter:</p>
 
             <details class="quote">
               <summary>Source code in <code>norfab\workers\netbox_worker.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1215</span>
-<span class="normal">1216</span>
-<span class="normal">1217</span>
-<span class="normal">1218</span>
-<span class="normal">1219</span>
-<span class="normal">1220</span>
-<span class="normal">1221</span>
-<span class="normal">1222</span>
-<span class="normal">1223</span>
-<span class="normal">1224</span>
-<span class="normal">1225</span>
-<span class="normal">1226</span>
-<span class="normal">1227</span>
-<span class="normal">1228</span>
-<span class="normal">1229</span>
-<span class="normal">1230</span>
-<span class="normal">1231</span>
-<span class="normal">1232</span>
-<span class="normal">1233</span>
-<span class="normal">1234</span>
-<span class="normal">1235</span>
-<span class="normal">1236</span>
-<span class="normal">1237</span>
-<span class="normal">1238</span>
-<span class="normal">1239</span>
-<span class="normal">1240</span>
-<span class="normal">1241</span>
-<span class="normal">1242</span>
-<span class="normal">1243</span>
-<span class="normal">1244</span>
-<span class="normal">1245</span>
-<span class="normal">1246</span>
-<span class="normal">1247</span>
-<span class="normal">1248</span>
-<span class="normal">1249</span>
-<span class="normal">1250</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_next_ip</span><span class="p">(</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1323</span>
+<span class="normal">1324</span>
+<span class="normal">1325</span>
+<span class="normal">1326</span>
+<span class="normal">1327</span>
+<span class="normal">1328</span>
+<span class="normal">1329</span>
+<span class="normal">1330</span>
+<span class="normal">1331</span>
+<span class="normal">1332</span>
+<span class="normal">1333</span>
+<span class="normal">1334</span>
+<span class="normal">1335</span>
+<span class="normal">1336</span>
+<span class="normal">1337</span>
+<span class="normal">1338</span>
+<span class="normal">1339</span>
+<span class="normal">1340</span>
+<span class="normal">1341</span>
+<span class="normal">1342</span>
+<span class="normal">1343</span>
+<span class="normal">1344</span>
+<span class="normal">1345</span>
+<span class="normal">1346</span>
+<span class="normal">1347</span>
+<span class="normal">1348</span>
+<span class="normal">1349</span>
+<span class="normal">1350</span>
+<span class="normal">1351</span>
+<span class="normal">1352</span>
+<span class="normal">1353</span>
+<span class="normal">1354</span>
+<span class="normal">1355</span>
+<span class="normal">1356</span>
+<span class="normal">1357</span>
+<span class="normal">1358</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_next_ip</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">prefix</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>

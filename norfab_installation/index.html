@@ -80,7 +80,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#norfab-core" class="md-skip">
+        <a href="#install-norfab" class="md-skip">
           Skip to content
         </a>
       
@@ -469,9 +469,9 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#norfab-core" class="md-nav__link">
+  <a href="#install-norfab" class="md-nav__link">
     <span class="md-ellipsis">
-      NorFab Core
+      Install NorFab
     </span>
   </a>
   
@@ -519,6 +519,15 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#operating-systems-support" class="md-nav__link">
+    <span class="md-ellipsis">
+      Operating Systems Support
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -561,6 +570,48 @@
   
   <span class="md-ellipsis">
     Why use NORFAB
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../norfab_distributed_deployment/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Distributed Deployment
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../norfab_docker_deployment/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Docker Deployment
   </span>
   
 
@@ -907,6 +958,27 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../services_nornir_service_tasks_diagram/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Nornir Diagram
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1225,6 +1297,27 @@
   
   <span class="md-ellipsis">
     Netbox UPDATE Device Facts
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../services_netbox_service_tasks_update_device_interfaces/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Netbox UPDATE Device Interfaces
   </span>
   
 
@@ -2014,9 +2107,9 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#norfab-core" class="md-nav__link">
+  <a href="#install-norfab" class="md-nav__link">
     <span class="md-ellipsis">
-      NorFab Core
+      Install NorFab
     </span>
   </a>
   
@@ -2064,6 +2157,15 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#operating-systems-support" class="md-nav__link">
+    <span class="md-ellipsis">
+      Operating Systems Support
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -2084,10 +2186,13 @@
 
   <h1>Installation</h1>
 
-<h2 id="norfab-core">NorFab Core<a class="headerlink" href="#norfab-core" title="Permanent link">¤</a></h2>
-<p>Install NorFab core from PyPI</p>
+<h2 id="install-norfab">Install NorFab<a class="headerlink" href="#install-norfab" title="Permanent link">¤</a></h2>
+<p>Install NorFab from PyPI</p>
 <div class="highlight"><pre><span></span><code>pip install norfab
 </code></pre></div>
+<p>NorFab core runs equally well on both Windows and Linux. Some 
+services might work only on one or the other, in that case that
+will be noted in service deployment details.</p>
 <h2 id="extras">Extras<a class="headerlink" href="#extras" title="Permanent link">¤</a></h2>
 <p>Several extra installations supported tailoring certain services
 dependencies depending on what you want to run on a given node.</p>
@@ -2106,6 +2211,37 @@ dependencies depending on what you want to run on a given node.</p>
 <p>To install Netbox service dependencies</p>
 <div class="highlight"><pre><span></span><code>pip install norfab[netbox_service]
 </code></pre></div>
+<h2 id="operating-systems-support">Operating Systems Support<a class="headerlink" href="#operating-systems-support" title="Permanent link">¤</a></h2>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Windows</th>
+<th>Linux</th>
+<th>MacOS</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>NorFab Core</td>
+<td><img alt="✔" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.0.3/assets/72x72/2714.png" title=":check_mark:" /></td>
+<td><img alt="✔" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.0.3/assets/72x72/2714.png" title=":check_mark:" /></td>
+<td><img alt="✔" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.0.3/assets/72x72/2714.png" title=":check_mark:" /></td>
+</tr>
+<tr>
+<td>Nornir Service</td>
+<td><img alt="✔" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.0.3/assets/72x72/2714.png" title=":check_mark:" /></td>
+<td><img alt="✔" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.0.3/assets/72x72/2714.png" title=":check_mark:" /></td>
+<td><img alt="✔" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.0.3/assets/72x72/2714.png" title=":check_mark:" /></td>
+</tr>
+<tr>
+<td>Netbox Service</td>
+<td><img alt="✔" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.0.3/assets/72x72/2714.png" title=":check_mark:" /></td>
+<td><img alt="✔" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.0.3/assets/72x72/2714.png" title=":check_mark:" /></td>
+<td><img alt="✔" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.0.3/assets/72x72/2714.png" title=":check_mark:" /></td>
+</tr>
+</tbody>
+</table>
 
 
 

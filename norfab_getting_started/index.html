@@ -493,6 +493,48 @@
   
   
     <li class="md-nav__item">
+      <a href="../norfab_distributed_deployment/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Distributed Deployment
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../norfab_docker_deployment/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Docker Deployment
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../norfab_help_with_norfab/" class="md-nav__link">
         
   
@@ -823,6 +865,27 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../services_nornir_service_tasks_diagram/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Nornir Diagram
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1141,6 +1204,27 @@
   
   <span class="md-ellipsis">
     Netbox UPDATE Device Facts
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../services_netbox_service_tasks_update_device_interfaces/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Netbox UPDATE Device Interfaces
   </span>
   
 
@@ -1952,12 +2036,14 @@
 
   <h1>Getting Started</h1>
 
+<p>The simplest way to start with NorFab is to do local installation 
+when broker, workers and client run locally, this is what we going 
+to demonstrate in this guide.</p>
 <p>Once NorFab installed, next step is to create a folder that will 
-hold your environment and start creating inventory files
-with required configurations.</p>
+hold your environment and start creating inventory files.</p>
 <p>Create <code>norfab</code> folder and inside of it create <code>inventory.yaml</code>, 
-file name is important as NORFAB by default searches
-for <code>inventory.yaml</code>, file content is:</p>
+file name is important as NORFAB by default searches for 
+<code>inventory.yaml</code>, file content is:</p>
 <div class="highlight"><span class="filename">inventory.yaml</span><pre><span></span><code><span class="nt">broker</span><span class="p">:</span><span class="w"> </span><span class="c1"># (1)!</span>
 <span class="w">  </span><span class="nt">endpoint</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;tcp://127.0.0.1:5555&quot;</span><span class="w"> </span><span class="c1"># (2)!</span>
 
