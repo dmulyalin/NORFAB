@@ -485,6 +485,48 @@
   
   
     <li class="md-nav__item">
+      <a href="../norfab_distributed_deployment/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Distributed Deployment
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../norfab_docker_deployment/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Docker Deployment
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../norfab_help_with_norfab/" class="md-nav__link">
         
   
@@ -815,6 +857,27 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../services_nornir_service_tasks_diagram/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Nornir Diagram
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1133,6 +1196,27 @@
   
   <span class="md-ellipsis">
     Netbox UPDATE Device Facts
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../services_netbox_service_tasks_update_device_interfaces/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Netbox UPDATE Device Interfaces
   </span>
   
 
@@ -2146,7 +2230,7 @@
 
 
 <h2 id="norfab.clients.robot_client.NorFabRobot" class="doc doc-heading">
-              <code class="highlight language-python"><span class="n">NorFabRobot</span><span class="p">(</span><span class="n">inventory</span><span class="o">=</span><span class="s1">&#39;./inventory.yaml&#39;</span><span class="p">,</span> <span class="n">workers</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">start_broker</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">log_level</span><span class="o">=</span><span class="s1">&#39;WARNING&#39;</span><span class="p">)</span></code>
+              <code class="highlight language-python"><span class="n">NorFabRobot</span><span class="p">(</span><span class="n">inventory</span><span class="o">=</span><span class="s1">&#39;./inventory.yaml&#39;</span><span class="p">,</span> <span class="n">log_level</span><span class="o">=</span><span class="s1">&#39;WARNING&#39;</span><span class="p">)</span></code>
 
 <a href="#norfab.clients.robot_client.NorFabRobot" class="headerlink" title="Permanent link">¤</a></h2>
 
@@ -2166,21 +2250,17 @@
 <span class="normal">35</span>
 <span class="normal">36</span>
 <span class="normal">37</span>
-<span class="normal">38</span>
-<span class="normal">39</span>
-<span class="normal">40</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+<span class="normal">38</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">inventory</span><span class="o">=</span><span class="s2">&quot;./inventory.yaml&quot;</span><span class="p">,</span>
-    <span class="n">workers</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="n">start_broker</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">log_level</span><span class="o">=</span><span class="s2">&quot;WARNING&quot;</span><span class="p">,</span>
 <span class="p">):</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">ROBOT_LIBRARY_LISTENER</span> <span class="o">=</span> <span class="bp">self</span>
 
     <span class="c1"># initiate NorFab</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">nf</span> <span class="o">=</span> <span class="n">NorFab</span><span class="p">(</span><span class="n">inventory</span><span class="o">=</span><span class="n">inventory</span><span class="p">,</span> <span class="n">log_level</span><span class="o">=</span><span class="n">log_level</span><span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">nf</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="n">start_broker</span><span class="o">=</span><span class="n">start_broker</span><span class="p">,</span> <span class="n">workers</span><span class="o">=</span><span class="n">workers</span><span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">client</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nf</span><span class="o">.</span><span class="n">client</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">nf</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">client</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nf</span><span class="o">.</span><span class="n">make_client</span><span class="p">()</span>
 </code></pre></div></td></tr></table></div>
                   </details>
 
@@ -2211,13 +2291,13 @@
 
             <details class="quote">
               <summary>Source code in <code>norfab\clients\robot_client.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">49</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
 <span class="normal">50</span>
 <span class="normal">51</span>
 <span class="normal">52</span>
-<span class="normal">53</span>
-<span class="normal">54</span>
-<span class="normal">55</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@keyword</span><span class="p">(</span><span class="s2">&quot;Workers&quot;</span><span class="p">)</span>
+<span class="normal">53</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@keyword</span><span class="p">(</span><span class="s2">&quot;Workers&quot;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">workers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Collect workers to target&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">args</span><span class="p">:</span>
@@ -2245,13 +2325,13 @@
 
             <details class="quote">
               <summary>Source code in <code>norfab\clients\robot_client.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">57</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">55</span>
+<span class="normal">56</span>
+<span class="normal">57</span>
 <span class="normal">58</span>
 <span class="normal">59</span>
 <span class="normal">60</span>
-<span class="normal">61</span>
-<span class="normal">62</span>
-<span class="normal">63</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@keyword</span><span class="p">(</span><span class="s2">&quot;Hosts&quot;</span><span class="p">)</span>
+<span class="normal">61</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@keyword</span><span class="p">(</span><span class="s2">&quot;Hosts&quot;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">hosts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Collect hosts to target&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">args</span><span class="p">:</span>
@@ -2279,7 +2359,9 @@
 
             <details class="quote">
               <summary>Source code in <code>norfab\clients\robot_client.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 65</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 63</span>
+<span class="normal"> 64</span>
+<span class="normal"> 65</span>
 <span class="normal"> 66</span>
 <span class="normal"> 67</span>
 <span class="normal"> 68</span>
@@ -2434,9 +2516,7 @@
 <span class="normal">217</span>
 <span class="normal">218</span>
 <span class="normal">219</span>
-<span class="normal">220</span>
-<span class="normal">221</span>
-<span class="normal">222</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@keyword</span><span class="p">(</span><span class="s2">&quot;nr.test&quot;</span><span class="p">)</span>
+<span class="normal">220</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@keyword</span><span class="p">(</span><span class="s2">&quot;nr.test&quot;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">nr_test</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Run nr.test  task&quot;&quot;&quot;</span>
     <span class="n">tests_pass</span> <span class="o">=</span> <span class="mi">0</span>
@@ -2615,7 +2695,9 @@
 
             <details class="quote">
               <summary>Source code in <code>norfab\clients\robot_client.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">224</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">222</span>
+<span class="normal">223</span>
+<span class="normal">224</span>
 <span class="normal">225</span>
 <span class="normal">226</span>
 <span class="normal">227</span>
@@ -2675,9 +2757,7 @@
 <span class="normal">281</span>
 <span class="normal">282</span>
 <span class="normal">283</span>
-<span class="normal">284</span>
-<span class="normal">285</span>
-<span class="normal">286</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@keyword</span><span class="p">(</span><span class="s2">&quot;nr.cli&quot;</span><span class="p">)</span>
+<span class="normal">284</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@keyword</span><span class="p">(</span><span class="s2">&quot;nr.cli&quot;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">nr_cli</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Run Nornir service cli task&quot;&quot;&quot;</span>
     <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
@@ -2761,7 +2841,9 @@
 
             <details class="quote">
               <summary>Source code in <code>norfab\clients\robot_client.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">288</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">286</span>
+<span class="normal">287</span>
+<span class="normal">288</span>
 <span class="normal">289</span>
 <span class="normal">290</span>
 <span class="normal">291</span>
@@ -2821,9 +2903,7 @@
 <span class="normal">345</span>
 <span class="normal">346</span>
 <span class="normal">347</span>
-<span class="normal">348</span>
-<span class="normal">349</span>
-<span class="normal">350</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@keyword</span><span class="p">(</span><span class="s2">&quot;nr.cfg&quot;</span><span class="p">)</span>
+<span class="normal">348</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@keyword</span><span class="p">(</span><span class="s2">&quot;nr.cfg&quot;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">nr_cfg</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Run Nornir service cfg task&quot;&quot;&quot;</span>
     <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>

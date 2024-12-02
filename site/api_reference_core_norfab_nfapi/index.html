@@ -485,6 +485,48 @@
   
   
     <li class="md-nav__item">
+      <a href="../norfab_distributed_deployment/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Distributed Deployment
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../norfab_docker_deployment/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Docker Deployment
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../norfab_help_with_norfab/" class="md-nav__link">
         
   
@@ -815,6 +857,27 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../services_nornir_service_tasks_diagram/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Nornir Diagram
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1133,6 +1196,27 @@
   
   <span class="md-ellipsis">
     Netbox UPDATE Device Facts
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../services_netbox_service_tasks_update_device_interfaces/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Netbox UPDATE Device Interfaces
   </span>
   
 
@@ -1522,6 +1606,15 @@
   <a href="#norfab.core.nfapi.NorFab.start" class="md-nav__link">
     <span class="md-ellipsis">
       start
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#norfab.core.nfapi.NorFab.run" class="md-nav__link">
+    <span class="md-ellipsis">
+      run
     </span>
   </a>
   
@@ -2009,6 +2102,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#norfab.core.nfapi.NorFab.run" class="md-nav__link">
+    <span class="md-ellipsis">
+      run
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#norfab.core.nfapi.NorFab.destroy" class="md-nav__link">
     <span class="md-ellipsis">
       destroy
@@ -2179,7 +2281,7 @@ NFCLIENT = nf.client
 
 
 <h2 id="norfab.core.nfapi.NorFab.start" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">start</span><span class="p">(</span><span class="n">start_broker</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">workers</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+            <code class="highlight language-python"><span class="n">start</span><span class="p">(</span><span class="n">start_broker</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">workers</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></code>
 
 <a href="#norfab.core.nfapi.NorFab.start" class="headerlink" title="Permanent link">¤</a></h2>
 
@@ -2207,11 +2309,11 @@ NFCLIENT = nf.client
             </td>
             <td>
               <div class="doc-md-description">
-                <p>if True, starts broker process</p>
+                <p>if True, starts broker process as defined in inventory <code>topology</code> section</p>
               </div>
             </td>
             <td>
-                  <code>None</code>
+                  <code>True</code>
             </td>
           </tr>
           <tr class="doc-section-item">
@@ -2221,11 +2323,24 @@ NFCLIENT = nf.client
             </td>
             <td>
               <div class="doc-md-description">
-                <p>list of worker names to start processes for</p>
+                <p>list of worker names to start processes for or boolean, if True starts all workers defined in inventory <code>topology</code> sections</p>
               </div>
             </td>
             <td>
-                  <code>None</code>
+                  <code>True</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code>client</code></td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>If true return and instance of NorFab client</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
             </td>
           </tr>
       </tbody>
@@ -2233,10 +2348,7 @@ NFCLIENT = nf.client
 
             <details class="quote">
               <summary>Source code in <code>norfab\core\nfapi.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">142</span>
-<span class="normal">143</span>
-<span class="normal">144</span>
-<span class="normal">145</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">145</span>
 <span class="normal">146</span>
 <span class="normal">147</span>
 <span class="normal">148</span>
@@ -2306,21 +2418,45 @@ NFCLIENT = nf.client
 <span class="normal">212</span>
 <span class="normal">213</span>
 <span class="normal">214</span>
-<span class="normal">215</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">start</span><span class="p">(</span>
+<span class="normal">215</span>
+<span class="normal">216</span>
+<span class="normal">217</span>
+<span class="normal">218</span>
+<span class="normal">219</span>
+<span class="normal">220</span>
+<span class="normal">221</span>
+<span class="normal">222</span>
+<span class="normal">223</span>
+<span class="normal">224</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">start</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
-    <span class="n">start_broker</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">workers</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">start_broker</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">workers</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Main entry method to start NorFab components.</span>
 
-<span class="sd">    :param start_broker: if True, starts broker process</span>
-<span class="sd">    :param workers: list of worker names to start processes for</span>
+<span class="sd">    :param start_broker: if True, starts broker process as defined in inventory</span>
+<span class="sd">        ``topology`` section</span>
+<span class="sd">    :param workers: list of worker names to start processes for or boolean, if True</span>
+<span class="sd">        starts all workers defined in inventory ``topology`` sections</span>
+<span class="sd">    :param client: If true return and instance of NorFab client</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">workers</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">workers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inventory</span><span class="o">.</span><span class="n">topology</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;workers&quot;</span><span class="p">,</span> <span class="p">[])</span>
-    <span class="k">if</span> <span class="n">start_broker</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">start_broker</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inventory</span><span class="o">.</span><span class="n">topology</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;broker&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+    <span class="c1"># start the broker</span>
+    <span class="k">if</span> <span class="n">start_broker</span> <span class="ow">is</span> <span class="kc">True</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">inventory</span><span class="o">.</span><span class="n">topology</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;broker&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start_broker</span><span class="p">()</span>
+
+    <span class="c1"># decide on a set of workers to start</span>
+    <span class="k">if</span> <span class="n">workers</span> <span class="ow">is</span> <span class="kc">False</span> <span class="ow">or</span> <span class="n">workers</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">workers</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">workers</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="n">workers</span><span class="p">:</span>
+        <span class="n">workers</span> <span class="o">=</span> <span class="n">workers</span>
+    <span class="c1"># start workers defined in inventory</span>
+    <span class="k">elif</span> <span class="n">workers</span> <span class="ow">is</span> <span class="kc">True</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">inventory</span><span class="o">.</span><span class="n">topology</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;workers&quot;</span><span class="p">):</span>
+        <span class="n">workers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inventory</span><span class="o">.</span><span class="n">topology</span><span class="p">[</span><span class="s2">&quot;workers&quot;</span><span class="p">]</span>
+
+    <span class="c1"># start worker processes</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">workers</span><span class="p">:</span>
+        <span class="k">return</span>
 
     <span class="c1"># form a list of workers to start</span>
     <span class="n">workers_to_start</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
@@ -2329,11 +2465,6 @@ NFCLIENT = nf.client
             <span class="n">worker_name</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">worker_name</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">workers_to_start</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">worker_name</span><span class="p">)</span>
 
-    <span class="c1"># start the broker</span>
-    <span class="k">if</span> <span class="n">start_broker</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">start_broker</span><span class="p">()</span>
-
-    <span class="c1"># start all the workers</span>
     <span class="k">while</span> <span class="n">workers_to_start</span> <span class="o">!=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">workers_processes</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
         <span class="k">for</span> <span class="n">worker</span> <span class="ow">in</span> <span class="n">workers</span><span class="p">:</span>
             <span class="c1"># extract worker name and data/params</span>
@@ -2373,13 +2504,49 @@ NFCLIENT = nf.client
             <span class="k">break</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;TimeoutError - </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">workers_init_timeout</span><span class="si">}</span><span class="s2">s &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;workers init timeout expired&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;TimeoutError - </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">workers_init_timeout</span><span class="si">}</span><span class="s2">s workers init timeout expired&quot;</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">destroy</span><span class="p">()</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
 
-    <span class="c1"># make the API client</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">make_client</span><span class="p">()</span>
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="norfab.core.nfapi.NorFab.run" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">run</span><span class="p">()</span></code>
+
+<a href="#norfab.core.nfapi.NorFab.run" class="headerlink" title="Permanent link">¤</a></h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Helper method to run the loop before CTRL+C called</p>
+
+            <details class="quote">
+              <summary>Source code in <code>norfab\core\nfapi.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">226</span>
+<span class="normal">227</span>
+<span class="normal">228</span>
+<span class="normal">229</span>
+<span class="normal">230</span>
+<span class="normal">231</span>
+<span class="normal">232</span>
+<span class="normal">233</span>
+<span class="normal">234</span>
+<span class="normal">235</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Helper method to run the loop before CTRL+C called</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Interrupted by user...&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">destroy</span><span class="p">()</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -2401,23 +2568,23 @@ NFCLIENT = nf.client
 
             <details class="quote">
               <summary>Source code in <code>norfab\core\nfapi.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">217</span>
-<span class="normal">218</span>
-<span class="normal">219</span>
-<span class="normal">220</span>
-<span class="normal">221</span>
-<span class="normal">222</span>
-<span class="normal">223</span>
-<span class="normal">224</span>
-<span class="normal">225</span>
-<span class="normal">226</span>
-<span class="normal">227</span>
-<span class="normal">228</span>
-<span class="normal">229</span>
-<span class="normal">230</span>
-<span class="normal">231</span>
-<span class="normal">232</span>
-<span class="normal">233</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">destroy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">237</span>
+<span class="normal">238</span>
+<span class="normal">239</span>
+<span class="normal">240</span>
+<span class="normal">241</span>
+<span class="normal">242</span>
+<span class="normal">243</span>
+<span class="normal">244</span>
+<span class="normal">245</span>
+<span class="normal">246</span>
+<span class="normal">247</span>
+<span class="normal">248</span>
+<span class="normal">249</span>
+<span class="normal">250</span>
+<span class="normal">251</span>
+<span class="normal">252</span>
+<span class="normal">253</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">destroy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Stop NORFAB processes.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -2484,26 +2651,26 @@ NFCLIENT = nf.client
 
             <details class="quote">
               <summary>Source code in <code>norfab\core\nfapi.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">235</span>
-<span class="normal">236</span>
-<span class="normal">237</span>
-<span class="normal">238</span>
-<span class="normal">239</span>
-<span class="normal">240</span>
-<span class="normal">241</span>
-<span class="normal">242</span>
-<span class="normal">243</span>
-<span class="normal">244</span>
-<span class="normal">245</span>
-<span class="normal">246</span>
-<span class="normal">247</span>
-<span class="normal">248</span>
-<span class="normal">249</span>
-<span class="normal">250</span>
-<span class="normal">251</span>
-<span class="normal">252</span>
-<span class="normal">253</span>
-<span class="normal">254</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">make_client</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">broker_endpoint</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NFPClient</span><span class="p">:</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">255</span>
+<span class="normal">256</span>
+<span class="normal">257</span>
+<span class="normal">258</span>
+<span class="normal">259</span>
+<span class="normal">260</span>
+<span class="normal">261</span>
+<span class="normal">262</span>
+<span class="normal">263</span>
+<span class="normal">264</span>
+<span class="normal">265</span>
+<span class="normal">266</span>
+<span class="normal">267</span>
+<span class="normal">268</span>
+<span class="normal">269</span>
+<span class="normal">270</span>
+<span class="normal">271</span>
+<span class="normal">272</span>
+<span class="normal">273</span>
+<span class="normal">274</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">make_client</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">broker_endpoint</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NFPClient</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Make an instance of NorFab client</span>
 

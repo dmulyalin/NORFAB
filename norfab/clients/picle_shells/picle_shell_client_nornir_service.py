@@ -1599,21 +1599,21 @@ class N2GLayer3Diagram(NorniHostsFilters, NornirCommonArgs):
         n2g_kwargs = {}
         kwargs["n2g_kwargs"] = n2g_kwargs
         if "group_links" in kwargs:
-            n2g_kwargs = kwargs.pop("group_links")
+            n2g_kwargs["group_links"] = kwargs.pop("group_links")
         if "add_arp" in kwargs:
-            n2g_kwargs = kwargs.pop("add_arp")
+            n2g_kwargs["add_arp"] = kwargs.pop("add_arp")
         if "label_interface" in kwargs:
-            n2g_kwargs = kwargs.pop("label_interface")
+            n2g_kwargs["label_interface"] = kwargs.pop("label_interface")
         if "label_vrf" in kwargs:
-            n2g_kwargs = kwargs.pop("label_vrf")
+            n2g_kwargs["label_vrf"] = kwargs.pop("label_vrf")
         if "collapse_ptp" in kwargs:
-            n2g_kwargs = kwargs.pop("collapse_ptp")
+            n2g_kwargs["collapse_ptp"] = kwargs.pop("collapse_ptp")
         if "add_fhrp" in kwargs:
-            n2g_kwargs = kwargs.pop("add_fhrp")
+            n2g_kwargs["add_fhrp"] = kwargs.pop("add_fhrp")
         if "bottom_label_length" in kwargs:
-            n2g_kwargs = kwargs.pop("bottom_label_length")
+            n2g_kwargs["bottom_label_length"] = kwargs.pop("bottom_label_length")
         if "lbl_next_to_subnet" in kwargs:
-            n2g_kwargs = kwargs.pop("lbl_next_to_subnet")
+            n2g_kwargs["lbl_next_to_subnet"] = kwargs.pop("lbl_next_to_subnet")
 
         return NornirDiagramShell.run(*args, **kwargs)
 
@@ -1659,17 +1659,17 @@ class N2GLayer2Diagram(NorniHostsFilters, NornirCommonArgs):
         n2g_kwargs = {}
         kwargs["n2g_kwargs"] = n2g_kwargs
         if "add_interfaces_data" in kwargs:
-            n2g_kwargs = kwargs.pop("add_interfaces_data")
+            n2g_kwargs["add_interfaces_data"] = kwargs.pop("add_interfaces_data")
         if "group_links" in kwargs:
-            n2g_kwargs = kwargs.pop("group_links")
+            n2g_kwargs["group_links"] = kwargs.pop("group_links")
         if "add_lag" in kwargs:
-            n2g_kwargs = kwargs.pop("add_lag")
+            n2g_kwargs["add_lag"] = kwargs.pop("add_lag")
         if "add_all_connected" in kwargs:
-            n2g_kwargs = kwargs.pop("add_all_connected")
+            n2g_kwargs["add_all_connected"] = kwargs.pop("add_all_connected")
         if "combine_peers" in kwargs:
-            n2g_kwargs = kwargs.pop("combine_peers")
+            n2g_kwargs["combine_peers"] = kwargs.pop("combine_peers")
         if "skip_lag" in kwargs:
-            n2g_kwargs = kwargs.pop("skip_lag")
+            n2g_kwargs["skip_lag"] = kwargs.pop("skip_lag")
 
         return NornirDiagramShell.run(*args, **kwargs)
 
@@ -1703,13 +1703,13 @@ class N2GISISDiagram(NorniHostsFilters, NornirCommonArgs):
         n2g_kwargs = {}
         kwargs["n2g_kwargs"] = n2g_kwargs
         if "ip_lookup_data" in kwargs:
-            n2g_kwargs = kwargs.pop("ip_lookup_data")
+            n2g_kwargs["ip_lookup_data"] = kwargs.pop("ip_lookup_data")
         if "add_connected" in kwargs:
-            n2g_kwargs = kwargs.pop("add_connected")
+            n2g_kwargs["add_connected"] = kwargs.pop("add_connected")
         if "ptp_filter" in kwargs:
-            n2g_kwargs = kwargs.pop("ptp_filter")
+            n2g_kwargs["ptp_filter"] = kwargs.pop("ptp_filter")
         if "add_data" in kwargs:
-            n2g_kwargs = kwargs.pop("add_data")
+            n2g_kwargs["add_data"] = kwargs.pop("add_data")
 
         return NornirDiagramShell.run(*args, **kwargs)
 
@@ -1743,13 +1743,13 @@ class N2GOSPFDiagram(NorniHostsFilters, NornirCommonArgs):
         n2g_kwargs = {}
         kwargs["n2g_kwargs"] = n2g_kwargs
         if "ip_lookup_data" in kwargs:
-            n2g_kwargs = kwargs.pop("ip_lookup_data")
+            n2g_kwargs["ip_lookup_data"] = kwargs.pop("ip_lookup_data")
         if "add_connected" in kwargs:
-            n2g_kwargs = kwargs.pop("add_connected")
+            n2g_kwargs["add_connected"] = kwargs.pop("add_connected")
         if "ptp_filter" in kwargs:
-            n2g_kwargs = kwargs.pop("ptp_filter")
+            n2g_kwargs["ptp_filter"] = kwargs.pop("ptp_filter")
         if "add_data" in kwargs:
-            n2g_kwargs = kwargs.pop("add_data")
+            n2g_kwargs["add_data"] = kwargs.pop("add_data")
 
         return NornirDiagramShell.run(*args, **kwargs)
 
@@ -1859,15 +1859,22 @@ class NornirDiagramShell(ClientRunJobArgs):
                     hosts_processed.add(host_name)
 
         # create, populate and save diagram
-        drawing = drawing_plugin()
-        drawer = n2g_data_plugin(drawing, **n2g_kwargs)
-        drawer.work(n2g_data)
-        drawing.dump_file(folder=out_folder, filename=out_filename)
+        try:
+            drawing = drawing_plugin()
+            drawer = n2g_data_plugin(drawing, **n2g_kwargs)
+            drawer.work(n2g_data)
+            drawing.dump_file(folder=out_folder, filename=out_filename)
 
-        return (
-            f" '{data_plugin}' diagram in '{diagram_plugin}' format saved at '{os.path.join(out_folder, out_filename)}'\n"
-            f" hosts: {', '.join(hosts_processed)}"
-        )
+            return (
+                f" diagram: '{data_plugin}', format: '{diagram_plugin}'\n"
+                f" saved at: '{os.path.join(out_folder, out_filename)}'\n"
+                f" hosts: {', '.join(list(sorted(hosts_processed)))}"
+            )
+        except Exception as e:
+            return (
+                f" Failed to produce diagram, '{data_plugin}' data plugin, "
+                f"'{diagram_plugin}' diagram plugin, error: '{e}'"
+            )
 
     class PicleConfig:
         subshell = True

@@ -462,7 +462,7 @@ class NFPClient(object):
             time.sleep(0.2)
         else:
             msg = f"{self.name} - '{uuid}' job, broker {timeout}s GET request timeout expired"
-            log.error(msg)
+            log.info(msg)
             ret["errors"].append(msg)
             ret["status"] = b"408"
 
@@ -695,6 +695,7 @@ class NFPClient(object):
         """
         uuid = uuid or uuid4().hex
         start_time = int(time.time())
+        ret = None
 
         # POST job to workers
         post_result = self.post(service, task, args, kwargs, workers, uuid, timeout)
@@ -703,7 +704,7 @@ class NFPClient(object):
                 f"{self.name}:run_job - {service}:{task} POST status "
                 f"to '{workers}' workers is not 200 - '{post_result}'"
             )
-            return None
+            return ret
 
         remaining_timeout = timeout - (time.time() - start_time)
         get_timeout = remaining_timeout / retry
@@ -730,13 +731,20 @@ class NFPClient(object):
                 )
                 continue
             elif get["status"] in ["200", "202"]:  # OK
-                return get["results"]
+                ret = get["results"]
+                break
             else:
                 log.error(
                     f"{self.name}:run_job - {service}:{task}:{uuid} "
                     f"stopping, GET returned unexpected results - '{get}'"
                 )
-                return None
+                break
+        else:
+            log.error(
+                f"{self.name}:run_job - {service}:{task}:{uuid} "
+                f"retry exceeded, GET returned no results, timeout {timeout}s"
+            )
+        return ret
 
     def run_job_iter(
         self,
