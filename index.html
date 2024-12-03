@@ -473,9 +473,9 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#how-the-features" class="md-nav__link">
+  <a href="#how-the-vision" class="md-nav__link">
     <span class="md-ellipsis">
-      How - The Features
+      How - The Vision
     </span>
   </a>
   
@@ -2117,9 +2117,9 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#how-the-features" class="md-nav__link">
+  <a href="#how-the-vision" class="md-nav__link">
     <span class="md-ellipsis">
-      How - The Features
+      How - The Vision
     </span>
   </a>
   
@@ -2161,7 +2161,6 @@
 <h2 id="network-automations-fabric">Network Automations Fabric<a class="headerlink" href="#network-automations-fabric" title="Permanent link">¤</a></h2>
 <p><img alt="Network Automations Fabric" src="images/norfab_overview_top_image.webp" /></p>
 <p>Hi <img alt="😄" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.0.3/assets/72x72/1f604.png" title=":smile:" />, thank you for getting here.</p>
-<p>NORFAB is a distributed task execution framework focused on network automations.</p>
 <h2 id="why-the-story">Why - The Story <img alt="📖" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.0.3/assets/72x72/1f4d6.png" title=":book:" /><a class="headerlink" href="#why-the-story" title="Permanent link">¤</a></h2>
 <p>In a world devoid of network automations, the streets were silent 
 and grey. Without network automations, network engineers' lives 
@@ -2169,15 +2168,15 @@ became a grueling cycle of manual configurations and endless
 troubleshooting. They spent hours accessing each and every device, 
 manually configuring and patching systems. Nights were sleepless, 
 filled with frantic calls to resolve outages that could no longer 
-be preemptively detected or resolved. Collaboration was slow, 
-relying on face-to-face meetings and manual documentation. 
-Overwhelmed and exhausted, their innovative spirit was stifled by 
-the sheer volume of repetitive tasks...</p>
+be preemptively detected or resolved. Overwhelmed and exhausted, 
+their innovative spirit was stifled by the sheer volume of 
+repetitive tasks...</p>
 <p>Let us introduce you to the world of Network Automations Fabric.</p>
 <h2 id="what-the-idea">What - The Idea <img alt="💡" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.0.3/assets/72x72/1f4a1.png" title=":bulb:" /><a class="headerlink" href="#what-the-idea" title="Permanent link">¤</a></h2>
-<p>NorFab purpose is to augment engineers capabilities with automation 
-superpowers.</p>
-<p>Most of the software to manage networks falls into one of the two 
+<p>NorFab is a task execution framework focused on network automations.</p>
+<p>NorFab purpose is to augment network engineers capabilities with 
+automation superpowers i.e. Iron Man Suite.</p>
+<p>Most of the solutions to manage networks falls into one of the two 
 categories: </p>
 <ul>
 <li>heavyweight platforms running on dedicated infrastructure</li>
@@ -2186,10 +2185,11 @@ categories: </p>
 <p>NorFab can be both - software you can run equally well from
 your laptop or on a server, centralized or fully distributed, 
 lightweight and feature reach. Capable of doing any use cases 
-without the need to throw gazillions of dollars and man hours at 
-it. Always ready to serve the purpose of unlocking engineers 
-superpowers managing modern networks and making engineers life better.</p>
-<h2 id="how-the-features">How - The Features <img alt="⚙" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.0.3/assets/72x72/2699.png" title=":gear:" /><a class="headerlink" href="#how-the-features" title="Permanent link">¤</a></h2>
+without the need to throw unreasonable amounts of dollars and 
+man hours at it. Always ready to serve the purpose of unlocking 
+engineers superpowers managing modern networks and making 
+engineers life better.</p>
+<h2 id="how-the-vision">How - The Vision <img alt="⚙" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.0.3/assets/72x72/2699.png" title=":gear:" /><a class="headerlink" href="#how-the-vision" title="Permanent link">¤</a></h2>
 <ul>
 <li><strong>Run Anywhere</strong> - locally on Windows, MAC or Linux, in a container, on a VM, in the cloud, centralized or distributed</li>
 <li><strong>Extend Anything</strong> - extendability is in the core of NorFab</li>
@@ -2201,10 +2201,10 @@ superpowers managing modern networks and making engineers life better.</p>
 <h2 id="architecture">Architecture<a class="headerlink" href="#architecture" title="Permanent link">¤</a></h2>
 <p>Key actors of the system include</p>
 <ul>
-<li><strong>SERVICES</strong> - a collection of workers and managed resources</li>
 <li><strong>CLIENTS</strong> - consume services, processes that run on client machine and connect to broker</li>
-<li><strong>WORKERS</strong> - form services, processes that run anywhere and act as resource proxy agents</li>
 <li><strong>BROKER</strong> - provides access to services for clients</li>
+<li><strong>SERVICES</strong> - a collection of workers and resources they manage</li>
+<li><strong>WORKERS</strong> - form services, processes that run anywhere and act as resource proxy agents</li>
 <li><strong>RESOURCES</strong> - entities managed by workers, e.g. network devices, databases, file systems</li>
 </ul>
 <p>Clients communicate with broker to submit jobs, broker distributes 

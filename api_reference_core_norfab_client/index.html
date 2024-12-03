@@ -3370,7 +3370,7 @@ end job reply message to broker requesting job results.</p>
         <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.2</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> - &#39;</span><span class="si">{</span><span class="n">uuid</span><span class="si">}</span><span class="s2">&#39; job, broker </span><span class="si">{</span><span class="n">timeout</span><span class="si">}</span><span class="s2">s GET request timeout expired&quot;</span>
-        <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
         <span class="n">ret</span><span class="p">[</span><span class="s2">&quot;errors&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
         <span class="n">ret</span><span class="p">[</span><span class="s2">&quot;status&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&quot;408&quot;</span>
 
@@ -4069,7 +4069,15 @@ end job reply message to broker requesting job results.</p>
 <span class="normal">736</span>
 <span class="normal">737</span>
 <span class="normal">738</span>
-<span class="normal">739</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">run_job</span><span class="p">(</span>
+<span class="normal">739</span>
+<span class="normal">740</span>
+<span class="normal">741</span>
+<span class="normal">742</span>
+<span class="normal">743</span>
+<span class="normal">744</span>
+<span class="normal">745</span>
+<span class="normal">746</span>
+<span class="normal">747</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">run_job</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">service</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">task</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -4094,6 +4102,7 @@ end job reply message to broker requesting job results.</p>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">uuid</span> <span class="o">=</span> <span class="n">uuid</span> <span class="ow">or</span> <span class="n">uuid4</span><span class="p">()</span><span class="o">.</span><span class="n">hex</span>
     <span class="n">start_time</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())</span>
+    <span class="n">ret</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="c1"># POST job to workers</span>
     <span class="n">post_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">service</span><span class="p">,</span> <span class="n">task</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="n">workers</span><span class="p">,</span> <span class="n">uuid</span><span class="p">,</span> <span class="n">timeout</span><span class="p">)</span>
@@ -4102,7 +4111,7 @@ end job reply message to broker requesting job results.</p>
             <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">:run_job - </span><span class="si">{</span><span class="n">service</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">task</span><span class="si">}</span><span class="s2"> POST status &quot;</span>
             <span class="sa">f</span><span class="s2">&quot;to &#39;</span><span class="si">{</span><span class="n">workers</span><span class="si">}</span><span class="s2">&#39; workers is not 200 - &#39;</span><span class="si">{</span><span class="n">post_result</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
         <span class="p">)</span>
-        <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="n">ret</span>
 
     <span class="n">remaining_timeout</span> <span class="o">=</span> <span class="n">timeout</span> <span class="o">-</span> <span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span><span class="p">)</span>
     <span class="n">get_timeout</span> <span class="o">=</span> <span class="n">remaining_timeout</span> <span class="o">/</span> <span class="n">retry</span>
@@ -4129,13 +4138,20 @@ end job reply message to broker requesting job results.</p>
             <span class="p">)</span>
             <span class="k">continue</span>
         <span class="k">elif</span> <span class="n">get</span><span class="p">[</span><span class="s2">&quot;status&quot;</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;200&quot;</span><span class="p">,</span> <span class="s2">&quot;202&quot;</span><span class="p">]:</span>  <span class="c1"># OK</span>
-            <span class="k">return</span> <span class="n">get</span><span class="p">[</span><span class="s2">&quot;results&quot;</span><span class="p">]</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="n">get</span><span class="p">[</span><span class="s2">&quot;results&quot;</span><span class="p">]</span>
+            <span class="k">break</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">:run_job - </span><span class="si">{</span><span class="n">service</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">task</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">uuid</span><span class="si">}</span><span class="s2"> &quot;</span>
                 <span class="sa">f</span><span class="s2">&quot;stopping, GET returned unexpected results - &#39;</span><span class="si">{</span><span class="n">get</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
             <span class="p">)</span>
-            <span class="k">return</span> <span class="kc">None</span>
+            <span class="k">break</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">:run_job - </span><span class="si">{</span><span class="n">service</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">task</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">uuid</span><span class="si">}</span><span class="s2"> &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;retry exceeded, GET returned no results, timeout </span><span class="si">{</span><span class="n">timeout</span><span class="si">}</span><span class="s2">s&quot;</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">ret</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -4259,15 +4275,7 @@ job results would be presented as soon as they are available.</p>
 
             <details class="quote">
               <summary>Source code in <code>norfab\core\client.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">741</span>
-<span class="normal">742</span>
-<span class="normal">743</span>
-<span class="normal">744</span>
-<span class="normal">745</span>
-<span class="normal">746</span>
-<span class="normal">747</span>
-<span class="normal">748</span>
-<span class="normal">749</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">749</span>
 <span class="normal">750</span>
 <span class="normal">751</span>
 <span class="normal">752</span>
@@ -4291,7 +4299,15 @@ job results would be presented as soon as they are available.</p>
 <span class="normal">770</span>
 <span class="normal">771</span>
 <span class="normal">772</span>
-<span class="normal">773</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">run_job_iter</span><span class="p">(</span>
+<span class="normal">773</span>
+<span class="normal">774</span>
+<span class="normal">775</span>
+<span class="normal">776</span>
+<span class="normal">777</span>
+<span class="normal">778</span>
+<span class="normal">779</span>
+<span class="normal">780</span>
+<span class="normal">781</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">run_job_iter</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">service</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">task</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
