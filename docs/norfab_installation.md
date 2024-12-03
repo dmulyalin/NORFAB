@@ -13,9 +13,9 @@ will be noted in service deployment details.
 ## Extras
 
 Several extra installations supported tailoring certain services
-dependencies depending on what you want to run on a given node.
+dependencies that you want to run on a given node.
 
-To install everything can use ``full`` extras:
+To install all dependencies for all services can use ``full`` extras:
 
 ```
 pip install norfab[full]
@@ -23,7 +23,7 @@ pip install norfab[full]
 
 ### NORFAB CLI Dependencies
 
-To install NorFab Interactive CLI dependencies
+Need to install NorFab Interactive CLI dependencies
 
 ```
 pip install norfab[nfcli]
@@ -31,7 +31,7 @@ pip install norfab[nfcli]
 
 ### Nornir Service Dependencies
 
-To install Nornir service dependencies
+Need to install Nornir service dependencies
 
 ```
 pip install norfab[nornir_service]
@@ -39,7 +39,7 @@ pip install norfab[nornir_service]
 
 ### Netbox Service Dependencies
 
-To install Netbox service dependencies
+Need to install Netbox service dependencies
 
 ```
 pip install norfab[netbox_service]

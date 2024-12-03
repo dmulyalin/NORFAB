@@ -49,8 +49,9 @@ Example of retrieving commands output from devices.
 		![Nornir Cli Demo](images/nornir_cli_demo.gif)
     
 		Above runs "show clock" and "show hostname" commands on all
-		hosts that contain `ceos-spine` in their hostname as we use
-		`FC` - "Filter Contains" Nornir hosts targeting filter.
+		Nornir hosts that contain `ceos-spine` in their hostname as 
+		we use 		`FC` - "Filter Contains" Nornir hosts targeting 
+		filter.
 		
 		`inventory.yaml` should be located in same folder where we 
 		start nfcli, unless `nfcli -i path_to_inventory.yaml` flag 

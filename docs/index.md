@@ -9,8 +9,6 @@
 
 Hi :smile:, thank you for getting here.
 
-NORFAB is a distributed task execution framework focused on network automations.
-
 ## Why - The Story :book:
 
 In a world devoid of network automations, the streets were silent 
@@ -19,19 +17,20 @@ became a grueling cycle of manual configurations and endless
 troubleshooting. They spent hours accessing each and every device, 
 manually configuring and patching systems. Nights were sleepless, 
 filled with frantic calls to resolve outages that could no longer 
-be preemptively detected or resolved. Collaboration was slow, 
-relying on face-to-face meetings and manual documentation. 
-Overwhelmed and exhausted, their innovative spirit was stifled by 
-the sheer volume of repetitive tasks...
+be preemptively detected or resolved. Overwhelmed and exhausted, 
+their innovative spirit was stifled by the sheer volume of 
+repetitive tasks...
 
 Let us introduce you to the world of Network Automations Fabric.
 
 ## What - The Idea :bulb:
 
-NorFab purpose is to augment engineers capabilities with automation 
-superpowers.
+NorFab is a task execution framework focused on network automations.
 
-Most of the software to manage networks falls into one of the two 
+NorFab purpose is to augment network engineers capabilities with 
+automation superpowers i.e. Iron Man Suite.
+
+Most of the solutions to manage networks falls into one of the two 
 categories: 
 
 - heavyweight platforms running on dedicated infrastructure
@@ -40,11 +39,12 @@ categories:
 NorFab can be both - software you can run equally well from
 your laptop or on a server, centralized or fully distributed, 
 lightweight and feature reach. Capable of doing any use cases 
-without the need to throw gazillions of dollars and man hours at 
-it. Always ready to serve the purpose of unlocking engineers 
-superpowers managing modern networks and making engineers life better.
+without the need to throw unreasonable amounts of dollars and 
+man hours at it. Always ready to serve the purpose of unlocking 
+engineers superpowers managing modern networks and making 
+engineers life better.
 
-## How - The Features :gear:
+## How - The Vision :gear:
 
 - **Run Anywhere** - locally on Windows, MAC or Linux, in a container, on a VM, in the cloud, centralized or distributed
 - **Extend Anything** - extendability is in the core of NorFab
@@ -57,12 +57,11 @@ superpowers managing modern networks and making engineers life better.
 
 Key actors of the system include
 
-- **SERVICES** - a collection of workers and managed resources
 - **CLIENTS** - consume services, processes that run on client machine and connect to broker
-- **WORKERS** - form services, processes that run anywhere and act as resource proxy agents
 - **BROKER** - provides access to services for clients
+- **SERVICES** - a collection of workers and resources they manage
+- **WORKERS** - form services, processes that run anywhere and act as resource proxy agents
 - **RESOURCES** - entities managed by workers, e.g. network devices, databases, file systems
-
 
 Clients communicate with broker to submit jobs, broker distributes 
 jobs across workers comprising the service, workers run jobs producing 

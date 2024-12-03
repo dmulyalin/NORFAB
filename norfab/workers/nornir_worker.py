@@ -585,7 +585,7 @@ class NornirWorker(NFPWorker):
 
     def task(self, plugin: str, **kwargs) -> Result:
         """
-        Function to invoke any of supported Nornir task plugins. This function
+        Task to invoke any of supported Nornir task plugins. This function
         performs dynamic import of requested plugin function and executes
         ``nr.run`` using supplied args and kwargs
 
@@ -673,7 +673,7 @@ class NornirWorker(NFPWorker):
         **kwargs,
     ) -> dict:
         """
-        Function to collect show commands output from devices using
+        Task to collect show commands output from devices using
         Command Line Interface (CLI)
 
         :param commands: list of commands to send to devices
@@ -775,7 +775,7 @@ class NornirWorker(NFPWorker):
         return ret
 
     def nb_get_next_ip(self, *args, **kwargs):
-        """Method to query next available IP address from Netbox service"""
+        """Task to query next available IP address from Netbox service"""
         reply = self.client.run_job(
             "netbox",
             "get_next_ip",
@@ -800,7 +800,7 @@ class NornirWorker(NFPWorker):
         **kwargs,
     ) -> dict:
         """
-        Function to send configuration commands to devices using
+        Task to send configuration commands to devices using
         Command Line Interface (CLI)
 
         :param config: list of commands to send to devices
@@ -1045,9 +1045,6 @@ class NornirWorker(NFPWorker):
     def netconf(self) -> dict:
         pass
 
-    def file(self) -> dict:
-        pass
-
     def gnmi(self) -> dict:
         pass
 
@@ -1056,7 +1053,7 @@ class NornirWorker(NFPWorker):
 
     def network(self, fun, **kwargs) -> dict:
         """
-        Function to call various network related utility functions.
+        Task to call various network related utility functions.
 
         :param fun: (str) utility function name to call
         :param kwargs: (dict) function arguments
@@ -1149,3 +1146,9 @@ class NornirWorker(NFPWorker):
             raise UnsupportedPluginError(f"Plugin '{plugin}' not supported")
 
         return ret
+
+    def file_copy(self) -> dict:
+        """
+        Task to transfer files to hosts 
+        """
+        pass

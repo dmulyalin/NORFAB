@@ -1945,6 +1945,15 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#norfab.workers.nornir_worker.NornirWorker.file_copy" class="md-nav__link">
+    <span class="md-ellipsis">
+      file_copy
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -2394,6 +2403,15 @@
   <a href="#norfab.workers.nornir_worker.NornirWorker.parse" class="md-nav__link">
     <span class="md-ellipsis">
       parse
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#norfab.workers.nornir_worker.NornirWorker.file_copy" class="md-nav__link">
+    <span class="md-ellipsis">
+      file_copy
     </span>
   </a>
   
@@ -3523,7 +3541,7 @@ not being used over connections_idle_timeout</p>
 
     <div class="doc doc-contents ">
 
-        <p>Function to invoke any of supported Nornir task plugins. This function
+        <p>Task to invoke any of supported Nornir task plugins. This function
 performs dynamic import of requested plugin function and executes
 <code>nr.run</code> using supplied args and kwargs</p>
 <p><code>plugin</code> attribute can refer to a file to fetch from file service. File must contain
@@ -3665,7 +3683,7 @@ to all hosts initiated simultaneously up to the number of <code>num_workers</cod
 <span class="normal">661</span>
 <span class="normal">662</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">task</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plugin</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Result</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Function to invoke any of supported Nornir task plugins. This function</span>
+<span class="sd">    Task to invoke any of supported Nornir task plugins. This function</span>
 <span class="sd">    performs dynamic import of requested plugin function and executes</span>
 <span class="sd">    ``nr.run`` using supplied args and kwargs</span>
 
@@ -3757,7 +3775,7 @@ to all hosts initiated simultaneously up to the number of <code>num_workers</cod
 
     <div class="doc doc-contents ">
 
-        <p>Function to collect show commands output from devices using
+        <p>Task to collect show commands output from devices using
 Command Line Interface (CLI)</p>
 
 
@@ -3998,7 +4016,7 @@ Command Line Interface (CLI)</p>
     <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Function to collect show commands output from devices using</span>
+<span class="sd">    Task to collect show commands output from devices using</span>
 <span class="sd">    Command Line Interface (CLI)</span>
 
 <span class="sd">    :param commands: list of commands to send to devices</span>
@@ -4115,7 +4133,7 @@ Command Line Interface (CLI)</p>
 
     <div class="doc doc-contents ">
 
-        <p>Method to query next available IP address from Netbox service</p>
+        <p>Task to query next available IP address from Netbox service</p>
 
             <details class="quote">
               <summary>Source code in <code>norfab\workers\nornir_worker.py</code></summary>
@@ -4133,7 +4151,7 @@ Command Line Interface (CLI)</p>
 <span class="normal">788</span>
 <span class="normal">789</span>
 <span class="normal">790</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">nb_get_next_ip</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Method to query next available IP address from Netbox service&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Task to query next available IP address from Netbox service&quot;&quot;&quot;</span>
     <span class="n">reply</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">run_job</span><span class="p">(</span>
         <span class="s2">&quot;netbox&quot;</span><span class="p">,</span>
         <span class="s2">&quot;get_next_ip&quot;</span><span class="p">,</span>
@@ -4163,7 +4181,7 @@ Command Line Interface (CLI)</p>
 
     <div class="doc doc-contents ">
 
-        <p>Function to send configuration commands to devices using
+        <p>Task to send configuration commands to devices using
 Command Line Interface (CLI)</p>
 
 
@@ -4369,7 +4387,7 @@ Command Line Interface (CLI)</p>
     <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Function to send configuration commands to devices using</span>
+<span class="sd">    Task to send configuration commands to devices using</span>
 <span class="sd">    Command Line Interface (CLI)</span>
 
 <span class="sd">    :param config: list of commands to send to devices</span>
@@ -4931,7 +4949,7 @@ Command Line Interface (CLI)</p>
 
     <div class="doc doc-contents ">
 
-        <p>Function to call various network related utility functions.</p>
+        <p>Task to call various network related utility functions.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -4976,7 +4994,10 @@ Command Line Interface (CLI)</p>
 
             <details class="quote">
               <summary>Source code in <code>norfab\workers\nornir_worker.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1057</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1054</span>
+<span class="normal">1055</span>
+<span class="normal">1056</span>
+<span class="normal">1057</span>
 <span class="normal">1058</span>
 <span class="normal">1059</span>
 <span class="normal">1060</span>
@@ -4998,12 +5019,9 @@ Command Line Interface (CLI)</p>
 <span class="normal">1076</span>
 <span class="normal">1077</span>
 <span class="normal">1078</span>
-<span class="normal">1079</span>
-<span class="normal">1080</span>
-<span class="normal">1081</span>
-<span class="normal">1082</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">network</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fun</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="normal">1079</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">network</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fun</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Function to call various network related utility functions.</span>
+<span class="sd">    Task to call various network related utility functions.</span>
 
 <span class="sd">    :param fun: (str) utility function name to call</span>
 <span class="sd">    :param kwargs: (dict) function arguments</span>
@@ -5119,7 +5137,10 @@ Command Line Interface (CLI)</p>
 
             <details class="quote">
               <summary>Source code in <code>norfab\workers\nornir_worker.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1084</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1081</span>
+<span class="normal">1082</span>
+<span class="normal">1083</span>
+<span class="normal">1084</span>
 <span class="normal">1085</span>
 <span class="normal">1086</span>
 <span class="normal">1087</span>
@@ -5183,10 +5204,7 @@ Command Line Interface (CLI)</p>
 <span class="normal">1145</span>
 <span class="normal">1146</span>
 <span class="normal">1147</span>
-<span class="normal">1148</span>
-<span class="normal">1149</span>
-<span class="normal">1150</span>
-<span class="normal">1151</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">parse</span><span class="p">(</span>
+<span class="normal">1148</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">parse</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">plugin</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;napalm&quot;</span><span class="p">,</span>
     <span class="n">getters</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;get_facts&quot;</span><span class="p">,</span>
@@ -5254,6 +5272,36 @@ Command Line Interface (CLI)</p>
         <span class="k">raise</span> <span class="n">UnsupportedPluginError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Plugin &#39;</span><span class="si">{</span><span class="n">plugin</span><span class="si">}</span><span class="s2">&#39; not supported&quot;</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">ret</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="norfab.workers.nornir_worker.NornirWorker.file_copy" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">file_copy</span><span class="p">()</span></code>
+
+<a href="#norfab.workers.nornir_worker.NornirWorker.file_copy" class="headerlink" title="Permanent link">¤</a></h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Task to transfer files to hosts</p>
+
+            <details class="quote">
+              <summary>Source code in <code>norfab\workers\nornir_worker.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1150</span>
+<span class="normal">1151</span>
+<span class="normal">1152</span>
+<span class="normal">1153</span>
+<span class="normal">1154</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">file_copy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Task to transfer files to hosts </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
