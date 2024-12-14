@@ -26,6 +26,7 @@ from .zhelpers import dump
 from .inventory import NorFabInventory
 from .keepalives import KeepAliver
 from .security import generate_certificates
+from norfab.utils.loggingutils import setup_logging
 
 log = logging.getLogger(__name__)
 
@@ -108,11 +109,12 @@ class NFPBroker:
         exit_event: Event,
         inventory: NorFabInventory,
         log_level: str = "WARNING",
+        log_queue: object = None,
         multiplier: int = 6,
         keepalive: int = 2500,
     ):
         """Initialize broker state."""
-        log.setLevel(log_level.upper())
+        setup_logging(queue=log_queue, log_level=log_level)
         self.log_level = log_level
         self.keepalive = keepalive
         self.multiplier = multiplier

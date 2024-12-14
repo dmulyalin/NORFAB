@@ -214,8 +214,9 @@ class NornirWorker(NFPWorker):
         exit_event=None,
         init_done_event=None,
         log_level: str = "WARNING",
+        log_queue: object = None,
     ):
-        super().__init__(broker, service, worker_name, exit_event, log_level)
+        super().__init__(broker, service, worker_name, exit_event, log_level, log_queue)
         self.init_done_event = init_done_event
         self.tf_base_path = os.path.join(self.base_dir, "tf")
 
@@ -1149,6 +1150,6 @@ class NornirWorker(NFPWorker):
 
     def file_copy(self) -> dict:
         """
-        Task to transfer files to hosts 
+        Task to transfer files to hosts
         """
         pass

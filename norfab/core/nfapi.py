@@ -1,19 +1,44 @@
 import logging
 import time
+import threading
 
-from multiprocessing import Process, Event
+from multiprocessing import Process, Event, Queue
 from norfab.core.broker import NFPBroker
 from norfab.core.client import NFPClient
 from norfab.core.inventory import NorFabInventory
 from norfab.workers import NornirWorker, NetboxWorker
+from norfab.utils.loggingutils import setup_logging
 
 log = logging.getLogger(__name__)
 
 
+def logger_thread(log_queue: Queue, logger_exit_evet: Event):
+    """
+    Thread to de-queue logging events and log them into a file
+
+    :param log_queue:  Multiprocessing queue passed along
+        broker and worker processes
+    :param logger_exit_evet: Multiprocessing event object to signal exit
+    """
+    # get root logger's file handler
+    filehandler = log.root.handlers[1]
+    while not logger_exit_evet.is_set():
+        record = log_queue.get()
+        # need to split message by -- to avoid duplicate of
+        # information such as timestamp, module, level
+        record.msg = record.msg.split("--")[1].strip()
+        # setup logger
+        logger = logging.getLogger(record.name)
+        logger.handlers = [filehandler]
+        logger.propagate = False
+        # log the message
+        logger.handle(record)
+
+
 def start_broker_process(
-    endpoint, exit_event=None, inventory=None, log_level="WARNING"
+    endpoint, exit_event=None, inventory=None, log_level="WARNING", log_queue=None
 ):
-    broker = NFPBroker(endpoint, exit_event, inventory, log_level)
+    broker = NFPBroker(endpoint, exit_event, inventory, log_level, log_queue)
     broker.mediate()
 
 
@@ -23,6 +48,7 @@ def start_worker_process(
     worker_name: str,
     exit_event=None,
     log_level="WARNING",
+    log_queue=None,
     init_done_event=None,
 ):
     try:
@@ -34,6 +60,7 @@ def start_worker_process(
                 exit_event,
                 init_done_event,
                 log_level,
+                log_queue,
             )
             worker.work()
         elif service == "netbox":
@@ -44,6 +71,7 @@ def start_worker_process(
                 exit_event,
                 init_done_event,
                 log_level,
+                log_queue,
             )
             worker.work()
         else:
@@ -79,6 +107,7 @@ class NorFab:
         :param inventory: OS path to NorFab inventory YAML file
         :param log_level: one or supported logging levels - `CRITICAL`, `ERROR`, `WARNING`, `INFO`, `DEBUG`
         """
+        setup_logging(log_level=log_level, filename="norfab.log")
         self.inventory = NorFabInventory(inventory)
         self.log_level = log_level
         self.broker_endpoint = self.inventory.get("broker", {}).get("endpoint")
@@ -89,6 +118,20 @@ class NorFab:
         self.workers_exit_event = Event()
         self.clients_exit_event = Event()
 
+        # start logger thread to log logs to a file
+        self.log_queue = Queue(-1)
+        self.logger_exit_evet = Event()
+        self.logger_thread = threading.Thread(
+            target=logger_thread,
+            daemon=True,
+            name=f"{__name__}_logger_thread",
+            args=(
+                self.log_queue,
+                self.logger_exit_evet,
+            ),
+        )
+        self.logger_thread.start()
+
     def start_broker(self):
         if self.broker_endpoint:
             self.broker = Process(
@@ -98,6 +141,7 @@ class NorFab:
                     self.broker_exit_event,
                     self.inventory,
                     self.log_level,
+                    self.log_queue,
                 ),
             )
             self.broker.start()
@@ -134,6 +178,7 @@ class NorFab:
                         worker_name,
                         self.workers_exit_event,
                         self.log_level,
+                        self.log_queue,
                         init_done_event,
                     ),
                 ),
@@ -166,8 +211,8 @@ class NorFab:
         elif isinstance(workers, list) and workers:
             workers = workers
         # start workers defined in inventory
-        elif workers is True and self.inventory.topology.get("workers"):
-            workers = self.inventory.topology["workers"]
+        elif workers is True:
+            workers = self.inventory.topology.get("workers", [])
 
         # start worker processes
         if not workers:
@@ -251,6 +296,8 @@ class NorFab:
         self.broker_exit_event.set()
         if self.broker:
             self.broker.join()
+        # stop logger thread
+        self.logger_exit_evet.set()
 
     def make_client(self, broker_endpoint: str = None) -> NFPClient:
         """

@@ -55,7 +55,8 @@ Example of retrieving commands output from devices.
 		
 		`inventory.yaml` should be located in same folder where we 
 		start nfcli, unless `nfcli -i path_to_inventory.yaml` flag 
-		used.
+		used. Refer to [Getting Started](norfab_getting_started.md) 
+		section on how to construct  `inventory.yaml` file
 		
     === "Python"
     

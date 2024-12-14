@@ -30,7 +30,7 @@ from .keepalives import KeepAliver
 from .security import generate_certificates
 from jinja2 import Environment, FileSystemLoader
 from jinja2.nodes import Include
-
+from norfab.utils.loggingutils import setup_logging
 from typing import Any, Callable, Dict, List, Optional, Union
 
 log = logging.getLogger(__name__)
@@ -395,10 +395,11 @@ class NFPWorker:
         name: str,
         exit_event,
         log_level: str = "WARNING",
+        log_queue: object = None,
         multiplier: int = 6,
         keepalive: int = 2500,
     ):
-        log.setLevel(log_level.upper())
+        setup_logging(queue=log_queue, log_level=log_level)
         self.log_level = log_level
         self.broker = broker
         self.service = service

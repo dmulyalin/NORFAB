@@ -3,9 +3,6 @@ import os
 
 from norfab.clients.picle_shell_client import start_picle_shell
 from norfab.core.nfapi import NorFab
-from norfab.utils.loggingutils import setup_logging
-
-log = setup_logging(__name__)
 
 
 def nfcli():
@@ -82,8 +79,6 @@ def nfcli():
     LOGLEVEL = args.LOGLEVEL
     SHELL = args.SHELL
     CLIENT = args.CLIENT
-
-    log.setLevel(LOGLEVEL.upper())
 
     # start broker only
     if BROKER:
