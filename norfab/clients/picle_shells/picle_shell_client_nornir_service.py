@@ -1061,6 +1061,10 @@ class NornirTaskShell(
         None,
         description="Nornir task.plugin.name to import or nf://path/to/plugin/file.py",
     )
+    arguments: StrictStr = Field(
+        None,
+        description="Plugin arguments JSON formatted string",
+    )
 
     @staticmethod
     def source_plugin():
@@ -1074,6 +1078,11 @@ class NornirTaskShell(
     def run(uuid, *args, **kwargs):
         workers = kwargs.pop("workers", "all")
         timeout = kwargs.pop("timeout", 600)
+
+        # handle task argument
+        arguments = json.loads(kwargs.pop("arguments", "{}"))
+        if arguments and isinstance(arguments, dict):
+            kwargs.update(arguments)
 
         # extract Tabulate arguments
         table = kwargs.pop("table", {})  # tabulate

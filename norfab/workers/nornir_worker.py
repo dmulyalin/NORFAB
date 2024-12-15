@@ -599,7 +599,7 @@ class NornirWorker(NFPWorker):
         CONNECTION_NAME = "netmiko"
 
         # create task function
-        def task(nornir_task_object, *args, **kwargs):
+        def task(nornir_task_object, **kwargs):
             pass
         ```
 
