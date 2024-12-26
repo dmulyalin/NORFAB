@@ -17,6 +17,8 @@ workers:
     - nornir/nornir-worker-4.yaml
   nornir-worker-5:
     - nornir/nornir-worker-5.yaml
+  nornir-worker-6:
+    - nornir/nornir-worker-6.yaml
   netbox-worker-1.*:
     - netbox/common.yaml  
   pyats-*:
@@ -39,3 +41,4 @@ topology:
           - netbox-worker-1.1
           - netbox-worker-1.2
     # - pyats-worker-1
+    - nornir-worker-6 # Hosts Juniper vMX

@@ -83,10 +83,7 @@ class TestNornirCli:
 
         for worker, results in ret.items():
             for host, res in results["result"].items():
-                assert "cli_dry_run" in res and res["cli_dry_run"] == [
-                    "show version",
-                    "show clock",
-                ], f"{worker}:{host} dry run output is wrong"
+                assert "cli_dry_run" in res and res["cli_dry_run"] == "show version\nshow clock", f"{worker}:{host} dry run output is wrong"
 
     @pytest.mark.skip(reason="TBD")
     def test_commands_with_hosts_filters(self, nfclient):
@@ -133,9 +130,7 @@ class TestNornirCli:
 
         for worker, results in ret.items():
             for host, res in results["result"].items():
-                assert "cli_dry_run" in res and res["cli_dry_run"] == [
-                    "show version\nshow clock\nshow int description"
-                ], f"{worker}:{host} output is wrong"
+                assert "cli_dry_run" in res and res["cli_dry_run"] == "show version\nshow clock\nshow int description", f"{worker}:{host} output is wrong"
 
     def test_commands_from_nonexisting_file(self, nfclient):
         ret = nfclient.run_job(
@@ -169,11 +164,11 @@ class TestNornirCli:
             for host, res in results["result"].items():
                 if host == "ceos-spine-1":
                     found_ceos_spine_1 = True
-                    assert "loopback0" in res["cli_dry_run"][0]
-                    assert "ethernet1" in res["cli_dry_run"][0]
+                    assert "loopback0" in res["cli_dry_run"]
+                    assert "ethernet1" in res["cli_dry_run"]
                 elif host == "ceos-spine-2":
-                    assert "loopback0" not in res["cli_dry_run"][0]
-                    assert "ethernet1" in res["cli_dry_run"][0]
+                    assert "loopback0" not in res["cli_dry_run"]
+                    assert "ethernet1" in res["cli_dry_run"]
                     found_ceos_spine_2 = True
 
         assert found_ceos_spine_1, "No results for ceos-spine-1"
@@ -216,7 +211,7 @@ class TestNornirCli:
         for worker, results in ret.items():
             for host, res in results["result"].items():
                 assert all(
-                    k in res["cli_dry_run"][0]
+                    k in res["cli_dry_run"]
                     for k in [
                         "nornir-worker-2",
                         "ceos-leaf-1",
@@ -242,7 +237,7 @@ class TestNornirCli:
         for worker, results in ret.items():
             for host, res in results["result"].items():
                 assert all(
-                    k in res["cli_dry_run"][0]
+                    k in res["cli_dry_run"]
                     for k in [
                         "updated by norfab 1234",
                         "interface Ethernet",
@@ -307,8 +302,8 @@ class TestNornirCli:
         for worker, results in ret.items():
             for host, res in results["result"].items():
                 assert (
-                    "show version" in res["cli_dry_run"][0]
-                    and "show clock" in res["cli_dry_run"][0]
+                    "show version" in res["cli_dry_run"]
+                    and "show clock" in res["cli_dry_run"]
                 ), f"{worker}:{host} output is wrong"
 
     def test_commands_template_with_job_data_file(self, nfclient):
@@ -327,8 +322,8 @@ class TestNornirCli:
         for worker, results in ret.items():
             for host, res in results["result"].items():
                 assert (
-                    "show version" in res["cli_dry_run"][0]
-                    and "show clock" in res["cli_dry_run"][0]
+                    "show version" in res["cli_dry_run"]
+                    and "show clock" in res["cli_dry_run"]
                 ), f"{worker}:{host} output is wrong"
 
     def test_commands_template_with_job_data_wrong_file(self, nfclient):
@@ -545,10 +540,7 @@ class TestNornirCfg:
         for worker, results in ret.items():
             for host, res in results["result"].items():
                 assert "cfg_dry_run" in res, f"{worker}:{host} no cfg dry run output"
-                assert res["cfg_dry_run"] == [
-                    "interface loopback 0",
-                    "description RID",
-                ], f"{worker}:{host} cfg dry run output is wrong"
+                assert res["cfg_dry_run"] == "interface loopback 0\ndescription RID", f"{worker}:{host} cfg dry run output is wrong"
 
     def test_config_with_hosts_filters(self, nfclient):
         ret = nfclient.run_job(
@@ -719,9 +711,7 @@ class TestNornirCfg:
         for worker, results in ret.items():
             for host, res in results["result"].items():
                 assert "cfg_dry_run" in res, f"{worker}:{host} no cfg dry run output"
-                assert res["cfg_dry_run"] == [
-                    "interface Loopback0\ndescription RID"
-                ], f"{worker}:{host} cfg dry run output is wrong"
+                assert res["cfg_dry_run"] == "interface Loopback0\ndescription RID", f"{worker}:{host} cfg dry run output is wrong"
 
     def test_config_from_nonexisting_file(self, nfclient):
         ret = nfclient.run_job(
@@ -756,10 +746,10 @@ class TestNornirCfg:
                     "cfg_dry_run" in res
                 ), f"{worker}:{host_name} no cfg dry run output"
                 assert (
-                    "interface Loopback0\ndescription RID for " in res["cfg_dry_run"][0]
+                    "interface Loopback0\ndescription RID for " in res["cfg_dry_run"]
                 ), f"{worker}:{host_name} cfg dry run output is wrong"
                 assert (
-                    host_name in res["cfg_dry_run"][0]
+                    host_name in res["cfg_dry_run"]
                 ), f"{worker}:{host_name} cfg dry run output is not rendered"
 
     def test_config_plugin_napalm(self, nfclient):
@@ -848,16 +838,15 @@ class TestNornirCfg:
             assert results["failed"] == False, f"{worker} results failed"
             for host, res in results["result"].items():
                 assert "cfg_dry_run" in res, f"{worker}:{host} no cfg_dry_run output"
-                for item in res["cfg_dry_run"]:
-                    assert (
-                        "interface Loopback1" in item
-                    ), f"{worker}:{host} no config_with_includes.txt config"
-                    assert (
-                        "interface Loopback0" in item
-                    ), f"{worker}:{host} no config_with_includes_2.txt config"
-                    assert (
-                        "ntp server 1.1.1.1" in item
-                    ), f"{worker}:{host} no config_with_includes_2.txt config"
+                assert (
+                    "interface Loopback1" in res["cfg_dry_run"]
+                ), f"{worker}:{host} no config_with_includes.txt config"
+                assert (
+                    "interface Loopback0" in res["cfg_dry_run"]
+                ), f"{worker}:{host} no config_with_includes_2.txt config"
+                assert (
+                    "ntp server 1.1.1.1" in res["cfg_dry_run"]
+                ), f"{worker}:{host} no config_with_includes_2.txt config"
 
     def test_config_from_file_template_with_include_non_exist(self, nfclient):
         ret = nfclient.run_job(
@@ -891,10 +880,9 @@ class TestNornirCfg:
             assert results["failed"] == False, f"{worker} results failed"
             for host, res in results["result"].items():
                 assert "cfg_dry_run" in res, f"{worker}:{host} no cfg_dry_run output"
-                for item in res["cfg_dry_run"]:
-                    assert (
-                        "interface Loopback1" in item
-                    ), f"{worker}:{host} no config_with_includes.txt config"
+                assert (
+                    "interface Loopback1" in res["cfg_dry_run"]
+                ), f"{worker}:{host} no config_with_includes.txt config"
 
     def test_config_from_file_template_with_job_data_dict(self, nfclient):
         ret = nfclient.run_job(
@@ -914,8 +902,8 @@ class TestNornirCfg:
             assert results["failed"] == False, f"{worker} results failed"
             for host, res in results["result"].items():
                 assert (
-                    "interface loopback 555" in res["cfg_dry_run"][0]
-                    and "description foobar" in res["cfg_dry_run"][0]
+                    "interface loopback 555" in res["cfg_dry_run"]
+                    and "description foobar" in res["cfg_dry_run"]
                 ), f"{worker}:{host} config is wrong"
 
     def test_config_from_file_template_with_job_data_file(self, nfclient):
@@ -934,8 +922,8 @@ class TestNornirCfg:
             assert results["failed"] == False, f"{worker} results failed"
             for host, res in results["result"].items():
                 assert (
-                    "interface loopback 555" in res["cfg_dry_run"][0]
-                    and "description foobar" in res["cfg_dry_run"][0]
+                    "interface loopback 555" in res["cfg_dry_run"]
+                    and "description foobar" in res["cfg_dry_run"]
                 ), f"{worker}:{host} config is wrong"
 
     def test_config_from_file_template_with_job_data_wrong_file(self, nfclient):
@@ -1607,8 +1595,8 @@ class TestNornirJinja2Filters:
             assert results["result"], f"{worker} returned no results"
             assert results["failed"] is False, f"{worker} failed to run the task"
             for host, res in results["result"].items():
-                assert "192.168.1.1" in res["cli_dry_run"][0]
-                assert "192.168.1.2" in res["cli_dry_run"][0]
+                assert "192.168.1.1" in res["cli_dry_run"]
+                assert "192.168.1.2" in res["cli_dry_run"]
 
     def test_network_hosts_with_prefixlen(self, nfclient):
         ret = nfclient.run_job(
@@ -1626,5 +1614,5 @@ class TestNornirJinja2Filters:
             assert results["result"], f"{worker} returned no results"
             assert results["failed"] is False, f"{worker} failed to run the task"
             for host, res in results["result"].items():
-                assert "192.168.1.1/30" in res["cli_dry_run"][0]
-                assert "192.168.1.2/30" in res["cli_dry_run"][0]
+                assert "192.168.1.1/30" in res["cli_dry_run"]
+                assert "192.168.1.2/30" in res["cli_dry_run"]

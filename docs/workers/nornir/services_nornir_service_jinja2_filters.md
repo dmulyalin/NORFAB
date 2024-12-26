@@ -3,7 +3,7 @@ tags:
   - nornir
 ---
 
-# Nornir Service Jinja2 Filters
+# Nornir Service Jinja2 Templates Filters
 
 Below listed additional Jinja2 filters that supported by 
 Nornir service for templates rendering by all service tasks

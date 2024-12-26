@@ -13,8 +13,8 @@ hosts:
       napalm:
         extras:
           optional_args:
-            transport: http
-            port: 8802
+            transport: https
+            port: 4402
       ncclient:
         port: 8302
   ceos-leaf-2:
@@ -31,8 +31,8 @@ hosts:
       napalm:
         extras:
           optional_args:
-            transport: http
-            port: 8803
+            transport: https
+            port: 4403
       ncclient:
         port: 8303
   ceos-leaf-3:
@@ -49,8 +49,8 @@ hosts:
       napalm:
         extras:
           optional_args:
-            transport: http
-            port: 8804
+            transport: https
+            port: 4404
       ncclient:
         port: 8304
 groups: 

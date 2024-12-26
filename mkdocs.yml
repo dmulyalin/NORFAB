@@ -81,38 +81,38 @@ nav:
     - Docker Deployment: norfab_docker_deployment.md
     - Help with NORFAB: norfab_help_with_norfab.md
     - Changelog: norfab_changelog.md
-- Services:
-    - Services Overview: services_overview.md
-    - Nornir Service: 
-        - Overview: services_nornir_service.md
-        - Tasks: 
-            - Nornir Task: services_nornir_service_tasks_task.md
-            - Nornir Cli: services_nornir_service_tasks_cli.md
-            - Nornir Cfg: services_nornir_service_tasks_cfg.md
-            - Nornir Test: services_nornir_service_tasks_test.md
-            - Nornir Network: services_nornir_service_tasks_network.md
-            - Nornir Parse: services_nornir_service_tasks_parse.md
-            - Nornir Diagram: services_nornir_service_tasks_diagram.md
-        - Jina2 Filters: services_nornir_service_jinja2_filters.md
-    - Netbox Service: 
-        - Overview: services_netbox_service.md
-        - Tasks: 
-            - Netbox GraphQL: services_netbox_service_tasks_graphql.md
-            - Netbox REST: services_netbox_service_tasks_rest.md
-            - Netbox GET Devices: services_netbox_service_tasks_get_devices.md
-            - Netbox GET Interfaces: services_netbox_service_tasks_get_interfaces.md
-            - Netbox GET Connections: services_netbox_service_tasks_get_connections.md
-            - Netbox GET Circuits: services_netbox_service_tasks_get_circuits.md
-            - Netbox GET Nornir Inventory: services_netbox_service_tasks_get_nornir_inventory.md
-            - Netbox GET Next IP: services_netbox_service_tasks_get_next_ip.md
-            - Netbox UPDATE Device Facts: services_netbox_service_tasks_update_device_facts.md
-            - Netbox UPDATE Device Interfaces: services_netbox_service_tasks_update_device_interfaces.md
-- Clients:
-    - Clients Overview: clients_overview.md
-    - NORFAB CLI Client: clients_nfcli_overview.md
-    - Python API Client: clients_python_api_overview.md
-    - REST API Client: clients_rest_api_overview.md
-    - ROBOT Client: clients_robot_client_overview.md
+    - Services:
+        - Services Overview: services_overview.md
+        - Nornir Service: 
+            - Overview: workers/nornir/services_nornir_service.md
+            - Tasks: 
+                - Nornir Task: workers/nornir/services_nornir_service_tasks_task.md
+                - Nornir Cli: workers/nornir/services_nornir_service_tasks_cli.md
+                - Nornir Cfg: workers/nornir/services_nornir_service_tasks_cfg.md
+                - Nornir Test: workers/nornir/services_nornir_service_tasks_test.md
+                - Nornir Network: workers/nornir/services_nornir_service_tasks_network.md
+                - Nornir Parse: workers/nornir/services_nornir_service_tasks_parse.md
+                - Nornir Diagram: workers/nornir/services_nornir_service_tasks_diagram.md
+            - Jina2 Filters: workers/nornir/services_nornir_service_jinja2_filters.md
+        - Netbox Service: 
+            - Overview: services_netbox_service.md
+            - Tasks: 
+                - Netbox GraphQL: services_netbox_service_tasks_graphql.md
+                - Netbox REST: services_netbox_service_tasks_rest.md
+                - Netbox GET Devices: services_netbox_service_tasks_get_devices.md
+                - Netbox GET Interfaces: services_netbox_service_tasks_get_interfaces.md
+                - Netbox GET Connections: services_netbox_service_tasks_get_connections.md
+                - Netbox GET Circuits: services_netbox_service_tasks_get_circuits.md
+                - Netbox GET Nornir Inventory: services_netbox_service_tasks_get_nornir_inventory.md
+                - Netbox GET Next IP: services_netbox_service_tasks_get_next_ip.md
+                - Netbox UPDATE Device Facts: services_netbox_service_tasks_update_device_facts.md
+                - Netbox UPDATE Device Interfaces: services_netbox_service_tasks_update_device_interfaces.md
+    - Clients:
+        - Clients Overview: clients_overview.md
+        - NORFAB CLI Client: clients_nfcli_overview.md
+        - Python API Client: clients_python_api_overview.md
+        - REST API Client: clients_rest_api_overview.md
+        - ROBOT Client: clients_robot_client_overview.md
 - References:
     - NORFAB Inventory: reference_norfab_inventory.md
     - API Reference:
@@ -124,7 +124,7 @@ nav:
           - Simple Inventory: api_reference_core_norfab_simple_inventory.md
           - Exceptions: api_reference_core_norfab_exceptions.md
         - Built-in Workers:
-          - Nornir Worker: api_reference_workers_nornir_worker.md
+          - Nornir Worker: workers/nornir/api_reference_workers_nornir_worker.md
           - Netbox Worker: api_reference_workers_netbox_worker.md
         - Built-in Clients:
           - NFCLI Client API: api_reference_clients_nfcli_client.md

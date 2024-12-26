@@ -17,8 +17,8 @@ hosts:
       napalm:
         extras:
           optional_args:
-            transport: http
-            port: 8800
+            transport: https
+            port: 4400
       ncclient:
         port: 8300
         
@@ -39,8 +39,8 @@ hosts:
       napalm:
         extras:
           optional_args:
-            transport: http
-            port: 8801
+            transport: https
+            port: 4401
       ncclient:
         port: 8301
         

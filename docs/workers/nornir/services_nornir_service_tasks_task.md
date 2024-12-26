@@ -3,7 +3,7 @@ tags:
   - nornir
 ---
 
-# Overview
+# Nornir Service "Task" Task
 
 Nornir service `task` task can be used to run any arbitrary
 Nornir task plugin function. Nornir task can be referenced
@@ -24,8 +24,8 @@ broker under `nornir_tasks/echo.py` file path:
     └───echo.py
 ```
 
-Task `echo.py` takes provided argument and echoes them back as 
-a result:
+Task `echo.py` takes provided arguments and echoes them back in
+results:
 
 ``` echo.py
 from nornir.core.task import Result, Task
@@ -57,9 +57,9 @@ def task(task: Task, **kwargs) -> Result:
 		nf#
         ```
         
-        Small Demo
+        Demo
 		
-		![Nornir Cli Demo](images/nornir_task_demo.gif)
+		![Nornir Cli Demo](../../images/nornir_task_demo.gif)
     
 		Above runs `echo.py` custom Nornir task taking arguments `{"foo": "bar"}` 
 		as an input and echoing them back. Task only executed for 
@@ -118,11 +118,11 @@ def task(task: Task, **kwargs) -> Result:
 		how to construct  `inventory.yaml` file.	
 		
 
-## Run Task From 3rd Party Module
+## Use Community Module Task
 
-It is possible to call any 3rd party Nornir task plugin function.
-For example, to use `netmiko_send_commands` from `nornir_netmiko` module
-need to set plugin argument to 
+It is possible to run any Nornir task plugin created by open 
+source community. For example, to use `netmiko_send_commands` from 
+`nornir_netmiko` module need to set plugin argument to 
 `nornir_netmiko.tasks.netmiko_send_commands` value and supply `arguments`
 option to provide further task parameters.
 	
@@ -149,9 +149,9 @@ option to provide further task parameters.
 		nf#
         ```
         
-        Small Demo
+        Demo
 		
-		![Nornir Cli Demo](images/nornir_task_from_module_demo.gif)
+		![Nornir Cli Demo](../../images/nornir_task_from_module_demo.gif)
     
 		Above runs `netmiko_send_command` Nornir task from
 		`nornir_netmiko` module and collects `show hostname` command

@@ -1,4 +1,6 @@
-name: clos
+# Containerlab network topology file
+
+name: norfab-network-lab
 
 topology:
   nodes:
@@ -8,30 +10,48 @@ topology:
       mgmt-ipv4: 172.100.100.10
       ports:
         - 2200:22
+        - 8800:80
+        - 8300:830
     ceos-spine-2: 
       kind: ceos
       image: ceosimage:4.30.0F
       mgmt-ipv4: 172.100.100.11
       ports:
         - 2201:22
+        - 8801:80
+        - 8301:830
     ceos-leaf-1: 
       kind: ceos
       image: ceosimage:4.30.0F
       mgmt-ipv4: 172.100.100.12
       ports:
         - 2202:22
+        - 8802:80
+        - 8302:830
     ceos-leaf-2: 
       kind: ceos
       image: ceosimage:4.30.0F
       mgmt-ipv4: 172.100.100.13
       ports:
         - 2203:22
+        - 8803:80
+        - 8303:830
     ceos-leaf-3: 
       kind: ceos
       image: ceosimage:4.30.0F
       mgmt-ipv4: 172.100.100.14
       ports:
         - 2204:22
+        - 8804:80
+        - 8304:830
+    vmx-1:
+      kind: juniper_vmx
+      image: vrnetlab/juniper_vmx:23.2R2-S1.3
+      mgmt-ipv4: 172.100.100.15
+      ports:
+        - 2205:22
+        - 8805:80
+        - 8305:830
         
   links:
     - endpoints: ["ceos-spine-1:eth1", "ceos-spine-2:eth1"]
@@ -41,7 +61,8 @@ topology:
     - endpoints: ["ceos-spine-2:eth3", "ceos-leaf-2:eth2"]
     - endpoints: ["ceos-spine-1:eth4", "ceos-leaf-3:eth1"]
     - endpoints: ["ceos-spine-2:eth4", "ceos-leaf-3:eth2"]
+    - endpoints: ["ceos-spine-2:eth5", "vmx-1:eth1"]    
     
 mgmt:
-  network: clos_mgmt                  # management network name
+  network: norfab_network_lab_mgmt    # management network name
   ipv4-subnet: 172.100.100.0/24       # ipv4 range

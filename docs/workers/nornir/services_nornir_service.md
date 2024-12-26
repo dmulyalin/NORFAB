@@ -8,7 +8,7 @@ tags:
 Nornir Service is built using [Nornir](https://github.com/nornir-automation/nornir)
 library - a well adopted open-source tool for automating network devices operations.
  
-![Nornir Service Architecture](images/Nornir_Service.jpg) 
+![Nornir Service Architecture](../../images/Nornir_Service.jpg) 
 
 With each Nornir worker capable of handling multiple devices simultaneously, 
 Nornir Service offers high scalability, allowing efficient management of 

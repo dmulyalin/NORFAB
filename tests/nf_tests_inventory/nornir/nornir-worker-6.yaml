@@ -1,0 +1,20 @@
+hosts: 
+  vmx-1:
+    hostname: 192.168.1.130
+    platform: juniper_junos
+    username: admin
+    password: admin@123
+    port: 2205
+    groups:
+      - junos_params
+    connection_options:
+      scrapli_netconf:
+        port: 8305
+      napalm:
+        extras:
+          optional_args:
+            transport: http
+            port: 8805
+      ncclient:
+        port: 8305
+        

@@ -236,7 +236,9 @@ class NornirWorker(NFPWorker):
         self.watchdog = WatchDog(self)
         self.watchdog.start()
 
-        self.init_done_event.set()
+        if self.init_done_event is not None:
+            self.init_done_event.set()
+
         log.info(f"{self.name} - Started")
 
     def _init_nornir(self):
@@ -427,9 +429,10 @@ class NornirWorker(NFPWorker):
 
     def render_jinja2_templates(
         self, templates: list[str], context: dict, filters: dict = None
-    ) -> list[str]:
+    ) -> str:
         """
-        helper function to render a list of Jinja2 templates
+        Helper function to render a list of Jinja2 templates and
+        combine them in a single string.
 
         :param templates: list of template strings to render
         :param context: Jinja2 context dictionary
@@ -451,7 +454,7 @@ class NornirWorker(NFPWorker):
                 renderer = j2env.from_string(template)
             rendered.append(renderer.render(**context))
 
-        return rendered
+        return "\n".join(rendered)
 
     def load_job_data(self, job_data: str):
         """
@@ -678,7 +681,7 @@ class NornirWorker(NFPWorker):
         Command Line Interface (CLI)
 
         :param commands: list of commands to send to devices
-        :param plugin: plugin name to use - ``netmiko``, ``scrapli``, ``napalm``
+        :param plugin: plugin name to use - valid options are ``netmiko``, ``scrapli``, ``napalm``
         :param cli_dry_run: do not send commands to devices just return them
         :param job_data: URL to YAML file with data or dictionary/list of data
             to pass on to Jinja2 rendering context
@@ -806,12 +809,14 @@ class NornirWorker(NFPWorker):
 
         :param config: list of commands to send to devices
         :param plugin: plugin name to use - ``netmiko``, ``scrapli``, ``napalm``
-        :param cfg_dry_run: do not send commands to devices just return them
+        :param cfg_dry_run: if True, will not send commands to devices but just return them
         :param job_data: URL to YAML file with data or dictionary/list of data
             to pass on to Jinja2 rendering context
         :param add_details: if True will add task execution details to the results
         :param to_dict: default is True - produces dictionary results, if False
             will produce results list
+        :param kwargs: additional arguments to pass to the task plugin
+        :return: dictionary with the results of the configuration task
         """
         downloaded_cfg = []
         config = config if isinstance(config, list) else [config]
@@ -948,7 +953,6 @@ class NornirWorker(NFPWorker):
                     },
                     filters=self.add_jinja2_filters(),
                 )
-                rendered_suite = rendered_suite[0]
             except Exception as e:
                 msg = f"{self.name} - '{suite}' Jinja2 rendering failed: '{e}'"
                 raise RuntimeError(msg)

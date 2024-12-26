@@ -38,7 +38,7 @@ groups:
         platform: eos
         extras:
           optional_args:
-            transport: http
+            transport: https
       ncclient:
         extras:
           allow_agent: False
@@ -51,3 +51,27 @@ groups:
           headers:
             Content-Type: "application/yang-data+json"
             Accept: "application/yang-data+json"
+  junos_params:
+    connection_options:
+      ncclient:
+        extras:
+          hostkey_verify: false
+          device_params:
+            name: junos
+      scrapli_netconf:
+        extras:
+          transport: paramiko # or paramiko, ssh2
+          ssh_config_file: True
+          auth_strict_key: False
+      scrapli:
+        platform: juniper_junos
+        extras:
+          transport: paramiko # or asyncssh, ssh2, paramiko
+          auth_strict_key: false
+          ssh_config_file: false
+      napalm:
+        platform: junos
+        extras:
+          optional_args:
+            auto_probe: 0
+            config_private: False

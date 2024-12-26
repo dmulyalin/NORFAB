@@ -12,27 +12,31 @@ from norfab.utils.loggingutils import setup_logging
 log = logging.getLogger(__name__)
 
 
-def logger_thread(log_queue: Queue, logger_exit_evet: Event):
+def logger_thread(log_queue: Queue, logger_exit_event: Event):
     """
     Thread to de-queue logging events and log them into a file
 
     :param log_queue:  Multiprocessing queue passed along
         broker and worker processes
-    :param logger_exit_evet: Multiprocessing event object to signal exit
+    :param logger_exit_event: Multiprocessing event object to signal exit
     """
     # get root logger's file handler
     filehandler = log.root.handlers[1]
-    while not logger_exit_evet.is_set():
-        record = log_queue.get()
-        # need to split message by -- to avoid duplicate of
-        # information such as timestamp, module, level
-        record.msg = record.msg.split("--")[1].strip()
-        # setup logger
-        logger = logging.getLogger(record.name)
-        logger.handlers = [filehandler]
-        logger.propagate = False
-        # log the message
-        logger.handle(record)
+    while not logger_exit_event.is_set():
+        try:
+            record = log_queue.get()
+            # need to split message by -- to avoid duplicate of
+            # information such as timestamp, module, level
+            if "--" in record.msg:
+                record.msg = record.msg.split("--", 1)[1].strip()
+            # setup logger
+            logger = logging.getLogger(record.name)
+            logger.handlers = [filehandler]
+            logger.propagate = False
+            # log the message
+            logger.handle(record)
+        except Exception as e:
+            log.error(f"Error in logger_thread: {e}")
 
 
 def start_broker_process(
@@ -120,14 +124,14 @@ class NorFab:
 
         # start logger thread to log logs to a file
         self.log_queue = Queue(-1)
-        self.logger_exit_evet = Event()
+        self.logger_exit_event = Event()
         self.logger_thread = threading.Thread(
             target=logger_thread,
             daemon=True,
             name=f"{__name__}_logger_thread",
             args=(
                 self.log_queue,
-                self.logger_exit_evet,
+                self.logger_exit_event,
             ),
         )
         self.logger_thread.start()
@@ -242,17 +246,17 @@ class NorFab:
                     self.start_worker(worker_name, worker_data)
                 # if failed to start remove from workers to start
                 except KeyError:
-                    workers_to_start.remove(worker_name)
+                    workers_to_start.discard(worker_name)
                     log.error(
                         f"'{worker_name}' - failed to start worker, no inventory data found"
                     )
                 except FileNotFoundError as e:
-                    workers_to_start.remove(worker_name)
+                    workers_to_start.discard(worker_name)
                     log.error(
                         f"'{worker_name}' - failed to start worker, inventory file not found '{e}'"
                     )
                 except Exception as e:
-                    workers_to_start.remove(worker_name)
+                    workers_to_start.discard(worker_name)
                     log.error(f"'{worker_name}' - failed to start worker, error '{e}'")
 
             time.sleep(0.01)
@@ -297,7 +301,7 @@ class NorFab:
         if self.broker:
             self.broker.join()
         # stop logger thread
-        self.logger_exit_evet.set()
+        self.logger_exit_event.set()
 
     def make_client(self, broker_endpoint: str = None) -> NFPClient:
         """
