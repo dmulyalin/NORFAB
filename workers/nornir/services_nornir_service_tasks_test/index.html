@@ -781,6 +781,17 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Nornir Test
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -790,6 +801,43 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#norfab-nornir-test-shell-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      NORFAB Nornir Test Shell Reference
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#python-api-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      Python API Reference
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -1994,6 +2042,32 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#norfab-nornir-test-shell-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      NORFAB Nornir Test Shell Reference
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#python-api-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      Python API Reference
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -2022,6 +2096,513 @@
 
 
 <h1 id="nornir-service-test-task">Nornir Service Test Task<a class="headerlink" href="#nornir-service-test-task" title="Permanent link">¤</a></h1>
+<h2 id="norfab-nornir-test-shell-reference">NORFAB Nornir Test Shell Reference<a class="headerlink" href="#norfab-nornir-test-shell-reference" title="Permanent link">¤</a></h2>
+<p>NorFab shell supports these command options for Nornir <code>test</code> task:</p>
+<div class="highlight"><pre><span></span><code>nf#man tree nornir.test
+root
+└── nornir:    Nornir service
+    └── test:    Run network tests
+        ├── timeout:    Job timeout
+        ├── workers:    Filter worker to target, default &#39;all&#39;
+        ├── add_details:    Add task details to results
+        ├── run_num_workers:    RetryRunner number of threads for tasks execution
+        ├── run_num_connectors:    RetryRunner number of threads for device connections
+        ├── run_connect_retry:    RetryRunner number of connection attempts
+        ├── run_task_retry:    RetryRunner number of attempts to run task
+        ├── run_reconnect_on_fail:    RetryRunner perform reconnect to host on task failure
+        ├── run_connect_check:    RetryRunner test TCP connection before opening actual connection
+        ├── run_connect_timeout:    RetryRunner timeout in seconds to wait for test TCP connection to establish
+        ├── run_creds_retry:    RetryRunner list of connection credentials and parameters to retry
+        ├── tf:    File group name to save task results to on worker file system
+        ├── tf_skip_failed:    Save results to file for failed tasks
+        ├── diff:    File group name to run the diff for
+        ├── diff_last:    File version number to diff, default is 1 (last)
+        ├── progress:    Emit execution progress
+        ├── headers:    Table headers
+        ├── headers_exclude:    Table headers to exclude
+        ├── sortby:    Table header column to sort by
+        ├── reverse:    Table reverse the sort by order
+        ├── FO:    Filter hosts using Filter Object
+        ├── FB:    Filter hosts by name using Glob Patterns
+        ├── FH:    Filter hosts by hostname
+        ├── FC:    Filter hosts containment of pattern in name
+        ├── FR:    Filter hosts by name using Regular Expressions
+        ├── FG:    Filter hosts by group
+        ├── FP:    Filter hosts by hostname using IP Prefix
+        ├── FL:    Filter hosts by names list
+        ├── FM:    Filter hosts by platform
+        ├── FX:    Filter hosts excluding them by name
+        ├── FN:    Negate the match
+        ├── hosts:    Filter hosts to target
+        ├── *suite:    Nornir suite nf://path/to/file.py, default &#39;PydanticUndefined&#39;
+        ├── dry_run:    Return produced per-host tests suite content without running tests
+        ├── subset:    Filter tests by name
+        ├── failed_only:    Return test results for failed tests only
+        ├── remove_tasks:    Include/Exclude tested task results
+        └── job_data:    Path to YAML file with job data
+nf#
+</code></pre></div>
+<p><code>*</code> - mandatory/required command argument</p>
+<h2 id="python-api-reference">Python API Reference<a class="headerlink" href="#python-api-reference" title="Permanent link">¤</a></h2>
+
+
+<div class="doc doc-object doc-function">
+
+
+
+
+    <div class="doc doc-contents first">
+
+        <p>Function to tests data obtained from devices.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td><code>suite</code></td>
+            <td>
+                  <code><span title="typing.Union">Union</span>[list, str]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>path to YAML file with tests</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code>dry_run</code></td>
+            <td>
+                  <code>bool</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>if True, returns produced per-host tests suite content only</p>
+              </div>
+            </td>
+            <td>
+                  <code>False</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code>subset</code></td>
+            <td>
+                  <code>str</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>list or string with comma separated non case sensitive glob patterns to filter tests' by name, subset argument ignored by dry run</p>
+              </div>
+            </td>
+            <td>
+                  <code>None</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code>failed_only</code></td>
+            <td>
+                  <code>bool</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>if True returns test results for failed tests only</p>
+              </div>
+            </td>
+            <td>
+                  <code>False</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code>remove_tasks</code></td>
+            <td>
+                  <code>bool</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>if False results will include other tasks output</p>
+              </div>
+            </td>
+            <td>
+                  <code>True</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code>return_tests_suite</code></td>
+            <td>
+                  <code>bool</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>if True returns rendered per-host tests suite content in addition to test results using dictionary with <code>results</code> and <code>suite</code> keys</p>
+              </div>
+            </td>
+            <td>
+                  <code>False</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code>job_data</code></td>
+            <td>
+                  <code>str</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>URL to YAML file with data or dictionary/list of data to pass on to Jinja2 rendering context</p>
+              </div>
+            </td>
+            <td>
+                  <code>None</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code>kwargs</code></td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>any additional arguments to pass on to Nornir service task</p>
+              </div>
+            </td>
+            <td>
+                  <code>{}</code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+            <details class="quote">
+              <summary>Source code in <code>norfab\workers\nornir_worker.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 891</span>
+<span class="normal"> 892</span>
+<span class="normal"> 893</span>
+<span class="normal"> 894</span>
+<span class="normal"> 895</span>
+<span class="normal"> 896</span>
+<span class="normal"> 897</span>
+<span class="normal"> 898</span>
+<span class="normal"> 899</span>
+<span class="normal"> 900</span>
+<span class="normal"> 901</span>
+<span class="normal"> 902</span>
+<span class="normal"> 903</span>
+<span class="normal"> 904</span>
+<span class="normal"> 905</span>
+<span class="normal"> 906</span>
+<span class="normal"> 907</span>
+<span class="normal"> 908</span>
+<span class="normal"> 909</span>
+<span class="normal"> 910</span>
+<span class="normal"> 911</span>
+<span class="normal"> 912</span>
+<span class="normal"> 913</span>
+<span class="normal"> 914</span>
+<span class="normal"> 915</span>
+<span class="normal"> 916</span>
+<span class="normal"> 917</span>
+<span class="normal"> 918</span>
+<span class="normal"> 919</span>
+<span class="normal"> 920</span>
+<span class="normal"> 921</span>
+<span class="normal"> 922</span>
+<span class="normal"> 923</span>
+<span class="normal"> 924</span>
+<span class="normal"> 925</span>
+<span class="normal"> 926</span>
+<span class="normal"> 927</span>
+<span class="normal"> 928</span>
+<span class="normal"> 929</span>
+<span class="normal"> 930</span>
+<span class="normal"> 931</span>
+<span class="normal"> 932</span>
+<span class="normal"> 933</span>
+<span class="normal"> 934</span>
+<span class="normal"> 935</span>
+<span class="normal"> 936</span>
+<span class="normal"> 937</span>
+<span class="normal"> 938</span>
+<span class="normal"> 939</span>
+<span class="normal"> 940</span>
+<span class="normal"> 941</span>
+<span class="normal"> 942</span>
+<span class="normal"> 943</span>
+<span class="normal"> 944</span>
+<span class="normal"> 945</span>
+<span class="normal"> 946</span>
+<span class="normal"> 947</span>
+<span class="normal"> 948</span>
+<span class="normal"> 949</span>
+<span class="normal"> 950</span>
+<span class="normal"> 951</span>
+<span class="normal"> 952</span>
+<span class="normal"> 953</span>
+<span class="normal"> 954</span>
+<span class="normal"> 955</span>
+<span class="normal"> 956</span>
+<span class="normal"> 957</span>
+<span class="normal"> 958</span>
+<span class="normal"> 959</span>
+<span class="normal"> 960</span>
+<span class="normal"> 961</span>
+<span class="normal"> 962</span>
+<span class="normal"> 963</span>
+<span class="normal"> 964</span>
+<span class="normal"> 965</span>
+<span class="normal"> 966</span>
+<span class="normal"> 967</span>
+<span class="normal"> 968</span>
+<span class="normal"> 969</span>
+<span class="normal"> 970</span>
+<span class="normal"> 971</span>
+<span class="normal"> 972</span>
+<span class="normal"> 973</span>
+<span class="normal"> 974</span>
+<span class="normal"> 975</span>
+<span class="normal"> 976</span>
+<span class="normal"> 977</span>
+<span class="normal"> 978</span>
+<span class="normal"> 979</span>
+<span class="normal"> 980</span>
+<span class="normal"> 981</span>
+<span class="normal"> 982</span>
+<span class="normal"> 983</span>
+<span class="normal"> 984</span>
+<span class="normal"> 985</span>
+<span class="normal"> 986</span>
+<span class="normal"> 987</span>
+<span class="normal"> 988</span>
+<span class="normal"> 989</span>
+<span class="normal"> 990</span>
+<span class="normal"> 991</span>
+<span class="normal"> 992</span>
+<span class="normal"> 993</span>
+<span class="normal"> 994</span>
+<span class="normal"> 995</span>
+<span class="normal"> 996</span>
+<span class="normal"> 997</span>
+<span class="normal"> 998</span>
+<span class="normal"> 999</span>
+<span class="normal">1000</span>
+<span class="normal">1001</span>
+<span class="normal">1002</span>
+<span class="normal">1003</span>
+<span class="normal">1004</span>
+<span class="normal">1005</span>
+<span class="normal">1006</span>
+<span class="normal">1007</span>
+<span class="normal">1008</span>
+<span class="normal">1009</span>
+<span class="normal">1010</span>
+<span class="normal">1011</span>
+<span class="normal">1012</span>
+<span class="normal">1013</span>
+<span class="normal">1014</span>
+<span class="normal">1015</span>
+<span class="normal">1016</span>
+<span class="normal">1017</span>
+<span class="normal">1018</span>
+<span class="normal">1019</span>
+<span class="normal">1020</span>
+<span class="normal">1021</span>
+<span class="normal">1022</span>
+<span class="normal">1023</span>
+<span class="normal">1024</span>
+<span class="normal">1025</span>
+<span class="normal">1026</span>
+<span class="normal">1027</span>
+<span class="normal">1028</span>
+<span class="normal">1029</span>
+<span class="normal">1030</span>
+<span class="normal">1031</span>
+<span class="normal">1032</span>
+<span class="normal">1033</span>
+<span class="normal">1034</span>
+<span class="normal">1035</span>
+<span class="normal">1036</span>
+<span class="normal">1037</span>
+<span class="normal">1038</span>
+<span class="normal">1039</span>
+<span class="normal">1040</span>
+<span class="normal">1041</span>
+<span class="normal">1042</span>
+<span class="normal">1043</span>
+<span class="normal">1044</span>
+<span class="normal">1045</span>
+<span class="normal">1046</span>
+<span class="normal">1047</span>
+<span class="normal">1048</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">test</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">suite</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">list</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
+    <span class="n">subset</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">dry_run</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">remove_tasks</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">failed_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">return_tests_suite</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">job_data</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Function to tests data obtained from devices.</span>
+
+<span class="sd">    :param suite: path to YAML file with tests</span>
+<span class="sd">    :param dry_run: if True, returns produced per-host tests suite content only</span>
+<span class="sd">    :param subset: list or string with comma separated non case sensitive glob</span>
+<span class="sd">        patterns to filter tests&#39; by name, subset argument ignored by dry run</span>
+<span class="sd">    :param failed_only: if True returns test results for failed tests only</span>
+<span class="sd">    :param remove_tasks: if False results will include other tasks output</span>
+<span class="sd">    :param return_tests_suite: if True returns rendered per-host tests suite</span>
+<span class="sd">        content in addition to test results using dictionary with ``results``</span>
+<span class="sd">        and ``suite`` keys</span>
+<span class="sd">    :param job_data: URL to YAML file with data or dictionary/list of data</span>
+<span class="sd">        to pass on to Jinja2 rendering context</span>
+<span class="sd">    :param kwargs: any additional arguments to pass on to Nornir service task</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">tests</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># dictionary to hold per-host test suites</span>
+    <span class="n">add_details</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;add_details&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>  <span class="c1"># ResultSerializer</span>
+    <span class="n">to_dict</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;to_dict&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>  <span class="c1"># ResultSerializer</span>
+    <span class="n">filters</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">FFun_functions</span><span class="p">}</span>
+    <span class="n">ret</span> <span class="o">=</span> <span class="n">Result</span><span class="p">(</span><span class="n">task</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">:test&quot;</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="p">{}</span> <span class="k">if</span> <span class="n">to_dict</span> <span class="k">else</span> <span class="p">[])</span>
+    <span class="n">suites</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># dictionary to hold combined test suites</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">nr</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">reset_failed_hosts</span><span class="p">()</span>  <span class="c1"># reset failed hosts</span>
+    <span class="n">filtered_nornir</span> <span class="o">=</span> <span class="n">FFun</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nr</span><span class="p">,</span> <span class="o">**</span><span class="n">filters</span><span class="p">)</span>  <span class="c1"># filter hosts</span>
+
+    <span class="c1"># check if no hosts matched</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">filtered_nornir</span><span class="o">.</span><span class="n">inventory</span><span class="o">.</span><span class="n">hosts</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> - nothing to do, no hosts matched by filters &#39;</span><span class="si">{</span><span class="n">filters</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
+        <span class="p">)</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="n">ret</span><span class="o">.</span><span class="n">messages</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">return_tests_suite</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">ret</span><span class="o">.</span><span class="n">result</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;test_results&quot;</span><span class="p">:</span> <span class="p">[],</span> <span class="s2">&quot;suite&quot;</span><span class="p">:</span> <span class="p">{}}</span>
+        <span class="k">return</span> <span class="n">ret</span>
+
+    <span class="c1"># download job data</span>
+    <span class="n">job_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_job_data</span><span class="p">(</span><span class="n">job_data</span><span class="p">)</span>
+
+    <span class="c1"># generate per-host test suites</span>
+    <span class="k">for</span> <span class="n">host_name</span><span class="p">,</span> <span class="n">host</span> <span class="ow">in</span> <span class="n">filtered_nornir</span><span class="o">.</span><span class="n">inventory</span><span class="o">.</span><span class="n">hosts</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="c1"># render suite using Jinja2</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">rendered_suite</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">render_jinja2_templates</span><span class="p">(</span>
+                <span class="n">templates</span><span class="o">=</span><span class="p">[</span><span class="n">suite</span><span class="p">],</span>
+                <span class="n">context</span><span class="o">=</span><span class="p">{</span>
+                    <span class="s2">&quot;host&quot;</span><span class="p">:</span> <span class="n">host</span><span class="p">,</span>
+                    <span class="s2">&quot;norfab&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="p">,</span>
+                    <span class="s2">&quot;nornir&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="p">,</span>
+                    <span class="s2">&quot;job_data&quot;</span><span class="p">:</span> <span class="n">job_data</span><span class="p">,</span>
+                <span class="p">},</span>
+                <span class="n">filters</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">add_jinja2_filters</span><span class="p">(),</span>
+            <span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> - &#39;</span><span class="si">{</span><span class="n">suite</span><span class="si">}</span><span class="s2">&#39; Jinja2 rendering failed: &#39;</span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="c1"># load suit using YAML</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">tests</span><span class="p">[</span><span class="n">host_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">rendered_suite</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> - &#39;</span><span class="si">{</span><span class="n">suite</span><span class="si">}</span><span class="s2">&#39; YAML load failed: &#39;</span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+    <span class="c1"># validate tests suite</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">_</span> <span class="o">=</span> <span class="n">modelTestsProcessorSuite</span><span class="p">(</span><span class="n">tests</span><span class="o">=</span><span class="n">tests</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> - &#39;</span><span class="si">{</span><span class="n">suite</span><span class="si">}</span><span class="s2">&#39; suite validation failed: &#39;</span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+    <span class="c1"># download pattern, schema and custom function files</span>
+    <span class="k">for</span> <span class="n">host_name</span> <span class="ow">in</span> <span class="n">tests</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">tests</span><span class="p">[</span><span class="n">host_name</span><span class="p">]):</span>
+            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;pattern&quot;</span><span class="p">,</span> <span class="s2">&quot;schema&quot;</span><span class="p">,</span> <span class="s2">&quot;function_file&quot;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_url</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">k</span><span class="p">)):</span>
+                    <span class="n">item</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fetch_file</span><span class="p">(</span>
+                        <span class="n">item</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">raise_on_fail</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">read</span><span class="o">=</span><span class="kc">True</span>
+                    <span class="p">)</span>
+                    <span class="k">if</span> <span class="n">k</span> <span class="o">==</span> <span class="s2">&quot;function_file&quot;</span><span class="p">:</span>
+                        <span class="n">item</span><span class="p">[</span><span class="s2">&quot;function_text&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+            <span class="n">tests</span><span class="p">[</span><span class="n">host_name</span><span class="p">][</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">item</span>
+
+    <span class="c1"># save per-host tests suite content before mutating it</span>
+    <span class="k">if</span> <span class="n">return_tests_suite</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">return_suite</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">tests</span><span class="p">)</span>
+
+    <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> - running test &#39;</span><span class="si">{</span><span class="n">suite</span><span class="si">}</span><span class="s2">&#39;, is dry run - &#39;</span><span class="si">{</span><span class="n">dry_run</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+    <span class="c1"># run dry run task</span>
+    <span class="k">if</span> <span class="n">dry_run</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">filtered_nornir</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+            <span class="n">task</span><span class="o">=</span><span class="n">nr_test</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;tests_dry_run&quot;</span><span class="p">,</span> <span class="n">ret_data_per_host</span><span class="o">=</span><span class="n">tests</span>
+        <span class="p">)</span>
+        <span class="n">ret</span><span class="o">.</span><span class="n">result</span> <span class="o">=</span> <span class="n">ResultSerializer</span><span class="p">(</span>
+            <span class="n">result</span><span class="p">,</span> <span class="n">to_dict</span><span class="o">=</span><span class="n">to_dict</span><span class="p">,</span> <span class="n">add_details</span><span class="o">=</span><span class="n">add_details</span>
+        <span class="p">)</span>
+    <span class="c1"># combine per-host tests in suites based on task and arguments</span>
+    <span class="c1"># Why - to run tests using any nornir service tasks with various arguments</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">host_name</span><span class="p">,</span> <span class="n">host_tests</span> <span class="ow">in</span> <span class="n">tests</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">test</span> <span class="ow">in</span> <span class="n">host_tests</span><span class="p">:</span>
+                <span class="n">dhash</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">md5</span><span class="p">()</span>
+                <span class="n">test_args</span> <span class="o">=</span> <span class="n">test</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;norfab&quot;</span><span class="p">,</span> <span class="p">{})</span>
+                <span class="n">nrtask</span> <span class="o">=</span> <span class="n">test_args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;nrtask&quot;</span><span class="p">,</span> <span class="s2">&quot;cli&quot;</span><span class="p">)</span>
+                <span class="k">assert</span> <span class="n">nrtask</span> <span class="ow">in</span> <span class="p">[</span>
+                    <span class="s2">&quot;cli&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;network&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;cfg&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;task&quot;</span><span class="p">,</span>
+                <span class="p">],</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> - unsupported NorFab Nornir Service task &#39;</span><span class="si">{</span><span class="n">nrtask</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
+                <span class="n">test_json</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">test_args</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span>
+                <span class="n">dhash</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">test_json</span><span class="p">)</span>
+                <span class="n">test_hash</span> <span class="o">=</span> <span class="n">dhash</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
+                <span class="n">suites</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">test_hash</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;params&quot;</span><span class="p">:</span> <span class="n">test_args</span><span class="p">,</span> <span class="s2">&quot;tests&quot;</span><span class="p">:</span> <span class="p">{}})</span>
+                <span class="n">suites</span><span class="p">[</span><span class="n">test_hash</span><span class="p">][</span><span class="s2">&quot;tests&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">host_name</span><span class="p">,</span> <span class="p">[])</span>
+                <span class="n">suites</span><span class="p">[</span><span class="n">test_hash</span><span class="p">][</span><span class="s2">&quot;tests&quot;</span><span class="p">][</span><span class="n">host_name</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">test</span><span class="p">)</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> - combined per-host tests suites based on NorFab Nornir Service task and arguments:</span><span class="se">\n</span><span class="si">{</span><span class="n">suites</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+        <span class="c1"># run test suites collecting output from devices</span>
+        <span class="k">for</span> <span class="n">tests_suite</span> <span class="ow">in</span> <span class="n">suites</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="n">nrtask</span> <span class="o">=</span> <span class="n">tests_suite</span><span class="p">[</span><span class="s2">&quot;params&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;nrtask&quot;</span><span class="p">,</span> <span class="s2">&quot;cli&quot;</span><span class="p">)</span>
+            <span class="n">function_kwargs</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="o">**</span><span class="n">tests_suite</span><span class="p">[</span><span class="s2">&quot;params&quot;</span><span class="p">],</span>
+                <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">filters</span><span class="p">,</span>
+                <span class="s2">&quot;tests&quot;</span><span class="p">:</span> <span class="n">tests_suite</span><span class="p">[</span><span class="s2">&quot;tests&quot;</span><span class="p">],</span>
+                <span class="s2">&quot;remove_tasks&quot;</span><span class="p">:</span> <span class="n">remove_tasks</span><span class="p">,</span>
+                <span class="s2">&quot;failed_only&quot;</span><span class="p">:</span> <span class="n">failed_only</span><span class="p">,</span>
+                <span class="s2">&quot;subset&quot;</span><span class="p">:</span> <span class="n">subset</span><span class="p">,</span>
+            <span class="p">}</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nrtask</span><span class="p">)(</span>
+                <span class="o">**</span><span class="n">function_kwargs</span>
+            <span class="p">)</span>  <span class="c1"># returns Result object</span>
+            <span class="c1"># save test results into overall results</span>
+            <span class="k">if</span> <span class="n">to_dict</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">host_name</span><span class="p">,</span> <span class="n">host_res</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="n">ret</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">host_name</span><span class="p">,</span> <span class="p">{})</span>
+                    <span class="n">ret</span><span class="o">.</span><span class="n">result</span><span class="p">[</span><span class="n">host_name</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">host_res</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">ret</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">result</span><span class="p">)</span>
+
+    <span class="c1"># check if need to return tests suite content</span>
+    <span class="k">if</span> <span class="n">return_tests_suite</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">ret</span><span class="o">.</span><span class="n">result</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;test_results&quot;</span><span class="p">:</span> <span class="n">ret</span><span class="o">.</span><span class="n">result</span><span class="p">,</span> <span class="s2">&quot;suite&quot;</span><span class="p">:</span> <span class="n">return_suite</span><span class="p">}</span>
+
+    <span class="k">return</span> <span class="n">ret</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
 
 
 

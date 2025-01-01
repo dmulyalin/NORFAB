@@ -2316,12 +2316,9 @@
 from devices using SSH and Telnet. Nornir <code>cli</code> uses Netmiko, Scrapli 
 and NAPALM libraries to communicate with devices.</p>
 <ul>
-<li><strong>Netmiko</strong>: A multi-vendor library that simplifies SSH connections 
-    to network devices.</li>
-<li><strong>Scrapli</strong>: A fast and flexible library for interacting with network 
-    devices.</li>
-<li><strong>NAPALM</strong>: A library that provides a unified API to interact with 
-    different network device operating systems.</li>
+<li><strong>Netmiko</strong>: A multi-vendor library that simplifies SSH connections to network devices.</li>
+<li><strong>Scrapli</strong>: A fast and flexible library for interacting with network devices.</li>
+<li><strong>NAPALM</strong>: A library that provides a unified API to interact with different network device operating systems.</li>
 </ul>
 <h2 id="nornir-cli-sample-usage">Nornir CLI Sample Usage<a class="headerlink" href="#nornir-cli-sample-usage" title="Permanent link">¤</a></h2>
 <p>Below is an example of how to use the Nornir CLI task to retrieve command outputs from devices.</p>
@@ -2430,6 +2427,9 @@ how to construct  <code>inventory.yaml</code> file.</p>
 </div>
 </div>
 <h2 id="use-different-connection-plugins">Use Different Connection Plugins<a class="headerlink" href="#use-different-connection-plugins" title="Permanent link">¤</a></h2>
+<p>Several device connection plugins supported such as <code>netmiko</code>, <code>napalm</code> and <code>scrapli</code>,
+any of them can be invoked to retrieve show commands output, provided Nornir inventory contains
+plugin's configuration.</p>
 <h2 id="outputting-text-tables">Outputting Text Tables<a class="headerlink" href="#outputting-text-tables" title="Permanent link">¤</a></h2>
 <h2 id="sourcing-commands-from-file">Sourcing Commands From File<a class="headerlink" href="#sourcing-commands-from-file" title="Permanent link">¤</a></h2>
 <h2 id="using-jinja2-templates">Using Jinja2 Templates<a class="headerlink" href="#using-jinja2-templates" title="Permanent link">¤</a></h2>
@@ -2441,8 +2441,90 @@ how to construct  <code>inventory.yaml</code> file.</p>
 <h2 id="filtering-commands-output">Filtering Commands Output<a class="headerlink" href="#filtering-commands-output" title="Permanent link">¤</a></h2>
 <h2 id="sending-new-line-character">Sending New Line Character<a class="headerlink" href="#sending-new-line-character" title="Permanent link">¤</a></h2>
 <h2 id="norfab-nornir-cli-shell-reference">NORFAB Nornir CLI Shell Reference<a class="headerlink" href="#norfab-nornir-cli-shell-reference" title="Permanent link">¤</a></h2>
-<p>NorFab shell supports these command options for Nornir <code>cli</code> task:</p>
-<p>TBD</p>
+<p>NorFab shell supports these commands for Nornir <code>cli</code> task:</p>
+<div class="highlight"><pre><span></span><code>nf#man tree nornir.cli
+root
+└── nornir:    Nornir service
+    └── cli:    Send CLI commands to devices
+        ├── timeout:    Job timeout
+        ├── workers:    Filter worker to target, default &#39;all&#39;
+        ├── add_details:    Add task details to results
+        ├── run_num_workers:    RetryRunner number of threads for tasks execution
+        ├── run_num_connectors:    RetryRunner number of threads for device connections
+        ├── run_connect_retry:    RetryRunner number of connection attempts
+        ├── run_task_retry:    RetryRunner number of attempts to run task
+        ├── run_reconnect_on_fail:    RetryRunner perform reconnect to host on task failure
+        ├── run_connect_check:    RetryRunner test TCP connection before opening actual connection
+        ├── run_connect_timeout:    RetryRunner timeout in seconds to wait for test TCP connection to establish
+        ├── run_creds_retry:    RetryRunner list of connection credentials and parameters to retry
+        ├── tf:    File group name to save task results to on worker file system
+        ├── tf_skip_failed:    Save results to file for failed tasks
+        ├── diff:    File group name to run the diff for
+        ├── diff_last:    File version number to diff, default is 1 (last)
+        ├── progress:    Emit execution progress
+        ├── table:    Table format (brief, terse, extend) or parameters or True
+        ├── headers:    Table headers
+        ├── headers_exclude:    Table headers to exclude
+        ├── sortby:    Table header column to sort by
+        ├── reverse:    Table reverse the sort by order
+        ├── FO:    Filter hosts using Filter Object
+        ├── FB:    Filter hosts by name using Glob Patterns
+        ├── FH:    Filter hosts by hostname
+        ├── FC:    Filter hosts containment of pattern in name
+        ├── FR:    Filter hosts by name using Regular Expressions
+        ├── FG:    Filter hosts by group
+        ├── FP:    Filter hosts by hostname using IP Prefix
+        ├── FL:    Filter hosts by names list
+        ├── FM:    Filter hosts by platform
+        ├── FX:    Filter hosts excluding them by name
+        ├── FN:    Negate the match
+        ├── hosts:    Filter hosts to target
+        ├── *commands:    List of commands to collect form devices, default &#39;PydanticUndefined&#39;
+        ├── plugin:    Connection plugin parameters
+        │   ├── netmiko:    Use Netmiko plugin to configure devices
+        │   │   ├── enable:    Attempt to enter enable-mode
+        │   │   ├── use_timing:    switch to send command timing method
+        │   │   ├── expect_string:    Regular expression pattern to use for determining end of output
+        │   │   ├── read_timeout:    Maximum time to wait looking for pattern
+        │   │   ├── auto_find_prompt:    Use find_prompt() to override base prompt
+        │   │   ├── strip_prompt:    Remove the trailing router prompt from the output
+        │   │   ├── strip_command:    Remove the echo of the command from the output
+        │   │   ├── normalize:    Ensure the proper enter is sent at end of command
+        │   │   ├── use_textfsm:    Process command output through TextFSM template
+        │   │   ├── textfsm_template:    Name of template to parse output with
+        │   │   ├── use_ttp:    Process command output through TTP template
+        │   │   ├── ttp_template:    Name of template to parse output with
+        │   │   ├── use_genie:    Process command output through PyATS/Genie parser
+        │   │   ├── cmd_verify:    Verify command echo before proceeding
+        │   │   ├── interval:    Interval between sending commands
+        │   │   ├── use_ps:    Use send command promptless method
+        │   │   ├── use_ps_timeout:    Promptless mode absolute timeout
+        │   │   ├── new_line_char:    Character to replace with new line before sending to device, default is _br_
+        │   │   ├── repeat:    Number of times to repeat the commands
+        │   │   ├── stop_pattern:    Stop commands repeat if output matches provided glob pattern
+        │   │   ├── repeat_interval:    Time in seconds to wait between repeating commands
+        │   │   └── return_last:    Returns requested last number of commands outputs
+        │   ├── scrapli:    Use Scrapli plugin to configure devices
+        │   │   ├── failed_when_contains:    String or list of strings indicating failure if found in response
+        │   │   ├── timeout_ops:    Timeout ops value for this operation
+        │   │   ├── interval:    Interval between sending commands
+        │   │   ├── split_lines:    Split multiline string to individual commands
+        │   │   ├── new_line_char:    Character to replace with new line before sending to device, default is _br_
+        │   │   ├── repeat:    Number of times to repeat the commands
+        │   │   ├── stop_pattern:    Stop commands repeat if output matches provided glob pattern
+        │   │   ├── repeat_interval:    Time in seconds to wait between repeating commands
+        │   │   └── return_last:    Returns requested last number of commands outputs
+        │   └── napalm:    Use NAPALM plugin to configure devices
+        │       ├── interval:    Interval between sending commands
+        │       ├── split_lines:    Split multiline string to individual commands
+        │       └── new_line_char:    Character to replace with new line before sending to device, default is _br_
+        ├── cli_dry_run:    Dry run the commands
+        ├── enable:    Enter exec mode
+        ├── run_ttp:    TTP Template to run
+        └── job_data:    Path to YAML file with job data
+nf#
+</code></pre></div>
+<p><code>*</code> - mandatory/required command argument</p>
 <h2 id="python-api-reference">Python API Reference<a class="headerlink" href="#python-api-reference" title="Permanent link">¤</a></h2>
 
 

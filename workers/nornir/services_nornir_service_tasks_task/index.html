@@ -773,6 +773,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#norfab-nornir-task-shell-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      NORFAB Nornir Task Shell Reference
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#python-api-reference" class="md-nav__link">
     <span class="md-ellipsis">
       Python API Reference
@@ -2076,6 +2085,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#norfab-nornir-task-shell-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      NORFAB Nornir Task Shell Reference
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#python-api-reference" class="md-nav__link">
     <span class="md-ellipsis">
       Python API Reference
@@ -2297,6 +2315,49 @@ how to construct  <code>inventory.yaml</code> file.    </p>
 </div>
 </div>
 </div>
+<h2 id="norfab-nornir-task-shell-reference">NORFAB Nornir Task Shell Reference<a class="headerlink" href="#norfab-nornir-task-shell-reference" title="Permanent link">¤</a></h2>
+<p>NorFab shell supports these command options for Nornir <code>task</code> task:</p>
+<div class="highlight"><pre><span></span><code>nf#man tree nornir.task
+root
+└── nornir:    Nornir service
+    └── task:    Run Nornir task
+        ├── timeout:    Job timeout
+        ├── workers:    Filter worker to target, default &#39;all&#39;
+        ├── add_details:    Add task details to results
+        ├── run_num_workers:    RetryRunner number of threads for tasks execution
+        ├── run_num_connectors:    RetryRunner number of threads for device connections
+        ├── run_connect_retry:    RetryRunner number of connection attempts
+        ├── run_task_retry:    RetryRunner number of attempts to run task
+        ├── run_reconnect_on_fail:    RetryRunner perform reconnect to host on task failure
+        ├── run_connect_check:    RetryRunner test TCP connection before opening actual connection
+        ├── run_connect_timeout:    RetryRunner timeout in seconds to wait for test TCP connection to establish
+        ├── run_creds_retry:    RetryRunner list of connection credentials and parameters to retry
+        ├── tf:    File group name to save task results to on worker file system
+        ├── tf_skip_failed:    Save results to file for failed tasks
+        ├── diff:    File group name to run the diff for
+        ├── diff_last:    File version number to diff, default is 1 (last)
+        ├── progress:    Emit execution progress
+        ├── table:    Table format (brief, terse, extend) or parameters or True
+        ├── headers:    Table headers
+        ├── headers_exclude:    Table headers to exclude
+        ├── sortby:    Table header column to sort by
+        ├── reverse:    Table reverse the sort by order
+        ├── FB:    Filter hosts by name using Glob Patterns
+        ├── FH:    Filter hosts by hostname
+        ├── FC:    Filter hosts containment of pattern in name
+        ├── FR:    Filter hosts by name using Regular Expressions
+        ├── FG:    Filter hosts by group
+        ├── FP:    Filter hosts by hostname using IP Prefix
+        ├── FL:    Filter hosts by names list
+        ├── FM:    Filter hosts by platform
+        ├── FX:    Filter hosts excluding them by name
+        ├── FN:    Negate the match
+        ├── hosts:    Filter hosts to target
+        ├── *plugin:    Nornir task.plugin.name to import or nf://path/to/plugin/file.py
+        └── arguments:    Plugin arguments JSON formatted string
+nf#
+</code></pre></div>
+<p><code>*</code> - mandatory/required command argument</p>
 <h2 id="python-api-reference">Python API Reference<a class="headerlink" href="#python-api-reference" title="Permanent link">¤</a></h2>
 
 
