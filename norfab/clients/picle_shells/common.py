@@ -7,7 +7,6 @@ import threading
 import functools
 import json
 import queue
-from enum import Enum
 from uuid import uuid4  # random uuid
 from pydantic import (
     BaseModel,
@@ -15,8 +14,6 @@ from pydantic import (
     StrictInt,
     StrictFloat,
     StrictStr,
-    conlist,
-    root_validator,
     Field,
 )
 from typing import Union, Optional, List, Any, Dict, Callable, Tuple
@@ -100,10 +97,9 @@ def listen_events(fun):
         events_thread_stop = threading.Event()
         uuid = uuid4().hex
         progress = kwargs.get("progress")
-        NFCLIENT = fun.__globals__.get("NFCLIENT", None)
 
         # start events thread to handle job events printing
-        if NFCLIENT and progress:
+        if progress:
             events_thread = threading.Thread(
                 target=listen_events_thread,
                 name="NornirCliShell_events_listen_thread",
@@ -140,7 +136,7 @@ def log_error_or_result(data: dict) -> dict:
     ret = {}
 
     if not isinstance(data, dict):
-        log.error(f"Data is not a dictioney but '{type(data)}'")
+        log.error(f"Data is not a dictionary but '{type(data)}'")
         return data
 
     for w_name, w_res in data.items():

@@ -7,6 +7,7 @@ Client that implements interactive shell to work with NorFab.
 import logging
 import json
 import yaml
+import builtins
 
 from rich.console import Console
 from rich.table import Table
@@ -27,8 +28,8 @@ from pydantic import (
 from typing import Union, Optional, List, Any, Dict, Callable, Tuple
 from norfab.core.nfapi import NorFab
 
-from .picle_shells import picle_shell_client_nornir_service
-from .picle_shells import picle_shell_client_netbox_service
+from .picle_shells.nornir import nornir_picle_shell
+from .picle_shells.netbox import netbox_picle_shell
 
 NFCLIENT = None
 log = logging.getLogger(__name__)
@@ -205,10 +206,10 @@ class FileServiceCommands(BaseModel):
 class NorFabShell(BaseModel):
     show: ShowCommandsModel = Field(None, description="NorFab show commands")
     file: FileServiceCommands = Field(None, description="File sharing service")
-    nornir: picle_shell_client_nornir_service.NornirServiceCommands = Field(
+    nornir: nornir_picle_shell.NornirServiceCommands = Field(
         None, description="Nornir service"
     )
-    netbox: picle_shell_client_netbox_service.NetboxServiceCommands = Field(
+    netbox: netbox_picle_shell.NetboxServiceCommands = Field(
         None, description="Netbox service"
     )
 
@@ -235,16 +236,14 @@ def start_picle_shell(
     start_broker=None,
     log_level="WARNING",
 ):
-    global NFCLIENT
     # initiate NorFab
     nf = NorFab(inventory=inventory, log_level=log_level)
     nf.start(start_broker=start_broker, workers=workers)
     NFCLIENT = nf.make_client()
 
     if NFCLIENT is not None:
-        # inject NFCLINET to imported models global space
-        setattr(picle_shell_client_nornir_service, "NFCLIENT", NFCLIENT)
-        setattr(picle_shell_client_netbox_service, "NFCLIENT", NFCLIENT)
+        # inject NFCLIENT to all imported models' global space
+        builtins.NFCLIENT = NFCLIENT
 
         try:
             # start PICLE interactive shell

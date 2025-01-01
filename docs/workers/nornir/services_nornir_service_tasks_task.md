@@ -69,7 +69,7 @@ def task(task: Task, **kwargs) -> Result:
 		
 		`inventory.yaml` should be located in same folder where we 
 		start nfcli, unless `nfcli -i path_to_inventory.yaml` flag 
-		used. Refer to [Getting Started](norfab_getting_started.md) 
+		used. Refer to [Getting Started](../../norfab_getting_started.md) 
 		section on how to construct  `inventory.yaml` file
 		
     === "Python"
@@ -114,7 +114,7 @@ def task(task: Task, **kwargs) -> Result:
 							'task': 'nornir-worker-1:task'}}
 		```
 		
-		Refer to [Getting Started](norfab_getting_started.md) section on 
+		Refer to [Getting Started](../../norfab_getting_started.md) section on 
 		how to construct  `inventory.yaml` file.	
 		
 
@@ -160,7 +160,7 @@ option to provide further task parameters.
 		
 		`inventory.yaml` should be located in same folder where we 
 		start nfcli, unless `nfcli -i path_to_inventory.yaml` flag 
-		used. Refer to [Getting Started](norfab_getting_started.md) 
+		used. Refer to [Getting Started](../../norfab_getting_started.md) 
 		section on how to construct  `inventory.yaml` file
 		
     === "Python"
@@ -214,8 +214,56 @@ option to provide further task parameters.
 																				'ceos-spine-2'}}}
 		```
 		
-		Refer to [Getting Started](norfab_getting_started.md) section on 
+		Refer to [Getting Started](../../norfab_getting_started.md) section on 
 		how to construct  `inventory.yaml` file.	
+
+## NORFAB Nornir Task Shell Reference
+
+NorFab shell supports these command options for Nornir `task` task:
+
+```
+nf#man tree nornir.task
+root
+└── nornir:    Nornir service
+    └── task:    Run Nornir task
+        ├── timeout:    Job timeout
+        ├── workers:    Filter worker to target, default 'all'
+        ├── add_details:    Add task details to results
+        ├── run_num_workers:    RetryRunner number of threads for tasks execution
+        ├── run_num_connectors:    RetryRunner number of threads for device connections
+        ├── run_connect_retry:    RetryRunner number of connection attempts
+        ├── run_task_retry:    RetryRunner number of attempts to run task
+        ├── run_reconnect_on_fail:    RetryRunner perform reconnect to host on task failure
+        ├── run_connect_check:    RetryRunner test TCP connection before opening actual connection
+        ├── run_connect_timeout:    RetryRunner timeout in seconds to wait for test TCP connection to establish
+        ├── run_creds_retry:    RetryRunner list of connection credentials and parameters to retry
+        ├── tf:    File group name to save task results to on worker file system
+        ├── tf_skip_failed:    Save results to file for failed tasks
+        ├── diff:    File group name to run the diff for
+        ├── diff_last:    File version number to diff, default is 1 (last)
+        ├── progress:    Emit execution progress
+        ├── table:    Table format (brief, terse, extend) or parameters or True
+        ├── headers:    Table headers
+        ├── headers_exclude:    Table headers to exclude
+        ├── sortby:    Table header column to sort by
+        ├── reverse:    Table reverse the sort by order
+        ├── FB:    Filter hosts by name using Glob Patterns
+        ├── FH:    Filter hosts by hostname
+        ├── FC:    Filter hosts containment of pattern in name
+        ├── FR:    Filter hosts by name using Regular Expressions
+        ├── FG:    Filter hosts by group
+        ├── FP:    Filter hosts by hostname using IP Prefix
+        ├── FL:    Filter hosts by names list
+        ├── FM:    Filter hosts by platform
+        ├── FX:    Filter hosts excluding them by name
+        ├── FN:    Negate the match
+        ├── hosts:    Filter hosts to target
+        ├── *plugin:    Nornir task.plugin.name to import or nf://path/to/plugin/file.py
+        └── arguments:    Plugin arguments JSON formatted string
+nf#
+```
+
+``*`` - mandatory/required command argument
 
 ## Python API Reference
 

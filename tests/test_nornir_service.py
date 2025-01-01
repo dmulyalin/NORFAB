@@ -83,7 +83,10 @@ class TestNornirCli:
 
         for worker, results in ret.items():
             for host, res in results["result"].items():
-                assert "cli_dry_run" in res and res["cli_dry_run"] == "show version\nshow clock", f"{worker}:{host} dry run output is wrong"
+                assert (
+                    "cli_dry_run" in res
+                    and res["cli_dry_run"] == "show version\nshow clock"
+                ), f"{worker}:{host} dry run output is wrong"
 
     @pytest.mark.skip(reason="TBD")
     def test_commands_with_hosts_filters(self, nfclient):
@@ -130,7 +133,11 @@ class TestNornirCli:
 
         for worker, results in ret.items():
             for host, res in results["result"].items():
-                assert "cli_dry_run" in res and res["cli_dry_run"] == "show version\nshow clock\nshow int description", f"{worker}:{host} output is wrong"
+                assert (
+                    "cli_dry_run" in res
+                    and res["cli_dry_run"]
+                    == "show version\nshow clock\nshow int description"
+                ), f"{worker}:{host} output is wrong"
 
     def test_commands_from_nonexisting_file(self, nfclient):
         ret = nfclient.run_job(
@@ -540,7 +547,9 @@ class TestNornirCfg:
         for worker, results in ret.items():
             for host, res in results["result"].items():
                 assert "cfg_dry_run" in res, f"{worker}:{host} no cfg dry run output"
-                assert res["cfg_dry_run"] == "interface loopback 0\ndescription RID", f"{worker}:{host} cfg dry run output is wrong"
+                assert (
+                    res["cfg_dry_run"] == "interface loopback 0\ndescription RID"
+                ), f"{worker}:{host} cfg dry run output is wrong"
 
     def test_config_with_hosts_filters(self, nfclient):
         ret = nfclient.run_job(
@@ -711,7 +720,9 @@ class TestNornirCfg:
         for worker, results in ret.items():
             for host, res in results["result"].items():
                 assert "cfg_dry_run" in res, f"{worker}:{host} no cfg dry run output"
-                assert res["cfg_dry_run"] == "interface Loopback0\ndescription RID", f"{worker}:{host} cfg dry run output is wrong"
+                assert (
+                    res["cfg_dry_run"] == "interface Loopback0\ndescription RID"
+                ), f"{worker}:{host} cfg dry run output is wrong"
 
     def test_config_from_nonexisting_file(self, nfclient):
         ret = nfclient.run_job(
