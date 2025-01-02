@@ -92,6 +92,7 @@ nav:
             - Nornir Network: workers/nornir/services_nornir_service_tasks_network.md
             - Nornir Parse: workers/nornir/services_nornir_service_tasks_parse.md
             - Nornir Diagram: workers/nornir/services_nornir_service_tasks_diagram.md
+            - Nornir File Copy: workers/nornir/services_nornir_service_tasks_file_copy.md
             - Jina2 Filters Reference: workers/nornir/services_nornir_service_jinja2_filters.md
         - Netbox Service: 
             - Overview: services_netbox_service.md

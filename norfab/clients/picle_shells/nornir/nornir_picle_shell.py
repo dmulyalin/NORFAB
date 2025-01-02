@@ -30,6 +30,7 @@ from .nornir_picle_shell_parse import NornirParseShell
 from .nornir_picle_shell_test import NornirTestShell
 from .nornir_picle_shell_network import NornirNetworkShell
 from .nornir_picle_shell_diagram import NornirDiagramShell
+from .nornir_picle_shell_file_copy import NornirFileCopyShell
 from typing import Union, Optional, List, Any, Dict, Callable, Tuple
 from nornir_salt.plugins.functions import TabulateFormatter
 
@@ -200,6 +201,9 @@ class NornirServiceCommands(BaseModel):
     )
     parse: NornirParseShell = Field(None, description="Parse network devices output")
     diagram: NornirDiagramShell = Field(None, description="Produce network diagrams")
+    file_copy: NornirFileCopyShell = Field(
+        None, description="Copy files to/from devices", alias="file-copy"
+    )
 
     # netconf:
     # file:

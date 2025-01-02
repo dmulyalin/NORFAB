@@ -1,0 +1,44 @@
+! Command: show running-config
+! device: ceos-leaf-3 (cEOSLab, EOS-4.30.0F-31408673.4300F (engineering build))
+!
+no aaa root
+!
+username admin privilege 15 role network-admin secret sha512 $6$ctwq.k8wTIw0ImtE$/7Td/PTkRdwckJVU9f8AgekOGuEuDL3Zal99wy9RdyM004uQvEyU4499ZoyhJQNvBW/lYPNQKIgKnlLV7yPhy/
+!
+transceiver qsfp default-mode 4x10G
+!
+service routing protocols model multi-agent
+!
+hostname ceos-leaf-3
+!
+spanning-tree mode mstp
+!
+system l1
+   unsupported speed action error
+   unsupported error-correction action error
+!
+management api http-commands
+   no shutdown
+!
+management api gnmi
+   transport grpc default
+!
+management api netconf
+   transport ssh default
+!
+aaa authentication enable default none
+aaa authorization exec default local
+aaa authorization commands all default local
+!
+interface Ethernet1
+!
+interface Ethernet2
+!
+interface Management0
+   ip address 172.100.100.14/24
+!
+no ip routing
+!
+ip route 0.0.0.0/0 172.100.100.1
+!
+end

@@ -1,0 +1,54 @@
+! Command: show running-config
+! device: ceos-spine-1 (cEOSLab, EOS-4.30.0F-31408673.4300F (engineering build))
+!
+no aaa root
+!
+username admin privilege 15 role network-admin secret sha512 $6$QbV8R/z5T/EYeWCs$gx85BIrNaiA84UU084n6/f4KkY9nltutvvFAhqc4CbPaNSBIkO6tqxvycT4CY1YjxFR2rFLkJtAVXqK4O4nLV0
+!
+transceiver qsfp default-mode 4x10G
+!
+service routing protocols model multi-agent
+!
+hostname ceos-spine-1
+!
+spanning-tree mode mstp
+!
+system l1
+   unsupported speed action error
+   unsupported error-correction action error
+!
+management api http-commands
+   no shutdown
+!
+management api gnmi
+   transport grpc default
+!
+management api netconf
+   transport ssh default
+!
+aaa authentication enable default none
+aaa authorization exec default local
+aaa authorization commands all default local
+!
+interface Ethernet1
+!
+interface Ethernet2
+!
+interface Ethernet3
+!
+interface Ethernet4
+!
+interface Loopback0
+   description RID
+!
+interface Loopback123
+   description RID 964
+!
+interface Management0
+   ip address 172.100.100.10/24
+!
+no ip routing
+!
+ip route 0.0.0.0/0 172.100.100.1
+!
+end

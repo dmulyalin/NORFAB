@@ -51,6 +51,7 @@ from nornir_salt.plugins.processors import (
     NorFabEventProcessor,
 )
 from nornir_napalm.plugins.tasks import napalm_get
+from nornir_netmiko.tasks import netmiko_file_transfer
 from nornir_salt.utils.pydantic_models import modelTestsProcessorSuite
 from typing import Union
 from threading import Thread, Lock
@@ -1153,8 +1154,72 @@ class NornirWorker(NFPWorker):
 
         return ret
 
-    def file_copy(self) -> dict:
+    def file_copy(
+        self,
+        source_file: str,
+        plugin: str = "netmiko",
+        to_dict: bool = True,
+        add_details: bool = False,
+        dry_run: bool = False,
+        **kwargs,
+    ) -> dict:
         """
-        Task to transfer files to hosts
+        Task to transfer files to and from hosts using SCP
+
+        :param source_file: path to file to copy, support ``nf://path/to/file`` URL to copy from broker
+        :param plugin: plugin name to use - ``netmiko``
+        :param to_dict: default is True - produces dictionary results, if False produces list
+        :param add_details: if True will add task execution details to the results
+        :param dry_run: if True will not copy files just return what would be copied
+        :param kwargs: additional arguments to pass to the plugin function
+        :return: dictionary with the results of the file copy task
         """
-        pass
+        filters = {k: kwargs.pop(k) for k in list(kwargs.keys()) if k in FFun_functions}
+        timeout = self.current_job["timeout"] * 0.9
+        ret = Result(task=f"{self.name}:file_copy", result={} if to_dict else [])
+
+        # download file from broker
+        if self.is_url(source_file):
+            source_file_local = self.fetch_file(
+                source_file, raise_on_fail=True, read=False
+            )
+
+        # decide on what send commands task plugin to use
+        if plugin == "netmiko":
+            task_plugin = netmiko_file_transfer
+            kwargs["source_file"] = source_file_local
+            kwargs.setdefault("socket_timeout", timeout / 5)
+            kwargs.setdefault("dest_file", os.path.split(source_file_local)[-1])
+        else:
+            raise UnsupportedPluginError(f"Plugin '{plugin}' not supported")
+
+        self.nr.data.reset_failed_hosts()  # reset failed hosts
+        filtered_nornir = FFun(self.nr, **filters)  # filter hosts
+
+        # check if no hosts matched
+        if not filtered_nornir.inventory.hosts:
+            msg = (
+                f"{self.name} - nothing to do, no hosts matched by filters '{filters}'"
+            )
+            ret.messages.append(msg)
+            log.debug(msg)
+            return ret
+
+        nr = self._add_processors(filtered_nornir, kwargs)  # add processors
+
+        # run task
+        log.debug(
+            f"{self.name} - running file copy with arguments '{kwargs}', is dry run - '{dry_run}'"
+        )
+        if dry_run is True:
+            result = nr.run(task=nr_test, name="file_copy_dry_run", **kwargs)
+        else:
+            with self.connections_lock:
+                result = nr.run(task=task_plugin, **kwargs)
+
+        ret.result = ResultSerializer(result, to_dict=to_dict, add_details=add_details)
+
+        self.watchdog.connections_update(nr, plugin)
+        self.watchdog.connections_clean()
+
+        return ret
