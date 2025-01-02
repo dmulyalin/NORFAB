@@ -1532,7 +1532,6 @@ class TestNornirParse:
             kwargs={
                 "plugin": "ttp",
                 "template": "nf://nf_tests_inventory/ttp/parse_eos_intf.txt",
-                "enable": True,
             },
         )
         pprint.pprint(ret)

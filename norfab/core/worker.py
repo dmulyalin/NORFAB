@@ -124,6 +124,8 @@ class Result:
     :param severity_level (logging.LEVEL): Severity level associated to the result of the execution
     :param errors: exception thrown during the execution of the task (if any)
     :param task: Task function name that produced the results
+    :param messages: List of messages produced by the task
+    :param juuid: Job UUID associated with the task
     """
 
     def __init__(
@@ -133,12 +135,14 @@ class Result:
         errors: Optional[List[str]] = None,
         task: str = None,
         messages: Optional[List[str]] = None,
+        juuid: Optional[str] = None,
     ) -> None:
         self.task = task
         self.result = result
         self.failed = failed
         self.errors = errors or []
         self.messages = messages or []
+        self.juuid = juuid
 
     def __repr__(self) -> str:
         return '{}: "{}"'.format(self.__class__.__name__, self.task)
@@ -162,6 +166,7 @@ class Result:
             "errors": self.errors,
             "result": self.result,
             "messages": self.messages,
+            "juuid": self.juuid,
         }
 
 
@@ -195,6 +200,12 @@ def reply_filename(suuid: Union[str, bytes], base_dir_jobs: str):
     """Returns freshly allocated reply filename for given UUID str"""
     suuid = suuid.decode("utf-8") if isinstance(suuid, bytes) else suuid
     return os.path.join(base_dir_jobs, f"{suuid}.rep")
+
+
+def event_filename(suuid: Union[str, bytes], base_dir_jobs: str):
+    """Returns freshly allocated event filename for given UUID str"""
+    suuid = suuid.decode("utf-8") if isinstance(suuid, bytes) else suuid
+    return os.path.join(base_dir_jobs, f"{suuid}.event")
 
 
 def _post(worker, post_queue, queue_filename, destroy_event, base_dir_jobs):
@@ -626,15 +637,161 @@ class NFPWorker:
         return filepath
 
     def event(self, data: Any = None) -> None:
-        self.event_queue.put(
-            [
-                self.current_job["client_address"],
-                self.current_job["juuid"],
-                self.current_job["task"],
-                self.current_job["timeout"],
-                data,
-            ]
-        )
+        event_item = [
+            self.current_job["client_address"],
+            self.current_job["juuid"],
+            self.current_job["task"],
+            self.current_job["timeout"],
+            data,
+        ]
+        # emit event to the broker
+        self.event_queue.put(event_item)
+        # save event locally
+        filename = event_filename(self.current_job["juuid"], self.base_dir_jobs)
+        events = loader(filename) if os.path.exists(filename) else []
+        events.append(event_item)
+        dumper(events, filename)
+
+    def job_details(
+        self, uuid: str, data: bool = True, result: bool = True, events: bool = True
+    ) -> Result:
+        """
+        Method to get job details by UUID for completed jobs.
+
+        :param uuid: str, job UUID to return details for
+        :param data: bool, if True return job data
+        :param result: bool, if True return job result
+        :param events: bool, if True return job events
+        :return: Result object with job details
+        """
+        job = None
+        with queue_file_lock:
+            with open(self.queue_done_filename, "rb+") as f:
+                for entry in f.readlines():
+                    job_data, job_result, job_events = None, None, []
+                    job_entry = entry.decode("utf-8").strip()
+                    suuid, start, end = job_entry.split("--")  # {suuid}--start--end
+                    if suuid != uuid:
+                        continue
+                    # load job request details
+                    client_address, empty, juuid, job_data_bytes = loader(
+                        request_filename(suuid, self.base_dir_jobs)
+                    )
+                    if data:
+                        job_data = json.loads(job_data_bytes.decode("utf-8"))
+                    # load job result details
+                    if result:
+                        rep_filename = reply_filename(suuid, self.base_dir_jobs)
+                        if os.path.exists(rep_filename):
+                            job_result = loader(rep_filename)
+                            job_result = json.loads(job_result[-1].decode("utf-8"))
+                            job_result = job_result[self.name]
+                    # load event details
+                    if events:
+                        events_filename = event_filename(suuid, self.base_dir_jobs)
+                        if os.path.exists(events_filename):
+                            job_events = loader(events_filename)
+                            job_events = [e[-1] for e in job_events]
+
+                    job = {
+                        "uuid": suuid,
+                        "client": client_address.decode("utf-8"),
+                        "received_timestamp": start,
+                        "done_timestamp": end,
+                        "status": "COMPLETED",
+                        "job_data": job_data,
+                        "job_result": job_result,
+                        "job_events": job_events,
+                    }
+
+        if job:
+            return Result(
+                task=f"{self.name}:job_details",
+                result=job,
+            )
+        else:
+            raise FileNotFoundError(f"{self.name} - job with UUID '{uuid}' not found")
+
+    def job_list(
+        self,
+        pending: bool = True,
+        completed: bool = True,
+        task: str = None,
+        last: int = None,
+    ) -> Result:
+        """
+        Method to list worker jobs completed and pending.
+
+        :param pending: bool, if True or None return pending jobs, if
+            False skip pending jobs
+        :param completed: bool, if True or None return completed jobs,
+            if False skip completed jobs
+        :param task: str, if provided return only jobs with this task name
+        :param last: int, if provided return only last N completed and
+            last N pending jobs
+        :return: Result object with list of jobs
+        """
+        job_pending = []
+        # load pending jobs
+        if pending is True:
+            with queue_file_lock:
+                with open(self.queue_filename, "rb+") as f:
+                    for entry in f.readlines():
+                        job_entry = entry.decode("utf-8").strip()
+                        suuid, start = job_entry.split("--")  # {suuid}--start
+                        client_address, empty, juuid, data = loader(
+                            request_filename(suuid, self.base_dir_jobs)
+                        )
+                        job_task = json.loads(data.decode("utf-8"))["task"]
+                        # check if need to skip this job
+                        if task and job_task != task:
+                            continue
+                        job_pending.append(
+                            {
+                                "uuid": suuid,
+                                "client": client_address.decode("utf-8"),
+                                "received_timestamp": start,
+                                "done_timestamp": None,
+                                "task": job_task,
+                                "status": "PENDING",
+                            }
+                        )
+        job_completed = []
+        # load done jobs
+        if completed is True:
+            with queue_file_lock:
+                with open(self.queue_done_filename, "rb+") as f:
+                    for entry in f.readlines():
+                        job_entry = entry.decode("utf-8").strip()
+                        suuid, start, end = job_entry.split("--")  # {suuid}--start--end
+                        client_address, empty, juuid, data = loader(
+                            request_filename(suuid, self.base_dir_jobs)
+                        )
+                        job_task = json.loads(data.decode("utf-8"))["task"]
+                        # check if need to skip this job
+                        if task and job_task != task:
+                            continue
+                        job_completed.append(
+                            {
+                                "uuid": suuid,
+                                "client": client_address.decode("utf-8"),
+                                "received_timestamp": start,
+                                "done_timestamp": end,
+                                "task": job_task,
+                                "status": "COMPLETED",
+                            }
+                        )
+        if last:
+            return Result(
+                task=f"{self.name}:job_list",
+                result=job_completed[len(job_completed) - last :]
+                + job_pending[len(job_pending) - last :],
+            )
+        else:
+            return Result(
+                task=f"{self.name}:job_list",
+                result=job_completed + job_pending,
+            )
 
     def work(self):
         # Start threads
@@ -741,6 +898,8 @@ class NFPWorker:
                     )
                 if not getattr(result, "task"):
                     result.task = f"{self.name}:{task}"
+                if not getattr(result, "juuid"):
+                    result.juuid = juuid.decode("utf-8")
             except Exception as e:
                 result = Result(
                     task=f"{self.name}:{task}",

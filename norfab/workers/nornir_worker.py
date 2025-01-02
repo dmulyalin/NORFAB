@@ -1134,7 +1134,6 @@ class NornirWorker(NFPWorker):
                 to_dict=to_dict,
                 add_details=add_details,
                 plugin="netmiko",
-                enable=True,
             )
             ret.result = result.result
         elif plugin == "textfsm":
