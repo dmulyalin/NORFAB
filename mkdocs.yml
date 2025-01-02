@@ -85,34 +85,32 @@ nav:
         - Services Overview: services_overview.md
         - Nornir Service: 
             - Overview: workers/nornir/services_nornir_service.md
-            - Tasks: 
-                - Nornir Task: workers/nornir/services_nornir_service_tasks_task.md
-                - Nornir Cli: workers/nornir/services_nornir_service_tasks_cli.md
-                - Nornir Cfg: workers/nornir/services_nornir_service_tasks_cfg.md
-                - Nornir Test: workers/nornir/services_nornir_service_tasks_test.md
-                - Nornir Network: workers/nornir/services_nornir_service_tasks_network.md
-                - Nornir Parse: workers/nornir/services_nornir_service_tasks_parse.md
-                - Nornir Diagram: workers/nornir/services_nornir_service_tasks_diagram.md
-            - Jina2 Filters: workers/nornir/services_nornir_service_jinja2_filters.md
+            - Nornir Task: workers/nornir/services_nornir_service_tasks_task.md
+            - Nornir Cli: workers/nornir/services_nornir_service_tasks_cli.md
+            - Nornir Cfg: workers/nornir/services_nornir_service_tasks_cfg.md
+            - Nornir Test: workers/nornir/services_nornir_service_tasks_test.md
+            - Nornir Network: workers/nornir/services_nornir_service_tasks_network.md
+            - Nornir Parse: workers/nornir/services_nornir_service_tasks_parse.md
+            - Nornir Diagram: workers/nornir/services_nornir_service_tasks_diagram.md
+            - Jina2 Filters Reference: workers/nornir/services_nornir_service_jinja2_filters.md
         - Netbox Service: 
             - Overview: services_netbox_service.md
-            - Tasks: 
-                - Netbox GraphQL: services_netbox_service_tasks_graphql.md
-                - Netbox REST: services_netbox_service_tasks_rest.md
-                - Netbox GET Devices: services_netbox_service_tasks_get_devices.md
-                - Netbox GET Interfaces: services_netbox_service_tasks_get_interfaces.md
-                - Netbox GET Connections: services_netbox_service_tasks_get_connections.md
-                - Netbox GET Circuits: services_netbox_service_tasks_get_circuits.md
-                - Netbox GET Nornir Inventory: services_netbox_service_tasks_get_nornir_inventory.md
-                - Netbox GET Next IP: services_netbox_service_tasks_get_next_ip.md
-                - Netbox UPDATE Device Facts: services_netbox_service_tasks_update_device_facts.md
-                - Netbox UPDATE Device Interfaces: services_netbox_service_tasks_update_device_interfaces.md
+            - Netbox GraphQL: services_netbox_service_tasks_graphql.md
+            - Netbox REST: services_netbox_service_tasks_rest.md
+            - Netbox GET Devices: services_netbox_service_tasks_get_devices.md
+            - Netbox GET Interfaces: services_netbox_service_tasks_get_interfaces.md
+            - Netbox GET Connections: services_netbox_service_tasks_get_connections.md
+            - Netbox GET Circuits: services_netbox_service_tasks_get_circuits.md
+            - Netbox GET Nornir Inventory: services_netbox_service_tasks_get_nornir_inventory.md
+            - Netbox GET Next IP: services_netbox_service_tasks_get_next_ip.md
+            - Netbox UPDATE Device Facts: services_netbox_service_tasks_update_device_facts.md
+            - Netbox UPDATE Interfaces: services_netbox_service_tasks_update_device_interfaces.md
     - Clients:
-        - Clients Overview: clients_overview.md
-        - NORFAB CLI Client: clients_nfcli_overview.md
-        - Python API Client: clients_python_api_overview.md
-        - REST API Client: clients_rest_api_overview.md
-        - ROBOT Client: clients_robot_client_overview.md
+        - NORFAB Clients: clients_overview.md
+        - NORFAB Shell: clients_nfcli_overview.md
+        - Python API: clients_python_api_overview.md
+        - REST API: clients_rest_api_overview.md
+        - ROBOT API: clients_robot_client_overview.md
 - References:
     - NORFAB Inventory: reference_norfab_inventory.md
     - API Reference:

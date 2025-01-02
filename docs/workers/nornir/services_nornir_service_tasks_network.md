@@ -5,6 +5,24 @@ tags:
 
 # Nornir Service Network Task
 
+The Nornir Service Network Task is a component of NorFab's Nornir service designed to facilitate various network-related operations. This task suite provides network professionals with essential tools for managing, troubleshooting, and monitoring network infrastructure. By leveraging the capabilities of the Nornir service, users can perform critical network functions such as ICMP echo requests (ping) and DNS resolution checks, ensuring the reliability and performance of their network devices and services.
+
+Key features of the Nornir Service Network Task include:
+
+- **Network Ping**: This task allows you to perform ICMP echo requests to verify the reachability of network devices. 
+
+- **DNS Testing**: This task enables you to perform DNS resolution checks to ensure that domain names are correctly mapped to their respective IP addresses. 
+
+The document also includes a reference for the NorFab shell commands related to the Nornir `network` task, detailing the available options and parameters. These commands provide granular control over the execution of network tasks, enabling users to tailor the behavior of the tasks to meet specific network management needs.
+
+## Network Ping
+
+The Network Ping task in NorFab's Nornir service allows you to perform ICMP echo requests (pings) to verify the reachability of network devices. This task is essential for network troubleshooting and monitoring, as it helps you determine if a device is online and responsive. The ping task can be customized with various parameters such as timeout, number of retries, payload size and others. By using the ping task, you can quickly identify connectivity issues and ensure that your network devices are functioning correctly.
+
+## DNS Testing
+
+The DNS Testing task in NorFab's Nornir service enables you to perform DNS resolution checks to verify that domain names are correctly mapped to their respective IP addresses. This task is crucial for ensuring that your DNS infrastructure is working as expected and that your network services are accessible via their domain names. The DNS testing task can be configured with different parameters to control the behavior of the DNS queries, such as specifying the DNS server to use, query timeout, and the type of DNS record to query. By performing DNS tests, you can proactively identify and resolve DNS-related issues, ensuring seamless network operations.
+
 ## NORFAB Nornir Network Shell Reference
 
 NorFab shell supports these command options for Nornir `network` task:

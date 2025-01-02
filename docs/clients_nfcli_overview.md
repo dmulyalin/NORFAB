@@ -3,8 +3,7 @@ tags:
   - nfcli
 ---
 
-NORFAB comes with interactive command line shell interface called ``nfcli`` 
-which users can invoke to work with the system.
+NORFAB comes with interactive command line shell interface invoked using ``nfcli`` to work with the system.
 
 NORFAB CLI designed as a *modal* operating system. The term modal 
 describes a system that has various modes of operation, each having its own 

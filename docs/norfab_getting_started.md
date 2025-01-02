@@ -147,6 +147,6 @@ Exiting...
 3. Drop into Nornir Service command shell
 
 NorFab CLI supports Tab completions, question mark help together with
-sub-shells, read more about NorFab CLI and how to use it [here](norfab_cli_overview.md).
+sub-shells, read more about NorFab CLI and how to use it [here](clients_nfcli_overview.md).
 
 :star: That's it :star:

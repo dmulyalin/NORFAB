@@ -5,13 +5,15 @@ tags:
 
 # Nornir Service "Task" Task
 
-Nornir service `task` task can be used to run any arbitrary
-Nornir task plugin function. Nornir task can be referenced
-using OS path to custom task Python file or using dot notation
-to reference import module.
+The Nornir Service "Task" Task is a versatile component of NorFab's Nornir service, designed to execute any arbitrary Nornir task plugin function. This task provides network automation and developer engineers with the flexibility to run custom Nornir tasks, enabling them to tailor their network automation workflows to meet specific requirements.
 
-Reference [Nornir Plugins](https://nornir.tech/nornir/plugins/) page
-for a list of community built Nornir plugins.
+Key features of the Nornir Service "Task" Task include:
+
+- **Custom Task Execution**: The "Task" Task allows you to run custom Nornir task functions, which can be referenced using the OS path to the custom task Python file stored on broker or using dot notation to reference an import module. 
+
+- **Integration with Nornir Plugins**: The Nornir framework supports a wide range of community-built plugins, which can be called directly or leveraged to extend the functionality of your custom tasks. By integrating these plugins, you can enhance your automation capabilities and streamline complex network operations. Reference the [Nornir Plugins](https://nornir.tech/nornir/plugins/) page for a list of available plugins.
+
+- **Scalability and Reusability**: Custom Nornir tasks can be designed to be scalable and reusable, allowing you to apply the same task logic across different network environments and scenarios. This promotes consistency and efficiency in your network automation workflows, reducing the need for repetitive coding and manual intervention.
 
 ## Nornir Tasks Sample Usage
 

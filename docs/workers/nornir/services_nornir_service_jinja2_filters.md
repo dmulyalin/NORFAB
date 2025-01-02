@@ -5,9 +5,7 @@ tags:
 
 # Nornir Service Jinja2 Templates Filters
 
-Below listed additional Jinja2 filters that supported by 
-Nornir service for templates rendering by all service tasks
-such as ``cfg``, ``cli``, ``tests`` etc.
+Below listed additional Jinja2 filters that supported by Nornir service for templates rendering by all service tasks such as ``cfg``, ``cli``, ``tests`` etc.
 
 ## network_hosts
 

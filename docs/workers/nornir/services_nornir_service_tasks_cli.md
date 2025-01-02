@@ -57,15 +57,9 @@ Below is an example of how to use the Nornir CLI task to retrieve command output
         - `nfcli` command starts the NorFab Interactive Shell.
         - `nornir` command switches to the Nornir sub-shell.
         - `cli` command switches to the CLI task sub-shell.
-        - `commands` command retrieves the output of "show clock" and 
-            "show hostname" from the devices  that contain `ceos-spine` 
-            in their hostname as we use `FC` - "Filter Contains" Nornir 
-            hosts targeting filter.
+        - `commands` command retrieves the output of "show clock" and "show hostname" from the devices  that contain `ceos-spine` in their hostname as we use `FC` - "Filter Contains" Nornir hosts targeting filter.
 		
-		`inventory.yaml` should be located in same folder where we 
-		start nfcli, unless `nfcli -i path_to_inventory.yaml` flag 
-		used. Refer to [Getting Started](../../norfab_getting_started.md) 
-		section on how to construct  `inventory.yaml` file
+		`inventory.yaml` should be located in same folder where we start nfcli, unless `nfcli -i path_to_inventory.yaml` flag used. Refer to [Getting Started](../../norfab_getting_started.md) section on how to construct  `inventory.yaml` file
 		
     === "Python"
     
@@ -131,32 +125,73 @@ Below is an example of how to use the Nornir CLI task to retrieve command output
 ## Use Different Connection Plugins
 
 Several device connection plugins supported such as ``netmiko``, ``napalm`` and ``scrapli``,
-any of them can be invoked to retrieve show commands output, provided Nornir inventory contains
-plugin's configuration.
+any of them can be invoked to retrieve show commands output, provided Nornir inventory contains plugin's configuration.
 
 ## Outputting Text Tables
 
+NorFab interactive shell supports ``table`` command that can be used to format output
+into text tables. Internally it relies on [tabulate](https://pypi.org/project/tabulate/) 
+module and most of its features are supported.
+
 ## Sourcing Commands From File
+
+Commands can be provided inline in the shell itself, but it is also possible to source
+commands from text files stored on broker.
 
 ## Using Jinja2 Templates
 
+Commands can be templated using Jinja2. This allows you to create dynamic commands based on variables defined in your inventory or passed as job data.
+
+## Templating Commands with Inline Job Data
+
 ## Using Dry Run
+
+The dry run feature allows you to see the commands that would be executed without actually sending them to the devices. This is useful for testing and validation. When set to `True`, the commands will not be sent to the devices, but will be returned as part of the result.
 
 ## Formatting Output Results
 
+You can format the output results using various options provided by the Nornir worker. The output of the commands can be formatted using the `to_dict` parameter. When set to `True`, the results will be returned as a dictionary. When set to `False`, the results will be returned as a list. In addition `add_details` argument can be used to control the verbosity of the output and return additional Nornir result information such as:
+
+- `changed` flag
+- `diff` content if supported by plugin
+- `failed` status
+- `exception` details if task execution failed with error
+- `connection_retry` counter to show how many times RetryRunner tried to establish a connection
+- `task_retry` counter to show how many times RetryRunner tried to run this task
+
 ## Running Show Commands Multiple Times
+
+You can run show commands multiple times using the `repeat` parameter. This is useful for monitoring changes over time. The `repeat` parameter can be used to run the same command multiple times. You can also specify the interval between each repeat using the `repeat_interval` parameter.
 
 ## Using Netmiko Promptless Mode
 
+NorFab support proprietary promptless mode that can be used with Netmiko, it can be useful when dealing with devices that do not have a consistent prompt, or default Netmiko output collection functions are not reliable enough. This mode can be enabled by setting the `use_ps` parameter to `True`.
+
 ## Parsing Commands Output
+
+When using Netmiko plugin the output of commands can be parsed using various parsers such as `textfsm`, `ttp` and `genie`. This allows you to convert the raw output into structured data. 
+
+Using TTP parsing templates supported by all Netmiko, Scrapli and NAPALM connection plugins, to invoke TTP can us `run_ttp` command specifying path to parsing template stored on broker. 
 
 ## Filtering Commands Output
 
+The output of commands can be filtered to only include specific information. This can be done using `match` command with containment patterns.
+
 ## Sending New Line Character
+
+You can send a new line character as part of the command to devices. This is useful for commands that require a new line to be executed properly. To send new-line character need to include `_br_` into command text.
+
+## Saving Task Results to Files
+
+The results of tasks can be saved to files for later analysis and record-keeping. This is particularly useful for maintaining logs of command outputs, configuration changes, and other important data. By saving task results to files, you can create a historical record of network operations, which can be invaluable for troubleshooting, auditing, and compliance purposes.
+
+## Using Diff Function to Compare Results
+
+The diff function allows you to compare the results of different task results for same commands. This is useful for identifying changes in configurations or device state, detecting anomalies, and verifying the impact of network modifications. By using the diff function, you can ensure that your network remains consistent and identify any unintended changes that may have occurred.
 
 ## NORFAB Nornir CLI Shell Reference
 
-NorFab shell supports these commands for Nornir `cli` task:
+The NorFab shell provides a comprehensive set of commands for the Nornir `cli` task, allowing you to perform various network utility functions. These commands include options for setting job timeouts, specifying connection parameters, and controlling the execution of CLI commands. The shell reference details the available commands and their descriptions, providing you with the flexibility to tailor the behavior of the tasks to meet your specific network management needs.
 
 ```
 nf#man tree nornir.cli

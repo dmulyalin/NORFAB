@@ -5,6 +5,24 @@ tags:
 
 # Nornir Service Diagram Task
 
+The Nornir Service Diagram Task is a powerful component of NorFab's Nornir service, designed to create detailed network diagrams. By leveraging the [N2G (Need to Graph)](https://github.com/dmulyalin/N2G/) module, this task enables network engineers and architects to visualize network topologies and configurations, facilitating better network management and planning.
+
+## Creating Layer-2 Network Diagram
+
+Layer-2 network diagrams illustrate the data link layer of the OSI model, showing how devices are interconnected within a local area network (LAN) based on the output provided by LLDP and CDP protocols. These diagrams are essential for understanding the physical and logical connections between switches, routers, and other network devices. By creating Layer-2 network diagrams, you can identify potential bottlenecks, optimize traffic flow, and ensure efficient network design. The Nornir Service Diagram Task uses the N2G module to automatically generate these diagrams, providing a clear and accurate representation of your Layer-2 topology.
+
+## Creating Layer-3 Network Diagram
+
+Layer-3 network diagrams depict the network layer of the OSI model, highlighting the routing and IP addressing within a network. These diagrams are crucial for understanding how data is routed between different subnets and networks. By creating Layer-3 network diagrams, you can visualize the routing paths, identify potential routing issues, and ensure proper IP address allocation. The Nornir Service Diagram Task leverages the N2G module to construct these diagrams, offering a comprehensive view of your Layer-3 network infrastructure.
+
+## Creating OSPF Routing Protocol Network Diagram
+
+OSPF (Open Shortest Path First) is a widely used interior gateway protocol for routing within an autonomous system. Creating OSPF routing protocol network diagrams helps you visualize the OSPF areas, router adjacencies, and link metrics. These diagrams are useful for troubleshooting OSPF-related issues, optimizing OSPF configurations, and ensuring efficient routing. The Nornir Service Diagram Task utilizes the N2G module to generate OSPF network diagrams, providing a detailed view of your OSPF topology and configurations.
+
+## Creating ISIS Routing Protocol Network Diagram
+
+ISIS (Intermediate System to Intermediate System) is a popular interior gateway protocol used for routing within large networks. Creating ISIS routing protocol network diagrams allows you to visualize the ISIS areas, router adjacencies, and link metrics. These diagrams are vital for understanding the ISIS routing process, identifying potential issues and optimizing the network. The Nornir Service Diagram Task utilizes the N2G module to generate ISIS network diagrams, providing a detailed view of your ISIS topology and configurations.
+
 ## NORFAB Nornir Diagram Shell Reference
 
 NorFab shell supports these command options for Nornir `diagram` task:
