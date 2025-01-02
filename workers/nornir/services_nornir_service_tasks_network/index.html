@@ -664,48 +664,6 @@
                 
   
   
-    
-  
-  
-  
-    
-    
-    
-      
-      
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_9_2_2" checked>
-        
-          
-          <label class="md-nav__link" for="__nav_1_9_2_2" id="__nav_1_9_2_2_label" tabindex="0">
-            
-  
-  <span class="md-ellipsis">
-    Tasks
-  </span>
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_1_9_2_2_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_1_9_2_2">
-            <span class="md-nav__icon md-icon"></span>
-            Tasks
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
   
   
     <li class="md-nav__item">
@@ -839,6 +797,24 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#network-ping" class="md-nav__link">
+    <span class="md-ellipsis">
+      Network Ping
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dns-testing" class="md-nav__link">
+    <span class="md-ellipsis">
+      DNS Testing
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#norfab-nornir-network-shell-reference" class="md-nav__link">
     <span class="md-ellipsis">
       NORFAB Nornir Network Shell Reference
@@ -907,14 +883,6 @@
 
               
             
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
               
                 
   
@@ -926,7 +894,7 @@
         
   
   <span class="md-ellipsis">
-    Jina2 Filters
+    Jina2 Filters Reference
   </span>
   
 
@@ -1004,46 +972,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-      
-      
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_9_3_2" >
-        
-          
-          <label class="md-nav__link" for="__nav_1_9_3_2" id="__nav_1_9_3_2_label" tabindex="0">
-            
-  
-  <span class="md-ellipsis">
-    Tasks
-  </span>
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_1_9_3_2_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_1_9_3_2">
-            <span class="md-nav__icon md-icon"></span>
-            Tasks
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1245,19 +1173,11 @@
         
   
   <span class="md-ellipsis">
-    Netbox UPDATE Device Interfaces
+    Netbox UPDATE Interfaces
   </span>
   
 
       </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
     </li>
   
 
@@ -1333,7 +1253,7 @@
         
   
   <span class="md-ellipsis">
-    Clients Overview
+    NORFAB Clients
   </span>
   
 
@@ -1354,7 +1274,7 @@
         
   
   <span class="md-ellipsis">
-    NORFAB CLI Client
+    NORFAB Shell
   </span>
   
 
@@ -1375,7 +1295,7 @@
         
   
   <span class="md-ellipsis">
-    Python API Client
+    Python API
   </span>
   
 
@@ -1396,7 +1316,7 @@
         
   
   <span class="md-ellipsis">
-    REST API Client
+    REST API
   </span>
   
 
@@ -1417,7 +1337,7 @@
         
   
   <span class="md-ellipsis">
-    ROBOT Client
+    ROBOT API
   </span>
   
 
@@ -2049,6 +1969,24 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#network-ping" class="md-nav__link">
+    <span class="md-ellipsis">
+      Network Ping
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dns-testing" class="md-nav__link">
+    <span class="md-ellipsis">
+      DNS Testing
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#norfab-nornir-network-shell-reference" class="md-nav__link">
     <span class="md-ellipsis">
       NORFAB Nornir Network Shell Reference
@@ -2096,6 +2034,21 @@
 
 
 <h1 id="nornir-service-network-task">Nornir Service Network Task<a class="headerlink" href="#nornir-service-network-task" title="Permanent link">¤</a></h1>
+<p>The Nornir Service Network Task is a component of NorFab's Nornir service designed to facilitate various network-related operations. This task suite provides network professionals with essential tools for managing, troubleshooting, and monitoring network infrastructure. By leveraging the capabilities of the Nornir service, users can perform critical network functions such as ICMP echo requests (ping) and DNS resolution checks, ensuring the reliability and performance of their network devices and services.</p>
+<p>Key features of the Nornir Service Network Task include:</p>
+<ul>
+<li>
+<p><strong>Network Ping</strong>: This task allows you to perform ICMP echo requests to verify the reachability of network devices. </p>
+</li>
+<li>
+<p><strong>DNS Testing</strong>: This task enables you to perform DNS resolution checks to ensure that domain names are correctly mapped to their respective IP addresses. </p>
+</li>
+</ul>
+<p>The document also includes a reference for the NorFab shell commands related to the Nornir <code>network</code> task, detailing the available options and parameters. These commands provide granular control over the execution of network tasks, enabling users to tailor the behavior of the tasks to meet specific network management needs.</p>
+<h2 id="network-ping">Network Ping<a class="headerlink" href="#network-ping" title="Permanent link">¤</a></h2>
+<p>The Network Ping task in NorFab's Nornir service allows you to perform ICMP echo requests (pings) to verify the reachability of network devices. This task is essential for network troubleshooting and monitoring, as it helps you determine if a device is online and responsive. The ping task can be customized with various parameters such as timeout, number of retries, payload size and others. By using the ping task, you can quickly identify connectivity issues and ensure that your network devices are functioning correctly.</p>
+<h2 id="dns-testing">DNS Testing<a class="headerlink" href="#dns-testing" title="Permanent link">¤</a></h2>
+<p>The DNS Testing task in NorFab's Nornir service enables you to perform DNS resolution checks to verify that domain names are correctly mapped to their respective IP addresses. This task is crucial for ensuring that your DNS infrastructure is working as expected and that your network services are accessible via their domain names. The DNS testing task can be configured with different parameters to control the behavior of the DNS queries, such as specifying the DNS server to use, query timeout, and the type of DNS record to query. By performing DNS tests, you can proactively identify and resolve DNS-related issues, ensuring seamless network operations.</p>
 <h2 id="norfab-nornir-network-shell-reference">NORFAB Nornir Network Shell Reference<a class="headerlink" href="#norfab-nornir-network-shell-reference" title="Permanent link">¤</a></h2>
 <p>NorFab shell supports these command options for Nornir <code>network</code> task:</p>
 <div class="highlight"><pre><span></span><code>nf#man tree nornir.network

@@ -668,48 +668,6 @@
   
   
   
-    
-    
-    
-      
-      
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_9_2_2" checked>
-        
-          
-          <label class="md-nav__link" for="__nav_1_9_2_2" id="__nav_1_9_2_2_label" tabindex="0">
-            
-  
-  <span class="md-ellipsis">
-    Tasks
-  </span>
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_1_9_2_2_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_1_9_2_2">
-            <span class="md-nav__icon md-icon"></span>
-            Tasks
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-    
-  
-  
-  
     <li class="md-nav__item md-nav__item--active">
       
       <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
@@ -925,14 +883,6 @@
 
               
             
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
               
                 
   
@@ -944,7 +894,7 @@
         
   
   <span class="md-ellipsis">
-    Jina2 Filters
+    Jina2 Filters Reference
   </span>
   
 
@@ -1022,46 +972,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-      
-      
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_9_3_2" >
-        
-          
-          <label class="md-nav__link" for="__nav_1_9_3_2" id="__nav_1_9_3_2_label" tabindex="0">
-            
-  
-  <span class="md-ellipsis">
-    Tasks
-  </span>
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_1_9_3_2_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_1_9_3_2">
-            <span class="md-nav__icon md-icon"></span>
-            Tasks
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1263,19 +1173,11 @@
         
   
   <span class="md-ellipsis">
-    Netbox UPDATE Device Interfaces
+    Netbox UPDATE Interfaces
   </span>
   
 
       </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
     </li>
   
 
@@ -1351,7 +1253,7 @@
         
   
   <span class="md-ellipsis">
-    Clients Overview
+    NORFAB Clients
   </span>
   
 
@@ -1372,7 +1274,7 @@
         
   
   <span class="md-ellipsis">
-    NORFAB CLI Client
+    NORFAB Shell
   </span>
   
 
@@ -1393,7 +1295,7 @@
         
   
   <span class="md-ellipsis">
-    Python API Client
+    Python API
   </span>
   
 
@@ -1414,7 +1316,7 @@
         
   
   <span class="md-ellipsis">
-    REST API Client
+    REST API
   </span>
   
 
@@ -1435,7 +1337,7 @@
         
   
   <span class="md-ellipsis">
-    ROBOT Client
+    ROBOT API
   </span>
   
 
@@ -2132,12 +2034,19 @@
 
 
 <h1 id="nornir-service-task-task">Nornir Service "Task" Task<a class="headerlink" href="#nornir-service-task-task" title="Permanent link">¤</a></h1>
-<p>Nornir service <code>task</code> task can be used to run any arbitrary
-Nornir task plugin function. Nornir task can be referenced
-using OS path to custom task Python file or using dot notation
-to reference import module.</p>
-<p>Reference <a href="https://nornir.tech/nornir/plugins/">Nornir Plugins</a> page
-for a list of community built Nornir plugins.</p>
+<p>The Nornir Service "Task" Task is a versatile component of NorFab's Nornir service, designed to execute any arbitrary Nornir task plugin function. This task provides network automation and developer engineers with the flexibility to run custom Nornir tasks, enabling them to tailor their network automation workflows to meet specific requirements.</p>
+<p>Key features of the Nornir Service "Task" Task include:</p>
+<ul>
+<li>
+<p><strong>Custom Task Execution</strong>: The "Task" Task allows you to run custom Nornir task functions, which can be referenced using the OS path to the custom task Python file stored on broker or using dot notation to reference an import module. </p>
+</li>
+<li>
+<p><strong>Integration with Nornir Plugins</strong>: The Nornir framework supports a wide range of community-built plugins, which can be called directly or leveraged to extend the functionality of your custom tasks. By integrating these plugins, you can enhance your automation capabilities and streamline complex network operations. Reference the <a href="https://nornir.tech/nornir/plugins/">Nornir Plugins</a> page for a list of available plugins.</p>
+</li>
+<li>
+<p><strong>Scalability and Reusability</strong>: Custom Nornir tasks can be designed to be scalable and reusable, allowing you to apply the same task logic across different network environments and scenarios. This promotes consistency and efficiency in your network automation workflows, reducing the need for repetitive coding and manual intervention.</p>
+</li>
+</ul>
 <h2 id="nornir-tasks-sample-usage">Nornir Tasks Sample Usage<a class="headerlink" href="#nornir-tasks-sample-usage" title="Permanent link">¤</a></h2>
 <p>Example of calling Nornir custom task function stored on NORFAB 
 broker under <code>nornir_tasks/echo.py</code> file path:</p>

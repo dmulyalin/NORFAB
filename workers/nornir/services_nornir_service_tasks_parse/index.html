@@ -664,48 +664,6 @@
                 
   
   
-    
-  
-  
-  
-    
-    
-    
-      
-      
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_9_2_2" checked>
-        
-          
-          <label class="md-nav__link" for="__nav_1_9_2_2" id="__nav_1_9_2_2_label" tabindex="0">
-            
-  
-  <span class="md-ellipsis">
-    Tasks
-  </span>
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_1_9_2_2_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_1_9_2_2">
-            <span class="md-nav__icon md-icon"></span>
-            Tasks
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
   
   
     <li class="md-nav__item">
@@ -907,14 +865,6 @@
 
               
             
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
               
                 
   
@@ -926,7 +876,7 @@
         
   
   <span class="md-ellipsis">
-    Jina2 Filters
+    Jina2 Filters Reference
   </span>
   
 
@@ -1004,46 +954,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-      
-      
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_9_3_2" >
-        
-          
-          <label class="md-nav__link" for="__nav_1_9_3_2" id="__nav_1_9_3_2_label" tabindex="0">
-            
-  
-  <span class="md-ellipsis">
-    Tasks
-  </span>
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_1_9_3_2_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_1_9_3_2">
-            <span class="md-nav__icon md-icon"></span>
-            Tasks
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1245,19 +1155,11 @@
         
   
   <span class="md-ellipsis">
-    Netbox UPDATE Device Interfaces
+    Netbox UPDATE Interfaces
   </span>
   
 
       </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
     </li>
   
 
@@ -1333,7 +1235,7 @@
         
   
   <span class="md-ellipsis">
-    Clients Overview
+    NORFAB Clients
   </span>
   
 
@@ -1354,7 +1256,7 @@
         
   
   <span class="md-ellipsis">
-    NORFAB CLI Client
+    NORFAB Shell
   </span>
   
 
@@ -1375,7 +1277,7 @@
         
   
   <span class="md-ellipsis">
-    Python API Client
+    Python API
   </span>
   
 
@@ -1396,7 +1298,7 @@
         
   
   <span class="md-ellipsis">
-    REST API Client
+    REST API
   </span>
   
 
@@ -1417,7 +1319,7 @@
         
   
   <span class="md-ellipsis">
-    ROBOT Client
+    ROBOT API
   </span>
   
 
@@ -2096,6 +1998,21 @@
 
 
 <h1 id="nornir-service-parse-task">Nornir Service Parse Task<a class="headerlink" href="#nornir-service-parse-task" title="Permanent link">¤</a></h1>
+<p>The Nornir Service Parse Task is an integral part of NorFab's Nornir service, designed to facilitate the parsing and extraction of valuable information from network device outputs. This task provides network automation and developer engineers with powerful tools to transform raw command outputs into structured data, enabling more efficient network management and automation workflows.</p>
+<p>Key features of the Nornir Service Parse Task include:</p>
+<ul>
+<li>
+<p><strong>TextFSM Parsing</strong>: This task allows you to use TextFSM templates to parse command outputs into structured data. TextFSM is a powerful text processing tool that uses templates to define how to extract data from unstructured text. By leveraging TextFSM, you can convert complex command outputs into easily readable and processable data formats, which can then be used for further analysis or automation tasks.</p>
+</li>
+<li>
+<p><strong>TTP Parsing</strong>: The Template Text Parser (TTP) is a robust parsing tool supported by the Nornir Service Parse Task. TTP allows you to define templates for parsing text data, similar to TextFSM, but with additional flexibility and features. Using TTP, you can extract specific information from command outputs and transform it into structured data, making it easier to integrate with other systems and processes.</p>
+</li>
+<li>
+<p><strong>NAPALM Getters</strong>: The Nornir Service Parse Task leverages NAPALM getters to retrieve and parse structured data directly from network devices. NAPALM getters are pre-defined methods that extract specific pieces of information from devices, such as interface details, routing tables, ARP tables, and more.</p>
+</li>
+</ul>
+<p>The Nornir Service Parse Task is essential for network automation and developer engineers who need to process and analyze large volumes of network data. By transforming raw command outputs into structured data, you can automate complex workflows, generate insightful reports, and ensure that your network devices are configured and operating correctly.</p>
+<p>This document also includes a reference for the NorFab shell commands related to the Nornir <code>parse</code> task, detailing the available options and parameters. These commands provide granular control over the parsing tasks.</p>
 <h2 id="norfab-nornir-parse-shell-reference">NORFAB Nornir Parse Shell Reference<a class="headerlink" href="#norfab-nornir-parse-shell-reference" title="Permanent link">¤</a></h2>
 <p>NorFab shell supports these command options for Nornir <code>parse</code> task:</p>
 <div class="highlight"><pre><span></span><code>nf#man tree nornir.parse
