@@ -718,6 +718,8 @@ class NFPWorker:
         completed: bool = True,
         task: str = None,
         last: int = None,
+        client: str = None,
+        uuid: str = None,
     ) -> Result:
         """
         Method to list worker jobs completed and pending.
@@ -729,6 +731,8 @@ class NFPWorker:
         :param task: str, if provided return only jobs with this task name
         :param last: int, if provided return only last N completed and
             last N pending jobs
+        :param client: str, if provided return only jobs submitted by this client
+        :param uuid: str, if provided return only job with this UUID
         :return: Result object with list of jobs
         """
         job_pending = []
@@ -739,9 +743,13 @@ class NFPWorker:
                     for entry in f.readlines():
                         job_entry = entry.decode("utf-8").strip()
                         suuid, start = job_entry.split("--")  # {suuid}--start
+                        if uuid and suuid != uuid:
+                            continue
                         client_address, empty, juuid, data = loader(
                             request_filename(suuid, self.base_dir_jobs)
                         )
+                        if client and client_address.decode("utf-8") != client:
+                            continue
                         job_task = json.loads(data.decode("utf-8"))["task"]
                         # check if need to skip this job
                         if task and job_task != task:
@@ -754,6 +762,8 @@ class NFPWorker:
                                 "done_timestamp": None,
                                 "task": job_task,
                                 "status": "PENDING",
+                                "worker": self.name,
+                                "service": self.service.decode("utf-8"),
                             }
                         )
         job_completed = []
@@ -764,9 +774,13 @@ class NFPWorker:
                     for entry in f.readlines():
                         job_entry = entry.decode("utf-8").strip()
                         suuid, start, end = job_entry.split("--")  # {suuid}--start--end
+                        if uuid and suuid != uuid:
+                            continue
                         client_address, empty, juuid, data = loader(
                             request_filename(suuid, self.base_dir_jobs)
                         )
+                        if client and client_address.decode("utf-8") != client:
+                            continue
                         job_task = json.loads(data.decode("utf-8"))["task"]
                         # check if need to skip this job
                         if task and job_task != task:
@@ -779,6 +793,8 @@ class NFPWorker:
                                 "done_timestamp": end,
                                 "task": job_task,
                                 "status": "COMPLETED",
+                                "worker": self.name,
+                                "service": self.service.decode("utf-8"),
                             }
                         )
         if last:

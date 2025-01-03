@@ -31,6 +31,7 @@ from .nornir_picle_shell_test import NornirTestShell
 from .nornir_picle_shell_network import NornirNetworkShell
 from .nornir_picle_shell_diagram import NornirDiagramShell
 from .nornir_picle_shell_file_copy import NornirFileCopyShell
+from .nornir_picle_shell_jobs import NornirJobsShell
 from typing import Union, Optional, List, Any, Dict, Callable, Tuple
 from nornir_salt.plugins.functions import TabulateFormatter
 
@@ -161,7 +162,7 @@ class NornirShowCommandsModel(BaseModel):
         description="show Nornir inventory data",
     )
     hosts: NornirShowHostsModel = Field(
-        "print_nornir_hosts",
+        None,
         description="show Nornir hosts",
     )
     version: Callable = Field(
@@ -172,6 +173,7 @@ class NornirShowCommandsModel(BaseModel):
         None,
         description="show Nornir service version report",
     )
+    jobs: NornirJobsShell = Field(None, description="Show Nornir Jobs")
 
     class PicleConfig:
         outputter = Outputters.outputter_rich_json

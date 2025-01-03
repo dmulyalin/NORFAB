@@ -106,6 +106,12 @@ nav:
             - Netbox GET Next IP: services_netbox_service_tasks_get_next_ip.md
             - Netbox UPDATE Device Facts: services_netbox_service_tasks_update_device_facts.md
             - Netbox UPDATE Interfaces: services_netbox_service_tasks_update_device_interfaces.md
+        - NORFAB Services:
+            - MMI: services_norfab_mmi.md
+            - Inventory Service: services_norfab_inventory_service.md
+            - File Service: services_norfab_file_service.md
+            - Jobs Service: services_norfab_jobs_service.md
+            - Events Service: services_norfab_events_service.md
     - Clients:
         - NORFAB Clients: clients_overview.md
         - NORFAB Shell: clients_nfcli_overview.md

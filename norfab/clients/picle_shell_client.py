@@ -22,7 +22,6 @@ from pydantic import (
     StrictFloat,
     StrictStr,
     conlist,
-    root_validator,
     Field,
 )
 from typing import Union, Optional, List, Any, Dict, Callable, Tuple
@@ -30,6 +29,7 @@ from norfab.core.nfapi import NorFab
 
 from .picle_shells.nornir import nornir_picle_shell
 from .picle_shells.netbox import netbox_picle_shell
+from .picle_shells.norfab_jobs_shell import NorFabJobsShell
 
 NFCLIENT = None
 log = logging.getLogger(__name__)
@@ -74,6 +74,7 @@ class ShowWorkersModel(BaseModel):
 
 class ShowCommandsModel(BaseModel):
     version: Callable = Field("show_version", description="show current version")
+    jobs: NorFabJobsShell = Field(None, description="Show NorFab Jobs for all services")
     broker: Callable = Field(
         "show_broker", description="show broker details", outputter=print_stats
     )
@@ -81,7 +82,6 @@ class ShowCommandsModel(BaseModel):
     client: Callable = Field(
         "show_client", description="show client details", outputter=print_stats
     )
-    # jobs: details, summary, last x, failed, pending, completed, by worker
 
     class PicleConfig:
         pipe = PipeFunctionsModel
@@ -101,8 +101,8 @@ class ShowCommandsModel(BaseModel):
             "type": "PICLE Shell",
             "status": "connected",
             "broker": NFCLIENT.broker,
-            # "timeout": NFCLIENT.timeout,
-            # "retries": NFCLIENT.retries,
+            "name": NFCLIENT.name,
+            "zmq_name": NFCLIENT.zmq_name,
             "recv_queue": NFCLIENT.recv_queue.qsize(),
             "base_dir": NFCLIENT.base_dir,
             "broker_tx": NFCLIENT.stats_send_to_broker,
@@ -236,6 +236,7 @@ def start_picle_shell(
     start_broker=None,
     log_level="WARNING",
 ):
+    global NFCLIENT
     # initiate NorFab
     nf = NorFab(inventory=inventory, log_level=log_level)
     nf.start(start_broker=start_broker, workers=workers)
