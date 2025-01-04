@@ -586,6 +586,15 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#bugs" class="md-nav__link">
+    <span class="md-ellipsis">
+      BUGS
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -903,6 +912,27 @@
   
   
     <li class="md-nav__item">
+      <a href="../workers/nornir/services_nornir_service_tasks_file_copy/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Nornir File Copy
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../workers/nornir/services_nornir_service_jinja2_filters/" class="md-nav__link">
         
   
@@ -1187,6 +1217,159 @@
   
   <span class="md-ellipsis">
     Netbox UPDATE Interfaces
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_9_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_1_9_4" id="__nav_1_9_4_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    NORFAB Services
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_9_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_9_4">
+            <span class="md-nav__icon md-icon"></span>
+            NORFAB Services
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../services_norfab_mmi.md" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    MMI
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../services_norfab_inventory_service.md" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Inventory Service
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../services_norfab_file_service.md" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    File Service
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../services_norfab_jobs_service.md" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Jobs Service
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../services_norfab_events_service.md" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Events Service
   </span>
   
 
@@ -2007,6 +2190,15 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#bugs" class="md-nav__link">
+    <span class="md-ellipsis">
+      BUGS
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -2059,12 +2251,22 @@
 <h2 id="001">0.0.1<a class="headerlink" href="#001" title="Permanent link">¤</a></h2>
 <h3 id="changes">Changes<a class="headerlink" href="#changes" title="Permanent link">¤</a></h3>
 <ol>
-<li>Changes to Nornir service module files</li>
+<li>Changes to Nornir service module files structure</li>
 <li>PICLE dependency updated: 0.7.<em> -&gt; 0.8.</em></li>
+<li>Made Nornir Service <code>progress</code> argument set to <code>True</code> by default to emit and display events for all Nornir Jobs</li>
+<li>Nornir tests changed <code>table</code> argument to be set to <code>True</code> by default</li>
 </ol>
 <h3 id="features">Features<a class="headerlink" href="#features" title="Permanent link">¤</a></h3>
 <ol>
 <li>Added support for Nornir parse task to source TTP template from file with autocompletion</li>
+<li>Added Nornir File Copy task to copy files to devices using SCP</li>
+<li>Added support for logs to  be collected into single file from all NorFab local processes</li>
+<li>Added to NorFab worker <code>job_list</code> and <code>job_details</code> methods</li>
+<li>Added <code>show jobs summary</code> and <code>show jobs details</code> commands to NorFab shell and to Nornir shell</li>
+</ol>
+<h3 id="bugs">BUGS<a class="headerlink" href="#bugs" title="Permanent link">¤</a></h3>
+<ol>
+<li>Fixed Nornir Service Watchdog to clean up dead connections from hosts data</li>
 </ol>
 <h2 id="000">0.0.0<a class="headerlink" href="#000" title="Permanent link">¤</a></h2>
 <p>Initial Release</p>

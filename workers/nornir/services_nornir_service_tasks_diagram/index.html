@@ -18,7 +18,7 @@
         <link rel="prev" href="../services_nornir_service_tasks_parse/">
       
       
-        <link rel="next" href="../services_nornir_service_jinja2_filters/">
+        <link rel="next" href="../services_nornir_service_tasks_file_copy/">
       
       
       <link rel="icon" href="../../../assets/images/favicon.png">
@@ -875,6 +875,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#creating-drawio-diagrams" class="md-nav__link">
+    <span class="md-ellipsis">
+      Creating draw.io Diagrams
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#norfab-nornir-diagram-shell-reference" class="md-nav__link">
     <span class="md-ellipsis">
       NORFAB Nornir Diagram Shell Reference
@@ -887,6 +896,27 @@
   
 </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../services_nornir_service_tasks_file_copy/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Nornir File Copy
+  </span>
+  
+
+      </a>
     </li>
   
 
@@ -1183,6 +1213,159 @@
   
   <span class="md-ellipsis">
     Netbox UPDATE Interfaces
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_9_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_1_9_4" id="__nav_1_9_4_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    NORFAB Services
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_9_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_9_4">
+            <span class="md-nav__icon md-icon"></span>
+            NORFAB Services
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../services_norfab_mmi.md" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    MMI
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../services_norfab_inventory_service.md" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Inventory Service
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../services_norfab_file_service.md" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    File Service
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../services_norfab_jobs_service.md" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Jobs Service
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../services_norfab_events_service.md" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Events Service
   </span>
   
 
@@ -2014,6 +2197,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#creating-drawio-diagrams" class="md-nav__link">
+    <span class="md-ellipsis">
+      Creating draw.io Diagrams
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#norfab-nornir-diagram-shell-reference" class="md-nav__link">
     <span class="md-ellipsis">
       NORFAB Nornir Diagram Shell Reference
@@ -2057,28 +2249,85 @@
 <p>Layer-2 network diagrams illustrate the data link layer of the OSI model, showing how devices are interconnected within a local area network (LAN) based on the output provided by LLDP and CDP protocols. These diagrams are essential for understanding the physical and logical connections between switches, routers, and other network devices. By creating Layer-2 network diagrams, you can identify potential bottlenecks, optimize traffic flow, and ensure efficient network design. The Nornir Service Diagram Task uses the N2G module to automatically generate these diagrams, providing a clear and accurate representation of your Layer-2 topology.</p>
 <h2 id="creating-layer-3-network-diagram">Creating Layer-3 Network Diagram<a class="headerlink" href="#creating-layer-3-network-diagram" title="Permanent link">¤</a></h2>
 <p>Layer-3 network diagrams depict the network layer of the OSI model, highlighting the routing and IP addressing within a network. These diagrams are crucial for understanding how data is routed between different subnets and networks. By creating Layer-3 network diagrams, you can visualize the routing paths, identify potential routing issues, and ensure proper IP address allocation. The Nornir Service Diagram Task leverages the N2G module to construct these diagrams, offering a comprehensive view of your Layer-3 network infrastructure.</p>
+<div class="admonition example">
+<p class="admonition-title">Example</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:1"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">CLI</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block"></div>
+</div>
+</div>
+<div class="highlight"><pre><span></span><code>nf#
+nf#
+nf#nornir
+nf[nornir]#diagram
+nf[nornir-diagram]#layer3 FC spine,leaf
+--------------------------------------------- Job Events -----------------------------------------------
+04-Jan-2025 22:59:56 85fd42146327446cae3c26ceb2077abf job started
+04-Jan-2025 22:59:56.664 nornir nornir-worker-1 ceos-spine-1, ceos-spine-2 task started - &#39;netmiko_send_commands&#39;
+&lt;omitted for brevity&gt;
+04-Jan-2025 22:59:58 85fd42146327446cae3c26ceb2077abf job completed in 2.117 seconds
+
+--------------------------------------------- Job Results --------------------------------------------
+
+diagram: &#39;layer3&#39;, format: &#39;yed&#39;
+saved at: &#39;./diagrams\layer3_2025-01-04_22-59-56.graphml&#39;
+hosts: ceos-leaf-1, ceos-leaf-2, ceos-leaf-3, ceos-spine-1, ceos-spine-2
+nf[nornir-diagram]#
+</code></pre></div>
+<p>Demo</p>
+<p><img alt="Nornir Cli Demo" src="../../../images/nornir_diagram_demo_layer3.gif" /></p>
+<p>In this example:</p>
+<ul>
+<li><code>nornir</code> command switches to the Nornir sub-shell.</li>
+<li><code>diagram</code> command switches to the diagram task sub-shell.</li>
+<li><code>layer3</code> command run commands output collection for devices that have <code>spine</code> or <code>leaf</code> in their hostname as we use <code>FC</code> - "Filter Contains" Nornir hosts targeting filter, once output collected N2G parses commands output and constructs L3 Network diagram of subnets and IP addresses saving diagram in <a href="https://www.yworks.com/products/yed">yEd</a> compatible format at <code>./diagrams\layer3_2025-01-04_22-59-56.graphml</code> file.</li>
+</ul>
+</div>
 <h2 id="creating-ospf-routing-protocol-network-diagram">Creating OSPF Routing Protocol Network Diagram<a class="headerlink" href="#creating-ospf-routing-protocol-network-diagram" title="Permanent link">¤</a></h2>
 <p>OSPF (Open Shortest Path First) is a widely used interior gateway protocol for routing within an autonomous system. Creating OSPF routing protocol network diagrams helps you visualize the OSPF areas, router adjacencies, and link metrics. These diagrams are useful for troubleshooting OSPF-related issues, optimizing OSPF configurations, and ensuring efficient routing. The Nornir Service Diagram Task utilizes the N2G module to generate OSPF network diagrams, providing a detailed view of your OSPF topology and configurations.</p>
 <h2 id="creating-isis-routing-protocol-network-diagram">Creating ISIS Routing Protocol Network Diagram<a class="headerlink" href="#creating-isis-routing-protocol-network-diagram" title="Permanent link">¤</a></h2>
 <p>ISIS (Intermediate System to Intermediate System) is a popular interior gateway protocol used for routing within large networks. Creating ISIS routing protocol network diagrams allows you to visualize the ISIS areas, router adjacencies, and link metrics. These diagrams are vital for understanding the ISIS routing process, identifying potential issues and optimizing the network. The Nornir Service Diagram Task utilizes the N2G module to generate ISIS network diagrams, providing a detailed view of your ISIS topology and configurations.</p>
+<h2 id="creating-drawio-diagrams">Creating draw.io Diagrams<a class="headerlink" href="#creating-drawio-diagrams" title="Permanent link">¤</a></h2>
+<p>N2G module can produce diagrams in several formats, to create <a href="https://www.drawio.com/">draw.io</a> diagram need to use <code>format</code> argument with <code>drawio</code> value.</p>
+<div class="admonition example">
+<p class="admonition-title">Example</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="2:1"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">CLI</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block"></div>
+</div>
+</div>
+<div class="highlight"><pre><span></span><code>nf#
+nf#
+nf#nornir
+nf[nornir]#diagram
+nf[nornir-diagram]#format drawio layer3 FC spine,leaf
+--------------------------------------------- Job Events -----------------------------------------------
+04-Jan-2025 23:16:13 a2d39b5b1268488a95805baed96699a1 job started
+04-Jan-2025 23:16:14.277 nornir nornir-worker-1 ceos-spine-1, ceos-spine-2 task started - &#39;netmiko_send_commands&#39;
+04-Jan-2025 23:16:14.289 nornir nornir-worker-2 ceos-leaf-1, ceos-leaf-2, ceos-leaf-3 task started - &#39;netmiko_send_commands&#39;
+&lt;omitted for brevity&gt;
+04-Jan-2025 23:16:16 a2d39b5b1268488a95805baed96699a1 job completed in 2.606 seconds
+
+--------------------------------------------- Job Results --------------------------------------------
+
+diagram: &#39;layer3&#39;, format: &#39;drawio&#39;
+saved at: &#39;./diagrams\layer3_2025-01-04_23-16-13.drawio&#39;
+hosts: ceos-leaf-1, ceos-leaf-2, ceos-leaf-3, ceos-spine-1, ceos-spine-2
+nf[nornir-diagram]#
+</code></pre></div>
+<ul>
+<li><code>nornir</code> command switches to the Nornir sub-shell.</li>
+<li><code>diagram</code> command switches to the diagram task sub-shell.</li>
+<li><code>format</code> argument specifies what diagram format to create, draw.io in this case.</li>
+<li><code>layer3</code> command run commands output collection for devices that have <code>spine</code> or <code>leaf</code> in their hostname as we use <code>FC</code> - "Filter Contains" Nornir hosts targeting filter, once output collected N2G parses commands output and constructs L3 Network diagram of subnets and IP addresses saving diagram in <a href="https://www.drawio.com/">draw.io</a> compatible format at <code>./diagrams\layer3_2025-01-04_23-16-13.drawio</code> file.</li>
+</ul>
+</div>
 <h2 id="norfab-nornir-diagram-shell-reference">NORFAB Nornir Diagram Shell Reference<a class="headerlink" href="#norfab-nornir-diagram-shell-reference" title="Permanent link">¤</a></h2>
 <p>NorFab shell supports these command options for Nornir <code>diagram</code> task:</p>
 <div class="highlight"><pre><span></span><code>nf#man tree nornir.diagram
 root
 └── nornir:    Nornir service
     └── diagram:    Produce network diagrams
-        ├── FO:    Filter hosts using Filter Object
-        ├── FB:    Filter hosts by name using Glob Patterns
-        ├── FH:    Filter hosts by hostname
-        ├── FC:    Filter hosts containment of pattern in name
-        ├── FR:    Filter hosts by name using Regular Expressions
-        ├── FG:    Filter hosts by group
-        ├── FP:    Filter hosts by hostname using IP Prefix
-        ├── FL:    Filter hosts by names list
-        ├── FM:    Filter hosts by platform
-        ├── FX:    Filter hosts excluding them by name
-        ├── FN:    Negate the match
-        ├── hosts:    Filter hosts to target
         ├── timeout:    Job timeout
         ├── workers:    Filter worker to target, default &#39;all&#39;
         ├── format:    Diagram application format, default &#39;yed&#39;
@@ -2096,7 +2345,7 @@ root
         │   ├── tf_skip_failed:    Save results to file for failed tasks
         │   ├── diff:    File group name to run the diff for
         │   ├── diff_last:    File version number to diff, default is 1 (last)
-        │   ├── progress:    Emit execution progress
+        │   ├── progress:    Display progress events, default &#39;True&#39;
         │   ├── FO:    Filter hosts using Filter Object
         │   ├── FB:    Filter hosts by name using Glob Patterns
         │   ├── FH:    Filter hosts by hostname
@@ -2131,7 +2380,7 @@ root
         │   ├── tf_skip_failed:    Save results to file for failed tasks
         │   ├── diff:    File group name to run the diff for
         │   ├── diff_last:    File version number to diff, default is 1 (last)
-        │   ├── progress:    Emit execution progress
+        │   ├── progress:    Display progress events, default &#39;True&#39;
         │   ├── FO:    Filter hosts using Filter Object
         │   ├── FB:    Filter hosts by name using Glob Patterns
         │   ├── FH:    Filter hosts by hostname
@@ -2164,7 +2413,7 @@ root
         │   ├── tf_skip_failed:    Save results to file for failed tasks
         │   ├── diff:    File group name to run the diff for
         │   ├── diff_last:    File version number to diff, default is 1 (last)
-        │   ├── progress:    Emit execution progress
+        │   ├── progress:    Display progress events, default &#39;True&#39;
         │   ├── FO:    Filter hosts using Filter Object
         │   ├── FB:    Filter hosts by name using Glob Patterns
         │   ├── FH:    Filter hosts by hostname
@@ -2190,11 +2439,11 @@ root
         │   ├── run_reconnect_on_fail:    RetryRunner perform reconnect to host on task failure
         │   ├── run_connect_check:    RetryRunner test TCP connection before opening actual connection
         │   ├── run_connect_timeout:    RetryRunner timeout in seconds to wait for test TCP connection to establish
+        │   ├── run_creds_retry:    RetryRunner list of connection credentials and parameters to retry
         │   ├── tf:    File group name to save task results to on worker file system
         │   ├── tf_skip_failed:    Save results to file for failed tasks
         │   ├── diff:    File group name to run the diff for
         │   ├── diff_last:    File version number to diff, default is 1 (last)
-        │   ├── progress:    Emit execution progress
         │   ├── FO:    Filter hosts using Filter Object
         │   ├── FB:    Filter hosts by name using Glob Patterns
         │   ├── FH:    Filter hosts by hostname
