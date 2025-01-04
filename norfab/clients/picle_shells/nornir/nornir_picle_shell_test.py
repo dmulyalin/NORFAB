@@ -1,5 +1,6 @@
 import json
 
+from enum import Enum
 from pydantic import (
     BaseModel,
     StrictBool,
@@ -17,6 +18,12 @@ from .nornir_picle_shell_common import (
 )
 from typing import Union, Optional, List, Any, Dict, Callable, Tuple
 from nornir_salt.plugins.functions import TabulateFormatter
+
+
+class EnumTableTypes(str, Enum):
+    table_brief = "brief"
+    table_terse = "terse"
+    table_extend = "extend"
 
 
 class NornirTestShell(
@@ -46,6 +53,11 @@ class NornirTestShell(
     )
     job_data: Optional[StrictStr] = Field(
         None, description="Path to YAML file with job data"
+    )
+    table: Union[EnumTableTypes, Dict, StrictBool] = Field(
+        "brief",
+        description="Table format (brief, terse, extend) or parameters or True",
+        presence="brief",
     )
 
     @staticmethod

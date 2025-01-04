@@ -254,7 +254,7 @@ class N2GOSPFDiagram(NorniHostsFilters, NornirCommonArgs):
         outputter = Outputters.outputter_rich_print
 
 
-class NornirDiagramShell(ClientRunJobArgs, NorniHostsFilters):
+class NornirDiagramShell(ClientRunJobArgs):
     format: N2GDiagramAppEnum = Field("yed", description="Diagram application format")
     layer3: N2GLayer3Diagram = Field(
         None, description="Create L3 Network diagram using IP data"

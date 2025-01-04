@@ -168,8 +168,8 @@ class NornirCommonArgs(BaseModel):
         description="File version number to diff, default is 1 (last)",
     )
     progress: Optional[StrictBool] = Field(
-        None,
-        description="Emit execution progress",
+        True,
+        description="Display progress events",
         json_schema_extra={"presence": True},
     )
 

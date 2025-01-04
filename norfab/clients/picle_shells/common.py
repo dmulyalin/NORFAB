@@ -32,9 +32,8 @@ def listen_events_thread(uuid, stop, NFCLIENT):
     start_time = time.time()
     time_fmt = "%d-%b-%Y %H:%M:%S"
     richconsole.print(
-        f"# " + "-" * 100 + "\n"
-        f"# {time.strftime(time_fmt)} {uuid} job started\n"
-        f"# " + "-" * 100
+        f"-" * 45 + " Job Events " + "-" * 47 + "\n"
+        f"{time.strftime(time_fmt)} {uuid} job started"
     )
     while not (stop.is_set() or NFCLIENT.exit_event.is_set()):
         try:
@@ -85,13 +84,17 @@ def listen_events_thread(uuid, stop, NFCLIENT):
 
     elapsed = round(time.time() - start_time, 3)
     richconsole.print(
-        f"# " + "-" * 100 + "\n"
-        f"# {time.strftime(time_fmt)} {uuid} job completed in {elapsed} seconds\n"
-        f"# " + "-" * 100 + "\n"
+        f"{time.strftime(time_fmt)} {uuid} job completed in {elapsed} seconds\n\n"
+        + f"-" * 45
+        + " Job Results "
+        + "-" * 44
+        + "\n"
     )
 
 
 def listen_events(fun):
+    """Decorator to listen for events and print them to console"""
+
     @functools.wraps(fun)
     def wrapper(*args, **kwargs):
         events_thread_stop = threading.Event()

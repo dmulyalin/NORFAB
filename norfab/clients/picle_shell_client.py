@@ -29,7 +29,7 @@ from norfab.core.nfapi import NorFab
 
 from .picle_shells.nornir import nornir_picle_shell
 from .picle_shells.netbox import netbox_picle_shell
-from .picle_shells.norfab_jobs_shell import NorFabJobsShell
+from .picle_shells.norfab_jobs_shell import NorFabJobsShellCommands
 
 NFCLIENT = None
 log = logging.getLogger(__name__)
@@ -74,7 +74,9 @@ class ShowWorkersModel(BaseModel):
 
 class ShowCommandsModel(BaseModel):
     version: Callable = Field("show_version", description="show current version")
-    jobs: NorFabJobsShell = Field(None, description="Show NorFab Jobs for all services")
+    jobs: NorFabJobsShellCommands = Field(
+        None, description="Show NorFab Jobs for all services"
+    )
     broker: Callable = Field(
         "show_broker", description="show broker details", outputter=print_stats
     )

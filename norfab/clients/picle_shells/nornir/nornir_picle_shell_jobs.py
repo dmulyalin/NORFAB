@@ -1,4 +1,5 @@
 import json
+import pprint
 
 from typing import Union, Optional, List, Any, Dict, Callable, Tuple
 from enum import Enum
@@ -82,7 +83,9 @@ class ListJobsModel(ClientRunJobArgs):
 
 class JobDetailsModel(ClientRunJobArgs):
     uuid: StrictStr = Field(..., description="Job UUID", mandatory=True)
-    workers: StrictStr = Field("all", description="Workers to return jobs for")
+    workers: Union[StrictStr, List[StrictStr]] = Field(
+        "all", description="Workers to return jobs for"
+    )
     data: StrictBool = Field(
         True,
         description="Return job data received from client",
@@ -122,7 +125,7 @@ class JobDetailsModel(ClientRunJobArgs):
         return result
 
     class PicleConfig:
-        outputter = Outputters.outputter_rich_print
+        outputter = Outputters.outputter_rich_json
 
 
 class NornirJobsShell(BaseModel):

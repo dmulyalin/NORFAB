@@ -124,25 +124,189 @@ Below is an example of how to use the Nornir CLI task to retrieve command output
 
 ## Use Different Connection Plugins
 
-Several device connection plugins supported such as ``netmiko``, ``napalm`` and ``scrapli``,
-any of them can be invoked to retrieve show commands output, provided Nornir inventory contains plugin's configuration.
+The Nornir Service CLI Task supports various connection plugins, such as `netmiko`, `napalm`, and `scrapli`, to interact with network devices. These plugins provide the flexibility to choose the most suitable method for connecting to and managing your devices, depending on your specific requirements and preferences.
+
+To use a specific connection plugin, ensure that your Nornir inventory is properly configured with the necessary connection parameters and device-specific settings. This includes specifying the plugin type, authentication details, and any additional options required by the plugin.
+
+!!! example
+
+    === "CLI"
+    
+        ```
+		C:\nf>nfcli
+		Welcome to NorFab Interactive Shell.
+        nf#
+        nf#nornir cli
+        nf[nornir-cli]#commands "show clock" FC spine plugin netmiko
+        --------------------------------------------- Job Events -----------------------------------------------
+        04-Jan-2025 22:37:57 5ed5775b183a404181f004753f583f0c job started
+        04-Jan-2025 22:37:57.085 nornir nornir-worker-1 ceos-spine-1, ceos-spine-2 task started - 'netmiko_send_commands'
+        04-Jan-2025 22:37:57.114 nornir nornir-worker-1 ceos-spine-1 task_instance started - 'netmiko_send_commands'
+        04-Jan-2025 22:37:57.114 nornir nornir-worker-1 ceos-spine-2 task_instance started - 'netmiko_send_commands'
+        04-Jan-2025 22:37:57.124 nornir nornir-worker-1 ceos-spine-1 subtask started - 'show clock'
+        04-Jan-2025 22:37:57.136 nornir nornir-worker-1 ceos-spine-2 subtask started - 'show clock'
+        04-Jan-2025 22:37:57.237 nornir nornir-worker-1 ceos-spine-1 subtask completed - 'show clock'
+        04-Jan-2025 22:37:57.237 nornir nornir-worker-1 ceos-spine-2 subtask completed - 'show clock'
+        04-Jan-2025 22:37:57.244 nornir nornir-worker-1 ceos-spine-2 task_instance completed - 'netmiko_send_commands'
+        04-Jan-2025 22:37:57.245 nornir nornir-worker-1 ceos-spine-1 task_instance completed - 'netmiko_send_commands'
+        04-Jan-2025 22:37:57.425 nornir nornir-worker-1 ceos-spine-1, ceos-spine-2 task completed - 'netmiko_send_commands'
+        04-Jan-2025 22:37:57 5ed5775b183a404181f004753f583f0c job completed in 0.476 seconds
+
+        --------------------------------------------- Job Results --------------------------------------------
+
+        ceos-spine-1:
+            show clock:
+                Sat Jan  4 12:37:57 2025
+                Timezone: UTC
+                Clock source: local
+        ceos-spine-2:
+            show clock:
+                Sat Jan  4 12:37:57 2025
+                Timezone: UTC
+                Clock source: local
+        nf[nornir-cli]#commands "show clock" FC spine plugin scrapli
+        --------------------------------------------- Job Events -----------------------------------------------
+        04-Jan-2025 22:38:01 c6bd014aac4c42249594a6197175012e job started
+        04-Jan-2025 22:38:01.116 nornir nornir-worker-1 ceos-spine-1, ceos-spine-2 task started - 'scrapli_send_commands'
+        04-Jan-2025 22:38:01.119 nornir nornir-worker-1 ceos-spine-2 task_instance started - 'scrapli_send_commands'
+        04-Jan-2025 22:38:01.128 nornir nornir-worker-1 ceos-spine-2 subtask started - 'show clock'
+        04-Jan-2025 22:38:01.141 nornir nornir-worker-1 ceos-spine-2 subtask completed - 'show clock'
+        04-Jan-2025 22:38:01.148 nornir nornir-worker-1 ceos-spine-2 task_instance completed - 'scrapli_send_commands'
+        04-Jan-2025 22:38:01.192 nornir nornir-worker-1 ceos-spine-1 task_instance started - 'scrapli_send_commands'
+        04-Jan-2025 22:38:01.202 nornir nornir-worker-1 ceos-spine-1 subtask started - 'show clock'
+        04-Jan-2025 22:38:01.215 nornir nornir-worker-1 ceos-spine-1 subtask completed - 'show clock'
+        04-Jan-2025 22:38:01.221 nornir nornir-worker-1 ceos-spine-1 task_instance completed - 'scrapli_send_commands'
+        04-Jan-2025 22:38:01.364 nornir nornir-worker-1 ceos-spine-1, ceos-spine-2 task completed - 'scrapli_send_commands'
+        04-Jan-2025 22:38:01 c6bd014aac4c42249594a6197175012e job completed in 0.497 seconds
+
+        --------------------------------------------- Job Results --------------------------------------------
+
+        ceos-spine-1:
+            show clock:
+                Sat Jan  4 12:38:01 2025
+                Sat Jan  4 12:38:01 2025
+                Timezone: UTC
+                Clock source: local
+        ceos-spine-2:
+            show clock:
+                Sat Jan  4 12:38:01 2025
+                Timezone: UTC
+                Clock source: local
+        nf[nornir-cli]#commands "show clock" FC spine plugin napalm
+        --------------------------------------------- Job Events -----------------------------------------------
+        04-Jan-2025 22:43:41 02eed090a7bb4652b27cccec1a49dab6 job started
+        04-Jan-2025 22:43:41.360 nornir nornir-worker-1 ceos-spine-1, ceos-spine-2 task started - 'napalm_send_commands'
+        04-Jan-2025 22:43:41.382 nornir nornir-worker-1 ceos-spine-2 task_instance started - 'napalm_send_commands'
+        04-Jan-2025 22:43:41.382 nornir nornir-worker-1 ceos-spine-1 task_instance started - 'napalm_send_commands'
+        04-Jan-2025 22:43:41.388 nornir nornir-worker-1 ceos-spine-1 subtask started - 'napalm_cli'
+        04-Jan-2025 22:43:41.389 nornir nornir-worker-1 ceos-spine-2 subtask started - 'napalm_cli'
+        04-Jan-2025 22:43:41.419 nornir nornir-worker-1 ceos-spine-1 subtask completed - 'napalm_cli'
+        04-Jan-2025 22:43:41.424 nornir nornir-worker-1 ceos-spine-2 subtask completed - 'napalm_cli'
+        04-Jan-2025 22:43:41.425 nornir nornir-worker-1 ceos-spine-1 task_instance completed - 'napalm_send_commands'
+        04-Jan-2025 22:43:41.432 nornir nornir-worker-1 ceos-spine-2 task_instance completed - 'napalm_send_commands'
+        04-Jan-2025 22:43:41.599 nornir nornir-worker-1 ceos-spine-1, ceos-spine-2 task completed - 'napalm_send_commands'
+        04-Jan-2025 22:43:41 02eed090a7bb4652b27cccec1a49dab6 job completed in 0.576 seconds
+
+        --------------------------------------------- Job Results --------------------------------------------
+
+        ceos-spine-1:
+            show clock:
+                Sat Jan  4 12:43:41 2025
+                Timezone: UTC
+                Clock source: local
+        ceos-spine-2:
+            show clock:
+                Sat Jan  4 12:43:41 2025
+                Timezone: UTC
+                Clock source: local
+        nf[nornir-cli]#
+        nf#
+        ```
+        
+        Demo
+		
+		![Nornir Cli Demo](../../images/nornir_cli_demo_plugins.gif)
+    
+        In this example:
+
+        - `nfcli` command starts the NorFab Interactive Shell.
+        - `nornir` command switches to the Nornir sub-shell.
+        - `cli` command switches to the CLI task sub-shell.
+        - `commands` command retrieves the output of "show clock" from the devices  that contain `spine` in their hostname as we use `FC` - "Filter Contains" Nornir hosts targeting filter, `plugin` argument used to inform Nornir service to use `netmiko`, `scrapli` or `napalm` modules to retrieve command output from devices.
+		
+		`inventory.yaml` should be located in same folder where we start nfcli, unless `nfcli -i path_to_inventory.yaml` flag used. Refer to [Getting Started](../../norfab_getting_started.md) section on how to construct  `inventory.yaml` file
+		
+    === "Python"
+    
+		This code is complete and can run as is
+		
+        ```
+        import pprint
+        
+        from norfab.core.nfapi import NorFab
+        
+        if __name__ == '__main__':
+            nf = NorFab(inventory="inventory.yaml")
+            nf.start()
+            
+            client = nf.make_client()
+            
+            res = client.run_job(
+                service="nornir",
+                task="cli",
+                kwargs={
+                    "commands": ["show clock"],
+                    "FC": "ceos-spine",
+                    "plugin": "scrapli"              
+                }
+            )
+            
+            pprint.pprint(res)
+            
+            nf.destroy()
+        ```
+
+		Once executed, above code should produce this output:
+		
+		```
+        C:\nf>python nornir_cli.py
+        {'nornir-worker-1': {'errors': [],
+                             'failed': False,
+                             'messages': [],
+                             'result': {'ceos-spine-1': {'show clock': 'Sun Dec  1 '
+                                                                       '11:10:53 2024\n'
+                                                                       'Timezone: UTC\n'
+                                                                       'Clock source: '
+                                                                       'local'},
+                                        'ceos-spine-2': {'show clock': 'Sun Dec  1 '
+                                                                       '11:10:53 2024\n'
+                                                                       'Timezone: UTC\n'
+                                                                       'Clock source: '
+                                                                       'local'}},
+                             'task': 'nornir-worker-1:cli'}}
+        C:\nf>					 
+		```
+		
+		Refer to [Getting Started](../../norfab_getting_started.md) section on 
+		how to construct  `inventory.yaml` file.
 
 ## Outputting Text Tables
 
-NorFab interactive shell supports ``table`` command that can be used to format output
-into text tables. Internally it relies on [tabulate](https://pypi.org/project/tabulate/) 
-module and most of its features are supported.
+NorFab interactive shell supports ``table`` argument  that can be used to format output into text tables. Internally it relies on [tabulate](https://pypi.org/project/tabulate/) module and most of its features are supported.
 
 ## Sourcing Commands From File
 
-Commands can be provided inline in the shell itself, but it is also possible to source
-commands from text files stored on broker.
+Commands can be provided inline in the shell itself, but it is also possible to source commands from text files stored on broker.
 
 ## Using Jinja2 Templates
 
 Commands can be templated using Jinja2. This allows you to create dynamic commands based on variables defined in your inventory or passed as job data.
 
 ## Templating Commands with Inline Job Data
+
+Templating commands with inline job data allows you to dynamically generate command strings based on variables defined directly within the job data. This approach provides flexibility and customization, enabling you to tailor commands to specific devices or scenarios without the need for external sourced of data.
+
+When defining a job, you can include variables directly within the `job_data` argument. These variables can then be referenced within the command strings using Jinja2 templating syntax. The Nornir worker will process these templates, substituting the variables with their corresponding values from the job data.
 
 ## Using Dry Run
 
@@ -213,7 +377,7 @@ root
         ├── tf_skip_failed:    Save results to file for failed tasks
         ├── diff:    File group name to run the diff for
         ├── diff_last:    File version number to diff, default is 1 (last)
-        ├── progress:    Emit execution progress
+        ├── progress:    Emit execution progress, default 'True'
         ├── table:    Table format (brief, terse, extend) or parameters or True
         ├── headers:    Table headers
         ├── headers_exclude:    Table headers to exclude

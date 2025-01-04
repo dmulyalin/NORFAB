@@ -1,0 +1,73 @@
+<mxfile type="device" compressed="false">
+    <diagram id="Page-1" name="Page-1">
+      <mxGraphModel dx="1360" dy="864" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="1">
+        <root>
+          <mxCell id="0" />   
+          <mxCell id="1" parent="0" />
+        <object id="ceos-spine-1" label="ceos-spine-1" top_label="Device">
+      <mxCell style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="200" y="150" width="120" height="60" as="geometry" />
+      </mxCell>
+    </object><object id="172.100.100.0/24" label="172.100.100.0/24" top_label="Subnet">
+      <mxCell style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="200" y="150" width="120" height="60" as="geometry" />
+      </mxCell>
+    </object><object id="ceos-spine-2" label="ceos-spine-2" top_label="Device">
+      <mxCell style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="200" y="150" width="120" height="60" as="geometry" />
+      </mxCell>
+    </object><object id="ceos-leaf-1" label="ceos-leaf-1" top_label="Device">
+      <mxCell style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="200" y="150" width="120" height="60" as="geometry" />
+      </mxCell>
+    </object><object id="ceos-leaf-3" label="ceos-leaf-3" top_label="Device">
+      <mxCell style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="200" y="150" width="120" height="60" as="geometry" />
+      </mxCell>
+    </object><object id="ceos-leaf-2" label="ceos-leaf-2" top_label="Device">
+      <mxCell style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="200" y="150" width="120" height="60" as="geometry" />
+      </mxCell>
+    </object><mxCell id="a7c0f06f5a3c8fbd7cdaf16ea98de078-trgt" value="172.100.100.10/24" style="labelBackgroundColor=#ffffff;;" vertex="1" connectable="0" parent="a7c0f06f5a3c8fbd7cdaf16ea98de078">
+      <mxGeometry x="0.5" relative="-1" as="geometry">
+        <mxPoint as="offset" />
+      </mxGeometry>
+    </mxCell><object id="a7c0f06f5a3c8fbd7cdaf16ea98de078" label="" description="{&#10;    &quot;ceos-spine-1:MGMT0&quot;: {&#10;        &quot;ip&quot;: &quot;172.100.100.10&quot;,&#10;        &quot;netmask&quot;: &quot;24&quot;,&#10;        &quot;network&quot;: &quot;172.100.100.0/24&quot;&#10;    }&#10;}" trgt_label="172.100.100.10/24" source="172.100.100.0/24" target="ceos-spine-1">
+      <mxCell style="endArrow=none;" edge="1" parent="1" source="172.100.100.0/24" target="ceos-spine-1">
+          <mxGeometry relative="1" as="geometry" />
+      </mxCell>
+    </object><mxCell id="80ae62e737c518d42195cc92d9ea3d71-trgt" value="172.100.100.11/24" style="labelBackgroundColor=#ffffff;;" vertex="1" connectable="0" parent="80ae62e737c518d42195cc92d9ea3d71">
+      <mxGeometry x="0.5" relative="-1" as="geometry">
+        <mxPoint as="offset" />
+      </mxGeometry>
+    </mxCell><object id="80ae62e737c518d42195cc92d9ea3d71" label="" description="{&#10;    &quot;ceos-spine-2:MGMT0&quot;: {&#10;        &quot;ip&quot;: &quot;172.100.100.11&quot;,&#10;        &quot;netmask&quot;: &quot;24&quot;,&#10;        &quot;network&quot;: &quot;172.100.100.0/24&quot;&#10;    }&#10;}" trgt_label="172.100.100.11/24" source="172.100.100.0/24" target="ceos-spine-2">
+      <mxCell style="endArrow=none;" edge="1" parent="1" source="172.100.100.0/24" target="ceos-spine-2">
+          <mxGeometry relative="1" as="geometry" />
+      </mxCell>
+    </object><mxCell id="39947e2065adaba989c3615da39ddcad-trgt" value="172.100.100.12/24" style="labelBackgroundColor=#ffffff;;" vertex="1" connectable="0" parent="39947e2065adaba989c3615da39ddcad">
+      <mxGeometry x="0.5" relative="-1" as="geometry">
+        <mxPoint as="offset" />
+      </mxGeometry>
+    </mxCell><object id="39947e2065adaba989c3615da39ddcad" label="" description="{&#10;    &quot;ceos-leaf-1:MGMT0&quot;: {&#10;        &quot;ip&quot;: &quot;172.100.100.12&quot;,&#10;        &quot;netmask&quot;: &quot;24&quot;,&#10;        &quot;network&quot;: &quot;172.100.100.0/24&quot;&#10;    }&#10;}" trgt_label="172.100.100.12/24" source="172.100.100.0/24" target="ceos-leaf-1">
+      <mxCell style="endArrow=none;" edge="1" parent="1" source="172.100.100.0/24" target="ceos-leaf-1">
+          <mxGeometry relative="1" as="geometry" />
+      </mxCell>
+    </object><mxCell id="2f16915a4dee5297f79773cb68961709-trgt" value="172.100.100.14/24" style="labelBackgroundColor=#ffffff;;" vertex="1" connectable="0" parent="2f16915a4dee5297f79773cb68961709">
+      <mxGeometry x="0.5" relative="-1" as="geometry">
+        <mxPoint as="offset" />
+      </mxGeometry>
+    </mxCell><object id="2f16915a4dee5297f79773cb68961709" label="" description="{&#10;    &quot;ceos-leaf-3:MGMT0&quot;: {&#10;        &quot;ip&quot;: &quot;172.100.100.14&quot;,&#10;        &quot;netmask&quot;: &quot;24&quot;,&#10;        &quot;network&quot;: &quot;172.100.100.0/24&quot;&#10;    }&#10;}" trgt_label="172.100.100.14/24" source="172.100.100.0/24" target="ceos-leaf-3">
+      <mxCell style="endArrow=none;" edge="1" parent="1" source="172.100.100.0/24" target="ceos-leaf-3">
+          <mxGeometry relative="1" as="geometry" />
+      </mxCell>
+    </object><mxCell id="f6a7a676e91e5b1ef305de2559f28e92-trgt" value="172.100.100.13/24" style="labelBackgroundColor=#ffffff;;" vertex="1" connectable="0" parent="f6a7a676e91e5b1ef305de2559f28e92">
+      <mxGeometry x="0.5" relative="-1" as="geometry">
+        <mxPoint as="offset" />
+      </mxGeometry>
+    </mxCell><object id="f6a7a676e91e5b1ef305de2559f28e92" label="" description="{&#10;    &quot;ceos-leaf-2:MGMT0&quot;: {&#10;        &quot;ip&quot;: &quot;172.100.100.13&quot;,&#10;        &quot;netmask&quot;: &quot;24&quot;,&#10;        &quot;network&quot;: &quot;172.100.100.0/24&quot;&#10;    }&#10;}" trgt_label="172.100.100.13/24" source="172.100.100.0/24" target="ceos-leaf-2">
+      <mxCell style="endArrow=none;" edge="1" parent="1" source="172.100.100.0/24" target="ceos-leaf-2">
+          <mxGeometry relative="1" as="geometry" />
+      </mxCell>
+    </object></root>
+      </mxGraphModel>
+    </diagram></mxfile>

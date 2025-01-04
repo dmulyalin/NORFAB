@@ -185,6 +185,17 @@ class WatchDog(WorkerWatchDog):
             log.debug(f"{self.worker.name} - watchdog running connections keepalive")
             stats = HostsKeepalive(self.worker.nr)
             self.dead_connections_cleaned += stats["dead_connections_cleaned"]
+            # remove connections that are no longer present in Nornir inventory
+            for host_name, host_connections in self.connections_data.items():
+                for connection_name in list(host_connections.keys()):
+                    if not self.worker.nr.inventory.hosts[host_name].connections.get(
+                        connection_name
+                    ):
+                        self.connections_data[host_name].pop(connection_name)
+            # remove host if no connections left
+            for host_name in list(self.connections_data.keys()):
+                if self.connections_data[host_name] == {}:
+                    self.connections_data.pop(host_name)
             # update connections statistics
             for plugins in self.connections_data.values():
                 for plugin in plugins.values():
