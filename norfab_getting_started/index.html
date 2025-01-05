@@ -2086,14 +2086,11 @@
 
   <h1>Getting Started</h1>
 
-<p>The simplest way to start with NorFab is to do local installation 
-when broker, workers and client run locally, this is what we going 
-to demonstrate in this guide.</p>
-<p>Once NorFab installed, next step is to create a folder that will 
-hold your environment and start creating inventory files.</p>
-<p>Create <code>norfab</code> folder and inside of it create <code>inventory.yaml</code>, 
-file name is important as NORFAB by default searches for 
-<code>inventory.yaml</code>, file content is:</p>
+<p>The simplest way to start with NorFab is to do local run when broker, workers and client processes all run locally, this is what we going to demonstrate in this guide.</p>
+<p>Once NorFab installed, next step is to create a folder that will hold your environment. Run this command to create NorFab folders and files:</p>
+<div class="highlight"><pre><span></span><code>nfcli --create-env norfab
+</code></pre></div>
+<p>This will create <code>norfab</code> folder and inside of it will create <code>inventory.yaml</code>, file name is important as NORFAB by default searches for <code>inventory.yaml</code>, file content is:</p>
 <div class="highlight"><span class="filename">inventory.yaml</span><pre><span></span><code><span class="nt">broker</span><span class="p">:</span><span class="w"> </span><span class="c1"># (1)!</span>
 <span class="w">  </span><span class="nt">endpoint</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;tcp://127.0.0.1:5555&quot;</span><span class="w"> </span><span class="c1"># (2)!</span>
 
@@ -2120,16 +2117,14 @@ file name is important as NORFAB by default searches for
 <li>Start broker process</li>
 <li>List of workers names to start processes for</li>
 </ol>
-<p>In this example we are working with Nornir service.</p>
-<p>Create <code>nornir</code> folder (folder name is arbitrary and can be anything) 
-and inside of it create two files. First file <code>common.yaml</code> to host 
-configuration common for all Nornir service workers:</p>
+<p>Command <code>--create-env</code> assumes we are working with Nornir service and creates <code>nornir</code> folder and inside of it creates two files. First file <code>common.yaml</code> to host configuration common for all Nornir service workers:</p>
 <div class="highlight"><span class="filename">common.yaml</span><pre><span></span><code><span class="nt">service</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nornir</span><span class="w"> </span><span class="c1"># (1)!</span>
 <span class="nt">broker_endpoint</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;tcp://127.0.0.1:5555&quot;</span><span class="w"> </span><span class="c1"># (2)!</span>
 
-<span class="c1"># next comes Nornir inventory and configuration</span>
+<span class="c1"># Nornir inventory and configuration</span>
 <span class="nt">runner</span><span class="p">:</span><span class="w"> </span><span class="c1"># (3)!</span>
 <span class="w">  </span><span class="nt">plugin</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">RetryRunner</span>
+<span class="nt">hosts</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{}</span>
 <span class="nt">default</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{}</span><span class="w"> </span><span class="c1"># (4)!</span>
 <span class="nt">groups</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{}</span><span class="w"> </span><span class="c1"># (5)!</span>
 </code></pre></div>
@@ -2140,19 +2135,13 @@ configuration common for all Nornir service workers:</p>
 <li>Nornir <code>default</code> data section</li>
 <li>Nornir groups definition section</li>
 </ol>
-<p>Second file specific to the worker with name <code>nornir-worker-1</code>
-which holds Nornir inventory data:</p>
-<div class="highlight"><span class="filename">nornir-worker-1.yaml</span><pre><span></span><code><span class="nt">hosts</span><span class="p">:</span><span class="w"> </span>
-<span class="w">  </span><span class="nt">R1</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">hostname</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">r1.lab.local</span>
+<p>Second file specific to the worker with name <code>nornir-worker-1</code> which holds Nornir inventory data:</p>
+<div class="highlight"><span class="filename">nornir-worker-1.yaml</span><pre><span></span><code><span class="nt">hosts</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">ios-device-1</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">hostname</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">192.168.1.1</span>
 <span class="w">    </span><span class="nt">platform</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cisco_ios</span>
-<span class="w">    </span><span class="nt">username</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">developer</span>
-<span class="w">    </span><span class="nt">password</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">secretpassword</span>
-<span class="w">  </span><span class="nt">R2</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">hostname</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10.0.0.2</span>
-<span class="w">    </span><span class="nt">platform</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cisco_ios</span>
-<span class="w">    </span><span class="nt">username</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">developer</span>
-<span class="w">    </span><span class="nt">password</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">secretpassword</span>
+<span class="w">    </span><span class="nt">username</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">admin</span>
+<span class="w">    </span><span class="nt">password</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">admin</span>
 </code></pre></div>
 <p>This is how files structure will look like:</p>
 <div class="highlight"><pre><span></span><code><span class="l l-Scalar l-Scalar-Plain">└───norfab</span>
@@ -2162,9 +2151,7 @@ which holds Nornir inventory data:</p>
 <span class="w">            </span><span class="l l-Scalar l-Scalar-Plain">common.yaml</span>
 <span class="w">            </span><span class="l l-Scalar l-Scalar-Plain">nornir-worker-1.yaml</span>
 </code></pre></div>
-<p>Now you are ready to start NorFab Interactive Command Line Shell 
-Client - NFCLI. Open terminal window, navigate to the folder 
-where <code>inventory.yaml</code> located and start NFCLI:</p>
+<p>Now you are ready to start NorFab Interactive Command Line Shell Client. Open terminal window, navigate to the folder where <code>inventory.yaml</code> located and start NFCLI:</p>
 <div class="highlight"><pre><span></span><code>C:\&gt;cd norfab
 C:\norfab&gt;nfcli
 nf#
@@ -2196,13 +2183,12 @@ NFCLI client and drop you into interactive command line shell <img alt="🐚" cl
 <span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">help    Print help message</span>
 <span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pwd     Print current shell path</span>
 <span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">top     Exit to top shell</span>
-<span class="l l-Scalar l-Scalar-Plain">nf[nornir]#show hosts</span>
-<span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">{</span>
-<span class="w">     </span><span class="l l-Scalar l-Scalar-Plain">&quot;nornir-worker-1&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="p p-Indicator">[</span>
-<span class="w">         </span><span class="s">&quot;R1&quot;</span><span class="p p-Indicator">,</span>
-<span class="w">         </span><span class="s">&quot;R2&quot;</span>
-<span class="w">     </span><span class="p p-Indicator">]</span>
-<span class="w"> </span><span class="err">}</span>
+<span class="l l-Scalar l-Scalar-Plain">nf[nornir]#show hosts table details</span>
+<span class="l l-Scalar l-Scalar-Plain">+-----------------+--------------+------------+-------------+--------+----------+------------+</span>
+<span class="l l-Scalar l-Scalar-Plain">| worker          | host         | platform   | hostname    | port   | groups   | username   |</span>
+<span class="l l-Scalar l-Scalar-Plain">+=================+==============+============+=============+========+==========+============+</span>
+<span class="l l-Scalar l-Scalar-Plain">| nornir-worker-1 | ios-device-1 | cisco_ios  | 192.168.1.1 | None   | []       | admin      |</span>
+<span class="l l-Scalar l-Scalar-Plain">+-----------------+--------------+------------+-------------+--------+----------+------------+</span>
 <span class="l l-Scalar l-Scalar-Plain">nf[nornir]# end</span>
 <span class="l l-Scalar l-Scalar-Plain">Exiting...</span>
 </code></pre></div>
@@ -2211,8 +2197,7 @@ NFCLI client and drop you into interactive command line shell <img alt="🐚" cl
 <li>Run show command</li>
 <li>Drop into Nornir Service command shell</li>
 </ol>
-<p>NorFab CLI supports Tab completions, question mark help together with
-sub-shells, read more about NorFab CLI and how to use it <a href="../clients_nfcli_overview/">here</a>.</p>
+<p>NorFab CLI supports Tab completions, question mark help together with sub-shells, read more about NorFab CLI and how to use it <a href="../clients_nfcli_overview/">here</a>.</p>
 <p><img alt="⭐" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.1.0/assets/72x72/2b50.png" title=":star:" /> That's it <img alt="⭐" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.1.0/assets/72x72/2b50.png" title=":star:" /></p>
 
 

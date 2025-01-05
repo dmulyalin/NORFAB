@@ -80,7 +80,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#001" class="md-skip">
+        <a href="#010" class="md-skip">
           Skip to content
         </a>
       
@@ -559,13 +559,13 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#001" class="md-nav__link">
+  <a href="#010" class="md-nav__link">
     <span class="md-ellipsis">
-      0.0.1
+      0.1.0
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="0.0.1">
+    <nav class="md-nav" aria-label="0.1.0">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -2163,13 +2163,13 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#001" class="md-nav__link">
+  <a href="#010" class="md-nav__link">
     <span class="md-ellipsis">
-      0.0.1
+      0.1.0
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="0.0.1">
+    <nav class="md-nav" aria-label="0.1.0">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -2248,13 +2248,14 @@
 
   <h1>Changelog</h1>
 
-<h2 id="001">0.0.1<a class="headerlink" href="#001" title="Permanent link">¤</a></h2>
+<h2 id="010">0.1.0<a class="headerlink" href="#010" title="Permanent link">¤</a></h2>
 <h3 id="changes">Changes<a class="headerlink" href="#changes" title="Permanent link">¤</a></h3>
 <ol>
 <li>Changes to Nornir service module files structure</li>
 <li>PICLE dependency updated: 0.7.<em> -&gt; 0.8.</em></li>
 <li>Made Nornir Service <code>progress</code> argument set to <code>True</code> by default to emit and display events for all Nornir Jobs</li>
 <li>Nornir tests changed <code>table</code> argument to be set to <code>True</code> by default</li>
+<li>Improved <code>nfapi</code> broker start logic to wait until broker fully initialized before proceeding to start workers</li>
 </ol>
 <h3 id="features">Features<a class="headerlink" href="#features" title="Permanent link">¤</a></h3>
 <ol>
@@ -2263,6 +2264,7 @@
 <li>Added support for logs to  be collected into single file from all NorFab local processes</li>
 <li>Added to NorFab worker <code>job_list</code> and <code>job_details</code> methods</li>
 <li>Added <code>show jobs summary</code> and <code>show jobs details</code> commands to NorFab shell and to Nornir shell</li>
+<li>Added <code>--create-env</code> argument to nfcli utility to create NorFab folders and files to make it easier to get started using norfab</li>
 </ol>
 <h3 id="bugs">BUGS<a class="headerlink" href="#bugs" title="Permanent link">¤</a></h3>
 <ol>
