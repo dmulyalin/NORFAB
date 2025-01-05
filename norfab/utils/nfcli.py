@@ -4,6 +4,46 @@ import os
 from norfab.clients.picle_shell_client import start_picle_shell
 from norfab.core.nfapi import NorFab
 
+base_inventory = """
+# broker settings
+broker:
+  endpoint: "tcp://127.0.0.1:5555"
+  
+# workers inventory section
+workers:
+  nornir-*:
+    - nornir/common.yaml  
+  nornir-worker-1:
+    - nornir/nornir-worker-1.yaml
+    
+# list what entities we want to start on this node
+topology:
+  broker: True
+  workers:
+    - nornir-worker-1
+"""
+
+nornir_common = """
+service: nornir
+broker_endpoint: "tcp://127.0.0.1:5555"
+
+# Nornir inventory and configuration
+runner: 
+  plugin: RetryRunner
+hosts: {}
+default: {}
+groups: {}
+"""
+
+nornir_worker = """
+hosts:
+  ios-device-1:
+    hostname: 192.168.1.1
+    platform: cisco_ios
+    username: admin
+    password: admin
+"""
+
 
 def nfcli():
     # form argparser menu:
@@ -70,6 +110,14 @@ def nfcli():
         default=True,
         help="Start local NorFab broker, workers and client interactive shell",
     )
+    run_options.add_argument(
+        "--create-env",
+        action="store",
+        dest="CREATE_ENV",
+        default=None,
+        help="Create NorFab environment",
+    )
+
     # extract argparser arguments:
     args = argparser.parse_args()
     INVENTORY = args.INVENTORY
@@ -79,6 +127,25 @@ def nfcli():
     LOGLEVEL = args.LOGLEVEL
     SHELL = args.SHELL
     CLIENT = args.CLIENT
+    CREATE_ENV = args.CREATE_ENV
+
+    # create NorFab environment
+    if CREATE_ENV:
+        print(f"Creating NorFab environment '{CREATE_ENV}'")
+        os.makedirs(CREATE_ENV, exist_ok=True)
+        os.makedirs(os.path.join(CREATE_ENV, "nornir"), exist_ok=True)
+        with open(os.path.join(CREATE_ENV, "inventory.yaml"), "w") as f:
+            f.write(base_inventory)
+        with open(os.path.join(CREATE_ENV, "nornir", "common.yaml"), "w") as f:
+            f.write(nornir_common)
+        with open(os.path.join(CREATE_ENV, "nornir", "nornir-worker-1.yaml"), "w") as f:
+            f.write(nornir_worker)
+
+        return (
+            (f"Done, run 'nfcli' to start NorFab")
+            if CREATE_ENV == "."
+            else (f"Done, 'cd {CREATE_ENV}' and run 'nfcli' to start NorFab")
+        )
 
     # start broker only
     if BROKER:

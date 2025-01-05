@@ -40,9 +40,21 @@ def logger_thread(log_queue: Queue, logger_exit_event: Event):
 
 
 def start_broker_process(
-    endpoint, exit_event=None, inventory=None, log_level="WARNING", log_queue=None
+    endpoint,
+    exit_event=None,
+    inventory=None,
+    log_level="WARNING",
+    log_queue=None,
+    init_done_event=None,
 ):
-    broker = NFPBroker(endpoint, exit_event, inventory, log_level, log_queue)
+    broker = NFPBroker(
+        endpoint=endpoint,
+        exit_event=exit_event,
+        inventory=inventory,
+        log_level=log_level,
+        log_queue=log_queue,
+        init_done_event=init_done_event,
+    )
     broker.mediate()
 
 
@@ -138,6 +150,8 @@ class NorFab:
 
     def start_broker(self):
         if self.broker_endpoint:
+            init_done_event = Event()  # for worker to signal if its fully initiated
+
             self.broker = Process(
                 target=start_broker_process,
                 args=(
@@ -146,9 +160,23 @@ class NorFab:
                     self.inventory,
                     self.log_level,
                     self.log_queue,
+                    init_done_event,
                 ),
             )
             self.broker.start()
+
+            # wait for broker to start
+            start_time = time.time()
+            while 30 > time.time() - start_time:
+                if init_done_event.is_set():
+                    break
+                time.sleep(0.1)
+            else:
+                log.info(
+                    f"Broker failed to start in 30 seconds on '{self.broker_endpoint}'"
+                )
+                raise SystemExit()
+
             log.info(
                 f"Started broker, broker listening for connections on '{self.broker_endpoint}'"
             )

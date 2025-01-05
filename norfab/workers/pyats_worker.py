@@ -5,7 +5,6 @@
 TBD
 
 """
-
 import json
 import logging
 import sys
@@ -22,7 +21,7 @@ except ImportError:
     log.error("PyATS worker - failed to import Genie library.")
 
 
-class NornirWorker(NFPWorker):
+class PyAtsWorker(NFPWorker):
     """
     :param broker: broker URL to connect to
     :param service: name of the service with worker belongs to
@@ -47,7 +46,7 @@ class NornirWorker(NFPWorker):
         # get inventory from broker
         self.inventory = self.load_inventory()
 
-        # pull Nornir inventory from Netbox
+        # pull PyAts inventory from Netbox
         self._pull_netbox_inventory()
 
         # initiate Nornir

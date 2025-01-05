@@ -5,16 +5,15 @@ hosts:
     username: admin
     password: admin@123
     port: 2205
-    groups:
-      - junos_params
     connection_options:
+      scrapli:
+        port: 2205
+      ncclient:
+        port: 8305
       scrapli_netconf:
         port: 8305
       napalm:
-        extras:
-          optional_args:
-            transport: http
-            port: 8805
-      ncclient:
         port: 8305
+    groups:
+      - junos_params
         

@@ -3,16 +3,15 @@ tags:
   - norfab
 ---
 
-The simplest way to start with NorFab is to do local installation 
-when broker, workers and client run locally, this is what we going 
-to demonstrate in this guide.
+The simplest way to start with NorFab is to do local run when broker, workers and client processes all run locally, this is what we going to demonstrate in this guide.
 
-Once NorFab installed, next step is to create a folder that will 
-hold your environment and start creating inventory files.
+Once NorFab installed, next step is to create a folder that will hold your environment. Run this command to create NorFab folders and files:
 
-Create ``norfab`` folder and inside of it create ``inventory.yaml``, 
-file name is important as NORFAB by default searches for 
-``inventory.yaml``, file content is:
+```
+nfcli --create-env norfab
+```
+
+This will create ``norfab`` folder and inside of it will create ``inventory.yaml``, file name is important as NORFAB by default searches for ``inventory.yaml``, file content is:
 
 ``` yaml title="inventory.yaml"
 broker: # (1)!
@@ -41,19 +40,16 @@ topology: # (6)!
 7.  Start broker process
 8.  List of workers names to start processes for
 
-In this example we are working with Nornir service.
-
-Create ``nornir`` folder (folder name is arbitrary and can be anything) 
-and inside of it create two files. First file ``common.yaml`` to host 
-configuration common for all Nornir service workers:
+Command `--create-env` assumes we are working with Nornir service and creates ``nornir`` folder and inside of it creates two files. First file ``common.yaml`` to host configuration common for all Nornir service workers:
 
 ``` yaml title="common.yaml"
 service: nornir # (1)!
 broker_endpoint: "tcp://127.0.0.1:5555" # (2)!
 
-# next comes Nornir inventory and configuration
+# Nornir inventory and configuration
 runner: # (3)!
   plugin: RetryRunner
+hosts: {}
 default: {} # (4)!
 groups: {} # (5)!
 ```
@@ -64,21 +60,15 @@ groups: {} # (5)!
 4.  Nornir ``default`` data section
 5.  Nornir groups definition section
 
-Second file specific to the worker with name ``nornir-worker-1``
-which holds Nornir inventory data:
+Second file specific to the worker with name ``nornir-worker-1`` which holds Nornir inventory data:
 
 ``` yaml title="nornir-worker-1.yaml"
-hosts: 
-  R1:
-    hostname: r1.lab.local
+hosts:
+  ios-device-1:
+    hostname: 192.168.1.1
     platform: cisco_ios
-    username: developer
-    password: secretpassword
-  R2:
-    hostname: 10.0.0.2
-    platform: cisco_ios
-    username: developer
-    password: secretpassword
+    username: admin
+    password: admin
 ```
 
 This is how files structure will look like:
@@ -92,9 +82,7 @@ This is how files structure will look like:
             nornir-worker-1.yaml
 ```
 
-Now you are ready to start NorFab Interactive Command Line Shell 
-Client - NFCLI. Open terminal window, navigate to the folder 
-where ``inventory.yaml`` located and start NFCLI:
+Now you are ready to start NorFab Interactive Command Line Shell Client. Open terminal window, navigate to the folder where ``inventory.yaml`` located and start NFCLI:
 
 ```
 C:\>cd norfab
@@ -131,13 +119,12 @@ nf[nornir]#?
  help    Print help message
  pwd     Print current shell path
  top     Exit to top shell
-nf[nornir]#show hosts
- {
-     "nornir-worker-1": [
-         "R1",
-         "R2"
-     ]
- }
+nf[nornir]#show hosts table details
++-----------------+--------------+------------+-------------+--------+----------+------------+
+| worker          | host         | platform   | hostname    | port   | groups   | username   |
++=================+==============+============+=============+========+==========+============+
+| nornir-worker-1 | ios-device-1 | cisco_ios  | 192.168.1.1 | None   | []       | admin      |
++-----------------+--------------+------------+-------------+--------+----------+------------+
 nf[nornir]# end
 Exiting...
 ```
@@ -146,7 +133,6 @@ Exiting...
 2. Run show command
 3. Drop into Nornir Service command shell
 
-NorFab CLI supports Tab completions, question mark help together with
-sub-shells, read more about NorFab CLI and how to use it [here](clients_nfcli_overview.md).
+NorFab CLI supports Tab completions, question mark help together with sub-shells, read more about NorFab CLI and how to use it [here](clients_nfcli_overview.md).
 
 :star: That's it :star:

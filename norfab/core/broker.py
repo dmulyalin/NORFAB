@@ -112,12 +112,14 @@ class NFPBroker:
         log_queue: object = None,
         multiplier: int = 6,
         keepalive: int = 2500,
+        init_done_event: Event = None,
     ):
         """Initialize broker state."""
         setup_logging(queue=log_queue, log_level=log_level)
         self.log_level = log_level
         self.keepalive = keepalive
         self.multiplier = multiplier
+        init_done_event = init_done_event or Event()
 
         self.services = {}
         self.workers = {}
@@ -156,7 +158,8 @@ class NFPBroker:
             threading.Lock()
         )  # used for keepalives to protect socket object
 
-        log.debug(f"NFPBroker - is read and listening on {endpoint}")
+        init_done_event.set()  # signal finished initializing broker
+        log.debug(f"NFPBroker - is ready and listening on {endpoint}")
 
     def mediate(self):
         """
