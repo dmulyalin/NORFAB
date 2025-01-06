@@ -1,0 +1,12 @@
+- name: Check ceos version
+  task: "show version"
+  test: contains
+  pattern: "4.30.0F"
+- name: Check NTP status
+  test: ncontains
+  pattern: "unsynchronised"
+  task: "show ntp status"
+- name: Check Mgmt Interface Status
+  test: contains
+  pattern: "is up, line protocol is up"
+  task: "show interface management0" 

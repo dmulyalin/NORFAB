@@ -5,7 +5,7 @@ tags:
 
 # Nornir Service CFG Task
 
-Nornir service `cfg` task designed to send configuration to devices using SSH and Telnet. Nornir `cfg` can use Netmiko, Scrapli and NAPALM libraries to configure with devices.
+Nornir service `cfg` task designed to send configuration to devices using SSH and Telnet. Nornir `cfg` can use Netmiko, Scrapli and NAPALM libraries to configure devices.
 
 ## Nornir CFG Sample Usage
 
@@ -26,7 +26,7 @@ Example of sending configuration commands to devices.
 		
 		![Nornir CFG Demo](../../images/nornir_cfg_demo.gif)
     
-		Above runs "show clock" and "show hostname" commands on all Nornir hosts that contain `ceos-spine` in their hostname as we use `FC` - "Filter Contains" Nornir hosts targeting filter.
+		Above sends configuration commands to all Nornir hosts that contain `spine` or `leaf` in their hostname as we use `FC` - "Filter Contains" Nornir hosts targeting filter.
 		
 		`inventory.yaml` should be located in same folder where we start nfcli, unless `nfcli -i path_to_inventory.yaml` flag used. Refer to [Getting Started](../../norfab_getting_started.md) section on how to construct  `inventory.yaml` file
 		
@@ -50,7 +50,7 @@ Example of sending configuration commands to devices.
                 task="cfg",
                 kwargs={
                     "config": ["ntp server 10.0.0.1", "ntp server 10.0.0.2"],
-                    "FC": "ceos-spine"              
+                    "FC": "spine,leaf"              
                 }
             )
             
@@ -58,38 +58,8 @@ Example of sending configuration commands to devices.
             
             nf.destroy()
         ```
-
-		Once executed, above code should produce this output:
-		
-		```
-        C:\nf>python nornir_cli.py
-        {'nornir-worker-1': {'errors': [],
-                             'failed': False,
-                             'messages': [],
-                             'result': {'ceos-spine-1': {'show clock': 'Sun Dec  1 '
-                                                                       '11:10:53 2024\n'
-                                                                       'Timezone: UTC\n'
-                                                                       'Clock source: '
-                                                                       'local',
-                                                         'show hostname': 'Hostname: '
-                                                                          'ceos-spine-1\n'
-                                                                          'FQDN:     '
-                                                                          'ceos-spine-1'},
-                                        'ceos-spine-2': {'show clock': 'Sun Dec  1 '
-                                                                       '11:10:53 2024\n'
-                                                                       'Timezone: UTC\n'
-                                                                       'Clock source: '
-                                                                       'local',
-                                                         'show hostname': 'Hostname: '
-                                                                          'ceos-spine-2\n'
-                                                                          'FQDN:     '
-                                                                          'ceos-spine-2'}},
-                             'task': 'nornir-worker-1:cli'}}
-        C:\nf>					 
-		```
-		
-		Refer to [Getting Started](../../norfab_getting_started.md) section on 
-		how to construct  `inventory.yaml` file.
+		 	
+		Refer to [Getting Started](../../norfab_getting_started.md) section on how to construct  `inventory.yaml` file.
 	
 ## Use Different Configuration Plugins
 

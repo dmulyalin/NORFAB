@@ -1332,13 +1332,13 @@ class TestGetCircuits:
 
 
 class TestUpdateDeviceFacts:
-    def test_update_device_fact_via_nornir(self, nfclient):
+    def test_update_device_fact_datasource_nornir(self, nfclient):
         ret = nfclient.run_job(
             "netbox",
             "update_device_facts",
             workers="any",
             kwargs={
-                "via": "nornir",
+                "datasource": "nornir",
                 "FC": "spine",
             },
         )
@@ -1359,6 +1359,7 @@ class TestUpdateDeviceFacts:
     def test_update_device_fact_non_existing_device(self, nfclient):
         pass
 
+class TestUpdateDeviceInterfaces:
     @pytest.mark.skip(reason="TBD")
     def test_update_device_interfaces(self, nfclient):
         pass
@@ -1377,11 +1378,11 @@ class TestGetNextIP:
 
         if self.nb_version[0] == 4:
             ret = nfclient.run_job(
-                b"netbox",
+                "netbox",
                 "get_next_ip",
                 workers="any",
                 kwargs={
-                    "prefix": "10.0.0.0/24",
+                    "subnet": "10.0.0.0/24",
                     "description": "test create ip",
                 },
             )

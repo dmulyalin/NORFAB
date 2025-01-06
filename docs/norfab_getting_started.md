@@ -3,7 +3,9 @@ tags:
   - norfab
 ---
 
-The simplest way to start with NorFab is to do local run when broker, workers and client processes all run locally, this is what we going to demonstrate in this guide.
+The simplest way to start with NorFab is to do local deployment when broker, workers and client processes all run locally, this is what we going to demonstrate in this guide.
+
+![Network Automations Fabric Architecture](images/local_run.jpg)
 
 Once NorFab installed, next step is to create a folder that will hold your environment. Run this command to create NorFab folders and files:
 
@@ -32,9 +34,7 @@ topology: # (6)!
 1.  Broker configuration inventory section
 2.  URL to listen for connections on - ``localhost`` port ``5555`` in this case
 3.  Workers configuration inventory section
-4.  [glob pattern](https://docs.python.org/3/library/fnmatch.html) that will match 
-    all workers with ``nornir-`` in the name and map ``common.yaml`` file content for 
-    each of them
+4.  [glob pattern](https://docs.python.org/3/library/fnmatch.html) that will match all workers with ``nornir-`` in the name and map ``common.yaml`` file content for each of them
 5.  Worker definition to map inventory file to a specific worker that has name ``nornir-worker-1``
 6.  Topology section to define what components to run
 7.  Start broker process

@@ -15,7 +15,7 @@
 3. Added support for logs to  be collected into single file from all NorFab local processes
 4. Added to NorFab worker `job_list` and `job_details` methods
 5. Added `show jobs summary` and `show jobs details` commands to NorFab shell and to Nornir shell
-6. Added `--create-env` argument to nfcli utility to create NorFab folders and files
+6. Added `--create-env` argument to nfcli utility to create NorFab folders and files to make it easier to get started using norfab
 
 ### BUGS
 

@@ -62,6 +62,7 @@ import copy
 from norfab.core.worker import NFPWorker, Result
 from typing import Union
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
+from norfab.core.exceptions import UnsupportedServiceError
 
 try:
     import pynetbox
@@ -1167,7 +1168,7 @@ class NetboxWorker(NFPWorker):
         self,
         instance: str = None,
         dry_run: bool = False,
-        via: str = "nornir",
+        datasource: str = "nornir",
         timeout: int = 60,
         devices: list = None,
         **kwargs,
@@ -1180,7 +1181,7 @@ class NetboxWorker(NFPWorker):
 
         :param instance: Netbox instance name
         :param dry_run: return information that would be pushed to Netbox but do not push it
-        :param via: service name to use to retrieve devices' data, default is nornir parse task
+        :param datasource: service name to use to retrieve devices' data, default is nornir parse task
         :param timeout: seconds to wait before timeout data retrieval job
         :param kwargs: any additional arguments to send to service for device data retrieval
         """
@@ -1189,7 +1190,7 @@ class NetboxWorker(NFPWorker):
         nb = self._get_pynetbox(instance)
         kwargs["add_details"] = True
 
-        if via == "nornir":
+        if datasource == "nornir":
             if devices:
                 kwargs["FL"] = devices
             data = self.client.run_job(
@@ -1224,7 +1225,7 @@ class NetboxWorker(NFPWorker):
                     }
                     self.event(f"{host} - facts updated")
         else:
-            raise UnsupportedServiceError(f"'{via}' service not supported")
+            raise UnsupportedServiceError(f"'{datasource}' service not supported")
 
         return ret
 
@@ -1232,7 +1233,7 @@ class NetboxWorker(NFPWorker):
         self,
         instance: str = None,
         dry_run: bool = False,
-        via: str = "nornir",
+        datasource: str = "nornir",
         timeout: int = 60,
         devices: list = None,
         create: bool = True,
@@ -1251,7 +1252,7 @@ class NetboxWorker(NFPWorker):
 
         :param instance: Netbox instance name
         :param dry_run: return information that would be pushed to Netbox but do not push it
-        :param via: service name to use to retrieve devices' data, default is nornir parse task
+        :param datasource: service name to use to retrieve devices' data, default is nornir parse task
         :param timeout: seconds to wait before timeout data retrieval job
         :param create: create missing interfaces
         :param kwargs: any additional arguments to send to service for device data retrieval
@@ -1260,7 +1261,7 @@ class NetboxWorker(NFPWorker):
         ret = Result(task=f"{self.name}:update_device_interfaces", result=result)
         nb = self._get_pynetbox(instance)
 
-        if via == "nornir":
+        if datasource == "nornir":
             if devices:
                 kwargs["FL"] = devices
             kwargs["getters"] = "get_interfaces"
@@ -1317,19 +1318,17 @@ class NetboxWorker(NFPWorker):
                         updated[interface_name] = interface
                         self.event(f"{host} - created interface {nb_interface.name}")
         else:
-            raise UnsupportedServiceError(f"'{via}' service not supported")
+            raise UnsupportedServiceError(f"'{datasource}' service not supported")
 
         return ret
 
     def get_next_ip(
         self,
-        prefix: str,
+        subnet: str,
         description: str = None,
         device: str = None,
         interface: str = None,
         vrf: str = None,
-        interface_create: bool = True,
-        secondary: bool = False,
         tags: list = None,
         dns_name: str = None,
         tenant: str = None,
@@ -1340,15 +1339,13 @@ class NetboxWorker(NFPWorker):
         """
         Method to retrieve existing or allocate new IP address in Netbox.
 
-        :param prefix: IPv4 or IPv6 prefix e.g. ``10.0.0.0/24`` or prefix description
-            to allocate next available IP Address from
+        :param subnet: IPv4 or IPv6 subnet e.g. ``10.0.0.0/24`` to allocate next 
+            available IP Address from
         :param description: IP address description to record in Netbox database
         :param device: device name to find interface for and link IP address with
         :param interface: interface name to link IP address with, ``device`` attribute
             also must be provided
-
         """
-        print(f"!!!!!!!!!!!! prefix {prefix}, description {description}")
         nb = self._get_pynetbox(instance)
         nb_prefix = nb.ipam.prefixes.get(prefix=prefix, vrf=vrf)
         nb_ip = nb_prefix.available_ips.create()

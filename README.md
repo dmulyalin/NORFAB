@@ -36,3 +36,19 @@ Clients communicate with broker to run the jobs, broker distributes jobs across 
 
 NORFAB is a successor of Salt-Nornir SaltStack proxy minion aiming 
 to surpass its limitations.
+
+# Use Cases (Eye Catching ASCII Cinema Staff)
+
+**Collect show commands**
+![collect show commands](docs/images/nornir_cli_demo.gif)
+
+**Configure network devices**
+![configure network devices](docs/images/nornir_cfg_demo.gif)
+
+**Test your network**
+![test network](docs/images/nornir_test_demo.gif)
+
+**Diagram your network**
+![diagram your network](docs/images/nornir_diagram_demo_layer3.gif)
+
+**And many more** [read documentation](https://dmulyalin.github.io/NORFAB/)
