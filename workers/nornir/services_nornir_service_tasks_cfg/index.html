@@ -26,7 +26,7 @@
     
     
       
-        <title>Nornir Cfg - NORFAB Documentation</title>
+        <title>Nornir Cfg - Network Automations Fabric [NORFAB]</title>
       
     
     
@@ -96,7 +96,7 @@
 
 <header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../../.." title="NORFAB Documentation" class="md-header__button md-logo" aria-label="NORFAB Documentation" data-md-component="logo">
+    <a href="../../.." title="Network Automations Fabric [NORFAB]" class="md-header__button md-logo" aria-label="Network Automations Fabric [NORFAB]" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -110,7 +110,7 @@
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
           <span class="md-ellipsis">
-            NORFAB Documentation
+            Network Automations Fabric [NORFAB]
           </span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
@@ -295,13 +295,13 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../../.." title="NORFAB Documentation" class="md-nav__button md-logo" aria-label="NORFAB Documentation" data-md-component="logo">
+    <a href="../../.." title="Network Automations Fabric [NORFAB]" class="md-nav__button md-logo" aria-label="Network Automations Fabric [NORFAB]" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
 
     </a>
-    NORFAB Documentation
+    Network Automations Fabric [NORFAB]
   </label>
   
     <div class="md-nav__source">
@@ -2370,7 +2370,7 @@
 
 
 <h1 id="nornir-service-cfg-task">Nornir Service CFG Task<a class="headerlink" href="#nornir-service-cfg-task" title="Permanent link">¤</a></h1>
-<p>Nornir service <code>cfg</code> task designed to send configuration to devices using SSH and Telnet. Nornir <code>cfg</code> can use Netmiko, Scrapli and NAPALM libraries to configure with devices.</p>
+<p>Nornir service <code>cfg</code> task designed to send configuration to devices using SSH and Telnet. Nornir <code>cfg</code> can use Netmiko, Scrapli and NAPALM libraries to configure devices.</p>
 <h2 id="nornir-cfg-sample-usage">Nornir CFG Sample Usage<a class="headerlink" href="#nornir-cfg-sample-usage" title="Permanent link">¤</a></h2>
 <p>Example of sending configuration commands to devices.</p>
 <div class="admonition example">
@@ -2383,8 +2383,8 @@ Welcome to NorFab Interactive Shell.
 nf#
 </code></pre></div>
 <p>Demo</p>
-<p><img alt="Nornir CFG Demo" src="../../images/nornir_cfg_demo.gif" /></p>
-<p>Above runs "show clock" and "show hostname" commands on all Nornir hosts that contain <code>ceos-spine</code> in their hostname as we use <code>FC</code> - "Filter Contains" Nornir hosts targeting filter.</p>
+<p><img alt="Nornir CFG Demo" src="../../../images/nornir_cfg_demo.gif" /></p>
+<p>Above sends configuration commands to all Nornir hosts that contain <code>spine</code> or <code>leaf</code> in their hostname as we use <code>FC</code> - "Filter Contains" Nornir hosts targeting filter.</p>
 <p><code>inventory.yaml</code> should be located in same folder where we start nfcli, unless <code>nfcli -i path_to_inventory.yaml</code> flag used. Refer to <a href="../../../norfab_getting_started/">Getting Started</a> section on how to construct  <code>inventory.yaml</code> file</p>
 </div>
 <div class="tabbed-block">
@@ -2404,7 +2404,7 @@ if __name__ == &#39;__main__&#39;:
         task=&quot;cfg&quot;,
         kwargs={
             &quot;config&quot;: [&quot;ntp server 10.0.0.1&quot;, &quot;ntp server 10.0.0.2&quot;],
-            &quot;FC&quot;: &quot;ceos-spine&quot;              
+            &quot;FC&quot;: &quot;spine,leaf&quot;              
         }
     )
 
@@ -2412,34 +2412,7 @@ if __name__ == &#39;__main__&#39;:
 
     nf.destroy()
 </code></pre></div>
-<p>Once executed, above code should produce this output:</p>
-<div class="highlight"><pre><span></span><code>C:\nf&gt;python nornir_cli.py
-{&#39;nornir-worker-1&#39;: {&#39;errors&#39;: [],
-                     &#39;failed&#39;: False,
-                     &#39;messages&#39;: [],
-                     &#39;result&#39;: {&#39;ceos-spine-1&#39;: {&#39;show clock&#39;: &#39;Sun Dec  1 &#39;
-                                                               &#39;11:10:53 2024\n&#39;
-                                                               &#39;Timezone: UTC\n&#39;
-                                                               &#39;Clock source: &#39;
-                                                               &#39;local&#39;,
-                                                 &#39;show hostname&#39;: &#39;Hostname: &#39;
-                                                                  &#39;ceos-spine-1\n&#39;
-                                                                  &#39;FQDN:     &#39;
-                                                                  &#39;ceos-spine-1&#39;},
-                                &#39;ceos-spine-2&#39;: {&#39;show clock&#39;: &#39;Sun Dec  1 &#39;
-                                                               &#39;11:10:53 2024\n&#39;
-                                                               &#39;Timezone: UTC\n&#39;
-                                                               &#39;Clock source: &#39;
-                                                               &#39;local&#39;,
-                                                 &#39;show hostname&#39;: &#39;Hostname: &#39;
-                                                                  &#39;ceos-spine-2\n&#39;
-                                                                  &#39;FQDN:     &#39;
-                                                                  &#39;ceos-spine-2&#39;}},
-                     &#39;task&#39;: &#39;nornir-worker-1:cli&#39;}}
-C:\nf&gt;                   
-</code></pre></div>
-<p>Refer to <a href="../../../norfab_getting_started/">Getting Started</a> section on 
-how to construct  <code>inventory.yaml</code> file.</p>
+<p>Refer to <a href="../../../norfab_getting_started/">Getting Started</a> section on how to construct  <code>inventory.yaml</code> file.</p>
 </div>
 </div>
 </div>
