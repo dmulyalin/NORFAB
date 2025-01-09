@@ -4,7 +4,7 @@ version = "0.1.1"
 description = "Network Automations Fabric (NorFab) - communication networks automations"
 authors = ["Denis Mulyalin <d.mulyalin@gmail.com>"]
 maintainers = ["Denis Mulyalin <d.mulyalin@gmail.com>"]
-license = "MIT"
+license = "Apache-2.0 license"
 readme = "README.md"
 homepage = "https://github.com/dmulyalin/norfab"
 repository = "https://github.com/dmulyalin/norfab"
@@ -12,10 +12,7 @@ documentation = "https://dmulyalin.github.io/NORFAB/"
 keywords = ["Network", "Automation", "DevOps"]
 classifiers = [
     "Topic :: Utilities",
-    "Programming Language :: Python :: 3.7",
-    "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
-    "Programming Language :: Python :: 3.10",
     "License :: OSI Approved :: MIT License",
     "Operating System :: POSIX :: Linux",
 ]
