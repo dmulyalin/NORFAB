@@ -25,7 +25,6 @@ from typing import Union, Optional, List, Any, Dict, Callable, Tuple
 from ..common import ClientRunJobArgs, log_error_or_result, listen_events
 from ..nornir.nornir_picle_shell import NornirCommonArgs, NorniHostsFilters
 
-NFCLIENT = None  # NFCLIENT updated by parent shell
 RICHCONSOLE = Console()
 SERVICE = "netbox"
 log = logging.getLogger(__name__)

@@ -7,6 +7,8 @@ The simplest way to start with NorFab is to do local deployment when broker, wor
 
 ![Network Automations Fabric Architecture](images/local_run.jpg)
 
+Client, broker and worker all should be able to run on same machine Windows, Linux or MAC.
+
 Once NorFab installed, next step is to create a folder that will hold your environment. Run this command to create NorFab folders and files:
 
 ```

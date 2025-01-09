@@ -1347,7 +1347,7 @@ class NetboxWorker(NFPWorker):
             also must be provided
         """
         nb = self._get_pynetbox(instance)
-        nb_prefix = nb.ipam.prefixes.get(prefix=prefix, vrf=vrf)
+        nb_prefix = nb.ipam.prefixes.get(prefix=subnet, vrf=vrf)
         nb_ip = nb_prefix.available_ips.create()
         if description is not None:
             nb_ip.description = description

@@ -5,17 +5,151 @@ tags:
 
 # Nornir Service Test Task
 
-The Nornir Service Test Task is a critical component of NorFab's Nornir service, designed to facilitate the execution of network tests. This task provides network operations engineers and network automation developers with powerful tools to validate network configurations, ensure compliance, and monitor network performance. By leveraging the capabilities of the Nornir service, users can automate the testing process, identify issues proactively, and maintain a robust network infrastructure.
+The Nornir Service `test` task designed to facilitate the execution of network tests. This task provides network operations engineers and network automation developers with tools to validate network configurations, ensure compliance, and monitor network performance. By leveraging the capabilities of the Nornir service, users can automate testing process, identify issues proactively, and maintain a robust network infrastructure.
 
 Nornir service `test` task uses Nornir [TestsProcessor](https://nornir-salt.readthedocs.io/en/latest/Processors/TestsProcessor.html) to run the tests and support test suites definition in YAML format, where test suite YAML files can be stored on and sourced from broker.
 
 ## Nornir Test Sample Usage
 
-## Outputting Test Text Tables
+Nornir service `test` task uses suites in YAML format to define tests, sample tests suite:
+
+``` yaml title="suite_3.txt"
+- name: Check ceos version
+  task: "show version"
+  test: contains
+  pattern: "4.30.0F"
+- name: Check NTP status
+  test: ncontains
+  pattern: "unsynchronised"
+  task: "show ntp status"
+- name: Check Mgmt Interface Status
+  test: contains
+  pattern: "is up, line protocol is up"
+  task: "show interface management0" 
+```
+
+File `suite_3.txt` stored on broker and downloaded by Nornir service prior to running tests, below is an example of how to run the tests suite.
+
+!!! example
+
+    === "CLI"
+    
+        ```
+        C:\nf>nfcli
+        Welcome to NorFab Interactive Shell.
+        nf#
+        nf#nornir
+        nf[nornir-test]#
+        nf[nornir-test]#suite nf://nornir_test_suites/suite_3.txt FC spine,leaf
+        --------------------------------------------- Job Events -----------------------------------------------
+        07-Jan-2025 18:44:35 0c3309c54ee44397b055257a0d442e62 job started
+        07-Jan-2025 18:44:35.207 nornir nornir-worker-1 ceos-spine-1, ceos-spine-2 task started - 'netmiko_send_commands'
+        07-Jan-2025 18:44:35.211 nornir nornir-worker-2 ceos-leaf-1, ceos-leaf-2, ceos-leaf-3 task started - 'netmiko_send_commands'
+        <omitted for brevity>
+        07-Jan-2025 18:44:36 0c3309c54ee44397b055257a0d442e62 job completed in 1.391 seconds
+
+        --------------------------------------------- Job Results --------------------------------------------
+
+        +----+--------------+-----------------------------+----------+-------------------+
+        |    | host         | name                        | result   | exception         |
+        +====+==============+=============================+==========+===================+
+        |  0 | ceos-leaf-1  | Check ceos version          | PASS     |                   |
+        +----+--------------+-----------------------------+----------+-------------------+
+        |  1 | ceos-leaf-1  | Check NTP status            | FAIL     | Pattern in output |
+        +----+--------------+-----------------------------+----------+-------------------+
+        |  2 | ceos-leaf-1  | Check Mgmt Interface Status | PASS     |                   |
+        +----+--------------+-----------------------------+----------+-------------------+
+        |  3 | ceos-leaf-2  | Check ceos version          | PASS     |                   |
+        +----+--------------+-----------------------------+----------+-------------------+
+        |  4 | ceos-leaf-2  | Check NTP status            | FAIL     | Pattern in output |
+        +----+--------------+-----------------------------+----------+-------------------+
+        |  5 | ceos-leaf-2  | Check Mgmt Interface Status | PASS     |                   |
+        +----+--------------+-----------------------------+----------+-------------------+
+        |  6 | ceos-leaf-3  | Check ceos version          | PASS     |                   |
+        +----+--------------+-----------------------------+----------+-------------------+
+        |  7 | ceos-leaf-3  | Check NTP status            | FAIL     | Pattern in output |
+        +----+--------------+-----------------------------+----------+-------------------+
+        |  8 | ceos-leaf-3  | Check Mgmt Interface Status | PASS     |                   |
+        +----+--------------+-----------------------------+----------+-------------------+
+        |  9 | ceos-spine-1 | Check ceos version          | PASS     |                   |
+        +----+--------------+-----------------------------+----------+-------------------+
+        | 10 | ceos-spine-1 | Check NTP status            | FAIL     | Pattern in output |
+        +----+--------------+-----------------------------+----------+-------------------+
+        | 12 | ceos-spine-2 | Check ceos version          | PASS     |                   |
+        +----+--------------+-----------------------------+----------+-------------------+
+        | 12 | ceos-spine-2 | Check ceos version          | PASS     |                   |
+        +----+--------------+-----------------------------+----------+-------------------+
+        | 12 | ceos-spine-2 | Check ceos version          | PASS     |                   |
+        +----+--------------+-----------------------------+----------+-------------------+
+        | 12 | ceos-spine-2 | Check ceos version          | PASS     |                   |
+        +----+--------------+-----------------------------+----------+-------------------+
+        | 12 | ceos-spine-2 | Check ceos version          | PASS     |                   |
+        +----+--------------+-----------------------------+----------+-------------------+
+        | 13 | ceos-spine-2 | Check NTP status            | FAIL     | Pattern in output |
+        +----+--------------+-----------------------------+----------+-------------------+
+        | 12 | ceos-spine-2 | Check ceos version          | PASS     |                   |
+        +----+--------------+-----------------------------+----------+-------------------+
+        | 12 | ceos-spine-2 | Check ceos version          | PASS     |                   |
+        +----+--------------+-----------------------------+----------+-------------------+
+        | 13 | ceos-spine-2 | Check NTP status            | FAIL     | Pattern in output |
+        +----+--------------+-----------------------------+----------+-------------------+
+        | 14 | ceos-spine-2 | Check Mgmt Interface Status | PASS     |                   |
+        +----+--------------+-----------------------------+----------+-------------------+
+        nf[nornir-test]#
+        nf[nornir-test]#top
+        nf#
+        ```
+        
+        Demo
+		
+		  ![Nornir Cli Demo](../../images/nornir_test_demo.gif)
+    
+        In this example:
+
+        - `nfcli` command starts the NorFab Interactive Shell.
+        - `nornir` command switches to the Nornir sub-shell.
+        - `test` command switches to the `test` task sub-shell.
+        - `suite` argument refers to a path for `suite_3.txt` file with a set of tests to run. 
+        - Devices filtered using `FC` - "Filter Contains" Nornir hosts targeting filter to only run tests on devices that contain `spine` or `leaf` in their hostname.
+		
+        `inventory.yaml` should be located in same folder where we start nfcli, unless `nfcli -i path_to_inventory.yaml` flag used. Refer to [Getting Started](../../norfab_getting_started.md) section on how to construct  `inventory.yaml` file
+		
+    === "Python"
+    
+        This code is complete and can run as is
+		
+        ```
+        import pprint
+        
+        from norfab.core.nfapi import NorFab
+        
+        if __name__ == '__main__':
+            nf = NorFab(inventory="inventory.yaml")
+            nf.start()
+            
+            client = nf.make_client()
+            
+            res = client.run_job(
+                service="nornir",
+                task="test",
+                kwargs={
+                    "suite": "nf://nornir_test_suites/suite_3.txt",
+                    "FC": "spine,leaf"          
+                }
+            )
+            
+            pprint.pprint(res)
+            
+            nf.destroy()
+        ```
+
+        Refer to [Getting Started](../../norfab_getting_started.md) section on how to construct  `inventory.yaml` file.
+
+## Formatting Tests Output
 
 NorFab interactive shell allows you to format the results of network tests into text tables. This is particularly useful for presenting test results in a clear and organized manner, making it easier to analyze and interpret the data. The NorFab interactive shell supports the `table` command, which relies on the [tabulate](https://pypi.org/project/tabulate/) module to generate text tables. By outputting test results in table format, you can quickly identify issues and take appropriate action.
 
-## Using Jinja2 Templates
+## Using Jinja2 Templates to Generate Tests
 
 Using Jinja2 Templates enables you to create dynamic test suites based on variables defined in your inventory or passed as job data. This approach allows you to tailor tests to specific devices or scenarios, ensuring that the tests are relevant and accurate. Jinja2 templates provide a powerful way to automate the creation of complex test cases, incorporating conditional logic, loops, and other advanced features to meet your testing requirements.
 
