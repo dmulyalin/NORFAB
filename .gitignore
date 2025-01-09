@@ -11,3 +11,4 @@ docs/Makefile
 *.req
 *.rep
 *__norfab__*
+site
