@@ -22,7 +22,7 @@
       
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.48">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.49">
     
     
       
@@ -2478,6 +2478,11 @@
 
 
 
+
+
+
+
+
   <div class="doc doc-children">
 
 
@@ -2504,6 +2509,11 @@
 
         <p>Class to monitor worker performance</p>
 
+
+
+
+
+
                   <details class="quote">
                     <summary>Source code in <code>norfab\core\worker.py</code></summary>
                     <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">48</span>
@@ -2522,7 +2532,7 @@
 <span class="normal">61</span>
 <span class="normal">62</span>
 <span class="normal">63</span>
-<span class="normal">64</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">worker</span><span class="p">):</span>
+<span class="normal">64</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">worker</span><span class="p">):</span>
     <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">worker</span> <span class="o">=</span> <span class="n">worker</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">worker_process</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">())</span>
@@ -2571,7 +2581,7 @@
               <summary>Source code in <code>norfab\core\worker.py</code></summary>
               <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">83</span>
 <span class="normal">84</span>
-<span class="normal">85</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_ram_usage</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="normal">85</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_ram_usage</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return RAM usage in Mbyte&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">worker_process</span><span class="o">.</span><span class="n">memory_info</span><span class="p">()</span><span class="o">.</span><span class="n">rss</span> <span class="o">/</span> <span class="mi">1024000</span>
 </code></pre></div></td></tr></table></div>
@@ -2617,7 +2627,9 @@
       </thead>
       <tbody>
           <tr class="doc-section-item">
-            <td><code>changed</code></td>
+            <td>
+                <code>changed</code>
+            </td>
             <td>
             </td>
             <td>
@@ -2630,7 +2642,9 @@
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>result</code></td>
+            <td>
+                <code>result</code>
+            </td>
             <td>
                   <code><span title="typing.Any">Any</span></code>
             </td>
@@ -2644,7 +2658,9 @@
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>failed</code></td>
+            <td>
+                <code>failed</code>
+            </td>
             <td>
                   <code>bool</code>
             </td>
@@ -2658,7 +2674,9 @@
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>(logging.LEVEL)</code></td>
+            <td>
+                <code>(logging.LEVEL)</code>
+            </td>
             <td>
                   <code>severity_level</code>
             </td>
@@ -2672,7 +2690,9 @@
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>errors</code></td>
+            <td>
+                <code>errors</code>
+            </td>
             <td>
                   <code><span title="typing.Optional">Optional</span>[<span title="typing.List">List</span>[str]]</code>
             </td>
@@ -2686,7 +2706,9 @@
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>task</code></td>
+            <td>
+                <code>task</code>
+            </td>
             <td>
                   <code>str</code>
             </td>
@@ -2700,7 +2722,9 @@
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>messages</code></td>
+            <td>
+                <code>messages</code>
+            </td>
             <td>
                   <code><span title="typing.Optional">Optional</span>[<span title="typing.List">List</span>[str]]</code>
             </td>
@@ -2714,7 +2738,9 @@
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>juuid</code></td>
+            <td>
+                <code>juuid</code>
+            </td>
             <td>
                   <code><span title="typing.Optional">Optional</span>[str]</code>
             </td>
@@ -2729,6 +2755,11 @@
           </tr>
       </tbody>
     </table>
+
+
+
+
+
 
                   <details class="quote">
                     <summary>Source code in <code>norfab\core\worker.py</code></summary>
@@ -2746,7 +2777,7 @@
 <span class="normal">142</span>
 <span class="normal">143</span>
 <span class="normal">144</span>
-<span class="normal">145</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+<span class="normal">145</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">result</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">failed</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -2805,7 +2836,7 @@
 <span class="normal">167</span>
 <span class="normal">168</span>
 <span class="normal">169</span>
-<span class="normal">170</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">dictionary</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="normal">170</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">dictionary</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Method to serialize result as a dictionary&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">errors</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">errors</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">errors</span><span class="p">]</span>
@@ -2862,7 +2893,9 @@
       </thead>
       <tbody>
           <tr class="doc-section-item">
-            <td><code>broker</code></td>
+            <td>
+                <code>broker</code>
+            </td>
             <td>
                   <code>str</code>
             </td>
@@ -2876,7 +2909,9 @@
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>service</code></td>
+            <td>
+                <code>service</code>
+            </td>
             <td>
                   <code>str</code>
             </td>
@@ -2890,7 +2925,9 @@
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>name</code></td>
+            <td>
+                <code>name</code>
+            </td>
             <td>
                   <code>str</code>
             </td>
@@ -2904,7 +2941,9 @@
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>exist_event</code></td>
+            <td>
+                <code>exist_event</code>
+            </td>
             <td>
             </td>
             <td>
@@ -2917,7 +2956,9 @@
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>multiplier</code></td>
+            <td>
+                <code>multiplier</code>
+            </td>
             <td>
                   <code>int</code>
             </td>
@@ -2931,7 +2972,9 @@
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>keepalive</code></td>
+            <td>
+                <code>keepalive</code>
+            </td>
             <td>
                   <code>int</code>
             </td>
@@ -2946,6 +2989,11 @@
           </tr>
       </tbody>
     </table>
+
+
+
+
+
 
                   <details class="quote">
                     <summary>Source code in <code>norfab\core\worker.py</code></summary>
@@ -3033,7 +3081,7 @@
 <span class="normal">483</span>
 <span class="normal">484</span>
 <span class="normal">485</span>
-<span class="normal">486</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+<span class="normal">486</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">broker</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">service</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -3182,7 +3230,7 @@
 <span class="normal">519</span>
 <span class="normal">520</span>
 <span class="normal">521</span>
-<span class="normal">522</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">reconnect_to_broker</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="normal">522</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">reconnect_to_broker</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Connect or reconnect to broker&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">broker_socket</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">send_to_broker</span><span class="p">(</span><span class="n">NFP</span><span class="o">.</span><span class="n">DISCONNECT</span><span class="p">)</span>
@@ -3261,7 +3309,7 @@
 <span class="normal">543</span>
 <span class="normal">544</span>
 <span class="normal">545</span>
-<span class="normal">546</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">send_to_broker</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="normal">546</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">send_to_broker</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Send message to broker.</span>
 
 <span class="sd">    If no msg is provided, creates one internally</span>
@@ -3318,7 +3366,7 @@
 <span class="normal">558</span>
 <span class="normal">559</span>
 <span class="normal">560</span>
-<span class="normal">561</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">load_inventory</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="normal">561</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">load_inventory</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Function to load inventory from broker for this worker name.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -3364,7 +3412,9 @@
       </thead>
       <tbody>
           <tr class="doc-section-item">
-            <td><code>url</code></td>
+            <td>
+                <code>url</code>
+            </td>
             <td>
                   <code>str</code>
             </td>
@@ -3378,7 +3428,9 @@
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>raise_on_fail</code></td>
+            <td>
+                <code>raise_on_fail</code>
+            </td>
             <td>
                   <code>bool</code>
             </td>
@@ -3392,7 +3444,9 @@
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>read</code></td>
+            <td>
+                <code>read</code>
+            </td>
             <td>
                   <code>bool</code>
             </td>
@@ -3429,7 +3483,7 @@
 <span class="normal">605</span>
 <span class="normal">606</span>
 <span class="normal">607</span>
-<span class="normal">608</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">fetch_file</span><span class="p">(</span>
+<span class="normal">608</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">fetch_file</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">raise_on_fail</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">read</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -3482,7 +3536,9 @@ other templates referenced using "include" statements</p>
       </thead>
       <tbody>
           <tr class="doc-section-item">
-            <td><code>url</code></td>
+            <td>
+                <code>url</code>
+            </td>
             <td>
                   <code>str</code>
             </td>
@@ -3527,7 +3583,7 @@ other templates referenced using "include" statements</p>
 <span class="normal">634</span>
 <span class="normal">635</span>
 <span class="normal">636</span>
-<span class="normal">637</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">fetch_jinja2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="normal">637</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">fetch_jinja2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Helper function to recursively download Jinja2 template together with</span>
 <span class="sd">    other templates referenced using &quot;include&quot; statements</span>
@@ -3587,7 +3643,9 @@ other templates referenced using "include" statements</p>
       </thead>
       <tbody>
           <tr class="doc-section-item">
-            <td><code>uuid</code></td>
+            <td>
+                <code>uuid</code>
+            </td>
             <td>
                   <code>str</code>
             </td>
@@ -3601,7 +3659,9 @@ other templates referenced using "include" statements</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>data</code></td>
+            <td>
+                <code>data</code>
+            </td>
             <td>
                   <code>bool</code>
             </td>
@@ -3615,7 +3675,9 @@ other templates referenced using "include" statements</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>result</code></td>
+            <td>
+                <code>result</code>
+            </td>
             <td>
                   <code>bool</code>
             </td>
@@ -3629,7 +3691,9 @@ other templates referenced using "include" statements</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>events</code></td>
+            <td>
+                <code>events</code>
+            </td>
             <td>
                   <code>bool</code>
             </td>
@@ -3728,7 +3792,7 @@ other templates referenced using "include" statements</p>
 <span class="normal">710</span>
 <span class="normal">711</span>
 <span class="normal">712</span>
-<span class="normal">713</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">job_details</span><span class="p">(</span>
+<span class="normal">713</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">job_details</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span> <span class="n">uuid</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">events</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Result</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -3819,7 +3883,9 @@ other templates referenced using "include" statements</p>
       </thead>
       <tbody>
           <tr class="doc-section-item">
-            <td><code>pending</code></td>
+            <td>
+                <code>pending</code>
+            </td>
             <td>
                   <code>bool</code>
             </td>
@@ -3833,7 +3899,9 @@ other templates referenced using "include" statements</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>completed</code></td>
+            <td>
+                <code>completed</code>
+            </td>
             <td>
                   <code>bool</code>
             </td>
@@ -3847,7 +3915,9 @@ other templates referenced using "include" statements</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>task</code></td>
+            <td>
+                <code>task</code>
+            </td>
             <td>
                   <code>str</code>
             </td>
@@ -3861,7 +3931,9 @@ other templates referenced using "include" statements</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>last</code></td>
+            <td>
+                <code>last</code>
+            </td>
             <td>
                   <code>int</code>
             </td>
@@ -3875,7 +3947,9 @@ other templates referenced using "include" statements</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>client</code></td>
+            <td>
+                <code>client</code>
+            </td>
             <td>
                   <code>str</code>
             </td>
@@ -3889,7 +3963,9 @@ other templates referenced using "include" statements</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>uuid</code></td>
+            <td>
+                <code>uuid</code>
+            </td>
             <td>
                   <code>str</code>
             </td>
@@ -4025,7 +4101,7 @@ other templates referenced using "include" statements</p>
 <span class="normal">807</span>
 <span class="normal">808</span>
 <span class="normal">809</span>
-<span class="normal">810</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">job_list</span><span class="p">(</span>
+<span class="normal">810</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">job_list</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">pending</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="n">completed</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -4154,7 +4230,7 @@ other templates referenced using "include" statements</p>
               <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">193</span>
 <span class="normal">194</span>
 <span class="normal">195</span>
-<span class="normal">196</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">request_filename</span><span class="p">(</span><span class="n">suuid</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">],</span> <span class="n">base_dir_jobs</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="normal">196</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">request_filename</span><span class="p">(</span><span class="n">suuid</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">],</span> <span class="n">base_dir_jobs</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns freshly allocated request filename for given UUID str&quot;&quot;&quot;</span>
     <span class="n">suuid</span> <span class="o">=</span> <span class="n">suuid</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">suuid</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">)</span> <span class="k">else</span> <span class="n">suuid</span>
     <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">base_dir_jobs</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">suuid</span><span class="si">}</span><span class="s2">.req&quot;</span><span class="p">)</span>
@@ -4182,7 +4258,7 @@ other templates referenced using "include" statements</p>
               <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">199</span>
 <span class="normal">200</span>
 <span class="normal">201</span>
-<span class="normal">202</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">reply_filename</span><span class="p">(</span><span class="n">suuid</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">],</span> <span class="n">base_dir_jobs</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="normal">202</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">reply_filename</span><span class="p">(</span><span class="n">suuid</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">],</span> <span class="n">base_dir_jobs</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns freshly allocated reply filename for given UUID str&quot;&quot;&quot;</span>
     <span class="n">suuid</span> <span class="o">=</span> <span class="n">suuid</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">suuid</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">)</span> <span class="k">else</span> <span class="n">suuid</span>
     <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">base_dir_jobs</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">suuid</span><span class="si">}</span><span class="s2">.rep&quot;</span><span class="p">)</span>
@@ -4210,7 +4286,7 @@ other templates referenced using "include" statements</p>
               <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">205</span>
 <span class="normal">206</span>
 <span class="normal">207</span>
-<span class="normal">208</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">event_filename</span><span class="p">(</span><span class="n">suuid</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">],</span> <span class="n">base_dir_jobs</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="normal">208</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">event_filename</span><span class="p">(</span><span class="n">suuid</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">],</span> <span class="n">base_dir_jobs</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns freshly allocated event filename for given UUID str&quot;&quot;&quot;</span>
     <span class="n">suuid</span> <span class="o">=</span> <span class="n">suuid</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">suuid</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">)</span> <span class="k">else</span> <span class="n">suuid</span>
     <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">base_dir_jobs</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">suuid</span><span class="si">}</span><span class="s2">.event&quot;</span><span class="p">)</span>
@@ -4267,7 +4343,7 @@ other templates referenced using "include" statements</p>
 <span class="normal">385</span>
 <span class="normal">386</span>
 <span class="normal">387</span>
-<span class="normal">388</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">recv</span><span class="p">(</span><span class="n">worker</span><span class="p">,</span> <span class="n">destroy_event</span><span class="p">):</span>
+<span class="normal">388</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">recv</span><span class="p">(</span><span class="n">worker</span><span class="p">,</span> <span class="n">destroy_event</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Thread to process receive messages from broker.&quot;&quot;&quot;</span>
     <span class="k">while</span> <span class="ow">not</span> <span class="n">destroy_event</span><span class="o">.</span><span class="n">is_set</span><span class="p">():</span>
         <span class="c1"># Poll socket for messages every second</span>
@@ -4396,7 +4472,7 @@ other templates referenced using "include" statements</p>
     <script id="__config" type="application/json">{"base": "..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.top", "toc.follow", "navigation.instant", "navigation.instant.progress", "content.footnote.tooltips", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.83f73b43.min.js"></script>
+      <script src="../assets/javascripts/bundle.88dd0f4e.min.js"></script>
       
     
   </body>

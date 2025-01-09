@@ -22,7 +22,7 @@
       
       
       <link rel="icon" href="../../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.48">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.49">
     
     
       
@@ -2505,6 +2505,11 @@
 
 
 
+
+
+
+
+
   <div class="doc doc-children">
 
 
@@ -2531,6 +2536,11 @@
 
         <p>Class to monitor Nornir worker performance</p>
 
+
+
+
+
+
                   <details class="quote">
                     <summary>Source code in <code>norfab\workers\nornir_worker.py</code></summary>
                     <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">67</span>
@@ -2550,7 +2560,7 @@
 <span class="normal">81</span>
 <span class="normal">82</span>
 <span class="normal">83</span>
-<span class="normal">84</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">worker</span><span class="p">):</span>
+<span class="normal">84</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">worker</span><span class="p">):</span>
     <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">worker</span><span class="p">)</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">worker</span> <span class="o">=</span> <span class="n">worker</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">connections_idle_timeout</span> <span class="o">=</span> <span class="n">worker</span><span class="o">.</span><span class="n">inventory</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
@@ -2609,7 +2619,9 @@
       </thead>
       <tbody>
           <tr class="doc-section-item">
-            <td><code>nr</code></td>
+            <td>
+                <code>nr</code>
+            </td>
             <td>
             </td>
             <td>
@@ -2622,7 +2634,9 @@
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>plugin</code></td>
+            <td>
+                <code>plugin</code>
+            </td>
             <td>
                   <code>str</code>
             </td>
@@ -2658,7 +2672,7 @@
 <span class="normal">122</span>
 <span class="normal">123</span>
 <span class="normal">124</span>
-<span class="normal">125</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">connections_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nr</span><span class="p">,</span> <span class="n">plugin</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="normal">125</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">connections_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nr</span><span class="p">,</span> <span class="n">plugin</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Function to update connection use timestamps for each host</span>
 
@@ -2748,7 +2762,7 @@ not being used over connections_idle_timeout</p>
 <span class="normal">173</span>
 <span class="normal">174</span>
 <span class="normal">175</span>
-<span class="normal">176</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">connections_clean</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="normal">176</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">connections_clean</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Check if need to tear down connections that are idle -</span>
 <span class="sd">    not being used over connections_idle_timeout</span>
@@ -2849,7 +2863,7 @@ not being used over connections_idle_timeout</p>
 <span class="normal">205</span>
 <span class="normal">206</span>
 <span class="normal">207</span>
-<span class="normal">208</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">connections_keepalive</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="normal">208</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">connections_keepalive</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Keepalive connections and clean up dead connections if any&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">connections_idle_timeout</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>  <span class="c1"># do not keepalive if idle is 0</span>
         <span class="k">return</span>
@@ -2924,7 +2938,9 @@ not being used over connections_idle_timeout</p>
       </thead>
       <tbody>
           <tr class="doc-section-item">
-            <td><code>broker</code></td>
+            <td>
+                <code>broker</code>
+            </td>
             <td>
                   <code>str</code>
             </td>
@@ -2938,7 +2954,9 @@ not being used over connections_idle_timeout</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>service</code></td>
+            <td>
+                <code>service</code>
+            </td>
             <td>
                   <code>str</code>
             </td>
@@ -2952,7 +2970,9 @@ not being used over connections_idle_timeout</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>worker_name</code></td>
+            <td>
+                <code>worker_name</code>
+            </td>
             <td>
                   <code>str</code>
             </td>
@@ -2966,7 +2986,9 @@ not being used over connections_idle_timeout</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>exit_event</code></td>
+            <td>
+                <code>exit_event</code>
+            </td>
             <td>
             </td>
             <td>
@@ -2979,7 +3001,9 @@ not being used over connections_idle_timeout</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>init_done_event</code></td>
+            <td>
+                <code>init_done_event</code>
+            </td>
             <td>
             </td>
             <td>
@@ -2992,7 +3016,9 @@ not being used over connections_idle_timeout</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>log_level</code></td>
+            <td>
+                <code>log_level</code>
+            </td>
             <td>
                   <code>str</code>
             </td>
@@ -3007,6 +3033,11 @@ not being used over connections_idle_timeout</p>
           </tr>
       </tbody>
     </table>
+
+
+
+
+
 
                   <details class="quote">
                     <summary>Source code in <code>norfab\workers\nornir_worker.py</code></summary>
@@ -3043,7 +3074,7 @@ not being used over connections_idle_timeout</p>
 <span class="normal">251</span>
 <span class="normal">252</span>
 <span class="normal">253</span>
-<span class="normal">254</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+<span class="normal">254</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">broker</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">service</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -3119,7 +3150,9 @@ combine them in a single string.</p>
       </thead>
       <tbody>
           <tr class="doc-section-item">
-            <td><code>templates</code></td>
+            <td>
+                <code>templates</code>
+            </td>
             <td>
                   <code>list[str]</code>
             </td>
@@ -3133,7 +3166,9 @@ combine them in a single string.</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>context</code></td>
+            <td>
+                <code>context</code>
+            </td>
             <td>
                   <code>dict</code>
             </td>
@@ -3147,7 +3182,9 @@ combine them in a single string.</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>filter</code></td>
+            <td>
+                <code>filter</code>
+            </td>
             <td>
             </td>
             <td>
@@ -3214,7 +3251,7 @@ combine them in a single string.</p>
 <span class="normal">466</span>
 <span class="normal">467</span>
 <span class="normal">468</span>
-<span class="normal">469</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">render_jinja2_templates</span><span class="p">(</span>
+<span class="normal">469</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">render_jinja2_templates</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span> <span class="n">templates</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">context</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">filters</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -3274,7 +3311,9 @@ combine them in a single string.</p>
       </thead>
       <tbody>
           <tr class="doc-section-item">
-            <td><code>job_data</code></td>
+            <td>
+                <code>job_data</code>
+            </td>
             <td>
                   <code>str</code>
             </td>
@@ -3305,7 +3344,7 @@ combine them in a single string.</p>
 <span class="normal">481</span>
 <span class="normal">482</span>
 <span class="normal">483</span>
-<span class="normal">484</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">load_job_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">job_data</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="normal">484</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">load_job_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">job_data</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Helper function to download job data and load it using YAML</span>
 
@@ -3351,7 +3390,9 @@ combine them in a single string.</p>
       </thead>
       <tbody>
           <tr class="doc-section-item">
-            <td><code>kwargs</code></td>
+            <td>
+                <code>kwargs</code>
+            </td>
             <td>
                   <code>dict</code>
             </td>
@@ -3391,7 +3432,7 @@ combine them in a single string.</p>
 <span class="normal">528</span>
 <span class="normal">529</span>
 <span class="normal">530</span>
-<span class="normal">531</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_nornir_hosts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">details</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+<span class="normal">531</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_nornir_hosts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">details</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Produce a list of hosts managed by this worker</span>
 
@@ -3446,7 +3487,9 @@ combine them in a single string.</p>
       </thead>
       <tbody>
           <tr class="doc-section-item">
-            <td><code>kwargs</code></td>
+            <td>
+                <code>kwargs</code>
+            </td>
             <td>
                   <code>dict</code>
             </td>
@@ -3474,7 +3517,7 @@ combine them in a single string.</p>
 <span class="normal">540</span>
 <span class="normal">541</span>
 <span class="normal">542</span>
-<span class="normal">543</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_nornir_inventory</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="normal">543</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_nornir_inventory</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Retrieve running Nornir inventory for requested hosts</span>
 
@@ -3552,7 +3595,7 @@ combine them in a single string.</p>
 <span class="normal">588</span>
 <span class="normal">589</span>
 <span class="normal">590</span>
-<span class="normal">591</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_nornir_version</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="normal">591</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_nornir_version</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Produce Python packages version report</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -3626,7 +3669,7 @@ argument, for example:</p>
 <span class="n">CONNECTION_NAME</span> <span class="o">=</span> <span class="s2">&quot;netmiko&quot;</span>
 
 <span class="c1"># create task function</span>
-<span class="k">def</span> <span class="nf">task</span><span class="p">(</span><span class="n">nornir_task_object</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">task</span><span class="p">(</span><span class="n">nornir_task_object</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="k">pass</span>
 </code></pre></div>
 <div class="admonition note">
@@ -3649,7 +3692,9 @@ to all hosts initiated simultaneously up to the number of <code>num_workers</cod
       </thead>
       <tbody>
           <tr class="doc-section-item">
-            <td><code>plugin</code></td>
+            <td>
+                <code>plugin</code>
+            </td>
             <td>
                   <code>str</code>
             </td>
@@ -3663,7 +3708,9 @@ to all hosts initiated simultaneously up to the number of <code>num_workers</cod
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>kwargs</code></td>
+            <td>
+                <code>kwargs</code>
+            </td>
             <td>
             </td>
             <td>
@@ -3756,7 +3803,7 @@ to all hosts initiated simultaneously up to the number of <code>num_workers</cod
 <span class="normal">675</span>
 <span class="normal">676</span>
 <span class="normal">677</span>
-<span class="normal">678</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">task</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plugin</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Result</span><span class="p">:</span>
+<span class="normal">678</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">task</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plugin</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Result</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Task to invoke any of supported Nornir task plugins. This function</span>
 <span class="sd">    performs dynamic import of requested plugin function and executes</span>
@@ -3866,7 +3913,9 @@ Command Line Interface (CLI)</p>
       </thead>
       <tbody>
           <tr class="doc-section-item">
-            <td><code>commands</code></td>
+            <td>
+                <code>commands</code>
+            </td>
             <td>
                   <code>list</code>
             </td>
@@ -3880,7 +3929,9 @@ Command Line Interface (CLI)</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>plugin</code></td>
+            <td>
+                <code>plugin</code>
+            </td>
             <td>
                   <code>str</code>
             </td>
@@ -3894,7 +3945,9 @@ Command Line Interface (CLI)</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>cli_dry_run</code></td>
+            <td>
+                <code>cli_dry_run</code>
+            </td>
             <td>
                   <code>bool</code>
             </td>
@@ -3908,7 +3961,9 @@ Command Line Interface (CLI)</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>job_data</code></td>
+            <td>
+                <code>job_data</code>
+            </td>
             <td>
                   <code>str</code>
             </td>
@@ -3922,7 +3977,9 @@ Command Line Interface (CLI)</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>add_details</code></td>
+            <td>
+                <code>add_details</code>
+            </td>
             <td>
                   <code>bool</code>
             </td>
@@ -3936,7 +3993,9 @@ Command Line Interface (CLI)</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>to_dict</code></td>
+            <td>
+                <code>to_dict</code>
+            </td>
             <td>
                   <code>bool</code>
             </td>
@@ -3950,7 +4009,9 @@ Command Line Interface (CLI)</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>run_ttp</code></td>
+            <td>
+                <code>run_ttp</code>
+            </td>
             <td>
                   <code>str</code>
             </td>
@@ -4079,7 +4140,7 @@ Command Line Interface (CLI)</p>
 <span class="normal">788</span>
 <span class="normal">789</span>
 <span class="normal">790</span>
-<span class="normal">791</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">cli</span><span class="p">(</span>
+<span class="normal">791</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">cli</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">commands</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">plugin</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;netmiko&quot;</span><span class="p">,</span>
@@ -4225,7 +4286,7 @@ Command Line Interface (CLI)</p>
 <span class="normal">803</span>
 <span class="normal">804</span>
 <span class="normal">805</span>
-<span class="normal">806</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">nb_get_next_ip</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="normal">806</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">nb_get_next_ip</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Task to query next available IP address from Netbox service&quot;&quot;&quot;</span>
     <span class="n">reply</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">run_job</span><span class="p">(</span>
         <span class="s2">&quot;netbox&quot;</span><span class="p">,</span>
@@ -4272,7 +4333,9 @@ Command Line Interface (CLI)</p>
       </thead>
       <tbody>
           <tr class="doc-section-item">
-            <td><code>config</code></td>
+            <td>
+                <code>config</code>
+            </td>
             <td>
                   <code>list</code>
             </td>
@@ -4286,7 +4349,9 @@ Command Line Interface (CLI)</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>plugin</code></td>
+            <td>
+                <code>plugin</code>
+            </td>
             <td>
                   <code>str</code>
             </td>
@@ -4300,7 +4365,9 @@ Command Line Interface (CLI)</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>cfg_dry_run</code></td>
+            <td>
+                <code>cfg_dry_run</code>
+            </td>
             <td>
                   <code>bool</code>
             </td>
@@ -4314,7 +4381,9 @@ Command Line Interface (CLI)</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>job_data</code></td>
+            <td>
+                <code>job_data</code>
+            </td>
             <td>
                   <code>str</code>
             </td>
@@ -4328,7 +4397,9 @@ Command Line Interface (CLI)</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>add_details</code></td>
+            <td>
+                <code>add_details</code>
+            </td>
             <td>
                   <code>bool</code>
             </td>
@@ -4342,7 +4413,9 @@ Command Line Interface (CLI)</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>to_dict</code></td>
+            <td>
+                <code>to_dict</code>
+            </td>
             <td>
                   <code>bool</code>
             </td>
@@ -4356,7 +4429,9 @@ Command Line Interface (CLI)</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>kwargs</code></td>
+            <td>
+                <code>kwargs</code>
+            </td>
             <td>
             </td>
             <td>
@@ -4489,7 +4564,7 @@ Command Line Interface (CLI)</p>
 <span class="normal">898</span>
 <span class="normal">899</span>
 <span class="normal">900</span>
-<span class="normal">901</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">cfg</span><span class="p">(</span>
+<span class="normal">901</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">cfg</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">config</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span>
     <span class="n">plugin</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;netmiko&quot;</span><span class="p">,</span>
@@ -4615,7 +4690,9 @@ Command Line Interface (CLI)</p>
       </thead>
       <tbody>
           <tr class="doc-section-item">
-            <td><code>suite</code></td>
+            <td>
+                <code>suite</code>
+            </td>
             <td>
                   <code><span title="typing.Union">Union</span>[list, str]</code>
             </td>
@@ -4629,7 +4706,9 @@ Command Line Interface (CLI)</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>dry_run</code></td>
+            <td>
+                <code>dry_run</code>
+            </td>
             <td>
                   <code>bool</code>
             </td>
@@ -4643,7 +4722,9 @@ Command Line Interface (CLI)</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>subset</code></td>
+            <td>
+                <code>subset</code>
+            </td>
             <td>
                   <code>str</code>
             </td>
@@ -4657,7 +4738,9 @@ Command Line Interface (CLI)</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>failed_only</code></td>
+            <td>
+                <code>failed_only</code>
+            </td>
             <td>
                   <code>bool</code>
             </td>
@@ -4671,7 +4754,9 @@ Command Line Interface (CLI)</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>remove_tasks</code></td>
+            <td>
+                <code>remove_tasks</code>
+            </td>
             <td>
                   <code>bool</code>
             </td>
@@ -4685,7 +4770,9 @@ Command Line Interface (CLI)</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>return_tests_suite</code></td>
+            <td>
+                <code>return_tests_suite</code>
+            </td>
             <td>
                   <code>bool</code>
             </td>
@@ -4699,7 +4786,9 @@ Command Line Interface (CLI)</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>job_data</code></td>
+            <td>
+                <code>job_data</code>
+            </td>
             <td>
                   <code>str</code>
             </td>
@@ -4713,7 +4802,9 @@ Command Line Interface (CLI)</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>kwargs</code></td>
+            <td>
+                <code>kwargs</code>
+            </td>
             <td>
             </td>
             <td>
@@ -4887,7 +4978,7 @@ Command Line Interface (CLI)</p>
 <span class="normal">1057</span>
 <span class="normal">1058</span>
 <span class="normal">1059</span>
-<span class="normal">1060</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">test</span><span class="p">(</span>
+<span class="normal">1060</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">test</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">suite</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">list</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
     <span class="n">subset</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -5077,7 +5168,9 @@ Command Line Interface (CLI)</p>
       </thead>
       <tbody>
           <tr class="doc-section-item">
-            <td><code>fun</code></td>
+            <td>
+                <code>fun</code>
+            </td>
             <td>
             </td>
             <td>
@@ -5090,7 +5183,9 @@ Command Line Interface (CLI)</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>kwargs</code></td>
+            <td>
+                <code>kwargs</code>
+            </td>
             <td>
             </td>
             <td>
@@ -5132,7 +5227,7 @@ Command Line Interface (CLI)</p>
 <span class="normal">1093</span>
 <span class="normal">1094</span>
 <span class="normal">1095</span>
-<span class="normal">1096</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">network</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fun</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="normal">1096</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">network</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fun</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Task to call various network related utility functions.</span>
 
@@ -5190,7 +5285,9 @@ Command Line Interface (CLI)</p>
       </thead>
       <tbody>
           <tr class="doc-section-item">
-            <td><code>plugin</code></td>
+            <td>
+                <code>plugin</code>
+            </td>
             <td>
                   <code>str</code>
             </td>
@@ -5204,7 +5301,9 @@ Command Line Interface (CLI)</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>getters</code></td>
+            <td>
+                <code>getters</code>
+            </td>
             <td>
                   <code>str</code>
             </td>
@@ -5218,7 +5317,9 @@ Command Line Interface (CLI)</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>commands</code></td>
+            <td>
+                <code>commands</code>
+            </td>
             <td>
                   <code>list</code>
             </td>
@@ -5232,7 +5333,9 @@ Command Line Interface (CLI)</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>template</code></td>
+            <td>
+                <code>template</code>
+            </td>
             <td>
                   <code>str</code>
             </td>
@@ -5317,7 +5420,7 @@ Command Line Interface (CLI)</p>
 <span class="normal">1162</span>
 <span class="normal">1163</span>
 <span class="normal">1164</span>
-<span class="normal">1165</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">parse</span><span class="p">(</span>
+<span class="normal">1165</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">parse</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">plugin</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;napalm&quot;</span><span class="p">,</span>
     <span class="n">getters</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;get_facts&quot;</span><span class="p">,</span>
@@ -5417,7 +5520,9 @@ Command Line Interface (CLI)</p>
       </thead>
       <tbody>
           <tr class="doc-section-item">
-            <td><code>source_file</code></td>
+            <td>
+                <code>source_file</code>
+            </td>
             <td>
                   <code>str</code>
             </td>
@@ -5431,7 +5536,9 @@ Command Line Interface (CLI)</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>plugin</code></td>
+            <td>
+                <code>plugin</code>
+            </td>
             <td>
                   <code>str</code>
             </td>
@@ -5445,7 +5552,9 @@ Command Line Interface (CLI)</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>to_dict</code></td>
+            <td>
+                <code>to_dict</code>
+            </td>
             <td>
                   <code>bool</code>
             </td>
@@ -5459,7 +5568,9 @@ Command Line Interface (CLI)</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>add_details</code></td>
+            <td>
+                <code>add_details</code>
+            </td>
             <td>
                   <code>bool</code>
             </td>
@@ -5473,7 +5584,9 @@ Command Line Interface (CLI)</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>dry_run</code></td>
+            <td>
+                <code>dry_run</code>
+            </td>
             <td>
                   <code>bool</code>
             </td>
@@ -5487,7 +5600,9 @@ Command Line Interface (CLI)</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>kwargs</code></td>
+            <td>
+                <code>kwargs</code>
+            </td>
             <td>
             </td>
             <td>
@@ -5595,7 +5710,7 @@ Command Line Interface (CLI)</p>
 <span class="normal">1232</span>
 <span class="normal">1233</span>
 <span class="normal">1234</span>
-<span class="normal">1235</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">file_copy</span><span class="p">(</span>
+<span class="normal">1235</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">file_copy</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">source_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">plugin</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;netmiko&quot;</span><span class="p">,</span>
@@ -5769,7 +5884,7 @@ Command Line Interface (CLI)</p>
     <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.top", "toc.follow", "navigation.instant", "navigation.instant.progress", "content.footnote.tooltips", "content.code.copy", "content.code.annotate"], "search": "../../../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../../assets/javascripts/bundle.83f73b43.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.88dd0f4e.min.js"></script>
       
     
   </body>
