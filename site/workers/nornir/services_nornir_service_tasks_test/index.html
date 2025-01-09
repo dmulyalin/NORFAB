@@ -22,7 +22,7 @@
       
       
       <link rel="icon" href="../../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.48">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.49">
     
     
       
@@ -785,18 +785,18 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#outputting-test-text-tables" class="md-nav__link">
+  <a href="#formatting-tests-output" class="md-nav__link">
     <span class="md-ellipsis">
-      Outputting Test Text Tables
+      Formatting Tests Output
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#using-jinja2-templates" class="md-nav__link">
+  <a href="#using-jinja2-templates-to-generate-tests" class="md-nav__link">
     <span class="md-ellipsis">
-      Using Jinja2 Templates
+      Using Jinja2 Templates to Generate Tests
     </span>
   </a>
   
@@ -2197,18 +2197,18 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#outputting-test-text-tables" class="md-nav__link">
+  <a href="#formatting-tests-output" class="md-nav__link">
     <span class="md-ellipsis">
-      Outputting Test Text Tables
+      Formatting Tests Output
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#using-jinja2-templates" class="md-nav__link">
+  <a href="#using-jinja2-templates-to-generate-tests" class="md-nav__link">
     <span class="md-ellipsis">
-      Using Jinja2 Templates
+      Using Jinja2 Templates to Generate Tests
     </span>
   </a>
   
@@ -2298,12 +2298,138 @@
 
 
 <h1 id="nornir-service-test-task">Nornir Service Test Task<a class="headerlink" href="#nornir-service-test-task" title="Permanent link">¤</a></h1>
-<p>The Nornir Service Test Task is a critical component of NorFab's Nornir service, designed to facilitate the execution of network tests. This task provides network operations engineers and network automation developers with powerful tools to validate network configurations, ensure compliance, and monitor network performance. By leveraging the capabilities of the Nornir service, users can automate the testing process, identify issues proactively, and maintain a robust network infrastructure.</p>
+<p>The Nornir Service <code>test</code> task designed to facilitate the execution of network tests. This task provides network operations engineers and network automation developers with tools to validate network configurations, ensure compliance, and monitor network performance. By leveraging the capabilities of the Nornir service, users can automate testing process, identify issues proactively, and maintain a robust network infrastructure.</p>
 <p>Nornir service <code>test</code> task uses Nornir <a href="https://nornir-salt.readthedocs.io/en/latest/Processors/TestsProcessor.html">TestsProcessor</a> to run the tests and support test suites definition in YAML format, where test suite YAML files can be stored on and sourced from broker.</p>
 <h2 id="nornir-test-sample-usage">Nornir Test Sample Usage<a class="headerlink" href="#nornir-test-sample-usage" title="Permanent link">¤</a></h2>
-<h2 id="outputting-test-text-tables">Outputting Test Text Tables<a class="headerlink" href="#outputting-test-text-tables" title="Permanent link">¤</a></h2>
+<p>Nornir service <code>test</code> task uses suites in YAML format to define tests, sample tests suite:</p>
+<div class="highlight"><span class="filename">suite_3.txt</span><pre><span></span><code><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Check ceos version</span>
+<span class="w">  </span><span class="nt">task</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;show</span><span class="nv"> </span><span class="s">version&quot;</span>
+<span class="w">  </span><span class="nt">test</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">contains</span>
+<span class="w">  </span><span class="nt">pattern</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;4.30.0F&quot;</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Check NTP status</span>
+<span class="w">  </span><span class="nt">test</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ncontains</span>
+<span class="w">  </span><span class="nt">pattern</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;unsynchronised&quot;</span>
+<span class="w">  </span><span class="nt">task</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;show</span><span class="nv"> </span><span class="s">ntp</span><span class="nv"> </span><span class="s">status&quot;</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Check Mgmt Interface Status</span>
+<span class="w">  </span><span class="nt">test</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">contains</span>
+<span class="w">  </span><span class="nt">pattern</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;is</span><span class="nv"> </span><span class="s">up,</span><span class="nv"> </span><span class="s">line</span><span class="nv"> </span><span class="s">protocol</span><span class="nv"> </span><span class="s">is</span><span class="nv"> </span><span class="s">up&quot;</span>
+<span class="w">  </span><span class="nt">task</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;show</span><span class="nv"> </span><span class="s">interface</span><span class="nv"> </span><span class="s">management0&quot;</span><span class="w"> </span>
+</code></pre></div>
+<p>File <code>suite_3.txt</code> stored on broker and downloaded by Nornir service prior to running tests, below is an example of how to run the tests suite.</p>
+<div class="admonition example">
+<p class="admonition-title">Example</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">CLI</label><label for="__tabbed_1_2">Python</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>C:\nf&gt;nfcli
+Welcome to NorFab Interactive Shell.
+nf#
+nf#nornir
+nf[nornir-test]#
+nf[nornir-test]#suite nf://nornir_test_suites/suite_3.txt FC spine,leaf
+--------------------------------------------- Job Events -----------------------------------------------
+07-Jan-2025 18:44:35 0c3309c54ee44397b055257a0d442e62 job started
+07-Jan-2025 18:44:35.207 nornir nornir-worker-1 ceos-spine-1, ceos-spine-2 task started - &#39;netmiko_send_commands&#39;
+07-Jan-2025 18:44:35.211 nornir nornir-worker-2 ceos-leaf-1, ceos-leaf-2, ceos-leaf-3 task started - &#39;netmiko_send_commands&#39;
+&lt;omitted for brevity&gt;
+07-Jan-2025 18:44:36 0c3309c54ee44397b055257a0d442e62 job completed in 1.391 seconds
+
+--------------------------------------------- Job Results --------------------------------------------
+
++----+--------------+-----------------------------+----------+-------------------+
+|    | host         | name                        | result   | exception         |
++====+==============+=============================+==========+===================+
+|  0 | ceos-leaf-1  | Check ceos version          | PASS     |                   |
++----+--------------+-----------------------------+----------+-------------------+
+|  1 | ceos-leaf-1  | Check NTP status            | FAIL     | Pattern in output |
++----+--------------+-----------------------------+----------+-------------------+
+|  2 | ceos-leaf-1  | Check Mgmt Interface Status | PASS     |                   |
++----+--------------+-----------------------------+----------+-------------------+
+|  3 | ceos-leaf-2  | Check ceos version          | PASS     |                   |
++----+--------------+-----------------------------+----------+-------------------+
+|  4 | ceos-leaf-2  | Check NTP status            | FAIL     | Pattern in output |
++----+--------------+-----------------------------+----------+-------------------+
+|  5 | ceos-leaf-2  | Check Mgmt Interface Status | PASS     |                   |
++----+--------------+-----------------------------+----------+-------------------+
+|  6 | ceos-leaf-3  | Check ceos version          | PASS     |                   |
++----+--------------+-----------------------------+----------+-------------------+
+|  7 | ceos-leaf-3  | Check NTP status            | FAIL     | Pattern in output |
++----+--------------+-----------------------------+----------+-------------------+
+|  8 | ceos-leaf-3  | Check Mgmt Interface Status | PASS     |                   |
++----+--------------+-----------------------------+----------+-------------------+
+|  9 | ceos-spine-1 | Check ceos version          | PASS     |                   |
++----+--------------+-----------------------------+----------+-------------------+
+| 10 | ceos-spine-1 | Check NTP status            | FAIL     | Pattern in output |
++----+--------------+-----------------------------+----------+-------------------+
+| 12 | ceos-spine-2 | Check ceos version          | PASS     |                   |
++----+--------------+-----------------------------+----------+-------------------+
+| 12 | ceos-spine-2 | Check ceos version          | PASS     |                   |
++----+--------------+-----------------------------+----------+-------------------+
+| 12 | ceos-spine-2 | Check ceos version          | PASS     |                   |
++----+--------------+-----------------------------+----------+-------------------+
+| 12 | ceos-spine-2 | Check ceos version          | PASS     |                   |
++----+--------------+-----------------------------+----------+-------------------+
+| 12 | ceos-spine-2 | Check ceos version          | PASS     |                   |
++----+--------------+-----------------------------+----------+-------------------+
+| 13 | ceos-spine-2 | Check NTP status            | FAIL     | Pattern in output |
++----+--------------+-----------------------------+----------+-------------------+
+| 12 | ceos-spine-2 | Check ceos version          | PASS     |                   |
++----+--------------+-----------------------------+----------+-------------------+
+| 12 | ceos-spine-2 | Check ceos version          | PASS     |                   |
++----+--------------+-----------------------------+----------+-------------------+
+| 13 | ceos-spine-2 | Check NTP status            | FAIL     | Pattern in output |
++----+--------------+-----------------------------+----------+-------------------+
+| 14 | ceos-spine-2 | Check Mgmt Interface Status | PASS     |                   |
++----+--------------+-----------------------------+----------+-------------------+
+nf[nornir-test]#
+nf[nornir-test]#top
+nf#
+</code></pre></div>
+<p>Demo</p>
+<p><img alt="Nornir Cli Demo" src="../../../images/nornir_test_demo.gif" /></p>
+<p>In this example:</p>
+<ul>
+<li><code>nfcli</code> command starts the NorFab Interactive Shell.</li>
+<li><code>nornir</code> command switches to the Nornir sub-shell.</li>
+<li><code>test</code> command switches to the <code>test</code> task sub-shell.</li>
+<li><code>suite</code> argument refers to a path for <code>suite_3.txt</code> file with a set of tests to run. </li>
+<li>Devices filtered using <code>FC</code> - "Filter Contains" Nornir hosts targeting filter to only run tests on devices that contain <code>spine</code> or <code>leaf</code> in their hostname.</li>
+</ul>
+<p><code>inventory.yaml</code> should be located in same folder where we start nfcli, unless <code>nfcli -i path_to_inventory.yaml</code> flag used. Refer to <a href="../../../norfab_getting_started/">Getting Started</a> section on how to construct  <code>inventory.yaml</code> file</p>
+</div>
+<div class="tabbed-block">
+<p>This code is complete and can run as is</p>
+<div class="highlight"><pre><span></span><code>import pprint
+
+from norfab.core.nfapi import NorFab
+
+if __name__ == &#39;__main__&#39;:
+    nf = NorFab(inventory=&quot;inventory.yaml&quot;)
+    nf.start()
+
+    client = nf.make_client()
+
+    res = client.run_job(
+        service=&quot;nornir&quot;,
+        task=&quot;test&quot;,
+        kwargs={
+            &quot;suite&quot;: &quot;nf://nornir_test_suites/suite_3.txt&quot;,
+            &quot;FC&quot;: &quot;spine,leaf&quot;          
+        }
+    )
+
+    pprint.pprint(res)
+
+    nf.destroy()
+</code></pre></div>
+<p>Refer to <a href="../../../norfab_getting_started/">Getting Started</a> section on how to construct  <code>inventory.yaml</code> file.</p>
+</div>
+</div>
+</div>
+</div>
+<h2 id="formatting-tests-output">Formatting Tests Output<a class="headerlink" href="#formatting-tests-output" title="Permanent link">¤</a></h2>
 <p>NorFab interactive shell allows you to format the results of network tests into text tables. This is particularly useful for presenting test results in a clear and organized manner, making it easier to analyze and interpret the data. The NorFab interactive shell supports the <code>table</code> command, which relies on the <a href="https://pypi.org/project/tabulate/">tabulate</a> module to generate text tables. By outputting test results in table format, you can quickly identify issues and take appropriate action.</p>
-<h2 id="using-jinja2-templates">Using Jinja2 Templates<a class="headerlink" href="#using-jinja2-templates" title="Permanent link">¤</a></h2>
+<h2 id="using-jinja2-templates-to-generate-tests">Using Jinja2 Templates to Generate Tests<a class="headerlink" href="#using-jinja2-templates-to-generate-tests" title="Permanent link">¤</a></h2>
 <p>Using Jinja2 Templates enables you to create dynamic test suites based on variables defined in your inventory or passed as job data. This approach allows you to tailor tests to specific devices or scenarios, ensuring that the tests are relevant and accurate. Jinja2 templates provide a powerful way to automate the creation of complex test cases, incorporating conditional logic, loops, and other advanced features to meet your testing requirements.</p>
 <h2 id="templating-tests-with-inline-job-data">Templating Tests with Inline Job Data<a class="headerlink" href="#templating-tests-with-inline-job-data" title="Permanent link">¤</a></h2>
 <p>Inline Job Data allows you to define test parameters directly within the <code>job_data</code> argument, making it easy to customize tests on the fly. This feature is particularly useful for scenarios where test parameters need to be adjusted frequently or based on specific conditions. By templating tests with inline job data, you can ensure that your tests are always up-to-date and aligned with the current network state.</p>
@@ -2386,7 +2512,9 @@ nf#
       </thead>
       <tbody>
           <tr class="doc-section-item">
-            <td><code>suite</code></td>
+            <td>
+                <code>suite</code>
+            </td>
             <td>
                   <code><span title="typing.Union">Union</span>[list, str]</code>
             </td>
@@ -2400,7 +2528,9 @@ nf#
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>dry_run</code></td>
+            <td>
+                <code>dry_run</code>
+            </td>
             <td>
                   <code>bool</code>
             </td>
@@ -2414,7 +2544,9 @@ nf#
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>subset</code></td>
+            <td>
+                <code>subset</code>
+            </td>
             <td>
                   <code>str</code>
             </td>
@@ -2428,7 +2560,9 @@ nf#
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>failed_only</code></td>
+            <td>
+                <code>failed_only</code>
+            </td>
             <td>
                   <code>bool</code>
             </td>
@@ -2442,7 +2576,9 @@ nf#
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>remove_tasks</code></td>
+            <td>
+                <code>remove_tasks</code>
+            </td>
             <td>
                   <code>bool</code>
             </td>
@@ -2456,7 +2592,9 @@ nf#
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>return_tests_suite</code></td>
+            <td>
+                <code>return_tests_suite</code>
+            </td>
             <td>
                   <code>bool</code>
             </td>
@@ -2470,7 +2608,9 @@ nf#
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>job_data</code></td>
+            <td>
+                <code>job_data</code>
+            </td>
             <td>
                   <code>str</code>
             </td>
@@ -2484,7 +2624,9 @@ nf#
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>kwargs</code></td>
+            <td>
+                <code>kwargs</code>
+            </td>
             <td>
             </td>
             <td>
@@ -2658,7 +2800,7 @@ nf#
 <span class="normal">1057</span>
 <span class="normal">1058</span>
 <span class="normal">1059</span>
-<span class="normal">1060</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">test</span><span class="p">(</span>
+<span class="normal">1060</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">test</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">suite</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">list</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
     <span class="n">subset</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -2907,7 +3049,7 @@ nf#
     <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.top", "toc.follow", "navigation.instant", "navigation.instant.progress", "content.footnote.tooltips", "content.code.copy", "content.code.annotate"], "search": "../../../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../../assets/javascripts/bundle.83f73b43.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.88dd0f4e.min.js"></script>
       
     
   </body>

@@ -22,7 +22,7 @@
       
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.48">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.49">
     
     
       
@@ -2382,6 +2382,11 @@
 
 
 
+
+
+
+
+
   <div class="doc doc-children">
 
 
@@ -2421,7 +2426,9 @@
       </thead>
       <tbody>
           <tr class="doc-section-item">
-            <td><code>broker</code></td>
+            <td>
+                <code>broker</code>
+            </td>
             <td>
             </td>
             <td>
@@ -2434,7 +2441,9 @@
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>name</code></td>
+            <td>
+                <code>name</code>
+            </td>
             <td>
             </td>
             <td>
@@ -2448,6 +2457,11 @@
           </tr>
       </tbody>
     </table>
+
+
+
+
+
 
                   <details class="quote">
                     <summary>Source code in <code>norfab\core\client.py</code></summary>
@@ -2499,7 +2513,7 @@
 <span class="normal">128</span>
 <span class="normal">129</span>
 <span class="normal">130</span>
-<span class="normal">131</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+<span class="normal">131</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span> <span class="n">broker</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">log_level</span><span class="o">=</span><span class="s2">&quot;WARNING&quot;</span><span class="p">,</span> <span class="n">exit_event</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">event_queue</span><span class="o">=</span><span class="kc">None</span>
 <span class="p">):</span>
     <span class="n">log</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">log_level</span><span class="o">.</span><span class="n">upper</span><span class="p">())</span>
@@ -2606,7 +2620,7 @@
 <span class="normal">169</span>
 <span class="normal">170</span>
 <span class="normal">171</span>
-<span class="normal">172</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">reconnect_to_broker</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="normal">172</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">reconnect_to_broker</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Connect or reconnect to broker&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">broker_socket</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">poller</span><span class="o">.</span><span class="n">unregister</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">broker_socket</span><span class="p">)</span>
@@ -2671,7 +2685,7 @@
 <span class="normal">186</span>
 <span class="normal">187</span>
 <span class="normal">188</span>
-<span class="normal">189</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">send_to_broker</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">,</span> <span class="n">service</span><span class="p">,</span> <span class="n">workers</span><span class="p">,</span> <span class="n">uuid</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
+<span class="normal">189</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">send_to_broker</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">,</span> <span class="n">service</span><span class="p">,</span> <span class="n">workers</span><span class="p">,</span> <span class="n">uuid</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Send message to broker.&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">command</span> <span class="o">==</span> <span class="n">NFP</span><span class="o">.</span><span class="n">POST</span><span class="p">:</span>
         <span class="n">msg</span> <span class="o">=</span> <span class="p">[</span><span class="sa">b</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">NFP</span><span class="o">.</span><span class="n">CLIENT</span><span class="p">,</span> <span class="n">command</span><span class="p">,</span> <span class="n">service</span><span class="p">,</span> <span class="n">workers</span><span class="p">,</span> <span class="n">uuid</span><span class="p">,</span> <span class="n">request</span><span class="p">]</span>
@@ -2758,7 +2772,7 @@
 <span class="normal">238</span>
 <span class="normal">239</span>
 <span class="normal">240</span>
-<span class="normal">241</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">rcv_from_broker</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">,</span> <span class="n">service</span><span class="p">,</span> <span class="n">uuid</span><span class="p">):</span>
+<span class="normal">241</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">rcv_from_broker</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">,</span> <span class="n">service</span><span class="p">,</span> <span class="n">uuid</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Wait for response from broker.&quot;&quot;&quot;</span>
     <span class="n">retries</span> <span class="o">=</span> <span class="mi">3</span>
     <span class="k">while</span> <span class="n">retries</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
@@ -2936,7 +2950,7 @@ containing list of workers acknowledged POST request.</p>
 <span class="normal">344</span>
 <span class="normal">345</span>
 <span class="normal">346</span>
-<span class="normal">347</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">post</span><span class="p">(</span>
+<span class="normal">347</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">post</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">service</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">task</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -3074,7 +3088,9 @@ end job reply message to broker requesting job results.</p>
       </thead>
       <tbody>
           <tr class="doc-section-item">
-            <td><code>service</code></td>
+            <td>
+                <code>service</code>
+            </td>
             <td>
                   <code>str</code>
             </td>
@@ -3088,7 +3104,9 @@ end job reply message to broker requesting job results.</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>task</code></td>
+            <td>
+                <code>task</code>
+            </td>
             <td>
                   <code>str</code>
             </td>
@@ -3102,7 +3120,9 @@ end job reply message to broker requesting job results.</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>args</code></td>
+            <td>
+                <code>args</code>
+            </td>
             <td>
                   <code>list</code>
             </td>
@@ -3116,7 +3136,9 @@ end job reply message to broker requesting job results.</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>kwargs</code></td>
+            <td>
+                <code>kwargs</code>
+            </td>
             <td>
                   <code>dict</code>
             </td>
@@ -3130,7 +3152,9 @@ end job reply message to broker requesting job results.</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>workers</code></td>
+            <td>
+                <code>workers</code>
+            </td>
             <td>
                   <code>str</code>
             </td>
@@ -3144,7 +3168,9 @@ end job reply message to broker requesting job results.</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>uuid</code></td>
+            <td>
+                <code>uuid</code>
+            </td>
             <td>
                   <code>hex</code>
             </td>
@@ -3158,7 +3184,9 @@ end job reply message to broker requesting job results.</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>timeout</code></td>
+            <td>
+                <code>timeout</code>
+            </td>
             <td>
                   <code>int</code>
             </td>
@@ -3298,7 +3326,7 @@ end job reply message to broker requesting job results.</p>
 <span class="normal">468</span>
 <span class="normal">469</span>
 <span class="normal">470</span>
-<span class="normal">471</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get</span><span class="p">(</span>
+<span class="normal">471</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">service</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">task</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -3520,7 +3548,7 @@ end job reply message to broker requesting job results.</p>
 <span class="normal">548</span>
 <span class="normal">549</span>
 <span class="normal">550</span>
-<span class="normal">551</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_iter</span><span class="p">(</span>
+<span class="normal">551</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_iter</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">service</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">task</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -3631,7 +3659,9 @@ end job reply message to broker requesting job results.</p>
       </thead>
       <tbody>
           <tr class="doc-section-item">
-            <td><code>url</code></td>
+            <td>
+                <code>url</code>
+            </td>
             <td>
                   <code>str</code>
             </td>
@@ -3645,7 +3675,9 @@ end job reply message to broker requesting job results.</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>destination</code></td>
+            <td>
+                <code>destination</code>
+            </td>
             <td>
                   <code>str</code>
             </td>
@@ -3781,7 +3813,7 @@ end job reply message to broker requesting job results.</p>
 <span class="normal">668</span>
 <span class="normal">669</span>
 <span class="normal">670</span>
-<span class="normal">671</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">fetch_file</span><span class="p">(</span>
+<span class="normal">671</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">fetch_file</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">destination</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -3932,7 +3964,9 @@ end job reply message to broker requesting job results.</p>
       </thead>
       <tbody>
           <tr class="doc-section-item">
-            <td><code>service</code></td>
+            <td>
+                <code>service</code>
+            </td>
             <td>
                   <code>str</code>
             </td>
@@ -3946,7 +3980,9 @@ end job reply message to broker requesting job results.</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>task</code></td>
+            <td>
+                <code>task</code>
+            </td>
             <td>
                   <code>str</code>
             </td>
@@ -3960,7 +3996,9 @@ end job reply message to broker requesting job results.</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>uuid</code></td>
+            <td>
+                <code>uuid</code>
+            </td>
             <td>
                   <code>str</code>
             </td>
@@ -3974,7 +4012,9 @@ end job reply message to broker requesting job results.</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>args</code></td>
+            <td>
+                <code>args</code>
+            </td>
             <td>
                   <code>list</code>
             </td>
@@ -3988,7 +4028,9 @@ end job reply message to broker requesting job results.</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>kwargs</code></td>
+            <td>
+                <code>kwargs</code>
+            </td>
             <td>
                   <code>dict</code>
             </td>
@@ -4002,7 +4044,9 @@ end job reply message to broker requesting job results.</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>workers</code></td>
+            <td>
+                <code>workers</code>
+            </td>
             <td>
                   <code>str</code>
             </td>
@@ -4016,7 +4060,9 @@ end job reply message to broker requesting job results.</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>timeout</code></td>
+            <td>
+                <code>timeout</code>
+            </td>
             <td>
                   <code>int</code>
             </td>
@@ -4030,7 +4076,9 @@ end job reply message to broker requesting job results.</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>retry</code></td>
+            <td>
+                <code>retry</code>
+            </td>
             <td>
             </td>
             <td>
@@ -4121,7 +4169,7 @@ end job reply message to broker requesting job results.</p>
 <span class="normal">744</span>
 <span class="normal">745</span>
 <span class="normal">746</span>
-<span class="normal">747</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">run_job</span><span class="p">(</span>
+<span class="normal">747</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">run_job</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">service</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">task</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -4231,7 +4279,9 @@ job results would be presented as soon as they are available.</p>
       </thead>
       <tbody>
           <tr class="doc-section-item">
-            <td><code>service</code></td>
+            <td>
+                <code>service</code>
+            </td>
             <td>
                   <code>str</code>
             </td>
@@ -4245,7 +4295,9 @@ job results would be presented as soon as they are available.</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>task</code></td>
+            <td>
+                <code>task</code>
+            </td>
             <td>
                   <code>str</code>
             </td>
@@ -4259,7 +4311,9 @@ job results would be presented as soon as they are available.</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>uuid</code></td>
+            <td>
+                <code>uuid</code>
+            </td>
             <td>
                   <code>str</code>
             </td>
@@ -4273,7 +4327,9 @@ job results would be presented as soon as they are available.</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>args</code></td>
+            <td>
+                <code>args</code>
+            </td>
             <td>
                   <code>list</code>
             </td>
@@ -4287,7 +4343,9 @@ job results would be presented as soon as they are available.</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>kwargs</code></td>
+            <td>
+                <code>kwargs</code>
+            </td>
             <td>
                   <code>dict</code>
             </td>
@@ -4301,7 +4359,9 @@ job results would be presented as soon as they are available.</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>workers</code></td>
+            <td>
+                <code>workers</code>
+            </td>
             <td>
                   <code>str</code>
             </td>
@@ -4351,7 +4411,7 @@ job results would be presented as soon as they are available.</p>
 <span class="normal">778</span>
 <span class="normal">779</span>
 <span class="normal">780</span>
-<span class="normal">781</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">run_job_iter</span><span class="p">(</span>
+<span class="normal">781</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">run_job_iter</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">service</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">task</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -4417,7 +4477,7 @@ job results would be presented as soon as they are available.</p>
               <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">39</span>
 <span class="normal">40</span>
 <span class="normal">41</span>
-<span class="normal">42</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">event_filename</span><span class="p">(</span><span class="n">suuid</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">events_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="normal">42</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">event_filename</span><span class="p">(</span><span class="n">suuid</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">events_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns freshly allocated event filename for given UUID str&quot;&quot;&quot;</span>
     <span class="n">suuid</span> <span class="o">=</span> <span class="n">suuid</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">suuid</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">)</span> <span class="k">else</span> <span class="n">suuid</span>
     <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">events_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">suuid</span><span class="si">}</span><span class="s2">.json&quot;</span><span class="p">)</span>
@@ -4460,7 +4520,7 @@ job results would be presented as soon as they are available.</p>
 <span class="normal">60</span>
 <span class="normal">61</span>
 <span class="normal">62</span>
-<span class="normal">63</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">recv</span><span class="p">(</span><span class="n">client</span><span class="p">):</span>
+<span class="normal">63</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">recv</span><span class="p">(</span><span class="n">client</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Thread to process receive messages from broker.&quot;&quot;&quot;</span>
     <span class="k">while</span> <span class="ow">not</span> <span class="n">client</span><span class="o">.</span><span class="n">exit_event</span><span class="o">.</span><span class="n">is_set</span><span class="p">():</span>
         <span class="c1"># Poll socket for messages every timeout interval</span>
@@ -4575,7 +4635,7 @@ job results would be presented as soon as they are available.</p>
     <script id="__config" type="application/json">{"base": "..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.top", "toc.follow", "navigation.instant", "navigation.instant.progress", "content.footnote.tooltips", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.83f73b43.min.js"></script>
+      <script src="../assets/javascripts/bundle.88dd0f4e.min.js"></script>
       
     
   </body>

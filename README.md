@@ -1,3 +1,10 @@
+[![Downloads][pepy-downloads-badge]][pepy-downloads-link]
+[![PyPI][pypi-latest-release-badge]][pypi-latest-release-link]
+[![PyPI versions][pypi-pyversion-badge]][pypi-pyversion-link]
+[![GitHub Discussion][github-discussions-badge]][github-discussions-link]
+[![Code style: black][black-badge]][black-link]
+
+
 # Network Automations Fabric - NORFAB
 
 NORFAB is a tool for extreme network automations.
@@ -52,3 +59,14 @@ to surpass its limitations.
 ![diagram your network](docs/images/nornir_diagram_demo_layer3.gif)
 
 **And many more** [read documentation](https://dmulyalin.github.io/NORFAB/)
+
+[github-discussions-link]:     https://github.com/dmulyalin/norfab/discussions
+[github-discussions-badge]:    https://img.shields.io/static/v1?label=Discussions&message=Ask&color=blue&logo=github
+[black-badge]:                 https://img.shields.io/badge/code%20style-black-000000.svg
+[black-link]:                  https://github.com/psf/black
+[pypi-pyversion-link]:         https://pypi.python.org/pypi/norfab/
+[pypi-pyversion-badge]:        https://img.shields.io/pypi/pyversions/norfab.svg
+[pepy-downloads-link]:         https://pepy.tech/project/norfab
+[pepy-downloads-badge]:        https://pepy.tech/badge/norfab
+[pypi-latest-release-badge]:   https://img.shields.io/pypi/v/norfab.svg
+[pypi-latest-release-link]:    https://pypi.python.org/pypi/norfab

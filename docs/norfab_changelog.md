@@ -1,3 +1,17 @@
+## 0.1.1
+
+### BUGS
+
+1. FIxed Netbox CLI Shell handling of NFCLIENT
+
+### CHANGES
+
+1. Updated and tested dependencies for Netmiko 4.5.0
+2. Updated and tested dependencies for Nornir 3.5.0
+3. Updated and tested dependencies for Nornir-Salt 0.22.1
+
+---
+
 ## 0.1.0
 
 ### Changes
@@ -20,6 +34,8 @@
 ### BUGS
 
 1. Fixed Nornir Service Watchdog to clean up dead connections from hosts data
+
+---
 
 ## 0.0.0
 

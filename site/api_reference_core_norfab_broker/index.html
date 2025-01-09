@@ -22,7 +22,7 @@
       
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.48">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.49">
     
     
       
@@ -2482,6 +2482,11 @@ Based on Java example by Arkadiusz Orzechowski</p>
 
 
 
+
+
+
+
+
   <div class="doc doc-children">
 
 
@@ -2508,11 +2513,16 @@ Based on Java example by Arkadiusz Orzechowski</p>
 
         <p>A single NFP Service</p>
 
+
+
+
+
+
                   <details class="quote">
                     <summary>Source code in <code>norfab\core\broker.py</code></summary>
                     <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">41</span>
 <span class="normal">42</span>
-<span class="normal">43</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="normal">43</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>  <span class="c1"># Service name</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">workers</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># list of known workers</span>
 </code></pre></div></td></tr></table></div>
@@ -2555,6 +2565,11 @@ Based on Java example by Arkadiusz Orzechowski</p>
 
         <p>An NFP Worker convenience class</p>
 
+
+
+
+
+
                   <details class="quote">
                     <summary>Source code in <code>norfab\core\broker.py</code></summary>
                     <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">49</span>
@@ -2575,7 +2590,7 @@ Based on Java example by Arkadiusz Orzechowski</p>
 <span class="normal">64</span>
 <span class="normal">65</span>
 <span class="normal">66</span>
-<span class="normal">67</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+<span class="normal">67</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">address</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">socket</span><span class="p">,</span>
@@ -2626,7 +2641,7 @@ Based on Java example by Arkadiusz Orzechowski</p>
               <summary>Source code in <code>norfab\core\broker.py</code></summary>
               <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">84</span>
 <span class="normal">85</span>
-<span class="normal">86</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">is_ready</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="normal">86</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">is_ready</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;True if worker signaled W.READY&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">service</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">ready</span> <span class="ow">is</span> <span class="kc">True</span>
 </code></pre></div></td></tr></table></div>
@@ -2659,7 +2674,7 @@ Based on Java example by Arkadiusz Orzechowski</p>
 <span class="normal">94</span>
 <span class="normal">95</span>
 <span class="normal">96</span>
-<span class="normal">97</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">destroy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">disconnect</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="normal">97</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">destroy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">disconnect</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Clean up routine&quot;&quot;&quot;</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">exit_event</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">keepaliver</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
@@ -2699,6 +2714,11 @@ Based on Java example by Arkadiusz Orzechowski</p>
         <p>NORFAB Protocol broker</p>
 
         <p>Initialize broker state.</p>
+
+
+
+
+
 
                   <details class="quote">
                     <summary>Source code in <code>norfab\core\broker.py</code></summary>
@@ -2758,7 +2778,7 @@ Based on Java example by Arkadiusz Orzechowski</p>
 <span class="normal">159</span>
 <span class="normal">160</span>
 <span class="normal">161</span>
-<span class="normal">162</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+<span class="normal">162</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">endpoint</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">exit_event</span><span class="p">:</span> <span class="n">Event</span><span class="p">,</span>
@@ -2878,7 +2898,7 @@ Based on Java example by Arkadiusz Orzechowski</p>
 <span class="normal">193</span>
 <span class="normal">194</span>
 <span class="normal">195</span>
-<span class="normal">196</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">mediate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="normal">196</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">mediate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Main broker work happens here</span>
 
@@ -2940,7 +2960,7 @@ Based on Java example by Arkadiusz Orzechowski</p>
 <span class="normal">203</span>
 <span class="normal">204</span>
 <span class="normal">205</span>
-<span class="normal">206</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">destroy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="normal">206</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">destroy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Disconnect all workers, destroy context.&quot;&quot;&quot;</span>
     <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;NFPBroker - interrupt received, killing broker&quot;</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">workers</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
@@ -2973,7 +2993,7 @@ Based on Java example by Arkadiusz Orzechowski</p>
               <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">208</span>
 <span class="normal">209</span>
 <span class="normal">210</span>
-<span class="normal">211</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">delete_worker</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">worker</span><span class="p">,</span> <span class="n">disconnect</span><span class="p">):</span>
+<span class="normal">211</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">delete_worker</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">worker</span><span class="p">,</span> <span class="n">disconnect</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Deletes worker from all data structures, and deletes worker.&quot;&quot;&quot;</span>
     <span class="n">worker</span><span class="o">.</span><span class="n">destroy</span><span class="p">(</span><span class="n">disconnect</span><span class="p">)</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">workers</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">worker</span><span class="o">.</span><span class="n">address</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
@@ -3005,7 +3025,7 @@ Based on Java example by Arkadiusz Orzechowski</p>
 <span class="normal">217</span>
 <span class="normal">218</span>
 <span class="normal">219</span>
-<span class="normal">220</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">purge_workers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="normal">220</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">purge_workers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Look for &amp; delete expired workers.&quot;&quot;&quot;</span>
     <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">workers</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
         <span class="c1"># in case worker self destroyed while we iterating</span>
@@ -3048,7 +3068,7 @@ Based on Java example by Arkadiusz Orzechowski</p>
 <span class="normal">233</span>
 <span class="normal">234</span>
 <span class="normal">235</span>
-<span class="normal">236</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">send_to_worker</span><span class="p">(</span>
+<span class="normal">236</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">send_to_worker</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span> <span class="n">worker</span><span class="p">:</span> <span class="n">NFPWorker</span><span class="p">,</span> <span class="n">command</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">sender</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">uuid</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">bytes</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Send message to worker. If message is provided, sends that message.&quot;&quot;&quot;</span>
@@ -3096,7 +3116,7 @@ Based on Java example by Arkadiusz Orzechowski</p>
 <span class="normal">247</span>
 <span class="normal">248</span>
 <span class="normal">249</span>
-<span class="normal">250</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">send_to_client</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">client</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">command</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">service</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">list</span><span class="p">):</span>
+<span class="normal">250</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">send_to_client</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">client</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">command</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">service</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">list</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Send message to client.&quot;&quot;&quot;</span>
     <span class="c1"># Stack routing and protocol envelopes to start of message</span>
     <span class="k">if</span> <span class="n">command</span> <span class="o">==</span> <span class="n">NFP</span><span class="o">.</span><span class="n">RESPONSE</span><span class="p">:</span>
@@ -3156,7 +3176,7 @@ Based on Java example by Arkadiusz Orzechowski</p>
 <span class="normal">275</span>
 <span class="normal">276</span>
 <span class="normal">277</span>
-<span class="normal">278</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">process_worker</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sender</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
+<span class="normal">278</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">process_worker</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sender</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Process message received from worker.&quot;&quot;&quot;</span>
     <span class="n">command</span> <span class="o">=</span> <span class="n">msg</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
     <span class="n">worker</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">require_worker</span><span class="p">(</span><span class="n">sender</span><span class="p">)</span>
@@ -3217,7 +3237,7 @@ Based on Java example by Arkadiusz Orzechowski</p>
 <span class="normal">290</span>
 <span class="normal">291</span>
 <span class="normal">292</span>
-<span class="normal">293</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">require_worker</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">address</span><span class="p">):</span>
+<span class="normal">293</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">require_worker</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">address</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Finds the worker, creates if necessary.&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">workers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">address</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">workers</span><span class="p">[</span><span class="n">address</span><span class="p">]</span> <span class="o">=</span> <span class="n">NFPWorker</span><span class="p">(</span>
@@ -3259,7 +3279,7 @@ Based on Java example by Arkadiusz Orzechowski</p>
 <span class="normal">299</span>
 <span class="normal">300</span>
 <span class="normal">301</span>
-<span class="normal">302</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">require_service</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+<span class="normal">302</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">require_service</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Locates the service (creates if necessary).&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">services</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
         <span class="n">service</span> <span class="o">=</span> <span class="n">NFPService</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
@@ -3313,7 +3333,7 @@ Based on Java example by Arkadiusz Orzechowski</p>
 <span class="normal">326</span>
 <span class="normal">327</span>
 <span class="normal">328</span>
-<span class="normal">329</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">process_client</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sender</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
+<span class="normal">329</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">process_client</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sender</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Process a request coming from a client.&quot;&quot;&quot;</span>
     <span class="n">command</span> <span class="o">=</span> <span class="n">msg</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
     <span class="n">service</span> <span class="o">=</span> <span class="n">msg</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
@@ -3371,7 +3391,9 @@ Based on Java example by Arkadiusz Orzechowski</p>
       </thead>
       <tbody>
           <tr class="doc-section-item">
-            <td><code>target</code></td>
+            <td>
+                <code>target</code>
+            </td>
             <td>
                   <code>bytes</code>
             </td>
@@ -3385,7 +3407,9 @@ Based on Java example by Arkadiusz Orzechowski</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>service</code></td>
+            <td>
+                <code>service</code>
+            </td>
             <td>
                   <code><a class="autorefs autorefs-internal" title="norfab.core.broker.NFPService" href="#norfab.core.broker.NFPService">NFPService</a></code>
             </td>
@@ -3435,7 +3459,7 @@ Based on Java example by Arkadiusz Orzechowski</p>
 <span class="normal">360</span>
 <span class="normal">361</span>
 <span class="normal">362</span>
-<span class="normal">363</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">filter_workers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">service</span><span class="p">:</span> <span class="n">NFPService</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+<span class="normal">363</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">filter_workers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">service</span><span class="p">:</span> <span class="n">NFPService</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Helper function to filter workers</span>
 
@@ -3500,7 +3524,9 @@ Based on Java example by Arkadiusz Orzechowski</p>
       </thead>
       <tbody>
           <tr class="doc-section-item">
-            <td><code>service</code></td>
+            <td>
+                <code>service</code>
+            </td>
             <td>
             </td>
             <td>
@@ -3513,7 +3539,9 @@ Based on Java example by Arkadiusz Orzechowski</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>target</code></td>
+            <td>
+                <code>target</code>
+            </td>
             <td>
             </td>
             <td>
@@ -3526,7 +3554,9 @@ Based on Java example by Arkadiusz Orzechowski</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>msg</code></td>
+            <td>
+                <code>msg</code>
+            </td>
             <td>
             </td>
             <td>
@@ -3592,7 +3622,7 @@ Based on Java example by Arkadiusz Orzechowski</p>
 <span class="normal">411</span>
 <span class="normal">412</span>
 <span class="normal">413</span>
-<span class="normal">414</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">dispatch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sender</span><span class="p">,</span> <span class="n">command</span><span class="p">,</span> <span class="n">service</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">uuid</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+<span class="normal">414</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">dispatch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sender</span><span class="p">,</span> <span class="n">command</span><span class="p">,</span> <span class="n">service</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">uuid</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Dispatch requests to waiting workers as possible</span>
 
@@ -3712,7 +3742,7 @@ Based on Java example by Arkadiusz Orzechowski</p>
 <span class="normal">462</span>
 <span class="normal">463</span>
 <span class="normal">464</span>
-<span class="normal">465</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">mmi_service</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sender</span><span class="p">,</span> <span class="n">command</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">uuid</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+<span class="normal">465</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">mmi_service</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sender</span><span class="p">,</span> <span class="n">command</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">uuid</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Handle internal service according to 8/MMI specification&quot;&quot;&quot;</span>
     <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
         <span class="sa">f</span><span class="s2">&quot;mmi.service.broker - processing request: sender &#39;</span><span class="si">{</span><span class="n">sender</span><span class="si">}</span><span class="s2">&#39;, &quot;</span>
@@ -3867,7 +3897,7 @@ Based on Java example by Arkadiusz Orzechowski</p>
     <script id="__config" type="application/json">{"base": "..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.top", "toc.follow", "navigation.instant", "navigation.instant.progress", "content.footnote.tooltips", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.83f73b43.min.js"></script>
+      <script src="../assets/javascripts/bundle.88dd0f4e.min.js"></script>
       
     
   </body>
