@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "norfab"
-version = "0.1.1"
-description = "Network Automations Fabric (NorFab) - communication networks automations"
+version = "0.1.2"
+description = "Network Automations Fabric [NorFab] - communication networks automations"
 authors = ["Denis Mulyalin <d.mulyalin@gmail.com>"]
 maintainers = ["Denis Mulyalin <d.mulyalin@gmail.com>"]
 license = "Apache-2.0 license"
@@ -13,8 +13,9 @@ keywords = ["Network", "Automation", "DevOps"]
 classifiers = [
     "Topic :: Utilities",
     "Programming Language :: Python :: 3.9",
-    "License :: OSI Approved :: MIT License",
+    "License :: OSI Approved :: Apache Software License",
     "Operating System :: POSIX :: Linux",
+    "Operating System :: Microsoft :: Windows",
 ]
 
 [tool.poetry.dependencies]
