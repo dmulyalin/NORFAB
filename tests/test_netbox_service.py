@@ -788,7 +788,7 @@ class TestGetDevices:
         for worker, res in ret.items():
             assert not res["errors"], f"{worker} - received error"
             assert all(
-                k in res["result"] for k in ["headers", "data", "verify", "url"]
+                k in res["result"]["get_devices_dry_run"] for k in ["headers", "data", "verify", "url"]
             ), f"{worker} - not all dry run data returned"
 
 
