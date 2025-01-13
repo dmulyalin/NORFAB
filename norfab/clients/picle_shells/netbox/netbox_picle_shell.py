@@ -22,8 +22,11 @@ from pydantic import (
     Field,
 )
 from typing import Union, Optional, List, Any, Dict, Callable, Tuple
-from ..common import ClientRunJobArgs, log_error_or_result, listen_events
+from ..common import log_error_or_result, listen_events
 from ..nornir.nornir_picle_shell import NornirCommonArgs, NorniHostsFilters
+from .netbox_picle_shell_common import NetboxCommonArgs, NetboxClientRunJobArgs
+from .netbox_picle_shell_get_devices import GetDevices
+from .netbox_picle_shell_cache import NetboxServiceCache
 
 RICHCONSOLE = Console()
 SERVICE = "netbox"
@@ -31,42 +34,11 @@ log = logging.getLogger(__name__)
 
 
 # ---------------------------------------------------------------------------------------------
-# COMMON MODELS
-# ---------------------------------------------------------------------------------------------
-
-
-class NetboxCommonArgs(BaseModel):
-    instance: Optional[StrictStr] = Field(
-        None,
-        description="Netbox instance name to target",
-    )
-    workers: Union[StrictStr, List[StrictStr]] = Field(
-        "any", description="Filter workers to target"
-    )
-
-    @staticmethod
-    def source_workers():
-        reply = NFCLIENT.get(
-            "mmi.service.broker",
-            "show_workers",
-            args=[],
-            kwargs={"service": "netbox", "status": "alive"},
-        )
-        return [i["name"] for i in json.loads(reply["results"])]
-
-    @staticmethod
-    def source_instance():
-        reply = NFCLIENT.run_job("netbox", "get_netbox_inventory", workers="any")
-        for worker_name, inventory in reply.items():
-            return list(inventory["instances"])
-
-
-# ---------------------------------------------------------------------------------------------
 # NETBOX SERVICE GRAPHQL SHELL MODEL
 # ---------------------------------------------------------------------------------------------
 
 
-class GrapQLCommands(ClientRunJobArgs, NetboxCommonArgs):
+class GrapQLCommands(NetboxClientRunJobArgs, NetboxCommonArgs):
     dry_run: Optional[StrictBool] = Field(
         None,
         description="Only return query content, do not run it",
@@ -113,7 +85,7 @@ class GrapQLCommands(ClientRunJobArgs, NetboxCommonArgs):
 # ---------------------------------------------------------------------------------------------
 
 
-class NetboxShowCommandsModel(ClientRunJobArgs, NetboxCommonArgs):
+class NetboxShowCommandsModel(NetboxClientRunJobArgs, NetboxCommonArgs):
     inventory: Callable = Field(
         "get_netbox_inventory",
         description="show Netbox inventory data",
@@ -173,7 +145,7 @@ class NetboxShowCommandsModel(ClientRunJobArgs, NetboxCommonArgs):
 # ---------------------------------------------------------------------------------------------
 
 
-class GetInterfaces(ClientRunJobArgs, NetboxCommonArgs):
+class GetInterfaces(NetboxClientRunJobArgs, NetboxCommonArgs):
     devices: Union[StrictStr, List] = Field(
         ..., description="Devices to retrieve interface for"
     )
@@ -216,12 +188,12 @@ class GetInterfaces(ClientRunJobArgs, NetboxCommonArgs):
 
 
 class GetCommands(BaseModel):
+    devices: GetDevices = Field(None, description="Query Netbox devices data")
     interfaces: GetInterfaces = Field(
         None, description="Query Netbox device interfaces data"
     )
     # circuits
     # connections
-    # devices:
 
     class PicleConfig:
         subshell = True
@@ -250,7 +222,7 @@ class UpdateViaServices(BaseModel):
     )
 
 
-class UpdateDeviceFactsCommand(NetboxCommonArgs, ClientRunJobArgs):
+class UpdateDeviceFactsCommand(NetboxCommonArgs, NetboxClientRunJobArgs):
     via: UpdateViaServices = Field(
         None,
         description="Service to use to retrieve device data",
@@ -294,7 +266,7 @@ class UpdateDeviceFactsCommand(NetboxCommonArgs, ClientRunJobArgs):
         outputter = Outputters.outputter_rich_json
 
 
-class UpdateDeviceInterfacesCommand(NetboxCommonArgs, ClientRunJobArgs):
+class UpdateDeviceInterfacesCommand(NetboxCommonArgs, NetboxClientRunJobArgs):
     dry_run: Optional[StrictBool] = Field(
         None,
         description="Return information that would be pushed to Netbox but do not push it",
@@ -365,6 +337,9 @@ class NetboxServiceCommands(BaseModel):
     graphql: GrapQLCommands = Field(None, description="Query Netbox GrapQL API")
     get: GetCommands = Field(None, description="Query data from Netbox")
     update: UpdateCommands = Field(None, description="Update Netbox data")
+    cache: NetboxServiceCache = Field(
+        None, description="Work with Netbox service cached data"
+    )
 
     # rest
     # get devices

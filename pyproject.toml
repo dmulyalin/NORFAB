@@ -129,6 +129,7 @@ nornirservice = [
 netboxservice = [
     "requests",
     "pynetbox",
+    "diskcache",
 ]
 robot = [
     "robot"

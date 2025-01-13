@@ -250,12 +250,17 @@ class NorniHostsFilters(BaseModel):
     hosts: Union[StrictStr, List[StrictStr]] = Field(
         None, description="Filter hosts to target"
     )
+    workers: Union[StrictStr, List[StrictStr]] = Field(
+        "all", description="Filter worker to target"
+    )
 
     @staticmethod
     def source_workers():
-        reply = NFCLIENT.get("mmi.service.broker", "show_workers")
+        reply = NFCLIENT.get(
+            "mmi.service.broker", "show_workers", kwargs={"service": "nornir"}
+        )
         reply = json.loads(reply["results"])
-        return [w["name"] for w in reply if w["service"].startswith("nornir")]
+        return ["all", "any"] + [w["name"] for w in reply]
 
     @staticmethod
     def source_hosts():

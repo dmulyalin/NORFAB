@@ -58,11 +58,14 @@ import sys
 import importlib.metadata
 import requests
 import copy
-
+import os
+from fnmatch import fnmatchcase
+from datetime import datetime, timedelta
 from norfab.core.worker import NFPWorker, Result
 from typing import Union
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 from norfab.core.exceptions import UnsupportedServiceError
+from diskcache import FanoutCache
 
 try:
     import pynetbox
@@ -191,6 +194,7 @@ class NetboxWorker(NFPWorker):
         init_done_event=None,
         log_level="WARNING",
         log_queue: object = None,
+        cache_ttl: int = 31557600,  # 1 Year
     ):
         super().__init__(broker, service, worker_name, exit_event, log_level, log_queue)
         self.init_done_event = init_done_event
@@ -222,8 +226,17 @@ class NetboxWorker(NFPWorker):
         # check Netbox compatibility
         self._verify_compatibility()
 
+        # instantiate cache
+        self.cache_dir = os.path.join(self.base_dir, "cache")
+        os.makedirs(self.cache_dir, exist_ok=True)
+        self.cache = self._get_diskcache()
+        self.cache_ttl = cache_ttl
+
         self.init_done_event.set()
         log.info(f"{self.name} - Started")
+
+    def worker_exit(self) -> None:
+        self.cache.close()
 
     # ----------------------------------------------------------------------
     # Netbox Service Functions that exposed for calling
@@ -351,6 +364,99 @@ class NetboxWorker(NFPWorker):
             nb = pynetbox.api(url=params["url"], token=params["token"])
 
         return nb
+
+    def _get_diskcache(self) -> FanoutCache:
+        return FanoutCache(
+            directory=self.cache_dir,
+            shards=4,
+            timeout=1,  # 1 second
+            size_limit=1073741824,  #  GigaByte
+        )
+
+    def cache_list(self, keys="*", details=False) -> Result:
+        """
+        List cache keys.
+
+        :param keys: Pattern to match keys to list
+        :param details: if True add key details, returns just key name otherwise
+        :returns: List of cache keys names if details False, else return list of
+            key dictionaries with extra information like age and expire time.
+        """
+        self.cache.expire()
+        ret = Result(task=f"{self.name}:cache_list", result=[])
+        for cache_key in self.cache:
+            if fnmatchcase(cache_key, keys):
+                if details:
+                    _, expires = self.cache.get(cache_key, expire_time=True)
+                    expires = datetime.fromtimestamp(expires)
+                    creation = expires - timedelta(seconds=self.cache_ttl)
+                    age = datetime.now() - creation
+                    ret.result.append(
+                        {
+                            "key": cache_key,
+                            "age": str(age),
+                            "creation": str(creation),
+                            "expires": str(expires),
+                        }
+                    )
+                else:
+                    ret.result.append(cache_key)
+        return ret
+
+    def cache_clear(self, key=None, keys=None) -> Result:
+        """
+        Clears specified cache entries.
+
+        :param key: Specific key to clear from the cache
+        :param keys: Pattern to match multiple keys to clear from the cache
+        :returns: List of cleared keys.
+        """
+        ret = Result(task=f"{self.name}:cache_clear", result=[])
+        # check if has keys to clear
+        if key == keys == None:
+            ret.result = "Noting to clear, specify key or keys"
+            return ret
+        # remove specific key from cache
+        if key:
+            if key in self.cache:
+                if self.cache.delete(key, retry=True):
+                    ret.result.append(key)
+                else:
+                    raise RuntimeError(f"Failed to remove {key} from cache")
+            else:
+                ret.messages.append(f"Key {key} not in cache.")
+        # remove all keys matching glob pattern
+        if keys:
+            for cache_key in self.cache:
+                if fnmatchcase(cache_key, keys):
+                    if self.cache.delete(cache_key, retry=True):
+                        ret.result.append(cache_key)
+                    else:
+                        raise RuntimeError(f"Failed to remove {key} from cache")
+        return ret
+
+    def cache_get(self, key=None, keys=None, raise_missing=False) -> Result:
+        """
+        Return data stored in specified cache entries.
+
+        :param key: Specific key to get cached data for
+        :param keys: Pattern to match multiple keys to return cached data
+        :param raise_missing: if True raises KeyError for missing key
+        :returns: Requested keys cached data.
+        """
+        ret = Result(task=f"{self.name}:cache_clear", result={})
+        # get specific key from cache
+        if key:
+            if key in self.cache:
+                ret.result[key] = self.cache[key]
+            elif raise_missing:
+                raise KeyError(f"Key {key} not in cache.")
+        # get all keys matching glob pattern
+        if keys:
+            for cache_key in self.cache:
+                if fnmatchcase(cache_key, keys):
+                    ret.result[cache_key] = self.cache[cache_key]
+        return ret
 
     def graphql(
         self,
@@ -485,6 +591,7 @@ class NetboxWorker(NFPWorker):
         instance: str = None,
         dry_run: bool = False,
         devices: list = None,
+        cache: Union[bool, str] = True,
     ) -> Result:
         """
         Function to retrieve devices data from Netbox using GraphQL API.
@@ -493,12 +600,18 @@ class NetboxWorker(NFPWorker):
         :param instance: Netbox instance name
         :param dry_run: only return query content, do not run it
         :param devices: list of device names to query data for
+        :param cache: if `True` use data stored in cache if it is up to date
+            refresh it otherwise, `False` do not use cache do not update cache,
+            `refresh` ignore data in cache and replace it with data fetched
+            from Netbox, `force` use data in cache without checking if it is up
+            to date
         :return: dictionary keyed by device name with device data
         """
         ret = Result(task=f"{self.name}:get_devices", result={})
         instance = instance or self.default_instance
         filters = filters or []
-
+        devices = devices or []
+        queries = {}  # devices queries
         device_fields = [
             "name",
             "last_updated",
@@ -511,7 +624,7 @@ class NetboxWorker(NFPWorker):
             "platform {name}",
             "serial",
             "asset_tag",
-            "site {name tags{name}}",
+            "site {name slug tags{name} }",
             "location {name}",
             "rack {name}",
             "status",
@@ -521,47 +634,119 @@ class NetboxWorker(NFPWorker):
             "position",
         ]
 
-        # form queries dictionary out of filters
-        queries = {
-            f"devices_by_filter_{index}": {
-                "obj": "device_list",
-                "filters": filter_item,
-                "fields": device_fields,
+        if cache == True or cache == "force":
+            # retrieve last updated data from Netbox for devices
+            last_updated_query = {
+                f"devices_by_filter_{index}": {
+                    "obj": "device_list",
+                    "filters": filter_item,
+                    "fields": ["name", "last_updated"],
+                }
+                for index, filter_item in enumerate(filters)
             }
-            for index, filter_item in enumerate(filters)
-        }
+            if devices:
+                # use cache data without checking if it is up to date for cached devices
+                if cache == "force":
+                    for device_name in list(devices):
+                        device_cache_key = f"get_devices::{device_name}"
+                        if device_cache_key in self.cache:
+                            devices.remove(device_name)
+                            ret.result[device_name] = self.cache[device_cache_key]
+                # query netbox last updated data for devices
+                if self.nb_version[0] == 4:
+                    dlist = '["{dl}"]'.format(dl='", "'.join(devices))
+                    filters_dict = {"name": f"{{in_list: {dlist}}}"}
+                elif self.nb_version[0] == 3:
+                    filters_dict = {"name": devices}
+                last_updated_query["devices_by_devices_list"] = {
+                    "obj": "device_list",
+                    "filters": filters_dict,
+                    "fields": ["name", "last_updated"],
+                }
+            last_updated = self.graphql(
+                queries=last_updated_query, instance=instance, dry_run=dry_run
+            )
 
-        # add devices list query
-        if devices:
-            if self.nb_version[0] == 4:
-                dlist = '["{dl}"]'.format(dl='", "'.join(devices))
-                filters_dict = {"name": f"{{in_list: {dlist}}}"}
-            elif self.nb_version[0] == 3:
-                filters_dict = {"name": devices}
-            queries["devices_by_devices_list"] = {
-                "obj": "device_list",
-                "filters": filters_dict,
-                "fields": device_fields,
+            # check for errors
+            if last_updated.errors:
+                msg = f"{self.name} - get devices query failed with errors:\n{last_updated.errors}"
+                raise Exception(msg)
+
+            # return dry run result
+            if dry_run:
+                ret.result["get_devices_dry_run"] = last_updated.result
+                return ret
+
+            # try to retrieve device data from cache
+            self.cache.expire()  # remove expired items from cache
+            for devices_list in last_updated.result.values():
+                for device in devices_list:
+                    device_cache_key = f"get_devices::{device['name']}"
+                    # check if cache is up to date and use it if so
+                    if device_cache_key in self.cache and (
+                        self.cache[device_cache_key]["last_updated"]
+                        == device["last_updated"]
+                        or cache == "force"
+                    ):
+                        ret.result[device["name"]] = self.cache[device_cache_key]
+                        # remove device from list of devices to retrieve
+                        if device["name"] in devices:
+                            devices.remove(device["name"])
+                    # cache old or no cache, fetch device data
+                    elif device["name"] not in devices:
+                        devices.append(device["name"])
+        # ignore cache data, fetch data from netbox
+        elif cache == False or cache == "refresh":
+            queries = {
+                f"devices_by_filter_{index}": {
+                    "obj": "device_list",
+                    "filters": filter_item,
+                    "fields": device_fields,
+                }
+                for index, filter_item in enumerate(filters)
             }
 
-        # send queries
-        query_result = self.graphql(queries=queries, instance=instance, dry_run=dry_run)
-        devices_data = query_result.result
+        # fetch devices data from Netbox
+        if devices or queries:
+            if devices:
+                if self.nb_version[0] == 4:
+                    dlist = '["{dl}"]'.format(dl='", "'.join(devices))
+                    filters_dict = {"name": f"{{in_list: {dlist}}}"}
+                elif self.nb_version[0] == 3:
+                    filters_dict = {"name": devices}
+                queries["devices_by_devices_list"] = {
+                    "obj": "device_list",
+                    "filters": filters_dict,
+                    "fields": device_fields,
+                }
 
-        # return dry run result
-        if dry_run:
-            return query_result
+            # send queries
+            query_result = self.graphql(
+                queries=queries, instance=instance, dry_run=dry_run
+            )
 
-        # check for errors
-        if query_result.errors:
-            msg = f"{self.name} - get devices query failed with errors:\n{query_result.errors}"
-            raise Exception(msg)
+            # check for errors
+            if query_result.errors:
+                msg = f"{self.name} - get devices query failed with errors:\n{query_result.errors}"
+                raise Exception(msg)
 
-        # process devices
-        for devices_list in devices_data.values():
-            for device in devices_list:
-                if device["name"] not in ret.result:
-                    ret.result[device.pop("name")] = device
+            # return dry run result
+            if dry_run:
+                ret.result["get_devices_dry_run"] = query_result.result
+                return ret
+
+            # process devices data
+            devices_data = query_result.result
+            for devices_list in devices_data.values():
+                for device in devices_list:
+                    if device["name"] not in ret.result:
+                        device_name = device.pop("name")
+                        # cache device data
+                        if cache != False:
+                            cache_key = f"get_devices::{device_name}"
+                            self.cache.set(cache_key, device, expire=self.cache_ttl)
+                        # add device data to return result
+                        ret.result[device_name] = device
 
         return ret
 
@@ -910,6 +1095,7 @@ class NetboxWorker(NFPWorker):
         instance: str = None,
         dry_run: bool = False,
         cid: list = None,
+        cache: Union[bool, str] = True,
     ):
         """
         Function to retrieve device circuits data from Netbox using GraphQL API.
@@ -918,6 +1104,11 @@ class NetboxWorker(NFPWorker):
         :param instance: Netbox instance name
         :param dry_run: only return query content, do not run it
         :param cid: list of circuit identifiers to retrieve data for
+        :param cache: if `True` use data stored in cache if it is up to date
+            refresh it otherwise, `False` do not use cache do not update cache,
+            `refresh` ignore data in cache and replace it with data fetched
+            from Netbox, `force` use data in cache without checking if it is up
+            to date
         :return: dictionary keyed by device name with circuits data
         """
         # form final result object
@@ -941,18 +1132,8 @@ class NetboxWorker(NFPWorker):
         ]
 
         # retrieve list of hosts' sites
-        if self.nb_version[0] == 4:
-            dlist = '["{dl}"]'.format(dl='", "'.join(devices))
-            device_filters_dict = {"name": f"{{in_list: {dlist}}}"}
-        elif self.nb_version[0] == 3:
-            device_filters_dict = {"name": devices}
-        device_sites = self.graphql(
-            obj="device_list",
-            filters=device_filters_dict,
-            fields=device_sites_fields,
-            instance=instance,
-        )
-        sites = list(set([i["site"]["slug"] for i in device_sites.result]))
+        device_data = self.get_devices(devices=devices, instance=instance, cache=cache)
+        sites = list(set([i["site"]["slug"] for i in device_data.result.values()]))
 
         # retrieve all circuits for devices' sites
         if self.nb_version[0] == 4:
@@ -1339,7 +1520,7 @@ class NetboxWorker(NFPWorker):
         """
         Method to retrieve existing or allocate new IP address in Netbox.
 
-        :param subnet: IPv4 or IPv6 subnet e.g. ``10.0.0.0/24`` to allocate next 
+        :param subnet: IPv4 or IPv6 subnet e.g. ``10.0.0.0/24`` to allocate next
             available IP Address from
         :param description: IP address description to record in Netbox database
         :param device: device name to find interface for and link IP address with

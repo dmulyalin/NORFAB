@@ -560,7 +560,12 @@ class NFPWorker:
         else:
             return {}
 
+    def worker_exit(self) -> None:
+        """Method to override in child classes"""
+        return
+
     def destroy(self, message=None):
+        self.worker_exit()
         self.destroy_event.set()
         self.client.destroy()
 

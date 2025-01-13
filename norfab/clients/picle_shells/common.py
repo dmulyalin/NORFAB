@@ -16,6 +16,7 @@ from pydantic import (
     StrictStr,
     Field,
 )
+from enum import Enum
 from typing import Union, Optional, List, Any, Dict, Callable, Tuple
 from rich.console import Console
 
@@ -158,6 +159,11 @@ def log_error_or_result(data: dict) -> dict:
 # ---------------------------------------------------------------------------------------------
 # COMMON MODELS
 # ---------------------------------------------------------------------------------------------
+
+
+class BoolEnum(Enum):
+    TRUE = True
+    FALSE = False
 
 
 class ClientRunJobArgs(BaseModel):
