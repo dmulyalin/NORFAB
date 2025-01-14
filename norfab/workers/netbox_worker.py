@@ -1132,7 +1132,7 @@ class NetboxWorker(NFPWorker):
         ]
 
         # retrieve list of hosts' sites
-        device_data = self.get_devices(devices=devices, instance=instance, cache=cache)
+        device_data = self.get_devices(devices=copy.copy(devices), instance=instance, cache=cache)
         sites = list(set([i["site"]["slug"] for i in device_data.result.values()]))
 
         # retrieve all circuits for devices' sites

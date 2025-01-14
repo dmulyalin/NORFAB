@@ -279,6 +279,10 @@ class NornirCliShell(
         if kwargs.get("use_ps") and "use_ps_timeout" in kwargs:
             kwargs["timeout"] = kwargs.pop("use_ps_timeout")
 
+        # extract job_data
+        if kwargs.get("job_data"):
+            kwargs["job_data"] = json.loads(kwargs["job_data"])
+            
         # extract Tabulate arguments
         table = kwargs.pop("table", {})  # tabulate
         headers = kwargs.pop("headers", "keys")  # tabulate
