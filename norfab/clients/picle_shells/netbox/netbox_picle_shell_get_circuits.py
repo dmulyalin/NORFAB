@@ -22,20 +22,18 @@ from .netbox_picle_shell_cache import CacheEnum
 log = logging.getLogger(__name__)
 
 
-class GetDevices(NetboxClientRunJobArgs, NetboxCommonArgs):
-    filters: StrictStr = Field(
-        None,
-        description="List of device filters dictionaries as a JSON string",
-        examples='[{"q": "ceos1"}]',
-    )
+class GetCircuits(NetboxClientRunJobArgs, NetboxCommonArgs):
     devices: Union[StrictStr, List[StrictStr]] = Field(
-        None, description="Device names to query data for"
+        None, description="Device names to query data for", alias="device-list"
     )
     dry_run: StrictBool = Field(
         None,
         description="Only return query content, do not run it",
         alias="dry-run",
         json_schema_extra={"presence": True},
+    )
+    cid: Union[StrictStr, List[StrictStr]] = Field(
+        None, description="List of circuit identifiers to retrieve data for"
     )
     cache: CacheEnum = Field(True, description="How to use cache")
 
@@ -46,12 +44,12 @@ class GetDevices(NetboxClientRunJobArgs, NetboxCommonArgs):
 
         if isinstance(kwargs.get("devices"), str):
             kwargs["devices"] = [kwargs["devices"]]
-        if isinstance(kwargs.get("filters"), str):
-            kwargs["filters"] = json.loads(kwargs["filters"])
+        if isinstance(kwargs.get("cid"), str):
+            kwargs["cid"] = json.loads(kwargs["cid"])
 
         result = NFCLIENT.run_job(
             "netbox",
-            "get_devices",
+            "get_circuits",
             workers=workers,
             args=args,
             kwargs=kwargs,

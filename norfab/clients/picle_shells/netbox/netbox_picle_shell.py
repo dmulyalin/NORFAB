@@ -27,6 +27,7 @@ from ..nornir.nornir_picle_shell import NornirCommonArgs, NorniHostsFilters
 from .netbox_picle_shell_common import NetboxCommonArgs, NetboxClientRunJobArgs
 from .netbox_picle_shell_get_devices import GetDevices
 from .netbox_picle_shell_cache import NetboxServiceCache
+from .netbox_picle_shell_get_circuits import GetCircuits
 
 RICHCONSOLE = Console()
 SERVICE = "netbox"
@@ -192,8 +193,9 @@ class GetCommands(BaseModel):
     interfaces: GetInterfaces = Field(
         None, description="Query Netbox device interfaces data"
     )
-    # circuits
-    # connections
+    circuits: GetCircuits = Field(
+        None, description="Query Netbox circuits data for deviecs"
+    )
 
     class PicleConfig:
         subshell = True
@@ -340,12 +342,6 @@ class NetboxServiceCommands(BaseModel):
     cache: NetboxServiceCache = Field(
         None, description="Work with Netbox service cached data"
     )
-
-    # rest
-    # get devices
-    # get interfaces
-    # get connections
-    # get circuits
 
     class PicleConfig:
         subshell = True

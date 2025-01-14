@@ -59,6 +59,8 @@ import importlib.metadata
 import requests
 import copy
 import os
+import concurrent.futures
+
 from fnmatch import fnmatchcase
 from datetime import datetime, timedelta
 from norfab.core.worker import NFPWorker, Result
@@ -1089,6 +1091,93 @@ class NetboxWorker(NFPWorker):
 
         return ret
 
+    def _map_circuit(
+        self, circuit: dict, ret: Result, instance: str, devices: list
+    ) -> bool:
+        """
+        ThreadPoolExecutor target function to retrieve circuit details from Netbox
+
+        :param circuit: Dictionary with circuit data
+        :param ret: Result object to save results into
+        :param instance: Netbox instance name
+        :param devices: list of devices to map circuits for
+        """
+        cid = circuit.pop("cid")
+        circuit["tags"] = [i["name"] for i in circuit["tags"]]
+        circuit["type"] = circuit["type"]["name"]
+        circuit["provider"] = circuit["provider"]["name"]
+        circuit["tenant"] = circuit["tenant"]["name"] if circuit["tenant"] else None
+        circuit["provider_account"] = (
+            circuit["provider_account"]["name"] if circuit["provider_account"] else None
+        )
+        termination_a = circuit.pop("termination_a")
+        termination_z = circuit.pop("termination_z")
+        termination_a = termination_a["id"] if termination_a else None
+        termination_z = termination_z["id"] if termination_z else None
+
+        # retrieve A or Z termination path using Netbox REST API
+        if termination_a is not None:
+            circuit_path = self.rest(
+                instance=instance,
+                method="get",
+                api=f"/circuits/circuit-terminations/{termination_a}/paths/",
+            )
+        elif termination_z is not None:
+            circuit_path = self.rest(
+                instance=instance,
+                method="get",
+                api=f"/circuits/circuit-terminations/{termination_z}/paths/",
+            )
+        else:
+            return True
+
+        # check if circuit ends connect to device or provider network
+        if (
+            not circuit_path
+            or "name" not in circuit_path[0]["path"][0][0]
+            or "name" not in circuit_path[0]["path"][-1][-1]
+        ):
+            return True
+
+        # form A and Z connection endpoints
+        end_a = {
+            "device": circuit_path[0]["path"][0][0]
+            .get("device", {})
+            .get("name", False),
+            "provider_network": "provider-network"
+            in circuit_path[0]["path"][0][0]["url"],
+            "name": circuit_path[0]["path"][0][0]["name"],
+        }
+        end_z = {
+            "device": circuit_path[0]["path"][-1][-1]
+            .get("device", {})
+            .get("name", False),
+            "provider_network": "provider-network"
+            in circuit_path[0]["path"][-1][-1]["url"],
+            "name": circuit_path[0]["path"][-1][-1]["name"],
+        }
+        circuit["is_active"] = circuit_path[0]["is_active"]
+
+        # map path ends to devices
+        if end_a["device"] and end_a["device"] in devices:
+            ret.result[end_a["device"]][cid] = copy.deepcopy(circuit)
+            ret.result[end_a["device"]][cid]["interface"] = end_a["name"]
+            if end_z["device"]:
+                ret.result[end_a["device"]][cid]["remote_device"] = end_z["device"]
+                ret.result[end_a["device"]][cid]["remote_interface"] = end_z["name"]
+            elif end_z["provider_network"]:
+                ret.result[end_a["device"]][cid]["provider_network"] = end_z["name"]
+        if end_z["device"] and end_z["device"] in devices:
+            ret.result[end_z["device"]][cid] = copy.deepcopy(circuit)
+            ret.result[end_z["device"]][cid]["interface"] = end_z["name"]
+            if end_a["device"]:
+                ret.result[end_z["device"]][cid]["remote_device"] = end_a["device"]
+                ret.result[end_z["device"]][cid]["remote_interface"] = end_a["name"]
+            elif end_a["provider_network"]:
+                ret.result[end_z["device"]][cid]["provider_network"] = end_a["name"]
+
+        return True
+
     def get_circuits(
         self,
         devices: list,
@@ -1111,10 +1200,13 @@ class NetboxWorker(NFPWorker):
             to date
         :return: dictionary keyed by device name with circuits data
         """
+        log.info(
+            f"{self.name}:get_circuits - {instance or self.default_instance} Netbox, "
+            f"devices {', '.join(devices)}, cid {cid}"
+        )
+
         # form final result object
         ret = Result(task=f"{self.name}:get_circuits", result={d: {} for d in devices})
-
-        device_sites_fields = ["site {slug}"]
         circuit_fields = [
             "cid",
             "tags {name}",
@@ -1132,8 +1224,13 @@ class NetboxWorker(NFPWorker):
         ]
 
         # retrieve list of hosts' sites
-        device_data = self.get_devices(devices=copy.copy(devices), instance=instance, cache=cache)
+        device_data = self.get_devices(
+            devices=copy.deepcopy(devices), instance=instance, cache=cache
+        )
         sites = list(set([i["site"]["slug"] for i in device_data.result.values()]))
+        log.info(
+            f"{self.name}:get_circuits - retrieving circuits for sites {', '.join(sites)}"
+        )
 
         # retrieve all circuits for devices' sites
         if self.nb_version[0] == 4:
@@ -1159,82 +1256,16 @@ class NetboxWorker(NFPWorker):
         all_circuits = query_result.result
 
         # iterate over circuits and map them to devices
-        for circuit in all_circuits:
-            cid = circuit.pop("cid")
-            circuit["tags"] = [i["name"] for i in circuit["tags"]]
-            circuit["type"] = circuit["type"]["name"]
-            circuit["provider"] = circuit["provider"]["name"]
-            circuit["tenant"] = circuit["tenant"]["name"] if circuit["tenant"] else None
-            circuit["provider_account"] = (
-                circuit["provider_account"]["name"]
-                if circuit["provider_account"]
-                else None
-            )
-            termination_a = circuit.pop("termination_a")
-            termination_z = circuit.pop("termination_z")
-            termination_a = termination_a["id"] if termination_a else None
-            termination_z = termination_z["id"] if termination_z else None
-
-            # retrieve A or Z termination path using Netbox REST API
-            if termination_a is not None:
-                circuit_path = self.rest(
-                    instance=instance,
-                    method="get",
-                    api=f"/circuits/circuit-terminations/{termination_a}/paths/",
-                )
-            elif termination_z is not None:
-                circuit_path = self.rest(
-                    instance=instance,
-                    method="get",
-                    api=f"/circuits/circuit-terminations/{termination_z}/paths/",
-                )
-            else:
+        log.info(
+            f"{self.name}:get_circuits - mapping device endpoints for {len(all_circuits)} circuits"
+        )
+        with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
+            results = [
+                executor.submit(self._map_circuit, circuit, ret, instance, devices)
+                for circuit in all_circuits
+            ]
+            for _ in concurrent.futures.as_completed(results):
                 continue
-
-            # check if circuit ends connect to device or provider network
-            if (
-                not circuit_path
-                or "name" not in circuit_path[0]["path"][0][0]
-                or "name" not in circuit_path[0]["path"][-1][-1]
-            ):
-                continue
-
-            # form A and Z connection endpoints
-            end_a = {
-                "device": circuit_path[0]["path"][0][0]
-                .get("device", {})
-                .get("name", False),
-                "provider_network": "provider-network"
-                in circuit_path[0]["path"][0][0]["url"],
-                "name": circuit_path[0]["path"][0][0]["name"],
-            }
-            end_z = {
-                "device": circuit_path[0]["path"][-1][-1]
-                .get("device", {})
-                .get("name", False),
-                "provider_network": "provider-network"
-                in circuit_path[0]["path"][-1][-1]["url"],
-                "name": circuit_path[0]["path"][-1][-1]["name"],
-            }
-            circuit["is_active"] = circuit_path[0]["is_active"]
-
-            # map path ends to devices
-            if end_a["device"] and end_a["device"] in devices:
-                ret.result[end_a["device"]][cid] = copy.deepcopy(circuit)
-                ret.result[end_a["device"]][cid]["interface"] = end_a["name"]
-                if end_z["device"]:
-                    ret.result[end_a["device"]][cid]["remote_device"] = end_z["device"]
-                    ret.result[end_a["device"]][cid]["remote_interface"] = end_z["name"]
-                elif end_z["provider_network"]:
-                    ret.result[end_a["device"]][cid]["provider_network"] = end_z["name"]
-            if end_z["device"] and end_z["device"] in devices:
-                ret.result[end_z["device"]][cid] = copy.deepcopy(circuit)
-                ret.result[end_z["device"]][cid]["interface"] = end_z["name"]
-                if end_a["device"]:
-                    ret.result[end_z["device"]][cid]["remote_device"] = end_a["device"]
-                    ret.result[end_z["device"]][cid]["remote_interface"] = end_a["name"]
-                elif end_a["provider_network"]:
-                    ret.result[end_z["device"]][cid]["provider_network"] = end_a["name"]
 
         return ret
 

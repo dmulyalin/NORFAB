@@ -207,7 +207,7 @@ class NornirCfgShell(
         # extract job_data
         if kwargs.get("job_data"):
             kwargs["job_data"] = json.loads(kwargs["job_data"])
-            
+
         # extract Tabulate arguments
         table = kwargs.pop("table", {})  # tabulate
         headers = kwargs.pop("headers", "keys")  # tabulate
