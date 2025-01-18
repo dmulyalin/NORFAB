@@ -12,28 +12,28 @@
         <meta name="author" content="Denis Mulyalin">
       
       
-        <link rel="canonical" href="https://dmulyalin.github.io/NORFAB/services_netbox_service_tasks_update_device_facts/">
+        <link rel="canonical" href="https://dmulyalin.github.io/NORFAB/workers/netbox/services_netbox_service/">
       
       
-        <link rel="prev" href="../services_netbox_service_tasks_get_next_ip/">
+        <link rel="prev" href="../../nornir/services_nornir_service_jinja2_filters/">
       
       
-        <link rel="next" href="../services_netbox_service_tasks_update_device_interfaces/">
+        <link rel="next" href="../services_netbox_service_inventory/">
       
       
-      <link rel="icon" href="../assets/images/favicon.png">
+      <link rel="icon" href="../../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.49">
     
     
       
-        <title>Netbox UPDATE Device Facts - Network Automations Fabric [NORFAB]</title>
+        <title>Overview - Network Automations Fabric [NORFAB]</title>
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.6f8fc17f.min.css">
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.6f8fc17f.min.css">
       
         
-        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.06af60db.min.css">
       
       
 
@@ -52,9 +52,9 @@
       
     
     
-      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+      <link rel="stylesheet" href="../../../assets/_mkdocstrings.css">
     
-    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -79,6 +79,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#netbox-service" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -91,7 +96,7 @@
 
 <header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href=".." title="Network Automations Fabric [NORFAB]" class="md-header__button md-logo" aria-label="Network Automations Fabric [NORFAB]" data-md-component="logo">
+    <a href="../../.." title="Network Automations Fabric [NORFAB]" class="md-header__button md-logo" aria-label="Network Automations Fabric [NORFAB]" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -111,7 +116,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Netbox UPDATE Device Facts
+              Overview
             
           </span>
         </div>
@@ -216,7 +221,7 @@
     
     
       <li class="md-tabs__item md-tabs__item--active">
-        <a href=".." class="md-tabs__link">
+        <a href="../../.." class="md-tabs__link">
           
   
   NORFAB
@@ -234,7 +239,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../reference_norfab_inventory/" class="md-tabs__link">
+        <a href="../../../reference_norfab_inventory/" class="md-tabs__link">
           
   
   References
@@ -250,7 +255,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../tags/" class="md-tabs__link">
+      <a href="../../../tags/" class="md-tabs__link">
         
   
     
@@ -290,7 +295,7 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href=".." title="Network Automations Fabric [NORFAB]" class="md-nav__button md-logo" aria-label="Network Automations Fabric [NORFAB]" data-md-component="logo">
+    <a href="../../.." title="Network Automations Fabric [NORFAB]" class="md-nav__button md-logo" aria-label="Network Automations Fabric [NORFAB]" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -365,7 +370,7 @@
   
   
     <li class="md-nav__item">
-      <a href=".." class="md-nav__link">
+      <a href="../../.." class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -386,7 +391,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../norfab_installation/" class="md-nav__link">
+      <a href="../../../norfab_installation/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -407,7 +412,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../norfab_getting_started/" class="md-nav__link">
+      <a href="../../../norfab_getting_started/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -428,7 +433,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../norfab_why_use_norfab/" class="md-nav__link">
+      <a href="../../../norfab_why_use_norfab/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -449,7 +454,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../norfab_distributed_deployment/" class="md-nav__link">
+      <a href="../../../norfab_distributed_deployment/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -470,7 +475,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../norfab_docker_deployment/" class="md-nav__link">
+      <a href="../../../norfab_docker_deployment/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -491,7 +496,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../norfab_help_with_norfab/" class="md-nav__link">
+      <a href="../../../norfab_help_with_norfab/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -512,7 +517,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../norfab_changelog/" class="md-nav__link">
+      <a href="../../../norfab_changelog/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -578,7 +583,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../services_overview/" class="md-nav__link">
+      <a href="../../../services_overview/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -639,7 +644,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../workers/nornir/services_nornir_service/" class="md-nav__link">
+      <a href="../../nornir/services_nornir_service/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -660,11 +665,11 @@
   
   
     <li class="md-nav__item">
-      <a href="../workers/nornir/services_nornir_service_tasks_task/" class="md-nav__link">
+      <a href="../../nornir/services_nornir_service_inventory/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Nornir Task
+    Inventory
   </span>
   
 
@@ -681,11 +686,11 @@
   
   
     <li class="md-nav__item">
-      <a href="../workers/nornir/services_nornir_service_tasks_cli/" class="md-nav__link">
+      <a href="../../nornir/services_nornir_service_tasks_task/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Nornir Cli
+    Task Nornir Task
   </span>
   
 
@@ -702,11 +707,11 @@
   
   
     <li class="md-nav__item">
-      <a href="../workers/nornir/services_nornir_service_tasks_cfg/" class="md-nav__link">
+      <a href="../../nornir/services_nornir_service_tasks_cli/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Nornir Cfg
+    Task Cli
   </span>
   
 
@@ -723,11 +728,11 @@
   
   
     <li class="md-nav__item">
-      <a href="../workers/nornir/services_nornir_service_tasks_test/" class="md-nav__link">
+      <a href="../../nornir/services_nornir_service_tasks_cfg/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Nornir Test
+    Task Cfg
   </span>
   
 
@@ -744,11 +749,11 @@
   
   
     <li class="md-nav__item">
-      <a href="../workers/nornir/services_nornir_service_tasks_network/" class="md-nav__link">
+      <a href="../../nornir/services_nornir_service_tasks_test/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Nornir Network
+    Task Test
   </span>
   
 
@@ -765,11 +770,11 @@
   
   
     <li class="md-nav__item">
-      <a href="../workers/nornir/services_nornir_service_tasks_parse/" class="md-nav__link">
+      <a href="../../nornir/services_nornir_service_tasks_network/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Nornir Parse
+    Task Network
   </span>
   
 
@@ -786,11 +791,11 @@
   
   
     <li class="md-nav__item">
-      <a href="../workers/nornir/services_nornir_service_tasks_diagram/" class="md-nav__link">
+      <a href="../../nornir/services_nornir_service_tasks_parse/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Nornir Diagram
+    Task Parse
   </span>
   
 
@@ -807,11 +812,11 @@
   
   
     <li class="md-nav__item">
-      <a href="../workers/nornir/services_nornir_service_tasks_file_copy/" class="md-nav__link">
+      <a href="../../nornir/services_nornir_service_tasks_diagram/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Nornir File Copy
+    Task Diagram
   </span>
   
 
@@ -828,7 +833,28 @@
   
   
     <li class="md-nav__item">
-      <a href="../workers/nornir/services_nornir_service_jinja2_filters/" class="md-nav__link">
+      <a href="../../nornir/services_nornir_service_tasks_file_copy/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Task File Copy
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../nornir/services_nornir_service_jinja2_filters/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -896,14 +922,195 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../services_netbox_service/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Overview
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
     Overview
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      Overview
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#norfab-netbox-service-key-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      NorFab Netbox Service Key Features
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="NorFab Netbox Service Key Features">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#multi-instance-support" class="md-nav__link">
+    <span class="md-ellipsis">
+      Multi-Instance Support
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#device-and-interface-management" class="md-nav__link">
+    <span class="md-ellipsis">
+      Device and Interface Management
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#graphql-and-rest-api-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      GraphQL and REST API Integration
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#customizable-filters-and-queries" class="md-nav__link">
+    <span class="md-ellipsis">
+      Customizable Filters and Queries
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#caching-and-performance-optimization" class="md-nav__link">
+    <span class="md-ellipsis">
+      Caching and Performance Optimization
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#use-cases" class="md-nav__link">
+    <span class="md-ellipsis">
+      Use Cases
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Use Cases">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#automated-inventory-management" class="md-nav__link">
+    <span class="md-ellipsis">
+      Automated Inventory Management
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configuration-compliance-and-auditing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configuration, Compliance and Auditing
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#getting-started" class="md-nav__link">
+    <span class="md-ellipsis">
+      Getting Started
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conclusion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Conclusion
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../services_netbox_service_inventory/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Inventory
   </span>
   
 
@@ -924,7 +1131,7 @@
         
   
   <span class="md-ellipsis">
-    Netbox GraphQL
+    Task GraphQL
   </span>
   
 
@@ -945,7 +1152,7 @@
         
   
   <span class="md-ellipsis">
-    Netbox REST
+    Task REST
   </span>
   
 
@@ -966,7 +1173,7 @@
         
   
   <span class="md-ellipsis">
-    Netbox GET Devices
+    Task GET Devices
   </span>
   
 
@@ -987,7 +1194,7 @@
         
   
   <span class="md-ellipsis">
-    Netbox GET Interfaces
+    Task GET Interfaces
   </span>
   
 
@@ -1008,7 +1215,7 @@
         
   
   <span class="md-ellipsis">
-    Netbox GET Connections
+    Task GET Connections
   </span>
   
 
@@ -1029,7 +1236,7 @@
         
   
   <span class="md-ellipsis">
-    Netbox GET Circuits
+    Task GET Circuits
   </span>
   
 
@@ -1050,7 +1257,7 @@
         
   
   <span class="md-ellipsis">
-    Netbox GET Nornir Inventory
+    Task GET Nornir Inventory
   </span>
   
 
@@ -1071,7 +1278,7 @@
         
   
   <span class="md-ellipsis">
-    Netbox GET Next IP
+    Task GETNext IP
   </span>
   
 
@@ -1085,26 +1292,18 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../services_netbox_service_tasks_update_device_facts/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Netbox UPDATE Device Facts
+    Task UPDATE Device Facts
   </span>
   
 
       </a>
-      
     </li>
   
 
@@ -1121,7 +1320,7 @@
         
   
   <span class="md-ellipsis">
-    Netbox UPDATE Interfaces
+    Task UPDATE Device Interfaces
   </span>
   
 
@@ -1186,7 +1385,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../services_norfab_mmi.md" class="md-nav__link">
+      <a href="../../../services_norfab_mmi.md" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1207,7 +1406,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../services_norfab_inventory_service.md" class="md-nav__link">
+      <a href="../../../services_norfab_inventory_service.md" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1228,7 +1427,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../services_norfab_file_service.md" class="md-nav__link">
+      <a href="../../../services_norfab_file_service.md" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1249,7 +1448,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../services_norfab_jobs_service.md" class="md-nav__link">
+      <a href="../../../services_norfab_jobs_service.md" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1270,7 +1469,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../services_norfab_events_service.md" class="md-nav__link">
+      <a href="../../../services_norfab_events_service.md" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1350,7 +1549,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../clients_overview/" class="md-nav__link">
+      <a href="../../../clients_overview/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1371,7 +1570,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../clients_nfcli_overview/" class="md-nav__link">
+      <a href="../../../clients_nfcli_overview/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1392,7 +1591,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../clients_python_api_overview/" class="md-nav__link">
+      <a href="../../../clients_python_api_overview/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1413,7 +1612,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../clients_rest_api_overview/" class="md-nav__link">
+      <a href="../../../clients_rest_api_overview/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1434,7 +1633,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../clients_robot_client_overview/" class="md-nav__link">
+      <a href="../../../clients_robot_client_overview/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1510,7 +1709,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../reference_norfab_inventory/" class="md-nav__link">
+      <a href="../../../reference_norfab_inventory/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1611,7 +1810,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api_reference_core_norfab_nfapi/" class="md-nav__link">
+      <a href="../../../api_reference_core_norfab_nfapi/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1632,7 +1831,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api_reference_core_norfab_broker/" class="md-nav__link">
+      <a href="../../../api_reference_core_norfab_broker/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1653,7 +1852,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api_reference_core_norfab_worker/" class="md-nav__link">
+      <a href="../../../api_reference_core_norfab_worker/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1674,7 +1873,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api_reference_core_norfab_client/" class="md-nav__link">
+      <a href="../../../api_reference_core_norfab_client/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1695,7 +1894,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api_reference_core_norfab_simple_inventory/" class="md-nav__link">
+      <a href="../../../api_reference_core_norfab_simple_inventory/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1716,7 +1915,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api_reference_core_norfab_exceptions/" class="md-nav__link">
+      <a href="../../../api_reference_core_norfab_exceptions/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1785,7 +1984,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../workers/nornir/api_reference_workers_nornir_worker/" class="md-nav__link">
+      <a href="../../nornir/api_reference_workers_nornir_worker/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1875,7 +2074,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api_reference_clients_nfcli_client/" class="md-nav__link">
+      <a href="../../../api_reference_clients_nfcli_client/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1896,7 +2095,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api_reference_clients_robot_client/" class="md-nav__link">
+      <a href="../../../api_reference_clients_robot_client/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1973,7 +2172,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../reference_architecture_norfab/" class="md-nav__link">
+      <a href="../../../reference_architecture_norfab/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1994,7 +2193,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../reference_architecture_nfp/" class="md-nav__link">
+      <a href="../../../reference_architecture_nfp/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2030,7 +2229,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../tags/" class="md-nav__link">
+      <a href="../../../tags/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2060,6 +2259,136 @@
   
   
   
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      Overview
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#norfab-netbox-service-key-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      NorFab Netbox Service Key Features
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="NorFab Netbox Service Key Features">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#multi-instance-support" class="md-nav__link">
+    <span class="md-ellipsis">
+      Multi-Instance Support
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#device-and-interface-management" class="md-nav__link">
+    <span class="md-ellipsis">
+      Device and Interface Management
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#graphql-and-rest-api-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      GraphQL and REST API Integration
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#customizable-filters-and-queries" class="md-nav__link">
+    <span class="md-ellipsis">
+      Customizable Filters and Queries
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#caching-and-performance-optimization" class="md-nav__link">
+    <span class="md-ellipsis">
+      Caching and Performance Optimization
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#use-cases" class="md-nav__link">
+    <span class="md-ellipsis">
+      Use Cases
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Use Cases">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#automated-inventory-management" class="md-nav__link">
+    <span class="md-ellipsis">
+      Automated Inventory Management
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configuration-compliance-and-auditing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configuration, Compliance and Auditing
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#getting-started" class="md-nav__link">
+    <span class="md-ellipsis">
+      Getting Started
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conclusion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Conclusion
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
   
 </nav>
                   </div>
@@ -2072,12 +2401,47 @@
               <article class="md-content__inner md-typeset">
                 
                   
+  
+<nav class="md-tags" >
+  
+    
+    
+    
+      <a href="../../../tags/#netbox" class="md-tag">Netbox</a>
+    
+  
+</nav>
+
 
   
   
 
 
-  <h1>Netbox UPDATE Device Facts</h1>
+<h1 id="netbox-service">Netbox Service<a class="headerlink" href="#netbox-service" title="Permanent link">¤</a></h1>
+<p>The Netbox Service allows NorFab to integrate with <a href="https://github.com/netbox-community/netbox">Netbox</a> - a well-adopted open-source tool for documenting networks. This integration provides network engineers and administrators with powerful capabilities to manage and automate their network infrastructure using the rich data stored in Netbox.</p>
+<p><img alt="Nornir Service Architecture" src="../../../images/Netbox_Service.jpg" /></p>
+<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">¤</a></h2>
+<p>Netbox is a comprehensive network documentation and management tool that includes features for IP address management (IPAM), data center infrastructure management (DCIM), and more. By integrating Netbox with NorFab, you can leverage the detailed network data stored in Netbox to automate various network tasks, ensuring consistency and accuracy across your network operations.</p>
+<h2 id="norfab-netbox-service-key-features">NorFab Netbox Service Key Features<a class="headerlink" href="#norfab-netbox-service-key-features" title="Permanent link">¤</a></h2>
+<h3 id="multi-instance-support">Multi-Instance Support<a class="headerlink" href="#multi-instance-support" title="Permanent link">¤</a></h3>
+<p>With each NorFab Netbox worker capable of working with multiple Netbox instances, NorFab Netbox Service offers high flexibility. This allows you to manage and automate tasks across different Netbox instances, making it ideal for large-scale environments with multiple data centers or network segments.</p>
+<h3 id="device-and-interface-management">Device and Interface Management<a class="headerlink" href="#device-and-interface-management" title="Permanent link">¤</a></h3>
+<p>The Netbox Service enables you to retrieve and manage detailed information about network devices and interfaces. This includes device configuration contexts, interface statuses, IP addresses, and more. By using this data you can  ensure that your network state is always up-to-date and accurate.</p>
+<h3 id="graphql-and-rest-api-integration">GraphQL and REST API Integration<a class="headerlink" href="#graphql-and-rest-api-integration" title="Permanent link">¤</a></h3>
+<p>The Netbox Service leverages both REST and GraphQL API provided by Netbox to perform complex queries and retrieve specific data sets. This allows for efficient data retrieval and manipulation, enabling you to automate tasks such as inventory updates, configuration audits, and compliance checks.</p>
+<h3 id="customizable-filters-and-queries">Customizable Filters and Queries<a class="headerlink" href="#customizable-filters-and-queries" title="Permanent link">¤</a></h3>
+<p>You can define custom filters and queries to retrieve specific data from Netbox. This flexibility allows you to tailor the data retrieval process to meet your specific needs, ensuring that you get the exact information required for your automation tasks.</p>
+<h3 id="caching-and-performance-optimization">Caching and Performance Optimization<a class="headerlink" href="#caching-and-performance-optimization" title="Permanent link">¤</a></h3>
+<p>The Netbox Service includes caching mechanisms to optimize performance and reduce the load on your Netbox instances. By caching frequently accessed data, you can improve the efficiency of your automation workflows and ensure faster response times.</p>
+<h2 id="use-cases">Use Cases<a class="headerlink" href="#use-cases" title="Permanent link">¤</a></h2>
+<h3 id="automated-inventory-management">Automated Inventory Management<a class="headerlink" href="#automated-inventory-management" title="Permanent link">¤</a></h3>
+<p>By integrating Netbox with NorFab, you can automate the process of updating and maintaining your network inventory. This ensures that your inventory data is always accurate and up-to-date, reducing the risk of configuration errors and improving overall network reliability.</p>
+<h3 id="configuration-compliance-and-auditing">Configuration, Compliance and Auditing<a class="headerlink" href="#configuration-compliance-and-auditing" title="Permanent link">¤</a></h3>
+<p>The Netbox Service allows you to automate configuration compliance checks and audits through integration with other services such as Nornir. By retrieving inventory data from Netbox and comparing it against network state, you can quickly identify and remediate any deviations, ensuring that your network remains compliant.</p>
+<h2 id="getting-started">Getting Started<a class="headerlink" href="#getting-started" title="Permanent link">¤</a></h2>
+<p>To get started with the Netbox Service, you need to configure your Netbox instances and define the necessary connection parameters in your NorFab inventory. Refer to the <a href="../services_netbox_service_inventory/">Netbox Inventory</a> section for detailed instructions on setting up your inventory and integrating Netbox with NorFab.</p>
+<h2 id="conclusion">Conclusion<a class="headerlink" href="#conclusion" title="Permanent link">¤</a></h2>
+<p>The Netbox Service is a powerful addition to NorFab, providing seamless integration with Netbox and enabling advanced network automation capabilities. By leveraging the rich data stored in Netbox, you can enhance your network management processes, improve accuracy, and ensure consistency across your network operations.</p>
 
 
 
@@ -2085,7 +2449,8 @@
 
 
 
-
+  
+  
 
 
 
@@ -2160,10 +2525,10 @@
       <div class="md-progress" data-md-component="progress" role="progressbar"></div>
     
     
-    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.top", "toc.follow", "navigation.instant", "navigation.instant.progress", "content.footnote.tooltips", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.top", "toc.follow", "navigation.instant", "navigation.instant.progress", "content.footnote.tooltips", "content.code.copy", "content.code.annotate"], "search": "../../../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.88dd0f4e.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.88dd0f4e.min.js"></script>
       
     
   </body>

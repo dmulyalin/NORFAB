@@ -12,13 +12,13 @@
         <meta name="author" content="Denis Mulyalin">
       
       
-        <link rel="canonical" href="https://dmulyalin.github.io/NORFAB/workers/nornir/services_nornir_service_tasks_cfg/">
+        <link rel="canonical" href="https://dmulyalin.github.io/NORFAB/workers/netbox/services_netbox_service_tasks_get_connections/">
       
       
-        <link rel="prev" href="../services_nornir_service_tasks_cli/">
+        <link rel="prev" href="../services_netbox_service_tasks_get_interfaces/">
       
       
-        <link rel="next" href="../services_nornir_service_tasks_test/">
+        <link rel="next" href="../services_netbox_service_tasks_get_circuits/">
       
       
       <link rel="icon" href="../../../assets/images/favicon.png">
@@ -26,7 +26,7 @@
     
     
       
-        <title>Task Cfg - Network Automations Fabric [NORFAB]</title>
+        <title>Task GET Connections - Network Automations Fabric [NORFAB]</title>
       
     
     
@@ -80,7 +80,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#nornir-service-cfg-task" class="md-skip">
+        <a href="#netbox-get-connections-task" class="md-skip">
           Skip to content
         </a>
       
@@ -116,7 +116,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Task Cfg
+              Task GET Connections
             
           </span>
         </div>
@@ -601,8 +601,6 @@
                 
   
   
-    
-  
   
   
     
@@ -614,11 +612,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_9_2" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_9_2" >
         
           
           <label class="md-nav__link" for="__nav_1_9_2" id="__nav_1_9_2_label" tabindex="0">
@@ -632,7 +630,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_9_2_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_9_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_1_9_2">
             <span class="md-nav__icon md-icon"></span>
             Nornir Service
@@ -646,7 +644,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../services_nornir_service/" class="md-nav__link">
+      <a href="../../nornir/services_nornir_service/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -667,7 +665,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../services_nornir_service_inventory/" class="md-nav__link">
+      <a href="../../nornir/services_nornir_service_inventory/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -688,7 +686,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../services_nornir_service_tasks_task/" class="md-nav__link">
+      <a href="../../nornir/services_nornir_service_tasks_task/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -709,11 +707,334 @@
   
   
     <li class="md-nav__item">
-      <a href="../services_nornir_service_tasks_cli/" class="md-nav__link">
+      <a href="../../nornir/services_nornir_service_tasks_cli/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
     Task Cli
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../nornir/services_nornir_service_tasks_cfg/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Task Cfg
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../nornir/services_nornir_service_tasks_test/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Task Test
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../nornir/services_nornir_service_tasks_network/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Task Network
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../nornir/services_nornir_service_tasks_parse/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Task Parse
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../nornir/services_nornir_service_tasks_diagram/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Task Diagram
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../nornir/services_nornir_service_tasks_file_copy/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Task File Copy
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../nornir/services_nornir_service_jinja2_filters/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Jina2 Filters Reference
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_9_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_1_9_3" id="__nav_1_9_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Netbox Service
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_9_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_1_9_3">
+            <span class="md-nav__icon md-icon"></span>
+            Netbox Service
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../services_netbox_service/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Overview
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../services_netbox_service_inventory/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Inventory
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../services_netbox_service_tasks_graphql/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Task GraphQL
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../services_netbox_service_tasks_rest/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Task REST
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../services_netbox_service_tasks_get_devices/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Task GET Devices
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../services_netbox_service_tasks_get_interfaces/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Task GET Interfaces
   </span>
   
 
@@ -743,7 +1064,7 @@
           
   
   <span class="md-ellipsis">
-    Task Cfg
+    Task GET Connections
   </span>
   
 
@@ -754,7 +1075,7 @@
         
   
   <span class="md-ellipsis">
-    Task Cfg
+    Task GET Connections
   </span>
   
 
@@ -776,108 +1097,18 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#nornir-cfg-sample-usage" class="md-nav__link">
+  <a href="#get-connections-sample-usage" class="md-nav__link">
     <span class="md-ellipsis">
-      Nornir CFG Sample Usage
+      Get Connections Sample Usage
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#use-different-configuration-plugins" class="md-nav__link">
+  <a href="#norfab-netbox-get-connections-command-shell-reference" class="md-nav__link">
     <span class="md-ellipsis">
-      Use Different Configuration Plugins
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#using-dry-run" class="md-nav__link">
-    <span class="md-ellipsis">
-      Using Dry Run
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#using-commit-confirmed" class="md-nav__link">
-    <span class="md-ellipsis">
-      Using Commit Confirmed
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#sourcing-configuration-from-files" class="md-nav__link">
-    <span class="md-ellipsis">
-      Sourcing Configuration From Files
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#using-jinja2-templates" class="md-nav__link">
-    <span class="md-ellipsis">
-      Using Jinja2 Templates
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#templating-configuration-with-inline-job-data" class="md-nav__link">
-    <span class="md-ellipsis">
-      Templating Configuration with Inline Job Data
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#parsing-and-generating-configuration-in-templates" class="md-nav__link">
-    <span class="md-ellipsis">
-      Parsing and Generating Configuration in Templates
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#outputting-text-tables" class="md-nav__link">
-    <span class="md-ellipsis">
-      Outputting Text Tables
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#formatting-output-results" class="md-nav__link">
-    <span class="md-ellipsis">
-      Formatting Output Results
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#using-promptless-mode" class="md-nav__link">
-    <span class="md-ellipsis">
-      Using Promptless Mode
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#norfab-nornir-cfg-shell-reference" class="md-nav__link">
-    <span class="md-ellipsis">
-      NORFAB Nornir CFG Shell Reference
+      NORFAB Netbox Get Connections Command Shell Reference
     </span>
   </a>
   
@@ -908,328 +1139,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../services_nornir_service_tasks_test/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Task Test
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../services_nornir_service_tasks_network/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Task Network
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../services_nornir_service_tasks_parse/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Task Parse
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../services_nornir_service_tasks_diagram/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Task Diagram
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../services_nornir_service_tasks_file_copy/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Task File Copy
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../services_nornir_service_jinja2_filters/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Jina2 Filters Reference
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-      
-      
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_9_3" >
-        
-          
-          <label class="md-nav__link" for="__nav_1_9_3" id="__nav_1_9_3_label" tabindex="0">
-            
-  
-  <span class="md-ellipsis">
-    Netbox Service
-  </span>
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_9_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_1_9_3">
-            <span class="md-nav__icon md-icon"></span>
-            Netbox Service
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../netbox/services_netbox_service/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Overview
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../netbox/services_netbox_service_inventory/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Inventory
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../netbox/services_netbox_service_tasks_graphql/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Task GraphQL
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../netbox/services_netbox_service_tasks_rest/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Task REST
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../netbox/services_netbox_service_tasks_get_devices/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Task GET Devices
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../netbox/services_netbox_service_tasks_get_interfaces/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Task GET Interfaces
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../netbox/services_netbox_service_tasks_get_connections/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Task GET Connections
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../netbox/services_netbox_service_tasks_get_circuits/" class="md-nav__link">
+      <a href="../services_netbox_service_tasks_get_circuits/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1250,7 +1160,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../netbox/services_netbox_service_tasks_get_nornir_inventory/" class="md-nav__link">
+      <a href="../services_netbox_service_tasks_get_nornir_inventory/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1271,7 +1181,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../netbox/services_netbox_service_tasks_get_next_ip/" class="md-nav__link">
+      <a href="../services_netbox_service_tasks_get_next_ip/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1292,7 +1202,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../netbox/services_netbox_service_tasks_update_device_facts/" class="md-nav__link">
+      <a href="../services_netbox_service_tasks_update_device_facts/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1313,7 +1223,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../netbox/services_netbox_service_tasks_update_device_interfaces/" class="md-nav__link">
+      <a href="../services_netbox_service_tasks_update_device_interfaces/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1981,7 +1891,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api_reference_workers_nornir_worker/" class="md-nav__link">
+      <a href="../../nornir/api_reference_workers_nornir_worker/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2002,7 +1912,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../netbox/api_reference_workers_netbox_worker/" class="md-nav__link">
+      <a href="../api_reference_workers_netbox_worker/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2266,108 +2176,18 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#nornir-cfg-sample-usage" class="md-nav__link">
+  <a href="#get-connections-sample-usage" class="md-nav__link">
     <span class="md-ellipsis">
-      Nornir CFG Sample Usage
+      Get Connections Sample Usage
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#use-different-configuration-plugins" class="md-nav__link">
+  <a href="#norfab-netbox-get-connections-command-shell-reference" class="md-nav__link">
     <span class="md-ellipsis">
-      Use Different Configuration Plugins
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#using-dry-run" class="md-nav__link">
-    <span class="md-ellipsis">
-      Using Dry Run
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#using-commit-confirmed" class="md-nav__link">
-    <span class="md-ellipsis">
-      Using Commit Confirmed
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#sourcing-configuration-from-files" class="md-nav__link">
-    <span class="md-ellipsis">
-      Sourcing Configuration From Files
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#using-jinja2-templates" class="md-nav__link">
-    <span class="md-ellipsis">
-      Using Jinja2 Templates
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#templating-configuration-with-inline-job-data" class="md-nav__link">
-    <span class="md-ellipsis">
-      Templating Configuration with Inline Job Data
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#parsing-and-generating-configuration-in-templates" class="md-nav__link">
-    <span class="md-ellipsis">
-      Parsing and Generating Configuration in Templates
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#outputting-text-tables" class="md-nav__link">
-    <span class="md-ellipsis">
-      Outputting Text Tables
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#formatting-output-results" class="md-nav__link">
-    <span class="md-ellipsis">
-      Formatting Output Results
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#using-promptless-mode" class="md-nav__link">
-    <span class="md-ellipsis">
-      Using Promptless Mode
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#norfab-nornir-cfg-shell-reference" class="md-nav__link">
-    <span class="md-ellipsis">
-      NORFAB Nornir CFG Shell Reference
+      NORFAB Netbox Get Connections Command Shell Reference
     </span>
   </a>
   
@@ -2401,7 +2221,7 @@
     
     
     
-      <a href="../../../tags/#nornir" class="md-tag">nornir</a>
+      <a href="../../../tags/#netbox" class="md-tag">netbox</a>
     
   
 </nav>
@@ -2411,153 +2231,10 @@
   
 
 
-<h1 id="nornir-service-cfg-task">Nornir Service CFG Task<a class="headerlink" href="#nornir-service-cfg-task" title="Permanent link">¤</a></h1>
-<p>Nornir service <code>cfg</code> task designed to send configuration to devices using SSH and Telnet. Nornir <code>cfg</code> can use Netmiko, Scrapli and NAPALM libraries to configure devices.</p>
-<h2 id="nornir-cfg-sample-usage">Nornir CFG Sample Usage<a class="headerlink" href="#nornir-cfg-sample-usage" title="Permanent link">¤</a></h2>
-<p>Example of sending configuration commands to devices.</p>
-<div class="admonition example">
-<p class="admonition-title">Example</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">CLI</label><label for="__tabbed_1_2">Python</label></div>
-<div class="tabbed-content">
-<div class="tabbed-block">
-<div class="highlight"><pre><span></span><code>C:\nf&gt;nfcli
-Welcome to NorFab Interactive Shell.
-nf#
-</code></pre></div>
-<p>Demo</p>
-<p><img alt="Nornir CFG Demo" src="../../../images/nornir_cfg_demo.gif" /></p>
-<p>Above sends configuration commands to all Nornir hosts that contain <code>spine</code> or <code>leaf</code> in their hostname as we use <code>FC</code> - "Filter Contains" Nornir hosts targeting filter.</p>
-<p><code>inventory.yaml</code> should be located in same folder where we start nfcli, unless <code>nfcli -i path_to_inventory.yaml</code> flag used. Refer to <a href="../../../norfab_getting_started/">Getting Started</a> section on how to construct  <code>inventory.yaml</code> file</p>
-</div>
-<div class="tabbed-block">
-<p>This code is complete and can run as is</p>
-<div class="highlight"><pre><span></span><code>import pprint
-
-from norfab.core.nfapi import NorFab
-
-if __name__ == &#39;__main__&#39;:
-    nf = NorFab(inventory=&quot;inventory.yaml&quot;)
-    nf.start()
-
-    client = nf.make_client()
-
-    res = client.run_job(
-        service=&quot;nornir&quot;,
-        task=&quot;cfg&quot;,
-        kwargs={
-            &quot;config&quot;: [&quot;ntp server 10.0.0.1&quot;, &quot;ntp server 10.0.0.2&quot;],
-            &quot;FC&quot;: &quot;spine,leaf&quot;              
-        }
-    )
-
-    pprint.pprint(res)
-
-    nf.destroy()
-</code></pre></div>
-<p>Refer to <a href="../../../norfab_getting_started/">Getting Started</a> section on how to construct  <code>inventory.yaml</code> file.</p>
-</div>
-</div>
-</div>
-</div>
-<h2 id="use-different-configuration-plugins">Use Different Configuration Plugins<a class="headerlink" href="#use-different-configuration-plugins" title="Permanent link">¤</a></h2>
-<p>NorFab supports various configuration plugins such as <code>netmiko</code>, <code>napalm</code> and <code>scrapli</code>. These plugins enable you to push configurations to a wide range of network devices. Each plugin has its own set of capabilities and requirements, so it is essential to ensure that your Nornir inventory is properly configured for the chosen plugin. This includes specifying the necessary connection parameters and device-specific settings. By leveraging these plugins, you can standardize and automate the configuration management process across different network environments.</p>
-<h2 id="using-dry-run">Using Dry Run<a class="headerlink" href="#using-dry-run" title="Permanent link">¤</a></h2>
-<p>The dry run feature in NorFab allows you to simulate the application of configurations without actually pushing them to the devices. This is particularly useful for testing and validation purposes, as it enables you to verify the correctness of your configurations before making any changes to the network. Additionally, the dry run feature can be used for generating and rendering device configurations, which is beneficial for staging environments where you need to prepare configurations in advance. By using dry run, you can ensure that your configurations are accurate and ready for deployment.</p>
-<h2 id="using-commit-confirmed">Using Commit Confirmed<a class="headerlink" href="#using-commit-confirmed" title="Permanent link">¤</a></h2>
-<p>The commit confirmed feature provides an added layer of safety when pushing configurations to network devices. With this feature, you can apply a configuration with a rollback timer. If the configuration is not explicitly confirmed within the specified time, it will be automatically rolled back to the previous state. This is particularly useful in scenarios where you need to ensure that a configuration change does not negatively impact the network. By using commit confirmed, you can mitigate the risk of configuration errors and ensure network stability.</p>
-<h2 id="sourcing-configuration-from-files">Sourcing Configuration From Files<a class="headerlink" href="#sourcing-configuration-from-files" title="Permanent link">¤</a></h2>
-<p>NorFab allows you to source configurations from text files stored on the broker. This approach enables you to manage configurations as files, making it easier to version control and maintain them. By storing configurations in files, you can apply them as needed, ensuring consistency and repeatability in your configuration management process. This method is particularly useful for large-scale deployments where configurations need to be applied to multiple devices in a controlled and organized manner.</p>
-<h2 id="using-jinja2-templates">Using Jinja2 Templates<a class="headerlink" href="#using-jinja2-templates" title="Permanent link">¤</a></h2>
-<p>Jinja2 templates provide a powerful way to create dynamic configurations based on variables defined in your inventory or passed as job data. By using templates, you can generate configurations that are tailored to the specific requirements of each device. This approach allows you to automate the creation of complex configurations and ensures consistency across your network. Jinja2 templates are highly flexible and can be used to incorporate conditional logic, loops, and other advanced features, making them an essential tool for network automation.</p>
-<h2 id="templating-configuration-with-inline-job-data">Templating Configuration with Inline Job Data<a class="headerlink" href="#templating-configuration-with-inline-job-data" title="Permanent link">¤</a></h2>
-<h2 id="parsing-and-generating-configuration-in-templates">Parsing and Generating Configuration in Templates<a class="headerlink" href="#parsing-and-generating-configuration-in-templates" title="Permanent link">¤</a></h2>
-<p>NorFab supports parsing of device output and the generation of new configurations within same template using parsing results. This capability allows you to create configurations based on the current state of the device, ensuring that your changes are applied accurately and efficiently. By parsing existing configurations, you can extract relevant information and use it to generate new configurations that are consistent with the device's current setup. </p>
-<h2 id="outputting-text-tables">Outputting Text Tables<a class="headerlink" href="#outputting-text-tables" title="Permanent link">¤</a></h2>
-<p>The NorFab interactive shell supports the table command, which can be used to format output into text tables. This feature relies on the tabulate module and supports most of its functionalities. By outputting results in table format, you can easily visualize and analyze the data, making it easier to interpret and act upon. This is particularly useful for displaying configuration results in a structured, concise and readable manner.</p>
-<h2 id="formatting-output-results">Formatting Output Results<a class="headerlink" href="#formatting-output-results" title="Permanent link">¤</a></h2>
-<p>You can format the output results using various options provided by the Nornir worker. The output of the commands can be formatted using the <code>to_dict</code> parameter. When set to <code>True</code>, the results will be returned as a dictionary. When set to <code>False</code>, the results will be returned as a list. In addition <code>add_details</code> argument can be used to control the verbosity of the output and return additional Nornir result information such as:</p>
-<ul>
-<li><code>changed</code> flag</li>
-<li><code>diff</code> content if supported by plugin</li>
-<li><code>failed</code> status</li>
-<li><code>exception</code> details if task execution failed with error</li>
-<li><code>connection_retry</code> counter to show how many times RetryRunner tried to establish a connection</li>
-<li><code>task_retry</code> counter to show how many times RetryRunner tried to run this task</li>
-</ul>
-<h2 id="using-promptless-mode">Using Promptless Mode<a class="headerlink" href="#using-promptless-mode" title="Permanent link">¤</a></h2>
-<p>NorFab supports a proprietary promptless mode that can be used with Netmiko. This mode is particularly useful when dealing with devices that do not have a consistent prompt or when the default Netmiko output collection functions are not reliable enough. By enabling promptless mode, you can ensure that configurations are applied accurately and efficiently, even in challenging environments. This feature enhances the robustness of your configuration management process and ensures that your network devices are configured correctly.</p>
-<h2 id="norfab-nornir-cfg-shell-reference">NORFAB Nornir CFG Shell Reference<a class="headerlink" href="#norfab-nornir-cfg-shell-reference" title="Permanent link">¤</a></h2>
-<p>NorFab shell supports these command options for Nornir <code>cfg</code> task:</p>
-<div class="highlight"><pre><span></span><code>nf#man tree nornir.cfg
-root
-└── nornir:    Nornir service
-    └── cfg:    Configure devices over CLI interface
-        ├── timeout:    Job timeout
-        ├── workers:    Filter worker to target, default &#39;all&#39;
-        ├── add_details:    Add task details to results
-        ├── run_num_workers:    RetryRunner number of threads for tasks execution
-        ├── run_num_connectors:    RetryRunner number of threads for device connections
-        ├── run_connect_retry:    RetryRunner number of connection attempts
-        ├── run_task_retry:    RetryRunner number of attempts to run task
-        ├── run_reconnect_on_fail:    RetryRunner perform reconnect to host on task failure
-        ├── run_connect_check:    RetryRunner test TCP connection before opening actual connection
-        ├── run_connect_timeout:    RetryRunner timeout in seconds to wait for test TCP connection to establish
-        ├── run_creds_retry:    RetryRunner list of connection credentials and parameters to retry
-        ├── tf:    File group name to save task results to on worker file system
-        ├── tf_skip_failed:    Save results to file for failed tasks
-        ├── diff:    File group name to run the diff for
-        ├── diff_last:    File version number to diff, default is 1 (last)
-        ├── progress:    Emit execution progress
-        ├── table:    Table format (brief, terse, extend) or parameters or True
-        ├── headers:    Table headers
-        ├── headers_exclude:    Table headers to exclude
-        ├── sortby:    Table header column to sort by
-        ├── reverse:    Table reverse the sort by order
-        ├── FO:    Filter hosts using Filter Object
-        ├── FB:    Filter hosts by name using Glob Patterns
-        ├── FH:    Filter hosts by hostname
-        ├── FC:    Filter hosts containment of pattern in name
-        ├── FR:    Filter hosts by name using Regular Expressions
-        ├── FG:    Filter hosts by group
-        ├── FP:    Filter hosts by hostname using IP Prefix
-        ├── FL:    Filter hosts by names list
-        ├── FM:    Filter hosts by platform
-        ├── FX:    Filter hosts excluding them by name
-        ├── FN:    Negate the match
-        ├── hosts:    Filter hosts to target
-        ├── cfg_dry_run:    Dry run cfg function
-        ├── *config:    List of configuration commands to send to devices, default &#39;PydanticUndefined&#39;
-        ├── plugin:    Configuration plugin parameters
-        │   ├── netmiko:    Use Netmiko plugin to configure devices
-        │   │   ├── enable:    Attempt to enter enable-mode
-        │   │   ├── exit_config_mode:    Determines whether or not to exit config mode after complete
-        │   │   ├── strip_prompt:    Determines whether or not to strip the prompt
-        │   │   ├── strip_command:    Determines whether or not to strip the command
-        │   │   ├── read_timeout:    Absolute timer to send to read_channel_timing
-        │   │   ├── config_mode_command:    The command to enter into config mode
-        │   │   ├── cmd_verify:    Whether or not to verify command echo for each command in config_set
-        │   │   ├── enter_config_mode:    Do you enter config mode before sending config commands
-        │   │   ├── error_pattern:    Regular expression pattern to detect config errors in the output
-        │   │   ├── terminator:    Regular expression pattern to use as an alternate terminator
-        │   │   ├── bypass_commands:    Regular expression pattern indicating configuration commands, cmd_verify is automatically disabled
-        │   │   ├── commit:    Commit configuration or not or dictionary with commit parameters
-        │   │   ├── commit_final_delay:    Time to wait before doing final commit
-        │   ├── scrapli:    Use Scrapli plugin to configure devices
-        │   │   ├── dry_run:    Apply changes or not, also tests if possible to enter config mode
-        │   │   ├── strip_prompt:    Strip prompt from returned output
-        │   │   ├── failed_when_contains:    String or list of strings indicating failure if found in response
-        │   │   ├── stop_on_failed:    Stop executing commands if command fails
-        │   │   ├── privilege_level:    Name of configuration privilege level to acquire
-        │   │   ├── eager:    Do not read until prompt is seen at each command sent to the channel
-        │   │   └── timeout_ops:    Timeout ops value for this operation
-        │   └── napalm:    Use NAPALM plugin to configure devices
-        │       ├── replace:    Whether to replace or merge the configuration
-        │       ├── dry_run:    Apply changes or not, also tests if possible to enter config mode
-        │       └── revert_in:    Amount of time in seconds after which to revert the commit
-        └── job_data:    Path to YAML file with job data
-nf#
-</code></pre></div>
-<p><code>*</code> - mandatory/required command argument</p>
+<h1 id="netbox-get-connections-task">Netbox Get Connections Task<a class="headerlink" href="#netbox-get-connections-task" title="Permanent link">¤</a></h1>
+<h2 id="get-connections-sample-usage">Get Connections Sample Usage<a class="headerlink" href="#get-connections-sample-usage" title="Permanent link">¤</a></h2>
+<h2 id="norfab-netbox-get-connections-command-shell-reference">NORFAB Netbox Get Connections Command Shell Reference<a class="headerlink" href="#norfab-netbox-get-connections-command-shell-reference" title="Permanent link">¤</a></h2>
+<p>NorFab shell supports these command options for Netbox <code>get_connections</code> task:</p>
 <h2 id="python-api-reference">Python API Reference<a class="headerlink" href="#python-api-reference" title="Permanent link">¤</a></h2>
 
 
@@ -2568,8 +2245,7 @@ nf#
 
     <div class="doc doc-contents first">
 
-        <p>Task to send configuration commands to devices using
-Command Line Interface (CLI)</p>
+        <p>Function to retrieve device connections data from Netbox using GraphQL API.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -2585,62 +2261,14 @@ Command Line Interface (CLI)</p>
       <tbody>
           <tr class="doc-section-item">
             <td>
-                <code>config</code>
-            </td>
-            <td>
-                  <code>list</code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>list of commands to send to devices</p>
-              </div>
-            </td>
-            <td>
-                <em>required</em>
-            </td>
-          </tr>
-          <tr class="doc-section-item">
-            <td>
-                <code>plugin</code>
+                <code>instance</code>
             </td>
             <td>
                   <code>str</code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>plugin name to use - <code>netmiko</code>, <code>scrapli</code>, <code>napalm</code></p>
-              </div>
-            </td>
-            <td>
-                  <code>&#39;netmiko&#39;</code>
-            </td>
-          </tr>
-          <tr class="doc-section-item">
-            <td>
-                <code>cfg_dry_run</code>
-            </td>
-            <td>
-                  <code>bool</code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>if True, will not send commands to devices but just return them</p>
-              </div>
-            </td>
-            <td>
-                  <code>False</code>
-            </td>
-          </tr>
-          <tr class="doc-section-item">
-            <td>
-                <code>job_data</code>
-            </td>
-            <td>
-                  <code>str</code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>URL to YAML file with data or dictionary/list of data to pass on to Jinja2 rendering context</p>
+                <p>Netbox instance name</p>
               </div>
             </td>
             <td>
@@ -2649,14 +2277,30 @@ Command Line Interface (CLI)</p>
           </tr>
           <tr class="doc-section-item">
             <td>
-                <code>add_details</code>
+                <code>devices</code>
+            </td>
+            <td>
+                  <code>list</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>list of devices to retrieve interface for</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>dry_run</code>
             </td>
             <td>
                   <code>bool</code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>if True will add task execution details to the results</p>
+                <p>only return query content, do not run it</p>
               </div>
             </td>
             <td>
@@ -2665,33 +2309,18 @@ Command Line Interface (CLI)</p>
           </tr>
           <tr class="doc-section-item">
             <td>
-                <code>to_dict</code>
+                <code>cables</code>
             </td>
             <td>
                   <code>bool</code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>default is True - produces dictionary results, if False will produce results list</p>
+                <p>if True includes interfaces' directly attached cables details</p>
               </div>
             </td>
             <td>
-                  <code>True</code>
-            </td>
-          </tr>
-          <tr class="doc-section-item">
-            <td>
-                <code>kwargs</code>
-            </td>
-            <td>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>additional arguments to pass to the task plugin</p>
-              </div>
-            </td>
-            <td>
-                  <code>{}</code>
+                  <code>False</code>
             </td>
           </tr>
       </tbody>
@@ -2713,7 +2342,7 @@ Command Line Interface (CLI)</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>dictionary with the results of the configuration task</p>
+                <p>dictionary keyed by device name with connections data</p>
               </div>
             </td>
           </tr>
@@ -2721,26 +2350,8 @@ Command Line Interface (CLI)</p>
     </table>
 
             <details class="quote">
-              <summary>Source code in <code>norfab\workers\nornir_worker.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">795</span>
-<span class="normal">796</span>
-<span class="normal">797</span>
-<span class="normal">798</span>
-<span class="normal">799</span>
-<span class="normal">800</span>
-<span class="normal">801</span>
-<span class="normal">802</span>
-<span class="normal">803</span>
-<span class="normal">804</span>
-<span class="normal">805</span>
-<span class="normal">806</span>
-<span class="normal">807</span>
-<span class="normal">808</span>
-<span class="normal">809</span>
-<span class="normal">810</span>
-<span class="normal">811</span>
-<span class="normal">812</span>
-<span class="normal">813</span>
+              <summary>Source code in <code>norfab\workers\netbox_worker.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">813</span>
 <span class="normal">814</span>
 <span class="normal">815</span>
 <span class="normal">816</span>
@@ -2815,98 +2426,278 @@ Command Line Interface (CLI)</p>
 <span class="normal">885</span>
 <span class="normal">886</span>
 <span class="normal">887</span>
-<span class="normal">888</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">cfg</span><span class="p">(</span>
+<span class="normal">888</span>
+<span class="normal">889</span>
+<span class="normal">890</span>
+<span class="normal">891</span>
+<span class="normal">892</span>
+<span class="normal">893</span>
+<span class="normal">894</span>
+<span class="normal">895</span>
+<span class="normal">896</span>
+<span class="normal">897</span>
+<span class="normal">898</span>
+<span class="normal">899</span>
+<span class="normal">900</span>
+<span class="normal">901</span>
+<span class="normal">902</span>
+<span class="normal">903</span>
+<span class="normal">904</span>
+<span class="normal">905</span>
+<span class="normal">906</span>
+<span class="normal">907</span>
+<span class="normal">908</span>
+<span class="normal">909</span>
+<span class="normal">910</span>
+<span class="normal">911</span>
+<span class="normal">912</span>
+<span class="normal">913</span>
+<span class="normal">914</span>
+<span class="normal">915</span>
+<span class="normal">916</span>
+<span class="normal">917</span>
+<span class="normal">918</span>
+<span class="normal">919</span>
+<span class="normal">920</span>
+<span class="normal">921</span>
+<span class="normal">922</span>
+<span class="normal">923</span>
+<span class="normal">924</span>
+<span class="normal">925</span>
+<span class="normal">926</span>
+<span class="normal">927</span>
+<span class="normal">928</span>
+<span class="normal">929</span>
+<span class="normal">930</span>
+<span class="normal">931</span>
+<span class="normal">932</span>
+<span class="normal">933</span>
+<span class="normal">934</span>
+<span class="normal">935</span>
+<span class="normal">936</span>
+<span class="normal">937</span>
+<span class="normal">938</span>
+<span class="normal">939</span>
+<span class="normal">940</span>
+<span class="normal">941</span>
+<span class="normal">942</span>
+<span class="normal">943</span>
+<span class="normal">944</span>
+<span class="normal">945</span>
+<span class="normal">946</span>
+<span class="normal">947</span>
+<span class="normal">948</span>
+<span class="normal">949</span>
+<span class="normal">950</span>
+<span class="normal">951</span>
+<span class="normal">952</span>
+<span class="normal">953</span>
+<span class="normal">954</span>
+<span class="normal">955</span>
+<span class="normal">956</span>
+<span class="normal">957</span>
+<span class="normal">958</span>
+<span class="normal">959</span>
+<span class="normal">960</span>
+<span class="normal">961</span>
+<span class="normal">962</span>
+<span class="normal">963</span>
+<span class="normal">964</span>
+<span class="normal">965</span>
+<span class="normal">966</span>
+<span class="normal">967</span>
+<span class="normal">968</span>
+<span class="normal">969</span>
+<span class="normal">970</span>
+<span class="normal">971</span>
+<span class="normal">972</span>
+<span class="normal">973</span>
+<span class="normal">974</span>
+<span class="normal">975</span>
+<span class="normal">976</span>
+<span class="normal">977</span>
+<span class="normal">978</span>
+<span class="normal">979</span>
+<span class="normal">980</span>
+<span class="normal">981</span>
+<span class="normal">982</span>
+<span class="normal">983</span>
+<span class="normal">984</span>
+<span class="normal">985</span>
+<span class="normal">986</span>
+<span class="normal">987</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_connections</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
-    <span class="n">config</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span>
-    <span class="n">plugin</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;netmiko&quot;</span><span class="p">,</span>
-    <span class="n">cfg_dry_run</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="n">to_dict</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-    <span class="n">add_details</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="n">job_data</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="n">devices</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span>
+    <span class="n">instance</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">dry_run</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">cables</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Task to send configuration commands to devices using</span>
-<span class="sd">    Command Line Interface (CLI)</span>
+<span class="sd">    Function to retrieve device connections data from Netbox using GraphQL API.</span>
 
-<span class="sd">    :param config: list of commands to send to devices</span>
-<span class="sd">    :param plugin: plugin name to use - ``netmiko``, ``scrapli``, ``napalm``</span>
-<span class="sd">    :param cfg_dry_run: if True, will not send commands to devices but just return them</span>
-<span class="sd">    :param job_data: URL to YAML file with data or dictionary/list of data</span>
-<span class="sd">        to pass on to Jinja2 rendering context</span>
-<span class="sd">    :param add_details: if True will add task execution details to the results</span>
-<span class="sd">    :param to_dict: default is True - produces dictionary results, if False</span>
-<span class="sd">        will produce results list</span>
-<span class="sd">    :param kwargs: additional arguments to pass to the task plugin</span>
-<span class="sd">    :return: dictionary with the results of the configuration task</span>
+<span class="sd">    :param instance: Netbox instance name</span>
+<span class="sd">    :param devices: list of devices to retrieve interface for</span>
+<span class="sd">    :param dry_run: only return query content, do not run it</span>
+<span class="sd">    :param cables: if True includes interfaces&#39; directly attached cables details</span>
+<span class="sd">    :return: dictionary keyed by device name with connections data</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">downloaded_cfg</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">config</span> <span class="o">=</span> <span class="n">config</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="k">else</span> <span class="p">[</span><span class="n">config</span><span class="p">]</span>
-    <span class="n">filters</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">FFun_functions</span><span class="p">}</span>
-    <span class="n">ret</span> <span class="o">=</span> <span class="n">Result</span><span class="p">(</span><span class="n">task</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">:cfg&quot;</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="p">{}</span> <span class="k">if</span> <span class="n">to_dict</span> <span class="k">else</span> <span class="p">[])</span>
-    <span class="n">timeout</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_job</span><span class="p">[</span><span class="s2">&quot;timeout&quot;</span><span class="p">]</span>
-
-    <span class="c1"># decide on what send commands task plugin to use</span>
-    <span class="k">if</span> <span class="n">plugin</span> <span class="o">==</span> <span class="s2">&quot;netmiko&quot;</span><span class="p">:</span>
-        <span class="n">task_plugin</span> <span class="o">=</span> <span class="n">netmiko_send_config</span>
-    <span class="k">elif</span> <span class="n">plugin</span> <span class="o">==</span> <span class="s2">&quot;scrapli&quot;</span><span class="p">:</span>
-        <span class="n">task_plugin</span> <span class="o">=</span> <span class="n">scrapli_send_config</span>
-    <span class="k">elif</span> <span class="n">plugin</span> <span class="o">==</span> <span class="s2">&quot;napalm&quot;</span><span class="p">:</span>
-        <span class="n">task_plugin</span> <span class="o">=</span> <span class="n">napalm_configure</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">UnsupportedPluginError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Plugin &#39;</span><span class="si">{</span><span class="n">plugin</span><span class="si">}</span><span class="s2">&#39; not supported&quot;</span><span class="p">)</span>
-
-    <span class="bp">self</span><span class="o">.</span><span class="n">nr</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">reset_failed_hosts</span><span class="p">()</span>  <span class="c1"># reset failed hosts</span>
-    <span class="n">filtered_nornir</span> <span class="o">=</span> <span class="n">FFun</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nr</span><span class="p">,</span> <span class="o">**</span><span class="n">filters</span><span class="p">)</span>  <span class="c1"># filter hosts</span>
-
-    <span class="c1"># check if no hosts matched</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">filtered_nornir</span><span class="o">.</span><span class="n">inventory</span><span class="o">.</span><span class="n">hosts</span><span class="p">:</span>
-        <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> - nothing to do, no hosts matched by filters &#39;</span><span class="si">{</span><span class="n">filters</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
-        <span class="p">)</span>
-        <span class="n">ret</span><span class="o">.</span><span class="n">messages</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
-        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">ret</span>
-
-    <span class="n">job_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_job_data</span><span class="p">(</span><span class="n">job_data</span><span class="p">)</span>
-
-    <span class="n">nr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add_processors</span><span class="p">(</span><span class="n">filtered_nornir</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>  <span class="c1"># add processors</span>
-
-    <span class="c1"># render config using Jinja2 on a per-host basis</span>
-    <span class="k">for</span> <span class="n">host</span> <span class="ow">in</span> <span class="n">nr</span><span class="o">.</span><span class="n">inventory</span><span class="o">.</span><span class="n">hosts</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-        <span class="n">rendered</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">render_jinja2_templates</span><span class="p">(</span>
-            <span class="n">templates</span><span class="o">=</span><span class="n">config</span><span class="p">,</span>
-            <span class="n">context</span><span class="o">=</span><span class="p">{</span>
-                <span class="s2">&quot;host&quot;</span><span class="p">:</span> <span class="n">host</span><span class="p">,</span>
-                <span class="s2">&quot;norfab&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="p">,</span>
-                <span class="s2">&quot;nornir&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="p">,</span>
-                <span class="s2">&quot;job_data&quot;</span><span class="p">:</span> <span class="n">job_data</span><span class="p">,</span>
-            <span class="p">},</span>
-            <span class="n">filters</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">add_jinja2_filters</span><span class="p">(),</span>
-        <span class="p">)</span>
-        <span class="n">host</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;__task__&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;config&quot;</span><span class="p">:</span> <span class="n">rendered</span><span class="p">}</span>
-
-    <span class="c1"># run task</span>
-    <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> - sending config commands &#39;</span><span class="si">{</span><span class="n">config</span><span class="si">}</span><span class="s2">&#39;, kwargs &#39;</span><span class="si">{</span><span class="n">kwargs</span><span class="si">}</span><span class="s2">&#39;, is cfg_dry_run - &#39;</span><span class="si">{</span><span class="n">cfg_dry_run</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
+    <span class="c1"># form final result dictionary</span>
+    <span class="n">ret</span> <span class="o">=</span> <span class="n">Result</span><span class="p">(</span>
+        <span class="n">task</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">:get_connections&quot;</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="p">{</span><span class="n">d</span><span class="p">:</span> <span class="p">{}</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">devices</span><span class="p">}</span>
     <span class="p">)</span>
-    <span class="k">if</span> <span class="n">cfg_dry_run</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="n">nr</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
-            <span class="n">task</span><span class="o">=</span><span class="n">nr_test</span><span class="p">,</span> <span class="n">use_task_data</span><span class="o">=</span><span class="s2">&quot;config&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;cfg_dry_run&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
-        <span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">connections_lock</span><span class="p">:</span>
-            <span class="n">result</span> <span class="o">=</span> <span class="n">nr</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">task</span><span class="o">=</span><span class="n">task_plugin</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="n">ret</span><span class="o">.</span><span class="n">changed</span> <span class="o">=</span> <span class="kc">True</span>
 
-    <span class="n">ret</span><span class="o">.</span><span class="n">result</span> <span class="o">=</span> <span class="n">ResultSerializer</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">to_dict</span><span class="o">=</span><span class="n">to_dict</span><span class="p">,</span> <span class="n">add_details</span><span class="o">=</span><span class="n">add_details</span><span class="p">)</span>
+    <span class="c1"># form lists of fields to request from netbox</span>
+    <span class="n">cable_fields</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">        cable {</span>
+<span class="s2">            type</span>
+<span class="s2">            status</span>
+<span class="s2">            tenant </span><span class="si">{name}</span>
+<span class="s2">            label</span>
+<span class="s2">            tags </span><span class="si">{name}</span>
+<span class="s2">            length</span>
+<span class="s2">            length_unit</span>
+<span class="s2">            custom_fields</span>
+<span class="s2">        }</span>
+<span class="s2">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">nb_version</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+        <span class="n">interfaces_fields</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;device </span><span class="si">{name}</span><span class="s2">&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;connected_endpoints {</span>
+<span class="sd">            __typename </span>
+<span class="sd">            ... on InterfaceType {name device {name}}</span>
+<span class="sd">            ... on ProviderNetworkType {name}</span>
+<span class="sd">            }&quot;&quot;&quot;</span><span class="p">,</span>
+        <span class="p">]</span>
+    <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">nb_version</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="n">interfaces_fields</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;device </span><span class="si">{name}</span><span class="s2">&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;connected_endpoints {</span>
+<span class="sd">            __typename </span>
+<span class="sd">            ... on InterfaceType {name device {name}}</span>
+<span class="sd">            }&quot;&quot;&quot;</span><span class="p">,</span>
+        <span class="p">]</span>
+    <span class="n">interfaces_fields</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        link_peers {</span>
+<span class="sd">            __typename</span>
+<span class="sd">            ... on InterfaceType {name device {name}}</span>
+<span class="sd">            ... on FrontPortType {name device {name}}</span>
+<span class="sd">            ... on RearPortType {name device {name}}</span>
+<span class="sd">        }</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="p">)</span>
+    <span class="n">console_ports_fields</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s2">&quot;name&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;device </span><span class="si">{name}</span><span class="s2">&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;connected_endpoints {</span>
+<span class="sd">          __typename </span>
+<span class="sd">          ... on ConsoleServerPortType {name device {name}}</span>
+<span class="sd">        }&quot;&quot;&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;link_peers {</span>
+<span class="sd">          __typename</span>
+<span class="sd">          ... on ConsoleServerPortType {name device {name}}</span>
+<span class="sd">          ... on FrontPortType {name device {name}}</span>
+<span class="sd">          ... on RearPortType {name device {name}}</span>
+<span class="sd">        }&quot;&quot;&quot;</span><span class="p">,</span>
+    <span class="p">]</span>
+    <span class="n">console_server_ports_fields</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s2">&quot;name&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;device </span><span class="si">{name}</span><span class="s2">&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;connected_endpoints {</span>
+<span class="sd">          __typename </span>
+<span class="sd">          ... on ConsolePortType {name device {name}}</span>
+<span class="sd">        }&quot;&quot;&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;link_peers {</span>
+<span class="sd">          __typename</span>
+<span class="sd">          ... on ConsolePortType {name device {name}}</span>
+<span class="sd">          ... on FrontPortType {name device {name}}</span>
+<span class="sd">          ... on RearPortType {name device {name}}</span>
+<span class="sd">        }&quot;&quot;&quot;</span><span class="p">,</span>
+    <span class="p">]</span>
 
-    <span class="c1"># remove __task__ data</span>
-    <span class="k">for</span> <span class="n">host_name</span><span class="p">,</span> <span class="n">host_object</span> <span class="ow">in</span> <span class="n">nr</span><span class="o">.</span><span class="n">inventory</span><span class="o">.</span><span class="n">hosts</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-        <span class="n">_</span> <span class="o">=</span> <span class="n">host_object</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;__task__&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="c1"># check if need to include cables info</span>
+    <span class="k">if</span> <span class="n">cables</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">interfaces_fields</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cable_fields</span><span class="p">)</span>
+        <span class="n">console_ports_fields</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cable_fields</span><span class="p">)</span>
+        <span class="n">console_server_ports_fields</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cable_fields</span><span class="p">)</span>
 
-    <span class="bp">self</span><span class="o">.</span><span class="n">watchdog</span><span class="o">.</span><span class="n">connections_update</span><span class="p">(</span><span class="n">nr</span><span class="p">,</span> <span class="n">plugin</span><span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">watchdog</span><span class="o">.</span><span class="n">connections_clean</span><span class="p">()</span>
+    <span class="c1"># form query dictionary with aliases to get data from Netbox</span>
+    <span class="n">queries</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;interface&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;obj&quot;</span><span class="p">:</span> <span class="s2">&quot;interface_list&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;filters&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;device&quot;</span><span class="p">:</span> <span class="n">devices</span><span class="p">},</span>
+            <span class="s2">&quot;fields&quot;</span><span class="p">:</span> <span class="n">interfaces_fields</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;consoleport&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;obj&quot;</span><span class="p">:</span> <span class="s2">&quot;console_port_list&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;filters&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;device&quot;</span><span class="p">:</span> <span class="n">devices</span><span class="p">},</span>
+            <span class="s2">&quot;fields&quot;</span><span class="p">:</span> <span class="n">console_ports_fields</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;consoleserverport&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;obj&quot;</span><span class="p">:</span> <span class="s2">&quot;console_server_port_list&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;filters&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;device&quot;</span><span class="p">:</span> <span class="n">devices</span><span class="p">},</span>
+            <span class="s2">&quot;fields&quot;</span><span class="p">:</span> <span class="n">console_server_ports_fields</span><span class="p">,</span>
+        <span class="p">},</span>
+    <span class="p">}</span>
+
+    <span class="c1"># retrieve full list of devices interface with all cables</span>
+    <span class="n">query_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">graphql</span><span class="p">(</span><span class="n">queries</span><span class="o">=</span><span class="n">queries</span><span class="p">,</span> <span class="n">instance</span><span class="o">=</span><span class="n">instance</span><span class="p">,</span> <span class="n">dry_run</span><span class="o">=</span><span class="n">dry_run</span><span class="p">)</span>
+
+    <span class="c1"># return dry run result</span>
+    <span class="k">if</span> <span class="n">dry_run</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">query_result</span>
+
+    <span class="n">all_ports</span> <span class="o">=</span> <span class="n">query_result</span><span class="o">.</span><span class="n">result</span>
+
+    <span class="c1"># extract interfaces</span>
+    <span class="k">for</span> <span class="n">port_type</span><span class="p">,</span> <span class="n">ports</span> <span class="ow">in</span> <span class="n">all_ports</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">port</span> <span class="ow">in</span> <span class="n">ports</span><span class="p">:</span>
+            <span class="n">endpoints</span> <span class="o">=</span> <span class="n">port</span><span class="p">[</span><span class="s2">&quot;connected_endpoints&quot;</span><span class="p">]</span>
+            <span class="c1"># skip ports that have no remote device connected</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">endpoints</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">endpoints</span><span class="p">):</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># extract required parameters</span>
+            <span class="n">cable</span> <span class="o">=</span> <span class="n">port</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;cable&quot;</span><span class="p">,</span> <span class="p">{})</span>
+            <span class="n">device_name</span> <span class="o">=</span> <span class="n">port</span><span class="p">[</span><span class="s2">&quot;device&quot;</span><span class="p">][</span><span class="s2">&quot;name&quot;</span><span class="p">]</span>
+            <span class="n">port_name</span> <span class="o">=</span> <span class="n">port</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span>
+            <span class="n">link_peers</span> <span class="o">=</span> <span class="n">port</span><span class="p">[</span><span class="s2">&quot;link_peers&quot;</span><span class="p">]</span>
+            <span class="n">remote_termination_type</span> <span class="o">=</span> <span class="n">endpoints</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;__typename&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+            <span class="n">remote_termination_type</span> <span class="o">=</span> <span class="n">remote_termination_type</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+            <span class="c1"># form initial connection dictionary</span>
+            <span class="n">connection</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;breakout&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">endpoints</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">,</span>
+                <span class="s2">&quot;remote_termination_type&quot;</span><span class="p">:</span> <span class="n">remote_termination_type</span><span class="p">,</span>
+                <span class="s2">&quot;termination_type&quot;</span><span class="p">:</span> <span class="n">port_type</span><span class="p">,</span>
+            <span class="p">}</span>
+
+            <span class="c1"># add remote connection details</span>
+            <span class="k">if</span> <span class="n">remote_termination_type</span> <span class="o">==</span> <span class="s2">&quot;providernetwork&quot;</span><span class="p">:</span>
+                <span class="n">connection</span><span class="p">[</span><span class="s2">&quot;remote_device&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="n">connection</span><span class="p">[</span><span class="s2">&quot;remote_interface&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="n">connection</span><span class="p">[</span><span class="s2">&quot;provider&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">endpoints</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;name&quot;</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">remote_interface</span> <span class="o">=</span> <span class="n">endpoints</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;name&quot;</span><span class="p">]</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">endpoints</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">remote_interface</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">endpoints</span><span class="p">]</span>
+                <span class="n">connection</span><span class="p">[</span><span class="s2">&quot;remote_interface&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">remote_interface</span>
+                <span class="n">connection</span><span class="p">[</span><span class="s2">&quot;remote_device&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">endpoints</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;device&quot;</span><span class="p">][</span><span class="s2">&quot;name&quot;</span><span class="p">]</span>
+
+            <span class="c1"># add cable and its peer details</span>
+            <span class="k">if</span> <span class="n">cables</span><span class="p">:</span>
+                <span class="n">peer_termination_type</span> <span class="o">=</span> <span class="n">link_peers</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;__typename&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+                <span class="n">peer_termination_type</span> <span class="o">=</span> <span class="n">peer_termination_type</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+                <span class="n">cable</span><span class="p">[</span><span class="s2">&quot;peer_termination_type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">peer_termination_type</span>
+                <span class="n">cable</span><span class="p">[</span><span class="s2">&quot;peer_device&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">link_peers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;device&quot;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">)</span>
+                <span class="n">cable</span><span class="p">[</span><span class="s2">&quot;peer_interface&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">link_peers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">link_peers</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>  <span class="c1"># handle breakout cable</span>
+                    <span class="n">cable</span><span class="p">[</span><span class="s2">&quot;peer_interface&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">link_peers</span><span class="p">]</span>
+                <span class="n">connection</span><span class="p">[</span><span class="s2">&quot;cable&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cable</span>
+
+            <span class="n">ret</span><span class="o">.</span><span class="n">result</span><span class="p">[</span><span class="n">device_name</span><span class="p">][</span><span class="n">port_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">connection</span>
 
     <span class="k">return</span> <span class="n">ret</span>
 </code></pre></div></td></tr></table></div>
