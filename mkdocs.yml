@@ -6,7 +6,7 @@ extra:
   - icon: fontawesome/brands/github-alt
     link: https://github.com/dmulyalin
   - icon: fontawesome/brands/twitter
-    link: https://twitter.com/DMulyalin
+    link: https://twitter.com/DMulyalin 
 markdown_extensions:
 - admonition
 - pymdownx.details
@@ -38,6 +38,8 @@ repo_name: dmulyalin/norfab
 repo_url: https://github.com/dmulyalin/norfab
 site_author: Denis Mulyalin
 theme:
+  logo: images/logo.jpg
+  favicon: images/logo.jpg
   custom_dir: docs/overrides
   features:
   - navigation.tabs

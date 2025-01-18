@@ -57,4 +57,4 @@ With NORFAB, the sky's the limit. Automate routine tasks, complex workflows, and
 
 NORFAB is more than just a network automation tool—it's a comprehensive solution designed to enhance your network management capabilities. By choosing NORFAB, you're investing in a future where network operations are seamless, efficient, and highly automated. Unlock the full potential of your network with NORFAB today!
 
-For more information or to schedule a demo, contact [Norfab Support](mailto:dmulyalin@gmail.com).
+For more information or to schedule a demo, contact [NorFab Support](mailto:dmulyalin@gmail.com).

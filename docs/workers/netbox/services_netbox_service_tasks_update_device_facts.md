@@ -5,6 +5,15 @@ tags:
 
 # Netbox Update Device Facts Task
 
+## Limitations
+
+Datasource `nornir` uses NAPALM `get_facts` getter and as such only supports these device platforms:
+
+- Arista EOS
+- Cisco IOS
+- Cisco IOSXR
+- Cisco NXOS
+- Juniper JUNOS
 
 ## Update Device Facts Sample Usage
 

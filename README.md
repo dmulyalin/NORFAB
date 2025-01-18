@@ -5,7 +5,7 @@
 [![Code style: black][black-badge]][black-link]
 
 
-# Network Automations Fabric - NORFAB
+# ![logo](docs/images/logo_small.jpg) Network Automations Fabric - NORFAB 
 
 NORFAB is a tool for extreme network automations.
 

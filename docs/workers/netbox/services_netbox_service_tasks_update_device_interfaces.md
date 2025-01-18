@@ -23,6 +23,16 @@ Keeping interface data accurate and up-to-date is crucial for effective network 
 
 5. Netbox worker processes device interfaces data and updates records in Netbox for requested devices
 
+## Limitations
+
+Datasource `nornir` uses NAPALM `get_interfaces` getter and as such only supports these device platforms:
+
+- Arista EOS
+- Cisco IOS
+- Cisco IOSXR
+- Cisco NXOS
+- Juniper JUNOS
+
 ## Update Device Interfaces Sample Usage
 
 ## NORFAB Netbox Update Device Interfaces Command Shell Reference
