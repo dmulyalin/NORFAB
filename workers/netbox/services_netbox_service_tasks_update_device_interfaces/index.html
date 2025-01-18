@@ -1202,6 +1202,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#limitations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Limitations
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#update-device-interfaces-sample-usage" class="md-nav__link">
     <span class="md-ellipsis">
       Update Device Interfaces Sample Usage
@@ -2176,6 +2185,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#limitations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Limitations
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#update-device-interfaces-sample-usage" class="md-nav__link">
     <span class="md-ellipsis">
       Update Device Interfaces Sample Usage
@@ -2253,6 +2271,15 @@
 <p>Netbox worker processes device interfaces data and updates records in Netbox for requested devices</p>
 </li>
 </ol>
+<h2 id="limitations">Limitations<a class="headerlink" href="#limitations" title="Permanent link">¤</a></h2>
+<p>Datasource <code>nornir</code> uses NAPALM <code>get_interfaces</code> getter and as such only supports these device platforms:</p>
+<ul>
+<li>Arista EOS</li>
+<li>Cisco IOS</li>
+<li>Cisco IOSXR</li>
+<li>Cisco NXOS</li>
+<li>Juniper JUNOS</li>
+</ul>
 <h2 id="update-device-interfaces-sample-usage">Update Device Interfaces Sample Usage<a class="headerlink" href="#update-device-interfaces-sample-usage" title="Permanent link">¤</a></h2>
 <h2 id="norfab-netbox-update-device-interfaces-command-shell-reference">NORFAB Netbox Update Device Interfaces Command Shell Reference<a class="headerlink" href="#norfab-netbox-update-device-interfaces-command-shell-reference" title="Permanent link">¤</a></h2>
 <p>NorFab shell supports these command options for Netbox <code>update_device_interfaces</code> task:</p>

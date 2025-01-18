@@ -1181,6 +1181,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#limitations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Limitations
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#update-device-facts-sample-usage" class="md-nav__link">
     <span class="md-ellipsis">
       Update Device Facts Sample Usage
@@ -2176,6 +2185,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#limitations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Limitations
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#update-device-facts-sample-usage" class="md-nav__link">
     <span class="md-ellipsis">
       Update Device Facts Sample Usage
@@ -2232,6 +2250,15 @@
 
 
 <h1 id="netbox-update-device-facts-task">Netbox Update Device Facts Task<a class="headerlink" href="#netbox-update-device-facts-task" title="Permanent link">¤</a></h1>
+<h2 id="limitations">Limitations<a class="headerlink" href="#limitations" title="Permanent link">¤</a></h2>
+<p>Datasource <code>nornir</code> uses NAPALM <code>get_facts</code> getter and as such only supports these device platforms:</p>
+<ul>
+<li>Arista EOS</li>
+<li>Cisco IOS</li>
+<li>Cisco IOSXR</li>
+<li>Cisco NXOS</li>
+<li>Juniper JUNOS</li>
+</ul>
 <h2 id="update-device-facts-sample-usage">Update Device Facts Sample Usage<a class="headerlink" href="#update-device-facts-sample-usage" title="Permanent link">¤</a></h2>
 <h2 id="norfab-netbox-update-device-facts-command-shell-reference">NORFAB Netbox Update Device Facts Command Shell Reference<a class="headerlink" href="#norfab-netbox-update-device-facts-command-shell-reference" title="Permanent link">¤</a></h2>
 <p>NorFab shell supports these command options for Netbox <code>update_device_facts</code> task:</p>
