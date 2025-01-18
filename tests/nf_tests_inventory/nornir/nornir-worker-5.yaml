@@ -7,7 +7,6 @@ netbox:
     inventory_items: True
   connections:
     cables: True
-    circuits: True
   nbdata: True
   primary_ip: "ipv4"
   devices:

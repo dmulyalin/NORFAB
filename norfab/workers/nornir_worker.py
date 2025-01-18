@@ -1,16 +1,3 @@
-"""
-
-### Nornir Worker Inventory Reference
-
-- ``watchdog_interval`` - watchdog run interval in seconds, default is 30
-- ``connections_idle_timeout`` - watchdog connection idle timeout, 
-    default is ``None`` - no timeout, connection always kept alive, 
-    if set to 0, connections disconnected imminently after task 
-    completed, if positive number, connection disconnected after 
-    not being used for over ``connections_idle_timeout``
-
-"""
-
 import json
 import logging
 import sys

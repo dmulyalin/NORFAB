@@ -1,57 +1,3 @@
-"""
-
-### Netbox Worker Inventory Reference
-
-
-
-#### Sample Netbox Worker Inventory
-
-``` yaml
-service: netbox
-broker_endpoint: "tcp://127.0.0.1:5555"
-instances:
-  prod:
-    default: True
-    url: "http://192.168.4.130:8000/"
-    token: "0123456789abcdef0123456789abcdef01234567"
-    ssl_verify: False
-  dev:
-    url: "http://192.168.4.131:8000/"
-    token: "0123456789abcdef0123456789abcdef01234567"
-    ssl_verify: False
-  preprod:
-    url: "http://192.168.4.132:8000/"
-    token: "0123456789abcdef0123456789abcdef01234567"
-    ssl_verify: False
-```
-
-#### Sample Nornir Worker Netbox Inventory
-
-``` yaml
-netbox:
-  retry: 3
-  retry_interval: 1
-  instance: prod
-  interfaces:
-    ip_addresses: True
-    inventory_items: True
-  connections:
-    cables: True
-    circuits: True
-  nbdata: True
-  primary_ip: "ipv4"
-  devices:
-    - fceos4
-    - fceos5
-    - fceos8
-    - ceos1
-  filters: 
-    - q: fceos3
-    - manufacturer: cisco
-      platform: cisco_xr
-```
-"""
-
 import json
 import logging
 import sys
@@ -79,32 +25,6 @@ except ImportError:
 log = logging.getLogger(__name__)
 
 # ----------------------------------------------------------------------
-# CONSTANTS
-# ----------------------------------------------------------------------
-
-DEVICE_FIELDS = [
-    "name",
-    "last_updated",
-    "custom_field_data",
-    "tags {name}",
-    "device_type {model}",
-    "role {name}",
-    "config_context",
-    "tenant {name}",
-    "platform {name}",
-    "serial",
-    "asset_tag",
-    "site {name tags{name}}",
-    "location {name}",
-    "rack {name}",
-    "status",
-    "primary_ip4 {address}",
-    "primary_ip6 {address}",
-    "airflow",
-    "position",
-]
-
-# ----------------------------------------------------------------------
 # HELPER FUNCTIONS
 # ----------------------------------------------------------------------
 
@@ -128,6 +48,7 @@ def _form_query_v4(obj, filters, fields, alias=None):
         else:
             filters_list.append(f'{k}: "{v}"')
     filters_string = ", ".join(filters_list)
+    filters_string = filters_string.replace("'", '"')  # swap quotes
     fields = " ".join(fields)
     if alias:
         query = f"{alias}: {obj}(filters: {{{filters_string}}}) {{{fields}}}"
@@ -196,7 +117,6 @@ class NetboxWorker(NFPWorker):
         init_done_event=None,
         log_level="WARNING",
         log_queue: object = None,
-        cache_ttl: int = 31557600,  # 1 Year
     ):
         super().__init__(broker, service, worker_name, exit_event, log_level, log_queue)
         self.init_done_event = init_done_event
@@ -213,9 +133,11 @@ class NetboxWorker(NFPWorker):
             "instances"
         ), f"{self.name} - inventory has no Netbox instances"
 
-        # extract parameters
+        # extract parameters from imvemtory
         self.netbox_connect_timeout = self.inventory.get("netbox_connect_timeout", 10)
         self.netbox_read_timeout = self.inventory.get("netbox_read_timeout", 300)
+        self.cache_use = self.inventory.get("cache_use", True)
+        self.cache_ttl = self.inventory.get("cache_ttl", 31557600)  # 1 Year
 
         # find default instance
         for name, params in self.inventory["instances"].items():
@@ -232,7 +154,6 @@ class NetboxWorker(NFPWorker):
         self.cache_dir = os.path.join(self.base_dir, "cache")
         os.makedirs(self.cache_dir, exist_ok=True)
         self.cache = self._get_diskcache()
-        self.cache_ttl = cache_ttl
 
         self.init_done_event.set()
         log.info(f"{self.name} - Started")
@@ -244,12 +165,12 @@ class NetboxWorker(NFPWorker):
     # Netbox Service Functions that exposed for calling
     # ----------------------------------------------------------------------
 
-    def get_netbox_inventory(self) -> Result:
+    def get_netbox_inventory(self) -> dict:
         return Result(
             task=f"{self.name}:get_netbox_inventory", result=dict(self.inventory)
         )
 
-    def get_netbox_version(self, **kwargs) -> Result:
+    def get_netbox_version(self, **kwargs) -> dict:
         libs = {
             "pynetbox": "",
             "requests": "",
@@ -265,7 +186,7 @@ class NetboxWorker(NFPWorker):
 
         return Result(task=f"{self.name}:get_netbox_version", result=libs)
 
-    def get_netbox_status(self, instance=None) -> Result:
+    def get_netbox_status(self, instance=None) -> dict:
         ret = Result(result={}, task=f"{self.name}:get_netbox_status")
         if instance:
             ret.result[instance] = self._query_netbox_status(instance)
@@ -274,7 +195,7 @@ class NetboxWorker(NFPWorker):
                 ret.result[name] = self._query_netbox_status(name)
         return ret
 
-    def get_compatibility(self) -> Result:
+    def get_compatibility(self) -> dict:
         ret = Result(task=f"{self.name}:get_compatibility", result={})
         netbox_status = self.get_netbox_status()
         for instance, params in netbox_status.result.items():
@@ -375,7 +296,7 @@ class NetboxWorker(NFPWorker):
             size_limit=1073741824,  #  GigaByte
         )
 
-    def cache_list(self, keys="*", details=False) -> Result:
+    def cache_list(self, keys="*", details=False) -> list:
         """
         List cache keys.
 
@@ -405,7 +326,7 @@ class NetboxWorker(NFPWorker):
                     ret.result.append(cache_key)
         return ret
 
-    def cache_clear(self, key=None, keys=None) -> Result:
+    def cache_clear(self, key=None, keys=None) -> list:
         """
         Clears specified cache entries.
 
@@ -437,7 +358,7 @@ class NetboxWorker(NFPWorker):
                         raise RuntimeError(f"Failed to remove {key} from cache")
         return ret
 
-    def cache_get(self, key=None, keys=None, raise_missing=False) -> Result:
+    def cache_get(self, key=None, keys=None, raise_missing=False) -> dict:
         """
         Return data stored in specified cache entries.
 
@@ -469,12 +390,20 @@ class NetboxWorker(NFPWorker):
         fields: list = None,
         queries: dict = None,
         query_string: str = None,
-    ) -> Result:
+    ) -> Union[dict, list]:
         """
         Function to query Netbox v4 GraphQL API
 
         :param instance: Netbox instance name
         :param dry_run: only return query content, do not run it
+        :param obj: Object to query
+        :param filters: Filters to apply to the query
+        :param fields: Fields to retrieve in the query
+        :param queries: Dictionary of queries to execute
+        :param query_string: Raw query string to execute
+        :return: GraphQL request data returned by Netbox
+        :raises RuntimeError: If required arguments are not provided
+        :raises Exception: If GraphQL query fails
         """
         nb_params = self._get_instance_params(instance)
         ret = Result(task=f"{self.name}:graphql")
@@ -560,7 +489,7 @@ class NetboxWorker(NFPWorker):
 
     def rest(
         self, instance: str = None, method: str = "get", api: str = "", **kwargs
-    ) -> dict:
+    ) -> Union[dict, list]:
         """
         Method to query Netbox REST API.
 
@@ -568,6 +497,8 @@ class NetboxWorker(NFPWorker):
         :param method: requests method name e.g. get, post, put etc.
         :param api: api url to query e.g. "extras" or "dcim/interfaces" etc.
         :param kwargs: any additional requests method's arguments
+        :return: REST API Query result
+        :raises Exception: If REST API query fails
         """
         params = self._get_instance_params(instance)
 
@@ -593,8 +524,8 @@ class NetboxWorker(NFPWorker):
         instance: str = None,
         dry_run: bool = False,
         devices: list = None,
-        cache: Union[bool, str] = True,
-    ) -> Result:
+        cache: Union[bool, str] = None,
+    ) -> dict:
         """
         Function to retrieve devices data from Netbox using GraphQL API.
 
@@ -610,6 +541,7 @@ class NetboxWorker(NFPWorker):
         :return: dictionary keyed by device name with device data
         """
         ret = Result(task=f"{self.name}:get_devices", result={})
+        cache = self.cache_use if cache is None else cache
         instance = instance or self.default_instance
         filters = filters or []
         devices = devices or []
@@ -668,11 +600,7 @@ class NetboxWorker(NFPWorker):
             last_updated = self.graphql(
                 queries=last_updated_query, instance=instance, dry_run=dry_run
             )
-
-            # check for errors
-            if last_updated.errors:
-                msg = f"{self.name} - get devices query failed with errors:\n{last_updated.errors}"
-                raise Exception(msg)
+            last_updated.raise_for_status(f"{self.name} - get devices query failed")
 
             # return dry run result
             if dry_run:
@@ -759,7 +687,7 @@ class NetboxWorker(NFPWorker):
         ip_addresses: bool = False,
         inventory_items: bool = False,
         dry_run: bool = False,
-    ) -> Result:
+    ) -> dict:
         """
         Function to retrieve device interfaces from Netbox using GraphQL API.
 
@@ -888,8 +816,7 @@ class NetboxWorker(NFPWorker):
         instance: str = None,
         dry_run: bool = False,
         cables: bool = False,
-        circuits: bool = False,
-    ) -> Result:
+    ) -> dict:
         """
         Function to retrieve device connections data from Netbox using GraphQL API.
 
@@ -897,7 +824,6 @@ class NetboxWorker(NFPWorker):
         :param devices: list of devices to retrieve interface for
         :param dry_run: only return query content, do not run it
         :param cables: if True includes interfaces' directly attached cables details
-        :param circuits: if True includes interfaces' circuits termination details
         :return: dictionary keyed by device name with connections data
         """
         # form final result dictionary
@@ -937,6 +863,16 @@ class NetboxWorker(NFPWorker):
                 ... on InterfaceType {name device {name}}
                 }""",
             ]
+        interfaces_fields.append(
+            """
+            link_peers {
+                __typename
+                ... on InterfaceType {name device {name}}
+                ... on FrontPortType {name device {name}}
+                ... on RearPortType {name device {name}}
+            }
+        """
+        )
         console_ports_fields = [
             "name",
             "device {name}",
@@ -965,41 +901,6 @@ class NetboxWorker(NFPWorker):
               ... on RearPortType {name device {name}}
             }""",
         ]
-
-        # add circuits info
-        if circuits is True:
-            interfaces_fields.append(
-                """
-                link_peers {
-                    __typename
-                    ... on InterfaceType {name device {name}}
-                    ... on FrontPortType {name device {name}}
-                    ... on RearPortType {name device {name}}
-                    ... on CircuitTerminationType {
-                        circuit{
-                            cid 
-                            description 
-                            tags{name} 
-                            provider{name} 
-                            status
-                            custom_fields
-                            commit_rate
-                        }
-                    }
-                }
-            """
-            )
-        else:
-            interfaces_fields.append(
-                """
-                link_peers {
-                    __typename
-                    ... on InterfaceType {name device {name}}
-                    ... on FrontPortType {name device {name}}
-                    ... on RearPortType {name device {name}}
-                }
-            """
-            )
 
         # check if need to include cables info
         if cables is True:
@@ -1070,12 +971,6 @@ class NetboxWorker(NFPWorker):
                     connection["remote_interface"] = remote_interface
                     connection["remote_device"] = endpoints[0]["device"]["name"]
 
-                # handle circuits
-                if (
-                    circuits and "circuit" in link_peers[0]
-                ):  # add circuit connection details
-                    connection["circuit"] = link_peers[0]["circuit"]
-
                 # add cable and its peer details
                 if cables:
                     peer_termination_type = link_peers[0]["__typename"].lower()
@@ -1092,7 +987,7 @@ class NetboxWorker(NFPWorker):
         return ret
 
     def _map_circuit(
-        self, circuit: dict, ret: Result, instance: str, devices: list
+        self, circuit: dict, ret: Result, instance: str, devices: list, cache: bool
     ) -> bool:
         """
         ThreadPoolExecutor target function to retrieve circuit details from Netbox
@@ -1101,6 +996,7 @@ class NetboxWorker(NFPWorker):
         :param ret: Result object to save results into
         :param instance: Netbox instance name
         :param devices: list of devices to map circuits for
+        :param cache: if `True` or 'refresh' update cache, `False` do not update cache
         """
         cid = circuit.pop("cid")
         circuit["tags"] = [i["name"] for i in circuit["tags"]]
@@ -1110,8 +1006,8 @@ class NetboxWorker(NFPWorker):
         circuit["provider_account"] = (
             circuit["provider_account"]["name"] if circuit["provider_account"] else None
         )
-        termination_a = circuit.pop("termination_a")
-        termination_z = circuit.pop("termination_z")
+        termination_a = circuit["termination_a"]
+        termination_z = circuit["termination_z"]
         termination_a = termination_a["id"] if termination_a else None
         termination_z = termination_z["id"] if termination_z else None
 
@@ -1167,6 +1063,12 @@ class NetboxWorker(NFPWorker):
                 ret.result[end_a["device"]][cid]["remote_interface"] = end_z["name"]
             elif end_z["provider_network"]:
                 ret.result[end_a["device"]][cid]["provider_network"] = end_z["name"]
+            # save data to cache
+            if cache != False:
+                cache_key = f"get_circuits::{end_a['device']}::{cid}"
+                self.cache.set(
+                    cache_key, ret.result[end_a["device"]][cid], expire=self.cache_ttl
+                )
         if end_z["device"] and end_z["device"] in devices:
             ret.result[end_z["device"]][cid] = copy.deepcopy(circuit)
             ret.result[end_z["device"]][cid]["interface"] = end_z["name"]
@@ -1175,19 +1077,25 @@ class NetboxWorker(NFPWorker):
                 ret.result[end_z["device"]][cid]["remote_interface"] = end_a["name"]
             elif end_a["provider_network"]:
                 ret.result[end_z["device"]][cid]["provider_network"] = end_a["name"]
+            # save data to cache
+            if cache != False:
+                cache_key = f"get_circuits::{end_z['device']}::{cid}"
+                self.cache.set(
+                    cache_key, ret.result[end_z["device"]][cid], expire=self.cache_ttl
+                )
 
         return True
 
     def get_circuits(
         self,
         devices: list,
+        cid: list = None,
         instance: str = None,
         dry_run: bool = False,
-        cid: list = None,
         cache: Union[bool, str] = True,
-    ):
+    ) -> dict:
         """
-        Function to retrieve device circuits data from Netbox using GraphQL API.
+        Task to retrieve device's circuits data from Netbox.
 
         :param devices: list of devices to retrieve interface for
         :param instance: Netbox instance name
@@ -1198,7 +1106,7 @@ class NetboxWorker(NFPWorker):
             `refresh` ignore data in cache and replace it with data fetched
             from Netbox, `force` use data in cache without checking if it is up
             to date
-        :return: dictionary keyed by device name with circuits data
+        :return: dictionary keyed by device names with circuits data values
         """
         log.info(
             f"{self.name}:get_circuits - {instance or self.default_instance} Netbox, "
@@ -1207,6 +1115,8 @@ class NetboxWorker(NFPWorker):
 
         # form final result object
         ret = Result(task=f"{self.name}:get_circuits", result={d: {} for d in devices})
+        cache = self.cache_use if cache is None else cache
+        cid = cid or []
         circuit_fields = [
             "cid",
             "tags {name}",
@@ -1217,22 +1127,19 @@ class NetboxWorker(NFPWorker):
             "type {name}",
             "provider_account {name}",
             "tenant {name}",
-            "termination_a {id}",
-            "termination_z {id}",
+            "termination_a {id last_updated}",
+            "termination_z {id last_updated}",
             "custom_fields",
             "comments",
+            "last_updated",
         ]
 
-        # retrieve list of hosts' sites
+        # form initial circuits filters based on devices' sites and cid list
+        circuits_filters_dict = {}
         device_data = self.get_devices(
             devices=copy.deepcopy(devices), instance=instance, cache=cache
         )
         sites = list(set([i["site"]["slug"] for i in device_data.result.values()]))
-        log.info(
-            f"{self.name}:get_circuits - retrieving circuits for sites {', '.join(sites)}"
-        )
-
-        # retrieve all circuits for devices' sites
         if self.nb_version[0] == 4:
             circuits_filters_dict = {"site": sites}
             if cid:
@@ -1240,32 +1147,108 @@ class NetboxWorker(NFPWorker):
                 circuits_filters_dict["cid"] = f"{{in_list: {cid_list}}}"
         elif self.nb_version[0] == 3:
             circuits_filters_dict = {"site": sites}
+            if cid:
+                cid_list = '["{cl}"]'.format(cl='", "'.join(cid))
+                circuits_filters_dict["cid"] = cid_list
 
-        query_result = self.graphql(
-            obj="circuit_list",
-            filters=circuits_filters_dict,
-            fields=circuit_fields,
-            dry_run=dry_run,
-            instance=instance,
-        )
-
-        # return dry run result
-        if dry_run is True:
-            return query_result
-
-        all_circuits = query_result.result
-
-        # iterate over circuits and map them to devices
         log.info(
-            f"{self.name}:get_circuits - mapping device endpoints for {len(all_circuits)} circuits"
+            f"{self.name}:get_circuits - constructed circuits filters: {circuits_filters_dict}"
         )
-        with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
-            results = [
-                executor.submit(self._map_circuit, circuit, ret, instance, devices)
-                for circuit in all_circuits
-            ]
-            for _ in concurrent.futures.as_completed(results):
-                continue
+
+        if cache == True or cache == "force":
+            cid_list = []  #  new cid list for follow up query
+            # retrieve last updated data from Netbox for circuits and their terminations
+            last_updated = self.graphql(
+                obj="circuit_list",
+                filters=circuits_filters_dict,
+                fields=[
+                    "cid",
+                    "last_updated",
+                    "termination_a {id last_updated}",
+                    "termination_z {id last_updated}",
+                ],
+                dry_run=dry_run,
+                instance=instance,
+            )
+            last_updated.raise_for_status(f"{self.name} - get circuits query failed")
+
+            # return dry run result
+            if dry_run:
+                ret.result["get_circuits_dry_run"] = last_updated.result
+                return ret
+
+            # retrieve circuits data from cache
+            self.cache.expire()  # remove expired items from cache
+            for device in devices:
+                for circuit in last_updated.result:
+                    circuit_cache_key = f"get_circuits::{device}::{circuit['cid']}"
+                    # check if cache is up to date and use it if so
+                    if circuit_cache_key in self.cache:
+                        cache_ckt = self.cache[circuit_cache_key]
+                        # use cache forcefully
+                        if cache == "force":
+                            ret.result[device][circuit["cid"]] = cache_ckt
+                        # check circuit cache is up to date
+                        if cache_ckt["last_updated"] != circuit["last_updated"]:
+                            continue
+                        if (
+                            cache_ckt["termination_a"]
+                            and circuit["termination_a"]
+                            and cache_ckt["termination_a"]["last_updated"]
+                            != circuit["termination_a"]["last_updated"]
+                        ):
+                            continue
+                        if (
+                            cache_ckt["termination_z"]
+                            and circuit["termination_z"]
+                            and cache_ckt["termination_z"]["last_updated"]
+                            != circuit["termination_z"]["last_updated"]
+                        ):
+                            continue
+                        ret.result[device][circuit["cid"]] = cache_ckt
+                    elif circuit["cid"] not in cid_list:
+                        cid_list.append(circuit["cid"])
+            # form new filters dictionary to fetch remaining circuits data
+            circuits_filters_dict = {}
+            if cid_list:
+                cid_list = '["{cl}"]'.format(cl='", "'.join(cid_list))
+                if self.nb_version[0] == 4:
+                    circuits_filters_dict["cid"] = f"{{in_list: {cid_list}}}"
+                elif self.nb_version[0] == 3:
+                    circuits_filters_dict["cid"] = cid_list
+        # ignore cache data, fetch circuits from netbox
+        elif cache == False or cache == "refresh":
+            pass
+
+        if circuits_filters_dict:
+            query_result = self.graphql(
+                obj="circuit_list",
+                filters=circuits_filters_dict,
+                fields=circuit_fields,
+                dry_run=dry_run,
+                instance=instance,
+            )
+            query_result.raise_for_status(f"{self.name} - get circuits query failed")
+
+            # return dry run result
+            if dry_run is True:
+                return query_result
+
+            all_circuits = query_result.result
+
+            # iterate over circuits and map them to devices
+            log.info(
+                f"{self.name}:get_circuits - mapping device endpoints for {len(all_circuits)} circuits"
+            )
+            with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
+                results = [
+                    executor.submit(
+                        self._map_circuit, circuit, ret, instance, devices, cache
+                    )
+                    for circuit in all_circuits
+                ]
+                for _ in concurrent.futures.as_completed(results):
+                    continue
 
         return ret
 
@@ -1277,11 +1260,24 @@ class NetboxWorker(NFPWorker):
         interfaces: Union[dict, bool] = False,
         connections: Union[dict, bool] = False,
         circuits: Union[dict, bool] = False,
-        nbdata: bool = False,
+        nbdata: bool = True,
         primary_ip: str = "ip4",
-    ) -> Result:
+    ) -> dict:
         """
-        Method to query Netbox and return devices data in Nornir inventory format.
+        Method to query Netbox devices data and construct Nornir inventory.
+
+        :param filters: List of filters to apply when querying devices.
+        :param devices: List of specific devices to query.
+        :param instance: Netbox instance name to query.
+        :param interfaces: Whether to include interfaces data. If a dict is provided,
+            it will be used as arguments for the query.
+        :param connections: Whether to include connections data. If a dict is provided,
+            it will be used as arguments for the query.
+        :param circuits: Whether to include circuits data. If a dict is provided,
+            it will be used as arguments for the query.
+        :param nbdata: Whether to include Netbox devices data in the host's data
+        :param primary_ip: Primary IP version to use for the hostname.
+        :returns: Nornir Inventory compatible dictionary
         """
         hosts = {}
         inventory = {"hosts": hosts}
@@ -1384,7 +1380,7 @@ class NetboxWorker(NFPWorker):
         timeout: int = 60,
         devices: list = None,
         **kwargs,
-    ):
+    ) -> dict:
         """
         Function to update device facts in Netbox using information
         provided by NAPALM get_facts getter:
@@ -1396,6 +1392,7 @@ class NetboxWorker(NFPWorker):
         :param datasource: service name to use to retrieve devices' data, default is nornir parse task
         :param timeout: seconds to wait before timeout data retrieval job
         :param kwargs: any additional arguments to send to service for device data retrieval
+        :returns: dictionary keyed by device name with updated details
         """
         result = {}
         ret = Result(task=f"{self.name}:update_device_facts", result=result)
@@ -1450,7 +1447,7 @@ class NetboxWorker(NFPWorker):
         devices: list = None,
         create: bool = True,
         **kwargs,
-    ):
+    ) -> dict:
         """
         Function to update device interfaces in Netbox using information
         provided by NAPALM get_interfaces getter:
@@ -1468,6 +1465,7 @@ class NetboxWorker(NFPWorker):
         :param timeout: seconds to wait before timeout data retrieval job
         :param create: create missing interfaces
         :param kwargs: any additional arguments to send to service for device data retrieval
+        :returns: dictionary keyed by device name with update details
         """
         result = {}
         ret = Result(task=f"{self.name}:update_device_interfaces", result=result)
@@ -1486,11 +1484,14 @@ class NetboxWorker(NFPWorker):
             )
             for worker, results in data.items():
                 for host, host_data in results["result"].items():
-                    updated = {}
+                    updated, created = {}, {}
                     result[host] = {
                         "update_device_interfaces_dry_run"
                         if dry_run
-                        else "update_device_interfaces": updated
+                        else "update_device_interfaces": updated,
+                        "created_device_interfaces_dry_run"
+                        if dry_run
+                        else "created_device_interfaces": created,
                     }
                     interfaces = host_data["napalm_get"]["get_interfaces"]
                     nb_device = nb.dcim.devices.get(name=host)
@@ -1515,10 +1516,11 @@ class NetboxWorker(NFPWorker):
                     if create is not True:
                         continue
                     for interface_name, interface in interfaces.items():
+                        interface["type"] = "other"
                         nb_interface = nb.dcim.interfaces.create(
                             name=interface_name,
                             device={"name": nb_device.name},
-                            type="other",
+                            type=interface["type"],
                         )
                         nb_interface.description = interface["description"]
                         nb_interface.mtu = interface["mtu"]
@@ -1527,7 +1529,7 @@ class NetboxWorker(NFPWorker):
                         nb_interface.enabled = interface["is_enabled"]
                         if dry_run is not True:
                             nb_interface.save()
-                        updated[interface_name] = interface
+                        created[interface_name] = interface
                         self.event(f"{host} - created interface {nb_interface.name}")
         else:
             raise UnsupportedServiceError(f"'{datasource}' service not supported")
@@ -1547,7 +1549,7 @@ class NetboxWorker(NFPWorker):
         comments: str = None,
         instance: str = None,
         dry_run: bool = False,
-    ):
+    ) -> dict:
         """
         Method to retrieve existing or allocate new IP address in Netbox.
 

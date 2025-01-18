@@ -32,6 +32,7 @@ from jinja2 import Environment, FileSystemLoader
 from jinja2.nodes import Include
 from norfab.utils.loggingutils import setup_logging
 from typing import Any, Callable, Dict, List, Optional, Union
+from .exceptions import NorfabJobFailedError
 
 log = logging.getLogger(__name__)
 
@@ -153,8 +154,18 @@ class Result:
 
         return str(self.result)
 
+    def raise_for_status(self, message=""):
+        """Method to raise error if job failed"""
+        if self.failed:
+            if message:
+                raise NorfabJobFailedError(
+                    f"{message}; Errors: {'; '.join(self.errors)}"
+                )
+            else:
+                raise NorfabJobFailedError(f"Errors: {'; '.join(self.errors)}")
+
     def dictionary(self):
-        """Method to serialize result as a dictionary"""
+        """Method to serialize result to a dictionary"""
         if not isinstance(self.errors, list):
             self.errors = [self.errors]
         if not isinstance(self.messages, list):

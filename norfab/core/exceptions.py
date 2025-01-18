@@ -8,3 +8,9 @@ class UnsupportedServiceError(Exception):
     """Exception to raise when specified service not supported"""
 
     pass
+
+
+class NorfabJobFailedError(Exception):
+    """Exception to raise when job failed"""
+
+    pass

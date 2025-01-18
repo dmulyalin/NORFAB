@@ -32,8 +32,29 @@ With NORFAB, the sky's the limit. Automate routine tasks, complex workflows, and
 - **Cost Savings:** Reduce operational costs by streamlining network management and optimizing resource utilization.
 - **Future-Proof:** Stay ahead of the curve with a solution that evolves with technological advancements and industry trends.
 
+### Comparison With Other Tools
+
+| Feature                  | NORFAB                                      | Ansible                                    | Cisco NSO                                 | PyATS                        | Nornir                       |
+|--------------------------|---------------------------------------------|--------------------------------------------|-------------------------------------------|------------------------------|------------------------------|
+| **Programming Language** | Python                                      | YAML, Python                               | YANG, XML, Python                         | Python                       | Python                       |
+| **Extensibility**        | High                                        | High                                       | Medium                                    | Medium                       | High                         |
+| **Model-Driven**         | No                                          | No                                         | Yes, YANG models                          | No                           | No                           |
+| **API Support**          | REST, Python, CLI                           | REST, Python                               | REST, NETCONF, CLI                        | Python                       | Python                       |
+| **Multi-vendor**         | Yes                                         | Yes                                        | Yes                                       | Yes                          | Yes                          |
+| **Config Management**    | Yes                                         | Yes                                        | Yes                                       | Yes                          | Yes                          |
+| **Network Testing**      | Yes                                         | Limited                                    | Limited                                   | Yes                          | Yes                          |
+| **Orchestration**        | Limited                                     | Limited                                    | Yes                                       | No                           | Limited                      |
+| **Scalability**          | High                                        | Medium                                     | High                                      | Medium                       | Medium                       |
+| **Ease of Use**          | Requires knowledge of typing CLI commands   | Requires knowledge of proprietary YAML DSL | Requires knowledge of Python, YANG, XML   | Requires knowledge of Python | Requires knowledge of Python |
+| **Deployment**           | Centralized, Distributed, Hybrid            | Centralized                                | Centralized, Hierarchical                 | Centralized                  | Centralized                  |
+| **Templating**           | Jinja2                                      | Jinja2                                     | XML Proprietary                           | Jinja2                       | Jinja2                       |
+| **Datastorage**          | Database, Text files                        | Text files                                 | Database, Text files                      | Text files                   | Text files                   |
+| **Device Inventory**     | Internal, External                          | Internal, External                         | Internal                                  | Internal                     | Internal, External           |
+| **Community Support**    | Available                                   | Available                                  | Available                                 | Available                    | Available                    |
+| **Commercial Support**   | Available                                   | Available                                  | Available                                 | Not Available                | Not Available                |
+
 ### Conclusion
 
 NORFAB is more than just a network automation tool—it's a comprehensive solution designed to enhance your network management capabilities. By choosing NORFAB, you're investing in a future where network operations are seamless, efficient, and highly automated. Unlock the full potential of your network with NORFAB today!
 
-For more information or to schedule a demo, contact us at [info@norfab.com](https://github.com/dmulyalin/norfab).
+For more information or to schedule a demo, contact [Norfab Support](mailto:dmulyalin@gmail.com).

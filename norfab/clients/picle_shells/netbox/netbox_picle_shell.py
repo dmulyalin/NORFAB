@@ -194,7 +194,7 @@ class GetCommands(BaseModel):
         None, description="Query Netbox device interfaces data"
     )
     circuits: GetCircuits = Field(
-        None, description="Query Netbox circuits data for deviecs"
+        None, description="Query Netbox circuits data for devices"
     )
 
     class PicleConfig:
@@ -207,36 +207,27 @@ class GetCommands(BaseModel):
 # ---------------------------------------------------------------------------------------------
 
 
-class UpdateViaNornirServiceCommands(NorniHostsFilters, NornirCommonArgs):
+class NornirServiceCommands(NornirCommonArgs):
     @staticmethod
     def run(*args, **kwargs):
         kwargs["via"] = "nornir"
-        return UpdateDeviceFactsCommand.run(*args, **kwargs)
+        return UpdateDeviceInterfacesCommand.run(*args, **kwargs)
 
     class PicleConfig:
         outputter = Outputters.outputter_rich_json
 
 
-class UpdateViaServices(BaseModel):
-    nornir: UpdateViaNornirServiceCommands = Field(
+class UpdateDatasources(BaseModel):
+    nornir: NornirServiceCommands = Field(
         None,
         description="Use Nornir service to retrieve data from devices",
     )
 
 
 class UpdateDeviceFactsCommand(NetboxCommonArgs, NetboxClientRunJobArgs):
-    via: UpdateViaServices = Field(
-        None,
-        description="Service to use to retrieve device data",
-    )
-    dry_run: Optional[StrictBool] = Field(
-        None,
-        description="Return information that would be pushed to Netbox but do not push it",
-        json_schema_extra={"presence": True},
-    )
     devices: Union[List[StrictStr], StrictStr] = Field(
         None,
-        description="Devices to update",
+        description="List of devices to update",
     )
     progress: Optional[StrictBool] = Field(
         None,
@@ -281,6 +272,15 @@ class UpdateDeviceInterfacesCommand(NetboxCommonArgs, NetboxClientRunJobArgs):
     progress: Optional[StrictBool] = Field(
         None,
         description="Emit execution progress",
+        json_schema_extra={"presence": True},
+    )
+    datasource: UpdateDatasources = Field(
+        "nornir",
+        description="Service to use to retrieve device data",
+    )
+    dry_run: Optional[StrictBool] = Field(
+        None,
+        description="Return information that would be pushed to Netbox but do not push it",
         json_schema_extra={"presence": True},
     )
 
