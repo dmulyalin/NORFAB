@@ -2464,7 +2464,7 @@ nf#
 <span class="sd">    :returns: language model&#39;s response</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">llm_flavour</span> <span class="o">==</span> <span class="s2">&quot;ollama&quot;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_chat_ollama</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_chat_ollama</span><span class="p">(</span><span class="n">user_input</span><span class="p">,</span> <span class="n">template</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported llm flavour </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">llm_flavour</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
