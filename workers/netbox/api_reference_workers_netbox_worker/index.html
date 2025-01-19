@@ -1190,7 +1190,7 @@
             
   
   <span class="md-ellipsis">
-    NORFAB Services
+    Agent Service
   </span>
   
 
@@ -1199,6 +1199,117 @@
         
         <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_9_4_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_1_9_4">
+            <span class="md-nav__icon md-icon"></span>
+            Agent Service
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../agent/services_agent_service/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Overview
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../agent/services_agent_service_inventory/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Inventory
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../agent/services_agent_service_tasks_chat/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Task Chat
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_9_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_1_9_5" id="__nav_1_9_5_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    NORFAB Services
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_9_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_9_5">
             <span class="md-nav__icon md-icon"></span>
             NORFAB Services
           </label>
@@ -2452,7 +2563,7 @@
 
 
 <h2 id="norfab.workers.netbox_worker.NetboxWorker" class="doc doc-heading">
-              <code class="highlight language-python"><span class="n">NetboxWorker</span><span class="p">(</span><span class="n">broker</span><span class="p">,</span> <span class="n">service</span><span class="p">,</span> <span class="n">worker_name</span><span class="p">,</span> <span class="n">exit_event</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">init_done_event</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">log_level</span><span class="o">=</span><span class="s1">&#39;WARNING&#39;</span><span class="p">,</span> <span class="n">log_queue</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+              <code class="highlight language-python"><span class="n">NetboxWorker</span><span class="p">(</span><span class="n">broker</span><span class="p">,</span> <span class="n">worker_name</span><span class="p">,</span> <span class="n">service</span><span class="o">=</span><span class="sa">b</span><span class="s1">&#39;netbox&#39;</span><span class="p">,</span> <span class="n">exit_event</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">init_done_event</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">log_level</span><span class="o">=</span><span class="s1">&#39;WARNING&#39;</span><span class="p">,</span> <span class="n">log_queue</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
 
 <a href="#norfab.workers.netbox_worker.NetboxWorker" class="headerlink" title="Permanent link">¤</a></h2>
 
@@ -2496,6 +2607,7 @@
                 <code>service</code>
             </td>
             <td>
+                  <code>str</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -2503,7 +2615,7 @@
               </div>
             </td>
             <td>
-                <em>required</em>
+                  <code>b&#39;netbox&#39;</code>
             </td>
           </tr>
           <tr class="doc-section-item">
@@ -2627,8 +2739,8 @@
 <span class="normal">159</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">broker</span><span class="p">,</span>
-    <span class="n">service</span><span class="p">,</span>
     <span class="n">worker_name</span><span class="p">,</span>
+    <span class="n">service</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&quot;netbox&quot;</span><span class="p">,</span>
     <span class="n">exit_event</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">init_done_event</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">log_level</span><span class="o">=</span><span class="s2">&quot;WARNING&quot;</span><span class="p">,</span>
