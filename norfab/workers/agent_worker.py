@@ -92,13 +92,7 @@ class AgentWorker(NFPWorker):
 
     def _chat_ollama(self, user_input, template=None) -> str:
         """
-        Handles the chat interaction with the user by processing the input through a language model.
-
-        :param user_input: The input provided by the user.
-        :param template: A template string for formatting the prompt. Defaults to
-            this string: 'Question: {user_input}; Answer: Let's think step by step.
-            Provide answer in markdown format.'
-        :returns: result of the language model's processing.
+        Handles the chat interaction with Ollama LLM.
         """
         self.event(f"Received user input '{user_input[:50]}..'")
         ret = Result(task=f"{self.name}:chat")
@@ -116,8 +110,17 @@ class AgentWorker(NFPWorker):
 
         return ret
 
-    def chat(self, **kwargs):
+    def chat(self, user_input, template=None) -> str:
+        """
+        Handles the chat interaction with the user by processing the input through a language model.
+
+        :param user_input: The input provided by the user.
+        :param template: A template string for formatting the prompt. Defaults to
+            this string: 'Question: {user_input}; Answer: Let's think step by step.
+            Provide answer in markdown format.'
+        :returns: language model's response
+        """
         if self.llm_flavour == "ollama":
-            return self._chat_ollama(**kwargs)
+            return self._chat_ollama(user_input, template)
         else:
             raise Exception(f"Unsupported llm flavour {self.llm_flavour}")

@@ -1,3 +1,20 @@
+## 0.2.0
+
+### CHANGES
+
+1. refactored `get_circuits` to use `threadpoolexecutor` to fetch circuits path from netbox
+2. adding `job_data` json load to nornir cli, cfg and test tasks
+
+### BUGS
+
+1. Fixing netbox `get_devices` dry run test
+2. Fixed netbox `get_circuits` devices site retrieval handling
+
+## FEATURES
+
+1. Added cache to Netbox `get_circuits` and `get_devices` tasks
+2. Added new `agent` worker to stsart working on use cases to interface with LLMs
+
 ## 0.1.1
 
 ### BUGS
