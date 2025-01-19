@@ -110,6 +110,10 @@ nav:
             - Task GETNext IP: workers/netbox/services_netbox_service_tasks_get_next_ip.md
             - Task UPDATE Device Facts: workers/netbox/services_netbox_service_tasks_update_device_facts.md
             - Task UPDATE Device Interfaces: workers/netbox/services_netbox_service_tasks_update_device_interfaces.md
+        - Agent Service:
+            - Overview: workers/agent/services_agent_service.md
+            - Inventory: workers/agent/services_agent_service_inventory.md
+            - Task Chat: workers/agent/services_agent_service_tasks_chat.md
         - NORFAB Services:
             - MMI: services_norfab_mmi.md
             - Inventory Service: services_norfab_inventory_service.md

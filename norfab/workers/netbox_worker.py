@@ -111,8 +111,8 @@ class NetboxWorker(NFPWorker):
     def __init__(
         self,
         broker,
-        service,
         worker_name,
+        service: str = b"netbox",
         exit_event=None,
         init_done_event=None,
         log_level="WARNING",

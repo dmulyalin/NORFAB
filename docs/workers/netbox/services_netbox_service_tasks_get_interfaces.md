@@ -5,7 +5,6 @@ tags:
 
 # Netbox Get Interfaces Task
 
-
 ## Get Interfaces Sample Usage
 
 ## NORFAB Netbox Get Interfaces Command Shell Reference

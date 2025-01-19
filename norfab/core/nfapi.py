@@ -6,7 +6,7 @@ from multiprocessing import Process, Event, Queue
 from norfab.core.broker import NFPBroker
 from norfab.core.client import NFPClient
 from norfab.core.inventory import NorFabInventory
-from norfab.workers import NornirWorker, NetboxWorker
+from norfab.workers import NornirWorker, NetboxWorker, AgentWorker
 from norfab.utils.loggingutils import setup_logging
 
 log = logging.getLogger(__name__)
@@ -70,24 +70,35 @@ def start_worker_process(
     try:
         if service == "nornir":
             worker = NornirWorker(
-                broker_endpoint,
-                b"nornir",
-                worker_name,
-                exit_event,
-                init_done_event,
-                log_level,
-                log_queue,
+                broker=broker_endpoint,
+                service=b"nornir",
+                worker_name=worker_name,
+                exit_event=exit_event,
+                init_done_event=init_done_event,
+                log_level=log_level,
+                log_queue=log_queue,
             )
             worker.work()
         elif service == "netbox":
             worker = NetboxWorker(
-                broker_endpoint,
-                b"netbox",
-                worker_name,
-                exit_event,
-                init_done_event,
-                log_level,
-                log_queue,
+                broker=broker_endpoint,
+                service=b"netbox",
+                worker_name=worker_name,
+                exit_event=exit_event,
+                init_done_event=init_done_event,
+                log_level=log_level,
+                log_queue=log_queue,
+            )
+            worker.work()
+        elif service == "agent":
+            worker = AgentWorker(
+                broker=broker_endpoint,
+                service=b"agent",
+                worker_name=worker_name,
+                exit_event=exit_event,
+                init_done_event=init_done_event,
+                log_level=log_level,
+                log_queue=log_queue,
             )
             worker.work()
         else:

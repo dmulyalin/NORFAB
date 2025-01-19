@@ -30,6 +30,7 @@ from norfab.core.nfapi import NorFab
 from .picle_shells.nornir import nornir_picle_shell
 from .picle_shells.netbox import netbox_picle_shell
 from .picle_shells.norfab_jobs_shell import NorFabJobsShellCommands
+from .picle_shells.agent import agent_picle_shell
 
 NFCLIENT = None
 log = logging.getLogger(__name__)
@@ -213,6 +214,9 @@ class NorFabShell(BaseModel):
     )
     netbox: netbox_picle_shell.NetboxServiceCommands = Field(
         None, description="Netbox service"
+    )
+    agent: agent_picle_shell.AgentServiceCommands = Field(
+        None, description="AI Agent service"
     )
 
     class PicleConfig:

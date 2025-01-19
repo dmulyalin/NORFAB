@@ -197,6 +197,8 @@ class WatchDog(WorkerWatchDog):
 
 class NornirWorker(NFPWorker):
     """
+    Nornir service worker
+
     :param broker: broker URL to connect to
     :param service: name of the service with worker belongs to
     :param worker_name: name of this worker
@@ -208,8 +210,8 @@ class NornirWorker(NFPWorker):
     def __init__(
         self,
         broker: str,
-        service: str,
         worker_name: str,
+        service: str = b"nornir",
         exit_event=None,
         init_done_event=None,
         log_level: str = "WARNING",
@@ -691,7 +693,6 @@ class NornirWorker(NFPWorker):
         """
         job_data = job_data or {}
         filters = {k: kwargs.pop(k) for k in list(kwargs.keys()) if k in FFun_functions}
-        downloaded_cmds = []
         timeout = self.current_job["timeout"] * 0.9
         ret = Result(task=f"{self.name}:cli", result={} if to_dict else [])
 
