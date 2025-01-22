@@ -80,10 +80,7 @@ class NFPClient(object):
     stats_reconnect_to_broker = 0
     stats_recv_event_from_broker = 0
 
-    def __init__(
-        self, broker, name, log_level="WARNING", exit_event=None, event_queue=None
-    ):
-        log.setLevel(log_level.upper())
+    def __init__(self, broker, name, exit_event=None, event_queue=None):
         self.name = name
         self.zmq_name = f"{self.name}-{uuid4().hex}"
         self.broker = broker

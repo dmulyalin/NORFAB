@@ -32,9 +32,7 @@ class KeepAliver:
         whoami: str,  # NFP.BROKER or NFP.WORKER
         name: str,
         socket_lock,
-        log_level: str,
     ):
-        log.setLevel(log_level.upper())
         self.address = address
         self.socket = socket
         self.exit_event = exit_event or threading.Event()

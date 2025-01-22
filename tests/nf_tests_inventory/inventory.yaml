@@ -2,6 +2,14 @@
 broker:
   endpoint: "tcp://127.0.0.1:5555"
   
+# uses https://docs.python.org/3/library/logging.config.html#configuration-dictionary-schema
+logging:
+  handlers:
+    terminal:
+      level: WARNING
+    file: 
+      level: INFO
+      
 # workers inventory section
 workers:
   nornir-*:

@@ -1,49 +1,22 @@
 import logging
 import time
 import threading
+import copy
 
 from multiprocessing import Process, Event, Queue
 from norfab.core.broker import NFPBroker
 from norfab.core.client import NFPClient
 from norfab.core.inventory import NorFabInventory
 from norfab.workers import NornirWorker, NetboxWorker, AgentWorker
-from norfab.utils.loggingutils import setup_logging
 
 log = logging.getLogger(__name__)
-
-
-def logger_thread(log_queue: Queue, logger_exit_event: Event):
-    """
-    Thread to de-queue logging events and log them into a file
-
-    :param log_queue:  Multiprocessing queue passed along
-        broker and worker processes
-    :param logger_exit_event: Multiprocessing event object to signal exit
-    """
-    # get root logger's file handler
-    filehandler = log.root.handlers[1]
-    while not logger_exit_event.is_set():
-        try:
-            record = log_queue.get()
-            # need to split message by -- to avoid duplicate of
-            # information such as timestamp, module, level
-            if "--" in record.msg:
-                record.msg = record.msg.split("--", 1)[1].strip()
-            # setup logger
-            logger = logging.getLogger(record.name)
-            logger.handlers = [filehandler]
-            logger.propagate = False
-            # log the message
-            logger.handle(record)
-        except Exception as e:
-            log.error(f"Error in logger_thread: {e}")
 
 
 def start_broker_process(
     endpoint,
     exit_event=None,
     inventory=None,
-    log_level="WARNING",
+    log_level=None,
     log_queue=None,
     init_done_event=None,
 ):
@@ -63,7 +36,7 @@ def start_worker_process(
     service: str,
     worker_name: str,
     exit_event=None,
-    log_level="WARNING",
+    log_level=None,
     log_queue=None,
     init_done_event=None,
 ):
@@ -118,7 +91,9 @@ class NorFab:
     workers_processes = {}
 
     def __init__(
-        self, inventory: str = "./inventory.yaml", log_level: str = "WARNING"
+        self,
+        inventory: str = "./inventory.yaml",
+        log_level: str = None,
     ) -> None:
         """
         NorFab Python API Client initialization class
@@ -134,8 +109,8 @@ class NorFab:
         :param inventory: OS path to NorFab inventory YAML file
         :param log_level: one or supported logging levels - `CRITICAL`, `ERROR`, `WARNING`, `INFO`, `DEBUG`
         """
-        setup_logging(log_level=log_level, filename="norfab.log")
         self.inventory = NorFabInventory(inventory)
+        self.log_queue = Queue()
         self.log_level = log_level
         self.broker_endpoint = self.inventory.get("broker", {}).get("endpoint")
         self.workers_init_timeout = self.inventory.topology.get(
@@ -145,19 +120,23 @@ class NorFab:
         self.workers_exit_event = Event()
         self.clients_exit_event = Event()
 
-        # start logger thread to log logs to a file
-        self.log_queue = Queue(-1)
-        self.logger_exit_event = Event()
-        self.logger_thread = threading.Thread(
-            target=logger_thread,
-            daemon=True,
-            name=f"{__name__}_logger_thread",
-            args=(
-                self.log_queue,
-                self.logger_exit_event,
-            ),
+        self.setup_logging()
+
+    def setup_logging(self):
+        # update logging levels for all handlers
+        if self.log_level is not None:
+            self.inventory["logging"]["root"]["level"] = self.log_level
+            for handler in self.inventory["logging"]["handlers"].values():
+                handler["level"] = self.log_level
+        # configure logging
+        logging.config.dictConfig(self.inventory["logging"])
+        # start logs queue listener thread to process logs from child processes
+        self.log_listener = logging.handlers.QueueListener(
+            self.log_queue,
+            *logging.getLogger("root").handlers,
+            respect_handler_level=True,
         )
-        self.logger_thread.start()
+        self.log_listener.start()
 
     def start_broker(self):
         if self.broker_endpoint:
@@ -339,8 +318,8 @@ class NorFab:
         self.broker_exit_event.set()
         if self.broker:
             self.broker.join()
-        # stop logger thread
-        self.logger_exit_event.set()
+        # stop logging thread
+        self.log_listener.stop()
 
     def make_client(self, broker_endpoint: str = None) -> NFPClient:
         """
@@ -353,7 +332,6 @@ class NorFab:
             client = NFPClient(
                 broker_endpoint or self.broker_endpoint,
                 "NFPClient",
-                self.log_level,
                 self.clients_exit_event,
             )
             if self.client is None:  # own the first client

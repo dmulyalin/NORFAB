@@ -23,10 +23,9 @@ from multiprocessing import Event
 from typing import Union
 from . import NFP
 from .zhelpers import dump
-from .inventory import NorFabInventory
+from .inventory import NorFabInventory, logging_config_producer
 from .keepalives import KeepAliver
 from .security import generate_certificates
-from norfab.utils.loggingutils import setup_logging
 
 log = logging.getLogger(__name__)
 
@@ -54,7 +53,6 @@ class NFPWorker(object):
         multiplier: int,  # e.g. 6 times
         keepalive: int,  # e.g. 5000 ms
         service: NFPService = None,
-        log_level: str = "WARNING",
     ):
         self.address = address  # Address to route to
         self.service = service
@@ -64,7 +62,6 @@ class NFPWorker(object):
         self.keepalive = keepalive
         self.multiplier = multiplier
         self.socket_lock = socket_lock
-        self.log_level = log_level
 
     def start_keepalives(self):
         self.keepaliver = KeepAliver(
@@ -77,7 +74,6 @@ class NFPWorker(object):
             whoami=NFP.BROKER,
             name="NFPBroker",
             socket_lock=self.socket_lock,
-            log_level=self.log_level,
         )
         self.keepaliver.start()
 
@@ -101,6 +97,8 @@ class NFPBroker:
 
     """
     NORFAB Protocol broker
+
+    :param log_level: override default log levels
     """
 
     def __init__(
@@ -108,15 +106,14 @@ class NFPBroker:
         endpoint: str,
         exit_event: Event,
         inventory: NorFabInventory,
-        log_level: str = "WARNING",
+        log_level: str = None,
         log_queue: object = None,
         multiplier: int = 6,
         keepalive: int = 2500,
         init_done_event: Event = None,
     ):
         """Initialize broker state."""
-        setup_logging(queue=log_queue, log_level=log_level)
-        self.log_level = log_level
+        self.setup_logging(log_queue, log_level)
         self.keepalive = keepalive
         self.multiplier = multiplier
         init_done_event = init_done_event or Event()
@@ -160,6 +157,13 @@ class NFPBroker:
 
         init_done_event.set()  # signal finished initializing broker
         log.debug(f"NFPBroker - is ready and listening on {endpoint}")
+
+    def setup_logging(self, log_queue, log_level: str) -> None:
+        """Method to apply logging configuration"""
+        logging_config_producer["handlers"]["queue"]["queue"] = log_queue
+        if log_level is not None:
+            logging_config_producer["root"]["level"] = log_level
+        logging.config.dictConfig(logging_config_producer)
 
     def mediate(self):
         """
@@ -286,7 +290,6 @@ class NFPBroker:
                 multiplier=self.multiplier,
                 keepalive=self.keepalive,
                 socket_lock=self.socket_lock,
-                log_level=self.log_level,
             )
             log.info(f"NFPBroker - registered new worker {address}")
 

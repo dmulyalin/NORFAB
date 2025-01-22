@@ -115,7 +115,7 @@ class NetboxWorker(NFPWorker):
         service: str = b"netbox",
         exit_event=None,
         init_done_event=None,
-        log_level="WARNING",
+        log_level=None,
         log_queue: object = None,
     ):
         super().__init__(broker, service, worker_name, exit_event, log_level, log_queue)

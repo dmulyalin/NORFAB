@@ -30,7 +30,7 @@ from .keepalives import KeepAliver
 from .security import generate_certificates
 from jinja2 import Environment, FileSystemLoader
 from jinja2.nodes import Include
-from norfab.utils.loggingutils import setup_logging
+from .inventory import logging_config_producer
 from typing import Any, Callable, Dict, List, Optional, Union
 from .exceptions import NorfabJobFailedError
 
@@ -416,13 +416,12 @@ class NFPWorker:
         service: str,
         name: str,
         exit_event,
-        log_level: str = "WARNING",
+        log_level: str = None,
         log_queue: object = None,
         multiplier: int = 6,
         keepalive: int = 2500,
     ):
-        setup_logging(queue=log_queue, log_level=log_level)
-        self.log_level = log_level
+        self.setup_logging(log_queue, log_level)
         self.broker = broker
         self.service = service
         self.name = name
@@ -489,12 +488,18 @@ class NFPWorker:
             whoami=NFP.WORKER,
             name=self.name,
             socket_lock=self.socket_lock,
-            log_level=self.log_level,
         )
         self.keepaliver.start()
         self.client = NFPClient(
             self.broker, name=f"{self.name}-NFPClient", exit_event=self.exit_event
         )
+
+    def setup_logging(self, log_queue, log_level: str) -> None:
+        """Method to apply logging configuration"""
+        logging_config_producer["handlers"]["queue"]["queue"] = log_queue
+        if log_level is not None:
+            logging_config_producer["root"]["level"] = log_level
+        logging.config.dictConfig(logging_config_producer)
 
     def reconnect_to_broker(self):
         """Connect or reconnect to broker"""

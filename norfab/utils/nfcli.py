@@ -99,7 +99,7 @@ def nfcli():
         "--log-level",
         action="store",
         dest="LOGLEVEL",
-        default="WARNING",
+        default=None,
         help="Set logging level debug, info, warning, error",
     )
     run_options.add_argument(

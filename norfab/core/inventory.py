@@ -8,6 +8,13 @@ Sample inventory file
 broker:
   endpoint: "tcp://127.0.0.1:5555"
   
+logging:
+  handlers:
+    terminal:
+      level: CRITICAL
+    file: 
+      level: DEBUG
+
 workers:
   nornir-*:
     - nornir/common.yaml  
@@ -66,10 +73,88 @@ import os
 import fnmatch
 import yaml
 import logging
+import copy
 
 from typing import Any, Union
 
 log = logging.getLogger(__name__)
+
+LOG_FILE = os.path.join(os.getcwd(), "__norfab__", "logs", "norfab.log")
+
+# logs producer process configuration is just a QueueHandler attached to the
+# root logger, which allows all messages to be sent to the queue. Producers are
+# workers and broker processes
+logging_config_producer = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {"queue": {"class": "logging.handlers.QueueHandler", "queue": None}},
+    "root": {"handlers": ["queue"], "level": "DEBUG"},
+}
+
+# listener is nfapi process
+logging_config_listener = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "default": {
+            "class": "logging.Formatter",
+            "format": "%(asctime)s.%(msecs)d %(levelname)s [%(name)s:%(lineno)d ] -- %(message)s",
+            "datefmt": "%Y-%m-%d %H:%M:%S",
+        }
+    },
+    "handlers": {
+        "terminal": {
+            "class": "logging.StreamHandler",
+            "formatter": "default",
+            "level": "CRITICAL",
+        },
+        "file": {
+            "backupCount": 50,
+            "class": "logging.handlers.RotatingFileHandler",
+            "delay": False,
+            "encoding": "utf-8",
+            "filename": LOG_FILE,
+            "formatter": "default",
+            "level": "INFO",
+            "maxBytes": 1024000,
+            "mode": "a",
+        },
+    },
+    "root": {"handlers": ["terminal", "file"], "level": "INFO"},
+}
+
+
+def make_logging_config(inventory: dict) -> dict:
+    """
+    Helper function to combine inventory logging section and
+    logging_config_listener dictionary.
+    """
+    if not inventory:
+        return logging_config_listener
+
+    log_cfg = copy.deepcopy(inventory)
+    ret = copy.deepcopy(logging_config_listener)
+
+    # merge handlers
+    ret["handlers"]["terminal"].update(log_cfg.get("handlers", {}).pop("terminal", {}))
+    ret["handlers"]["file"].update(log_cfg.get("handlers", {}).pop("file", {}))
+    ret["handlers"].update(log_cfg.pop("handlers", {}))
+    # merge formatters
+    ret["formatters"]["default"].update(
+        log_cfg.get("formatters", {}).pop("default", {})
+    )
+    ret["formatters"].update(log_cfg.pop("formatters", {}))
+    # merge root logger
+    ret["root"].update(log_cfg.pop("root", {}))
+    if "file" not in ret["root"]["handlers"]:
+        ret["root"]["handlers"].append("file")
+    if "terminal" not in ret["root"]["handlers"]:
+        ret["root"]["handlers"].append("terminal")
+    # merge remaining config
+    ret.update(log_cfg)
+    ret["disable_existing_loggers"] = False
+
+    return ret
 
 
 def merge_recursively(data: dict, merge: dict) -> None:
@@ -142,11 +227,11 @@ class WorkersInventory:
         if ret:
             return ret
         else:
-            raise KeyError(f"{name} has no invenotry data")
+            raise KeyError(f"{name} has no inventory data")
 
 
 class NorFabInventory:
-    __slots__ = ("broker", "workers", "topology")
+    __slots__ = ("broker", "workers", "topology", "logging")
 
     def __init__(self, path: str) -> None:
         """
@@ -170,14 +255,18 @@ class NorFabInventory:
         with open(path, "r", encoding="utf-8") as f:
             data = yaml.safe_load(f.read())
 
-        self.broker = data.get("broker", {})
-        self.workers = WorkersInventory(path, data.get("workers", {}))
-        self.topology = data.get("topology", {})
+        self.broker = data.pop("broker", {})
+        self.workers = WorkersInventory(path, data.pop("workers", {}))
+        self.topology = data.pop("topology", {})
+        self.logging = make_logging_config(data.pop("logging", {}))
 
     def __getitem__(self, key: str) -> Any:
-        return self.workers[key]
+        if key in self.__slots__:
+            return getattr(self, key)
+        else:
+            return self.workers[key]
 
-    def get(self, item: str, default: Any) -> Any:
+    def get(self, item: str, default: Any = None) -> Any:
         if item in self.__slots__:
             return getattr(self, item)
         else:

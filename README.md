@@ -9,7 +9,7 @@
 
 NORFAB is a tool for extreme network automations.
 
-Interested? read [documentation](https://dmulyalin.github.io/NORFAB/)
+Interested? read [documentation](https://dmulyalin.github.io/NORFAB/) or welcome to [#norfab](https://networktocode.slack.com/archives/C0894SVH7BQ) to have a chat.
 
 # The IDEA
 

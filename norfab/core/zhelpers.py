@@ -1,7 +1,3 @@
-# encoding: utf-8
-"""
-Helper module for example applications. Mimics ZeroMQ Guide's zhelpers.h.
-"""
 from __future__ import print_function
 
 import binascii

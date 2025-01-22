@@ -214,7 +214,7 @@ class NornirWorker(NFPWorker):
         service: str = b"nornir",
         exit_event=None,
         init_done_event=None,
-        log_level: str = "WARNING",
+        log_level: str = None,
         log_queue: object = None,
     ):
         super().__init__(broker, service, worker_name, exit_event, log_level, log_queue)
