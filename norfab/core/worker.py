@@ -33,6 +33,7 @@ from jinja2.nodes import Include
 from .inventory import logging_config_producer
 from typing import Any, Callable, Dict, List, Optional, Union
 from .exceptions import NorfabJobFailedError
+from .models import NorFabEvent
 
 log = logging.getLogger(__name__)
 
@@ -347,10 +348,9 @@ def _event(worker, event_queue, destroy_event):
                     "worker": worker.name,
                     "service": worker.service.decode("utf-8"),
                     "uuid": suuid.decode("utf-8"),
-                    "timestamp": time.ctime(),
                     "task": task,
-                    "data": data,
                     "timeout": timeout,
+                    **data,
                 }
             ).encode("utf-8"),
         ]
@@ -657,7 +657,15 @@ class NFPWorker:
 
         return filepath
 
-    def event(self, data: Any = None) -> None:
+    def event(self, data: Union[NorFabEvent, str], **kwargs) -> None:
+        try:
+            if not isinstance(data, NorFabEvent):
+                data = NorFabEvent(message=data, **kwargs)
+        except Exception as e:
+            log.error(f"Failed to form event data, error {e}")
+            return
+        data = data.model_dump(exclude_none=True)
+        # form event ZeroMQ payload
         event_item = [
             self.current_job["client_address"],
             self.current_job["juuid"],

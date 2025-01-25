@@ -3,6 +3,7 @@ Common Pydantic Models for PICLE Client Shells
 """
 import logging
 import time
+from datetime import datetime
 import threading
 import functools
 import json
@@ -31,10 +32,10 @@ def listen_events_thread(uuid, stop, NFCLIENT):
     """Helper function to pretty print events to command line"""
     richconsole = Console()
     start_time = time.time()
-    time_fmt = "%d-%b-%Y %H:%M:%S"
+    time_fmt = "%d-%b-%Y %H:%M:%S.%f"
     richconsole.print(
         f"-" * 45 + " Job Events " + "-" * 47 + "\n"
-        f"{time.strftime(time_fmt)} {uuid} job started"
+        f"{datetime.now().strftime(time_fmt)[:-3]} {uuid} job started"
     )
     while not (stop.is_set() or NFCLIENT.exit_event.is_set()):
         try:
@@ -57,35 +58,33 @@ def listen_events_thread(uuid, stop, NFCLIENT):
 
         # extract event parameters
         data = json.loads(data)
-        worker = data["worker"]
         service = data["service"]
+        worker = data["worker"]
         task = data["task"]
-
-        # handle per-service event printing
-        if service == "nornir":
-            timestamp = data["data"]["timestamp"]
-            nr_task_name = data["data"]["task_name"]
-            nr_task_event = data["data"]["task_event"]
-            nr_task_type = data["data"]["task_type"]
-            nr_task_hosts = data["data"].get("hosts")
-            nr_task_status = data["data"]["status"]
-            nr_task_message = data["data"]["message"]
-            nr_parent_task = data["data"]["parent_task"]
-            nr_task_event = nr_task_event.replace("started", "[cyan]started[/cyan]")
-            nr_task_event = nr_task_event.replace(
-                "completed", "[green]completed[/green]"
-            )
-            # log event message
-            richconsole.print(
-                f"{timestamp} {service} {worker} {', '.join(nr_task_hosts)} {nr_task_type} {nr_task_event} - '{nr_task_name}'"
-            )
-        elif isinstance(data["data"], (str, int, float)):
-            timestamp = data["timestamp"]
-            richconsole.print(f"{timestamp} {service} {worker} {task} - {data['data']}")
+        timestamp = data["timestamp"]
+        message = data["message"]
+        # color severity
+        severity = data["severity"]
+        severity = severity.replace("DEBUG", "[cyan]DEBUG[/cyan]")
+        severity = severity.replace("INFO", "[green]INFO[/green]")
+        severity = severity.replace("WARNING", "[yellow]WARNING[/yellow]")
+        severity = severity.replace("CRITICAL", "[red]CRITICAL[/red]")
+        # color status
+        status = data["status"]
+        status = status.replace("started", "[cyan]started[/cyan]")
+        status = status.replace("completed", "[green]completed[/green]")
+        status = status.replace("failed", "[red]failed[/red]")
+        resource = data["resource"]
+        if isinstance(resource, list):
+            resource = ", ".join(resource)
+        # log event message
+        richconsole.print(
+            f"{timestamp} {severity} {worker} {status} {service}.{task} {resource} - {message}"
+        )
 
     elapsed = round(time.time() - start_time, 3)
     richconsole.print(
-        f"{time.strftime(time_fmt)} {uuid} job completed in {elapsed} seconds\n\n"
+        f"{datetime.now().strftime(time_fmt)[:-3]} {uuid} job completed in {elapsed} seconds\n\n"
         + f"-" * 45
         + " Job Results "
         + "-" * 44

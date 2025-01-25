@@ -1395,6 +1395,7 @@ class NetboxWorker(NFPWorker):
         :returns: dictionary keyed by device name with updated details
         """
         result = {}
+        instance = instance or self.default_instance
         ret = Result(task=f"{self.name}:update_device_facts", result=result)
         nb = self._get_pynetbox(instance)
         kwargs["add_details"] = True
@@ -1413,9 +1414,14 @@ class NetboxWorker(NFPWorker):
                 for host, host_data in results["result"].items():
                     if host_data["napalm_get"]["failed"]:
                         log.error(
-                            f"{host} - facts update failed: '{host_data['napalm_get']['exception']}'"
+                            f"{host} facts update failed: '{host_data['napalm_get']['exception']}'"
                         )
-                        self.event(f"{host} - facts update failed")
+                        self.event(
+                            f"{host} facts update failed",
+                            resource=instance,
+                            status="failed",
+                            severity="WARNING",
+                        )
                         continue
                     nb_device = nb.dcim.devices.get(name=host)
                     if not nb_device:
@@ -1432,7 +1438,7 @@ class NetboxWorker(NFPWorker):
                             "serial": facts["serial_number"],
                         }
                     }
-                    self.event(f"{host} - facts updated")
+                    self.event(f"{host} facts updated", resource=instance)
         else:
             raise UnsupportedServiceError(f"'{datasource}' service not supported")
 
@@ -1468,6 +1474,7 @@ class NetboxWorker(NFPWorker):
         :returns: dictionary keyed by device name with update details
         """
         result = {}
+        instance = instance or self.default_instance
         ret = Result(task=f"{self.name}:update_device_interfaces", result=result)
         nb = self._get_pynetbox(instance)
 
@@ -1511,7 +1518,10 @@ class NetboxWorker(NFPWorker):
                         if dry_run is not True:
                             nb_interface.save()
                         updated[nb_interface.name] = interface
-                        self.event(f"{host} - updated interface {nb_interface.name}")
+                        self.event(
+                            f"{host} updated interface {nb_interface.name}",
+                            resource=instance,
+                        )
                     # create new interfaces
                     if create is not True:
                         continue
@@ -1530,7 +1540,10 @@ class NetboxWorker(NFPWorker):
                         if dry_run is not True:
                             nb_interface.save()
                         created[interface_name] = interface
-                        self.event(f"{host} - created interface {nb_interface.name}")
+                        self.event(
+                            f"{host} created interface {nb_interface.name}",
+                            resource=instance,
+                        )
         else:
             raise UnsupportedServiceError(f"'{datasource}' service not supported")
 

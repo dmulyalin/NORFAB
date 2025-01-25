@@ -412,7 +412,11 @@ class NornirWorker(NFPWorker):
                 )
             )
         if progress:
-            processors.append(NorFabEventProcessor(worker=self))
+            processors.append(
+                NorFabEventProcessor(
+                    worker=self, norfab_task_name=self.current_job["task"]
+                )
+            )
         # append ToFileProcessor as the last one in the sequence
         if tf and isinstance(tf, str):
             processors.append(
