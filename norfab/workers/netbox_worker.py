@@ -1549,6 +1549,18 @@ class NetboxWorker(NFPWorker):
 
         return ret
 
+    def update_device_ip(
+        self,
+        instance: str = None,
+        dry_run: bool = False,
+        datasource: str = "nornir",
+        timeout: int = 60,
+        devices: list = None,
+        create: bool = True,
+        **kwargs,
+    ) -> dict:
+        pass
+
     def get_next_ip(
         self,
         subnet: str,

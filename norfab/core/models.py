@@ -27,11 +27,10 @@ class EventStatusValues(str, Enum):
     pending = "pending"
     scheduled = "scheduled"
     started = "started"
-    in_progress = "in progress"
+    running = "running"
     completed = "completed"
     failed = "failed"
     unknown = "unknown"
-    running = "running"
 
 
 class NorFabEvent(BaseModel):
