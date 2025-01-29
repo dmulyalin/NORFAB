@@ -21,6 +21,7 @@ import queue
 import os
 import pickle
 import psutil
+import signal
 
 from .zhelpers import dump
 from . import NFP
@@ -37,6 +38,7 @@ from .models import NorFabEvent
 
 log = logging.getLogger(__name__)
 
+signal.signal(signal.SIGINT, signal.SIG_IGN)
 # --------------------------------------------------------------------------------------------
 # NORFAB Worker watchdog Object
 # --------------------------------------------------------------------------------------------

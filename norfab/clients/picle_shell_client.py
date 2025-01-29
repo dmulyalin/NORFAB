@@ -259,6 +259,5 @@ def start_picle_shell(
 
             print("\nExiting...")
             nf.destroy()
-        except KeyboardInterrupt:
-            print("\nInterrupted by user...")
-            nf.destroy()
+        except KeyboardInterrupt as e:
+            pass

@@ -88,32 +88,35 @@ nav:
         - Nornir Service: 
             - Overview: workers/nornir/services_nornir_service.md
             - Inventory: workers/nornir/services_nornir_service_inventory.md
-            - Task Nornir Task: workers/nornir/services_nornir_service_tasks_task.md
-            - Task Cli: workers/nornir/services_nornir_service_tasks_cli.md
-            - Task Cfg: workers/nornir/services_nornir_service_tasks_cfg.md
-            - Task Test: workers/nornir/services_nornir_service_tasks_test.md
-            - Task Network: workers/nornir/services_nornir_service_tasks_network.md
-            - Task Parse: workers/nornir/services_nornir_service_tasks_parse.md
-            - Task Diagram: workers/nornir/services_nornir_service_tasks_diagram.md
-            - Task File Copy: workers/nornir/services_nornir_service_tasks_file_copy.md
+            - Tasks:
+              - Nornir Task: workers/nornir/services_nornir_service_tasks_task.md
+              - CLI: workers/nornir/services_nornir_service_tasks_cli.md
+              - CFG: workers/nornir/services_nornir_service_tasks_cfg.md
+              - Test: workers/nornir/services_nornir_service_tasks_test.md
+              - Network: workers/nornir/services_nornir_service_tasks_network.md
+              - Parse: workers/nornir/services_nornir_service_tasks_parse.md
+              - Diagram: workers/nornir/services_nornir_service_tasks_diagram.md
+              - File Copy: workers/nornir/services_nornir_service_tasks_file_copy.md
             - Jina2 Filters Reference: workers/nornir/services_nornir_service_jinja2_filters.md
         - Netbox Service: 
             - Overview: workers/netbox/services_netbox_service.md
             - Inventory: workers/netbox/services_netbox_service_inventory.md
-            - Task GraphQL: workers/netbox/services_netbox_service_tasks_graphql.md
-            - Task REST: workers/netbox/services_netbox_service_tasks_rest.md
-            - Task GET Devices: workers/netbox/services_netbox_service_tasks_get_devices.md
-            - Task GET Interfaces: workers/netbox/services_netbox_service_tasks_get_interfaces.md
-            - Task GET Connections: workers/netbox/services_netbox_service_tasks_get_connections.md
-            - Task GET Circuits: workers/netbox/services_netbox_service_tasks_get_circuits.md
-            - Task GET Nornir Inventory: workers/netbox/services_netbox_service_tasks_get_nornir_inventory.md
-            - Task GETNext IP: workers/netbox/services_netbox_service_tasks_get_next_ip.md
-            - Task UPDATE Device Facts: workers/netbox/services_netbox_service_tasks_update_device_facts.md
-            - Task UPDATE Device Interfaces: workers/netbox/services_netbox_service_tasks_update_device_interfaces.md
+            - Tasks:
+              - GraphQL: workers/netbox/services_netbox_service_tasks_graphql.md
+              - REST: workers/netbox/services_netbox_service_tasks_rest.md
+              - GET Devices: workers/netbox/services_netbox_service_tasks_get_devices.md
+              - GET Interfaces: workers/netbox/services_netbox_service_tasks_get_interfaces.md
+              - GET Connections: workers/netbox/services_netbox_service_tasks_get_connections.md
+              - GET Circuits: workers/netbox/services_netbox_service_tasks_get_circuits.md
+              - GET Nornir Inventory: workers/netbox/services_netbox_service_tasks_get_nornir_inventory.md
+              - GETNext IP: workers/netbox/services_netbox_service_tasks_get_next_ip.md
+              - UPDATE Device Facts: workers/netbox/services_netbox_service_tasks_update_device_facts.md
+              - UPDATE Device Interfaces: workers/netbox/services_netbox_service_tasks_update_device_interfaces.md
         - Agent Service:
             - Overview: workers/agent/services_agent_service.md
             - Inventory: workers/agent/services_agent_service_inventory.md
-            - Task Chat: workers/agent/services_agent_service_tasks_chat.md
+            - Tasks:
+              - Chat: workers/agent/services_agent_service_tasks_chat.md
         - NORFAB Services:
             - MMI: services_norfab_mmi.md
             - Inventory Service: services_norfab_inventory_service.md

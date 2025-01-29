@@ -89,6 +89,7 @@ class NFPClient(object):
         )
         self.base_dir_jobs = os.path.join(self.base_dir, "jobs")
         self.events_dir = os.path.join(self.base_dir, "events")
+        self.running_job = None
 
         # create base directories
         os.makedirs(self.base_dir, exist_ok=True)
@@ -118,14 +119,15 @@ class NFPClient(object):
             with open(self.queue_filename, "w") as f:
                 pass
 
-        self.exit_event = exit_event or threading.Event()
+        self.exit_event = threading.Event() if exit_event is None else exit_event
         self.recv_queue = queue.Queue(maxsize=0)
         self.event_queue = event_queue or queue.Queue(maxsize=1000)
 
         # start receive thread
         self.recv_thread = threading.Thread(
             target=recv, daemon=True, name=f"{self.name}_recv_thread", args=(self,)
-        ).start()
+        )
+        self.recv_thread.start()
 
     def _make_workers(self, workers) -> bytes:
         """Helper function to convert workers target to bytes"""
@@ -690,6 +692,7 @@ class NFPClient(object):
         :param timeout: overall job timeout in seconds
         :param retry: number of times to try and GET job results
         """
+        self.running_job = True
         uuid = uuid or uuid4().hex
         start_time = int(time.time())
         ret = None
@@ -701,6 +704,7 @@ class NFPClient(object):
                 f"{self.name}:run_job - {service}:{task} POST status "
                 f"to '{workers}' workers is not 200 - '{post_result}'"
             )
+            self.running_job = False
             return ret
 
         remaining_timeout = timeout - (time.time() - start_time)
@@ -741,6 +745,7 @@ class NFPClient(object):
                 f"{self.name}:run_job - {service}:{task}:{uuid} "
                 f"retry exceeded, GET returned no results, timeout {timeout}s"
             )
+        self.running_job = False
         return ret
 
     def run_job_iter(
@@ -766,6 +771,7 @@ class NFPClient(object):
         :param kwargs: dict, task key-word arguments
         :param workers: str or list, worker names to target
         """
+        self.running_job = True
         uuid = uuid or uuid4().hex
 
         # POST job to workers
@@ -776,6 +782,8 @@ class NFPClient(object):
             service, task, [], {}, post_result["workers"], uuid, timeout
         ):
             yield result
+
+        self.running_job = False
 
     def destroy(self):
         log.info(f"{self.name} - client interrupt received, killing client")

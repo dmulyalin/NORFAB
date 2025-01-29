@@ -16,6 +16,7 @@ import os
 import hashlib
 import zmq
 import zmq.auth
+import signal
 
 from zmq.auth.thread import ThreadAuthenticator
 from binascii import hexlify
@@ -28,6 +29,8 @@ from .keepalives import KeepAliver
 from .security import generate_certificates
 
 log = logging.getLogger(__name__)
+
+signal.signal(signal.SIGINT, signal.SIG_IGN)
 
 # ----------------------------------------------------------------------
 # NORFAB Protocol Broker Implementation

@@ -120,6 +120,7 @@ class NetboxWorker(NFPWorker):
     ):
         super().__init__(broker, service, worker_name, exit_event, log_level, log_queue)
         self.init_done_event = init_done_event
+        self.cache = None
 
         # get inventory from broker
         self.inventory = self.load_inventory()
@@ -159,7 +160,8 @@ class NetboxWorker(NFPWorker):
         log.info(f"{self.name} - Started")
 
     def worker_exit(self) -> None:
-        self.cache.close()
+        if self.cache:
+            self.cache.close()
 
     # ----------------------------------------------------------------------
     # Netbox Service Functions that exposed for calling

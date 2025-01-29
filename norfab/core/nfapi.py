@@ -2,6 +2,7 @@ import logging
 import time
 import threading
 import copy
+import signal
 
 from multiprocessing import Process, Event, Queue
 from norfab.core.broker import NFPBroker
@@ -109,6 +110,7 @@ class NorFab:
         :param inventory: OS path to NorFab inventory YAML file
         :param log_level: one or supported logging levels - `CRITICAL`, `ERROR`, `WARNING`, `INFO`, `DEBUG`
         """
+        self.exiting = False  # flag to signal that Norfab is exiting
         self.inventory = NorFabInventory(inventory)
         self.log_queue = Queue()
         self.log_level = log_level
@@ -121,6 +123,13 @@ class NorFab:
         self.clients_exit_event = Event()
 
         self.setup_logging()
+        signal.signal(signal.SIGINT, self.handle_ctrl_c)
+
+    def handle_ctrl_c(self, signum, frame):
+        # Client not running a job, just stop NorFab
+        if not self.exiting:
+            print("\nCTRL-C, NorFab exiting, interrupted by user...")
+            self.destroy()
 
     def setup_logging(self):
         # update logging levels for all handlers
@@ -290,36 +299,33 @@ class NorFab:
             )
             self.destroy()
 
-    def run(self):
-        """
-        Helper method to run the loop before CTRL+C called
-        """
-        try:
-            while True:
-                time.sleep(0.5)
-        except KeyboardInterrupt:
-            print("\nInterrupted by user...")
-            self.destroy()
-
     def destroy(self) -> None:
         """
         Stop NORFAB processes.
         """
-        # stop client
-        self.clients_exit_event.set()
-        if self.client:
-            self.client.destroy()
-        # stop workers
-        self.workers_exit_event.set()
-        while self.workers_processes:
-            _, w = self.workers_processes.popitem()
-            w["process"].join()
-        # stop broker
-        self.broker_exit_event.set()
-        if self.broker:
-            self.broker.join()
-        # stop logging thread
-        self.log_listener.stop()
+        if self.exiting is not True:
+            self.exiting = True  # indicate that NorFab already exiting
+            # stop client
+            log.info("NorFab is exiting, stopping clients")
+            self.clients_exit_event.set()
+            if self.client:
+                self.client.destroy()
+            # stop workers
+            log.info("NorFab is exiting, stopping workers")
+            self.workers_exit_event.set()
+            while self.workers_processes:
+                wname, w = self.workers_processes.popitem()
+                w["process"].join()
+                log.info(f"NorFab is exiting, stopped {wname} worker")
+            # stop broker
+            log.info("NorFab is exiting, stopping broker")
+            self.broker_exit_event.set()
+            if self.broker:
+                self.broker.join()
+            # stop logging thread
+            log.info("NorFab is exiting, stopping logging queue listener")
+            self.log_listener.stop()
+            log.info("NorFab is exiting, all stopped, bye")
 
     def make_client(self, broker_endpoint: str = None) -> NFPClient:
         """
