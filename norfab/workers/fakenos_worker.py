@@ -63,9 +63,15 @@ class FakenosWorker(NFPWorker):
     inventory = None
 
     def __init__(
-        self, broker, service, worker_name, exit_event=None, log_level="WARNING"
+        self,
+        base_dir,
+        broker,
+        service,
+        worker_name,
+        exit_event=None,
+        log_level="WARNING",
     ):
-        super().__init__(broker, service, worker_name, exit_event, log_level)
+        super().__init__(base_dir, broker, service, worker_name, exit_event, log_level)
 
         # get inventory from broker
         self.inventory = self.load_inventory()

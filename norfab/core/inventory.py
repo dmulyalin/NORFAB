@@ -79,8 +79,6 @@ from typing import Any, Union
 
 log = logging.getLogger(__name__)
 
-LOG_FILE = os.path.join(os.getcwd(), "__norfab__", "logs", "norfab.log")
-
 # logs producer process configuration is just a QueueHandler attached to the
 # root logger, which allows all messages to be sent to the queue. Producers are
 # workers and broker processes
@@ -113,7 +111,7 @@ logging_config_listener = {
             "class": "logging.handlers.RotatingFileHandler",
             "delay": False,
             "encoding": "utf-8",
-            "filename": LOG_FILE,
+            "filename": None,
             "formatter": "default",
             "level": "INFO",
             "maxBytes": 1024000,
@@ -124,11 +122,15 @@ logging_config_listener = {
 }
 
 
-def make_logging_config(inventory: dict) -> dict:
+def make_logging_config(base_dir: str, inventory: dict) -> dict:
     """
     Helper function to combine inventory logging section and
     logging_config_listener dictionary.
     """
+    logging_config_listener["handlers"]["file"]["filename"] = os.path.join(
+        base_dir, "__norfab__", "logs", "norfab.log"
+    )
+
     if not inventory:
         return logging_config_listener
 
@@ -231,7 +233,7 @@ class WorkersInventory:
 
 
 class NorFabInventory:
-    __slots__ = ("broker", "workers", "topology", "logging")
+    __slots__ = ("broker", "workers", "topology", "logging", "base_dir")
 
     def __init__(self, path: str) -> None:
         """
@@ -239,10 +241,12 @@ class NorFabInventory:
 
         :param path: OS path to YAML file with inventory data
         """
+        path = os.path.abspath(path)
+
         self.broker = {}
         self.workers = {}
         self.topology = {}
-        path = os.path.abspath(path)
+        self.base_dir = os.path.split(path)[0]
         self.load(path)
 
     def load(self, path: str) -> None:
@@ -258,7 +262,7 @@ class NorFabInventory:
         self.broker = data.pop("broker", {})
         self.workers = WorkersInventory(path, data.pop("workers", {}))
         self.topology = data.pop("topology", {})
-        self.logging = make_logging_config(data.pop("logging", {}))
+        self.logging = make_logging_config(self.base_dir, data.pop("logging", {}))
 
     def __getitem__(self, key: str) -> Any:
         if key in self.__slots__:

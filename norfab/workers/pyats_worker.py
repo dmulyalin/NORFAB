@@ -33,6 +33,7 @@ class PyAtsWorker(NFPWorker):
 
     def __init__(
         self,
+        base_dir: str,
         broker: str,
         service: str,
         worker_name: str,
@@ -40,7 +41,7 @@ class PyAtsWorker(NFPWorker):
         init_done_event=None,
         log_level: str = "WARNING",
     ):
-        super().__init__(broker, service, worker_name, exit_event, log_level)
+        super().__init__(base_dir, broker, service, worker_name, exit_event, log_level)
         self.init_done_event = init_done_event
 
         # get inventory from broker

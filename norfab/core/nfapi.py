@@ -33,6 +33,7 @@ def start_broker_process(
 
 
 def start_worker_process(
+    base_dir: str,
     broker_endpoint: str,
     service: str,
     worker_name: str,
@@ -44,6 +45,7 @@ def start_worker_process(
     try:
         if service == "nornir":
             worker = NornirWorker(
+                base_dir=base_dir,
                 broker=broker_endpoint,
                 service=b"nornir",
                 worker_name=worker_name,
@@ -55,6 +57,7 @@ def start_worker_process(
             worker.work()
         elif service == "netbox":
             worker = NetboxWorker(
+                base_dir=base_dir,
                 broker=broker_endpoint,
                 service=b"netbox",
                 worker_name=worker_name,
@@ -66,6 +69,7 @@ def start_worker_process(
             worker.work()
         elif service == "agent":
             worker = AgentWorker(
+                base_dir=base_dir,
                 broker=broker_endpoint,
                 service=b"agent",
                 worker_name=worker_name,
@@ -114,7 +118,7 @@ class NorFab:
         self.inventory = NorFabInventory(inventory)
         self.log_queue = Queue()
         self.log_level = log_level
-        self.broker_endpoint = self.inventory.get("broker", {}).get("endpoint")
+        self.broker_endpoint = self.inventory.broker["endpoint"]
         self.workers_init_timeout = self.inventory.topology.get(
             "workers_init_timeout", 300
         )
@@ -208,7 +212,8 @@ class NorFab:
                 "process": Process(
                     target=start_worker_process,
                     args=(
-                        worker_inventory.get("broker_endpoint", self.broker_endpoint),
+                        self.inventory.base_dir,
+                        self.broker_endpoint,
                         worker_inventory["service"],
                         worker_name,
                         self.workers_exit_event,
@@ -346,6 +351,7 @@ class NorFab:
 
         if broker_endpoint or self.broker_endpoint:
             client = NFPClient(
+                self.inventory.base_dir,
                 broker_endpoint or self.broker_endpoint,
                 "NFPClient",
                 self.clients_exit_event,

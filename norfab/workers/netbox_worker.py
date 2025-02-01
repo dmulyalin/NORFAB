@@ -110,6 +110,7 @@ class NetboxWorker(NFPWorker):
 
     def __init__(
         self,
+        base_dir,
         broker,
         worker_name,
         service: str = b"netbox",
@@ -118,7 +119,9 @@ class NetboxWorker(NFPWorker):
         log_level=None,
         log_queue: object = None,
     ):
-        super().__init__(broker, service, worker_name, exit_event, log_level, log_queue)
+        super().__init__(
+            base_dir, broker, service, worker_name, exit_event, log_level, log_queue
+        )
         self.init_done_event = init_done_event
         self.cache = None
 

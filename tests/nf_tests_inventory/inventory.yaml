@@ -1,6 +1,7 @@
 # broker settings
 broker:
   endpoint: "tcp://127.0.0.1:5555"
+  shared_key: "5z1:yW}]n?UXhGmz+5CeHN1>:S9k!eCh6JyIhJqO"
   
 # uses https://docs.python.org/3/library/logging.config.html#configuration-dictionary-schema
 logging:

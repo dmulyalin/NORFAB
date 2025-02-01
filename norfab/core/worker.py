@@ -417,6 +417,7 @@ class NFPWorker:
 
     def __init__(
         self,
+        base_dir: str,
         broker: str,
         service: str,
         name: str,
@@ -440,7 +441,7 @@ class NFPWorker:
 
         # create base directories
         self.base_dir = os.path.join(
-            os.getcwd(), "__norfab__", "files", "worker", self.name
+            base_dir, "__norfab__", "files", "worker", self.name
         )
         self.base_dir_jobs = os.path.join(self.base_dir, "jobs")
         os.makedirs(self.base_dir, exist_ok=True)
@@ -487,7 +488,10 @@ class NFPWorker:
                 pass
 
         self.client = NFPClient(
-            self.broker, name=f"{self.name}-NFPClient", exit_event=self.exit_event
+            base_dir,
+            self.broker,
+            name=f"{self.name}-NFPClient",
+            exit_event=self.exit_event,
         )
 
     def setup_logging(self, log_queue, log_level: str) -> None:

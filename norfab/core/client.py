@@ -82,12 +82,12 @@ class NFPClient(object):
     client_private_key_file = None
     broker_public_key_file = None
 
-    def __init__(self, broker, name, exit_event=None, event_queue=None):
+    def __init__(self, base_dir, broker, name, exit_event=None, event_queue=None):
         self.name = name
         self.zmq_name = f"{self.name}-{uuid4().hex}"
         self.broker = broker
         self.base_dir = os.path.join(
-            os.getcwd(), "__norfab__", "files", "client", self.name
+            base_dir, "__norfab__", "files", "client", self.name
         )
         self.jobs_dir = os.path.join(self.base_dir, "jobs")
         self.events_dir = os.path.join(self.base_dir, "events")

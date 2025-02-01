@@ -8,6 +8,7 @@ norfab_base_inventory = """
 # broker settings
 broker:
   endpoint: "tcp://127.0.0.1:5555"
+  public_key: "I%%LVg$#t2Aw(SC/G%UPf&U3gYMk=hZ{p}J4/uFu"
   
 # workers inventory section
 workers:
@@ -132,6 +133,7 @@ def nfcli():
     # create NorFab environment
     if CREATE_ENV:
         print(f"Creating NorFab environment '{CREATE_ENV}'")
+        # create inventory files
         os.makedirs(CREATE_ENV, exist_ok=True)
         os.makedirs(os.path.join(CREATE_ENV, "nornir"), exist_ok=True)
         with open(os.path.join(CREATE_ENV, "inventory.yaml"), "w") as f:
@@ -140,7 +142,6 @@ def nfcli():
             f.write(nornir_service_base_inventory_common)
         with open(os.path.join(CREATE_ENV, "nornir", "nornir-worker-1.yaml"), "w") as f:
             f.write(nornir_service_base_inventory_worker)
-
         return (
             (f"Done, run 'nfcli' to start NorFab")
             if CREATE_ENV == "."

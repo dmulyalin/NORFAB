@@ -209,6 +209,7 @@ class NornirWorker(NFPWorker):
 
     def __init__(
         self,
+        base_dir: str,
         broker: str,
         worker_name: str,
         service: str = b"nornir",
@@ -217,7 +218,9 @@ class NornirWorker(NFPWorker):
         log_level: str = None,
         log_queue: object = None,
     ):
-        super().__init__(broker, service, worker_name, exit_event, log_level, log_queue)
+        super().__init__(
+            base_dir, broker, service, worker_name, exit_event, log_level, log_queue
+        )
         self.init_done_event = init_done_event
         self.tf_base_path = os.path.join(self.base_dir, "tf")
 

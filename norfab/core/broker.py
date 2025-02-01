@@ -26,7 +26,7 @@ from . import NFP
 from .zhelpers import dump
 from .inventory import NorFabInventory, logging_config_producer
 from .keepalives import KeepAliver
-from .security import generate_certificates, NorFabClientAuthProvider
+from .security import generate_certificates
 
 log = logging.getLogger(__name__)
 
@@ -132,13 +132,17 @@ class NFPBroker:
         self.exit_event = exit_event
         self.inventory = inventory
 
-        self.base_dir = os.getcwd()
-        self.broker_base_dir = f"{self.base_dir}/__norfab__/files/broker/"
+        self.base_dir = self.inventory.base_dir
+        self.broker_base_dir = os.path.join(
+            self.base_dir, "__norfab__", "files", "broker"
+        )
         os.makedirs(self.base_dir, exist_ok=True)
         os.makedirs(self.broker_base_dir, exist_ok=True)
 
         # generate certificates, create directories and load certs
-        generate_certificates(self.broker_base_dir, cert_name="broker")
+        generate_certificates(
+            self.broker_base_dir, cert_name="broker", inventory=inventory
+        )
         self.private_keys_dir = os.path.join(self.broker_base_dir, "private_keys")
         self.public_keys_dir = os.path.join(self.broker_base_dir, "public_keys")
         self.broker_private_key_file = os.path.join(
