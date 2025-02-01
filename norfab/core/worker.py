@@ -505,6 +505,8 @@ class NFPWorker:
             self.broker_socket.close()
 
         self.broker_socket = self.ctx.socket(zmq.DEALER)
+        self.broker_socket.setsockopt_unicode(zmq.IDENTITY, self.name, "utf8")
+        self.broker_socket.linger = 0
 
         # We need two certificates, one for the client and one for
         # the server. The client must know the server's public key
@@ -521,8 +523,6 @@ class NFPWorker:
         server_public, _ = zmq.auth.load_certificate(server_public_file)
         self.broker_socket.curve_serverkey = server_public
 
-        self.broker_socket.setsockopt_unicode(zmq.IDENTITY, self.name, "utf8")
-        self.broker_socket.linger = 0
         self.broker_socket.connect(self.broker)
         self.poller.register(self.broker_socket, zmq.POLLIN)
 
@@ -530,7 +530,7 @@ class NFPWorker:
         self.send_to_broker(NFP.READY)
 
         # start keepalives
-        if self.keepaliver:
+        if self.keepaliver is not None:
             self.keepaliver.restart(self.broker_socket)
         else:
             self.keepaliver = KeepAliver(
@@ -547,16 +547,10 @@ class NFPWorker:
             self.keepaliver.start()
 
         self.stats_reconnect_to_broker += 1
-        if self.stats_reconnect_to_broker == 1:
-            log.info(
-                f"{self.name} - registered to broker at '{self.broker}', "
-                f"service '{self.service.decode('utf-8')}'"
-            )
-        else:
-            log.info(
-                f"{self.name} - reconnected to broker at '{self.broker}', "
-                f"service '{self.service.decode('utf-8')}'"
-            )
+        log.info(
+            f"{self.name} - registered to broker at '{self.broker}', "
+            f"service '{self.service.decode('utf-8')}'"
+        )
 
     def send_to_broker(self, command, msg: list = None):
         """Send message to broker.

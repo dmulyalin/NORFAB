@@ -147,6 +147,8 @@ class NFPClient(object):
             self.broker_socket.close()
 
         self.broker_socket = self.ctx.socket(zmq.DEALER)
+        self.broker_socket.setsockopt_unicode(zmq.IDENTITY, self.zmq_name, "utf8")
+        self.broker_socket.linger = 0
 
         # We need two certificates, one for the client and one for
         # the server. The client must know the server's public key
@@ -165,8 +167,6 @@ class NFPClient(object):
         server_public, _ = zmq.auth.load_certificate(self.broker_public_key_file)
         self.broker_socket.curve_serverkey = server_public
 
-        self.broker_socket.setsockopt_unicode(zmq.IDENTITY, self.zmq_name, "utf8")
-        self.broker_socket.linger = 0
         self.broker_socket.connect(self.broker)
         self.poller.register(self.broker_socket, zmq.POLLIN)
         log.debug(f"{self.name} - client connected to broker at '{self.broker}'")

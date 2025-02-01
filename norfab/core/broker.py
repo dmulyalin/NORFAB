@@ -26,7 +26,7 @@ from . import NFP
 from .zhelpers import dump
 from .inventory import NorFabInventory, logging_config_producer
 from .keepalives import KeepAliver
-from .security import generate_certificates
+from .security import generate_certificates, NorFabClientAuthProvider
 
 log = logging.getLogger(__name__)
 
@@ -156,7 +156,7 @@ class NFPBroker:
         self.auth.start()
         self.auth.allow("127.0.0.1")
         # Tell the authenticator how to handle CURVE requests
-        self.auth.configure_curve(domain="*", location=zmq.auth.CURVE_ALLOW_ANY)
+        self.auth.configure_curve(location=zmq.auth.CURVE_ALLOW_ANY)
 
         self.socket = self.ctx.socket(zmq.ROUTER)
         self.socket.curve_secretkey = server_secret

@@ -4,7 +4,7 @@ import os
 from norfab.clients.picle_shell_client import start_picle_shell
 from norfab.core.nfapi import NorFab
 
-base_inventory = """
+norfab_base_inventory = """
 # broker settings
 broker:
   endpoint: "tcp://127.0.0.1:5555"
@@ -23,7 +23,7 @@ topology:
     - nornir-worker-1
 """
 
-nornir_common = """
+nornir_service_base_inventory_common = """
 service: nornir
 broker_endpoint: "tcp://127.0.0.1:5555"
 
@@ -35,7 +35,7 @@ default: {}
 groups: {}
 """
 
-nornir_worker = """
+nornir_service_base_inventory_worker = """
 hosts:
   ios-device-1:
     hostname: 192.168.1.1
@@ -135,11 +135,11 @@ def nfcli():
         os.makedirs(CREATE_ENV, exist_ok=True)
         os.makedirs(os.path.join(CREATE_ENV, "nornir"), exist_ok=True)
         with open(os.path.join(CREATE_ENV, "inventory.yaml"), "w") as f:
-            f.write(base_inventory)
+            f.write(norfab_base_inventory)
         with open(os.path.join(CREATE_ENV, "nornir", "common.yaml"), "w") as f:
-            f.write(nornir_common)
+            f.write(nornir_service_base_inventory_common)
         with open(os.path.join(CREATE_ENV, "nornir", "nornir-worker-1.yaml"), "w") as f:
-            f.write(nornir_worker)
+            f.write(nornir_service_base_inventory_worker)
 
         return (
             (f"Done, run 'nfcli' to start NorFab")

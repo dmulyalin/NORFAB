@@ -1,14 +1,41 @@
+"""
+References:
+
+- https://pyzmq.readthedocs.io/en/latest/api/zmq.auth.html
+"""
 import os
 import shutil
 from typing import Union
 
 import zmq.auth
+import logging
+
+log = logging.getLogger(__name__)
 
 # disable warning "RuntimeWarning: Proactor event loop does not implement add_reader family of methods required for zmq"
 if os.name == "nt":
     import asyncio
 
     asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+
+
+class NorFabClientAuthProvider:
+    """
+    Class to be called to validate client key and domain.
+
+    When client connects to broker, broker will call this class to validate
+    client key and domain, if client key never seen before broker will store
+    the key but will not allow client to connect until key is explicitly
+    authorized by user using 'nfcli --keys' command
+    """
+
+    def __init__(self, broker):
+        self.broker = broker
+
+    def callback(self, domain, key):
+        log.debug(f"Broker received client key, domain: {domain}, key: {key}")
+
+        return True
 
 
 def generate_certificates(

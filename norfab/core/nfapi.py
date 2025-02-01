@@ -336,7 +336,6 @@ class NorFab:
             # stop logging thread
             log.info("NorFab is exiting, stopping logging queue listener")
             self.log_listener.stop()
-            log.info("NorFab is exiting, all stopped, bye")
 
     def make_client(self, broker_endpoint: str = None) -> NFPClient:
         """
