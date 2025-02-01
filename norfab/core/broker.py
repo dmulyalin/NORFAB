@@ -87,7 +87,8 @@ class NFPWorker(object):
     def destroy(self, disconnect=False):
         """Clean up routine"""
         self.exit_event.set()
-        self.keepaliver.stop()
+        if hasattr(self, "keepaliver"):
+            self.keepaliver.stop()
         self.service.workers.remove(self)
 
         if disconnect is True:
@@ -103,6 +104,11 @@ class NFPBroker:
 
     :param log_level: override default log levels
     """
+
+    private_keys_dir = None
+    public_keys_dir = None
+    broker_private_key_file = None
+    broker_public_key_file = None
 
     def __init__(
         self,
@@ -133,9 +139,15 @@ class NFPBroker:
 
         # generate certificates, create directories and load certs
         generate_certificates(self.broker_base_dir, cert_name="broker")
-        secret_keys_dir = os.path.join(self.broker_base_dir, "private_keys")
-        server_secret_file = os.path.join(secret_keys_dir, "broker.key_secret")
-        server_public, server_secret = zmq.auth.load_certificate(server_secret_file)
+        self.private_keys_dir = os.path.join(self.broker_base_dir, "private_keys")
+        self.public_keys_dir = os.path.join(self.broker_base_dir, "public_keys")
+        self.broker_private_key_file = os.path.join(
+            self.private_keys_dir, "broker.key_secret"
+        )
+        self.broker_public_key_file = os.path.join(self.public_keys_dir, "broker.key")
+        server_public, server_secret = zmq.auth.load_certificate(
+            self.broker_private_key_file
+        )
 
         self.ctx = zmq.Context()
 
@@ -225,6 +237,9 @@ class NFPBroker:
                 w = self.workers[name]
             if not w.keepaliver.is_alive():
                 self.delete_worker(w, False)
+                log.info(
+                    f"NFPBroker - {w.address.decode(encoding='utf-8')} worker keepalives expired"
+                )
 
     def send_to_worker(
         self, worker: NFPWorker, command: bytes, sender: bytes, uuid: bytes, data: bytes
@@ -271,7 +286,7 @@ class NFPBroker:
             client = msg.pop(0)
             empty = msg.pop(0)
             self.send_to_client(client, NFP.RESPONSE, worker.service.name, msg)
-        elif NFP.KEEPALIVE == command:
+        elif NFP.KEEPALIVE == command and hasattr(worker, "keepaliver"):
             worker.keepaliver.received_heartbeat([worker.address] + msg)
         elif NFP.DISCONNECT == command and worker.is_ready():
             self.delete_worker(worker, False)
@@ -294,7 +309,9 @@ class NFPBroker:
                 keepalive=self.keepalive,
                 socket_lock=self.socket_lock,
             )
-            log.info(f"NFPBroker - registered new worker {address}")
+            log.info(
+                f"NFPBroker - registered new worker {address.decode(encoding='utf-8')}"
+            )
 
         return self.workers[address]
 
@@ -303,7 +320,9 @@ class NFPBroker:
         if not self.services.get(name):
             service = NFPService(name)
             self.services[name] = service
-            log.debug(f"NFPBroker - registered new service {name}")
+            log.debug(
+                f"NFPBroker - registered new service {name.decode(encoding='utf-8')}"
+            )
 
         return self.services[name]
 
@@ -457,13 +476,23 @@ class NFPBroker:
                 ret = [{"name": "", "service": "", "status": ""}]
         elif task == "show_broker":
             ret = {
-                "address": self.socket.getsockopt_string(zmq.LAST_ENDPOINT),
+                "endpoint": self.socket.getsockopt_string(zmq.LAST_ENDPOINT),
                 "status": "active",
-                "multiplier": self.multiplier,
-                "keepalive": self.keepalive,
+                "keepalives": {
+                    "interval": self.keepalive,
+                    "multiplier": self.multiplier,
+                },
                 "workers count": len(self.workers),
                 "services count": len(self.services),
-                "base_dir": self.base_dir,
+                "directories": {
+                    "base-dir": self.base_dir,
+                    "private-keys-dir": self.private_keys_dir,
+                    "public-keys-dir": self.public_keys_dir,
+                },
+                "security": {
+                    "broker-private-key-file": self.broker_private_key_file,
+                    "broker-public-key-file": self.broker_public_key_file,
+                },
             }
         reply = json.dumps(ret).encode("utf-8")
         self.send_to_client(

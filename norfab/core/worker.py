@@ -412,6 +412,9 @@ class NFPWorker:
     :param keepalive: int, keepalive interval in milliseconds
     """
 
+    keepaliver = None
+    stats_reconnect_to_broker = 0
+
     def __init__(
         self,
         broker: str,
@@ -429,6 +432,8 @@ class NFPWorker:
         self.name = name
         self.exit_event = exit_event
         self.broker_socket = None
+        self.multiplier = multiplier
+        self.keepalive = keepalive
         self.socket_lock = (
             threading.Lock()
         )  # used for keepalives to protect socket object
@@ -440,6 +445,19 @@ class NFPWorker:
         self.base_dir_jobs = os.path.join(self.base_dir, "jobs")
         os.makedirs(self.base_dir, exist_ok=True)
         os.makedirs(self.base_dir_jobs, exist_ok=True)
+
+        # create events and queues
+        self.destroy_event = threading.Event()
+        self.request_thread = None
+        self.reply_thread = None
+        self.close_thread = None
+        self.recv_thread = None
+        self.event_thread = None
+
+        self.post_queue = queue.Queue(maxsize=0)
+        self.get_queue = queue.Queue(maxsize=0)
+        self.delete_queue = queue.Queue(maxsize=0)
+        self.event_queue = queue.Queue(maxsize=0)
 
         # generate certificates and create directories
         generate_certificates(
@@ -456,18 +474,6 @@ class NFPWorker:
         self.poller = zmq.Poller()
         self.reconnect_to_broker()
 
-        self.destroy_event = threading.Event()
-        self.request_thread = None
-        self.reply_thread = None
-        self.close_thread = None
-        self.recv_thread = None
-        self.event_thread = None
-
-        self.post_queue = queue.Queue(maxsize=0)
-        self.get_queue = queue.Queue(maxsize=0)
-        self.delete_queue = queue.Queue(maxsize=0)
-        self.event_queue = queue.Queue(maxsize=0)
-
         # create queue file
         self.queue_filename = os.path.join(self.base_dir_jobs, f"{self.name}.queue.txt")
         if not os.path.exists(self.queue_filename):
@@ -480,18 +486,6 @@ class NFPWorker:
             with open(self.queue_done_filename, "w") as f:
                 pass
 
-        self.keepaliver = KeepAliver(
-            address=None,
-            socket=self.broker_socket,
-            multiplier=multiplier,
-            keepalive=keepalive,
-            exit_event=self.destroy_event,
-            service=self.service,
-            whoami=NFP.WORKER,
-            name=self.name,
-            socket_lock=self.socket_lock,
-        )
-        self.keepaliver.start()
         self.client = NFPClient(
             self.broker, name=f"{self.name}-NFPClient", exit_event=self.exit_event
         )
@@ -535,9 +529,34 @@ class NFPWorker:
         # Register service with broker
         self.send_to_broker(NFP.READY)
 
-        log.info(
-            f"{self.name} - registered to broker at '{self.broker}', service '{self.service}'"
-        )
+        # start keepalives
+        if self.keepaliver:
+            self.keepaliver.restart(self.broker_socket)
+        else:
+            self.keepaliver = KeepAliver(
+                address=None,
+                socket=self.broker_socket,
+                multiplier=self.multiplier,
+                keepalive=self.keepalive,
+                exit_event=self.destroy_event,
+                service=self.service,
+                whoami=NFP.WORKER,
+                name=self.name,
+                socket_lock=self.socket_lock,
+            )
+            self.keepaliver.start()
+
+        self.stats_reconnect_to_broker += 1
+        if self.stats_reconnect_to_broker == 1:
+            log.info(
+                f"{self.name} - registered to broker at '{self.broker}', "
+                f"service '{self.service.decode('utf-8')}'"
+            )
+        else:
+            log.info(
+                f"{self.name} - reconnected to broker at '{self.broker}', "
+                f"service '{self.service.decode('utf-8')}'"
+            )
 
     def send_to_broker(self, command, msg: list = None):
         """Send message to broker.

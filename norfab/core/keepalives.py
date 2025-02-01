@@ -40,7 +40,7 @@ class KeepAliver:
         self.multiplier = multiplier
         self.service = service
         self.whoami = whoami
-        self.name = name
+        self.name = f"{name}-keepaliver"
         self.socket_lock = socket_lock
 
         self.started_at = 0
@@ -70,7 +70,7 @@ class KeepAliver:
         return True
 
     def run(self):
-        """Send heartbeats to at keepalive interval."""
+        """Send heartbeats at keepalive interval."""
         while not self.exit_event.is_set():
             if time.time() > self.keepalive_at:  # time to send heartbeat
                 if self.address:
@@ -81,10 +81,9 @@ class KeepAliver:
                     try:
                         self.socket.send_multipart(msg)
                     except Exception as e:
-                        msg = f"{self.name} - failed to send keepalive, trigerring exit event, error '{e}'"
-                        log.error(msg)
-                        self.exit_event.set()
-                        break
+                        log.error(
+                            f"{self.name} - failed to send keepalive, error '{e}'"
+                        )
                 self.keepalive_at = time.time() + 0.001 * self.keepalive
                 self.keepalives_send += 1
                 log.debug(f"{self.name} - send keepalive '{msg}'")
@@ -95,6 +94,19 @@ class KeepAliver:
         log.debug(f"{self.name} - received keepalive '{msg}'")
         self.keepalives_received += 1
         self.holdtime = time.time() + 0.001 * self.multiplier * self.keepalive
+
+    def restart(self, socket):
+        """Restart keepalives with new socket."""
+        self.socket = socket
+        self.keepalives_received = 0
+        self.keepalives_send = 0
+        self.started_at = time.time()
+        self.holdtime = (
+            time.time() + 0.001 * self.multiplier * self.keepalive
+        )  # expires at this point, unless heartbeat
+        self.keepalive_at = (
+            time.time() + 0.001 * self.keepalive
+        )  # when to send keepalive
 
     def is_alive(self):
         """True if other party seen before expiry False otherwise."""

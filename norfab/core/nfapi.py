@@ -1,9 +1,9 @@
 import logging
 import time
-import threading
-import copy
+import os
 import signal
 
+from typing import Union
 from multiprocessing import Process, Event, Queue
 from norfab.core.broker import NFPBroker
 from norfab.core.client import NFPClient
@@ -126,10 +126,14 @@ class NorFab:
         signal.signal(signal.SIGINT, self.handle_ctrl_c)
 
     def handle_ctrl_c(self, signum, frame):
-        # Client not running a job, just stop NorFab
-        if not self.exiting:
-            print("\nCTRL-C, NorFab exiting, interrupted by user...")
+        if self.exiting is False:
+            msg = "CTRL-C, NorFab exiting, interrupted by user..."
+            print(f"\n{msg}")
+            log.info(msg)
             self.destroy()
+            # signal termination to main process
+            signal.signal(signal.SIGINT, signal.default_int_handler)
+            os.kill(os.getpid(), signal.SIGINT)
 
     def setup_logging(self):
         # update logging levels for all handlers
@@ -221,8 +225,8 @@ class NorFab:
     def start(
         self,
         start_broker: bool = True,
-        workers: list = True,
-    ):
+        workers: Union[bool, list] = True,
+    ) -> None:
         """
         Main entry method to start NorFab components.
 
@@ -232,6 +236,8 @@ class NorFab:
             starts all workers defined in inventory ``topology`` sections
         :param client: If true return and instance of NorFab client
         """
+        workers_to_start = set()
+
         # start the broker
         if start_broker is True and self.inventory.topology.get("broker") is True:
             self.start_broker()
@@ -244,13 +250,11 @@ class NorFab:
         # start workers defined in inventory
         elif workers is True:
             workers = self.inventory.topology.get("workers", [])
-
-        # start worker processes
+        # exit if no workers
         if not workers:
             return
 
         # form a list of workers to start
-        workers_to_start = set()
         for worker_name in workers:
             if isinstance(worker_name, dict):
                 worker_name = tuple(worker_name)[0]
@@ -298,6 +302,13 @@ class NorFab:
                 f"TimeoutError - {self.workers_init_timeout}s workers init timeout expired"
             )
             self.destroy()
+
+    def run(self):
+        """
+        Helper method to run the loop before CTRL+C called
+        """
+        while self.exiting is False:
+            time.sleep(0.5)
 
     def destroy(self) -> None:
         """

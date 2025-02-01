@@ -33,6 +33,7 @@ from .picle_shells.norfab_jobs_shell import NorFabJobsShellCommands
 from .picle_shells.agent import agent_picle_shell
 
 NFCLIENT = None
+RICHCONSOLE = Console()
 log = logging.getLogger(__name__)
 
 # ---------------------------------------------------------------------------------------------
@@ -41,8 +42,10 @@ log = logging.getLogger(__name__)
 
 
 def print_stats(data: dict):
-    for k, v in data.items():
-        print(f" {k}: {v}")
+    data = yaml.dump(data, default_flow_style=False, sort_keys=False)
+    # add single space indent
+    data = "\n".join([f" {i}" for i in data.splitlines()])
+    RICHCONSOLE.print(data)
 
 
 # ---------------------------------------------------------------------------------------------
@@ -101,16 +104,28 @@ class ShowCommandsModel(BaseModel):
     @staticmethod
     def show_client():
         return {
-            "type": "PICLE Shell",
+            "client-type": "PICLE Shell",
             "status": "connected",
-            "broker": NFCLIENT.broker,
             "name": NFCLIENT.name,
-            "zmq_name": NFCLIENT.zmq_name,
-            "recv_queue": NFCLIENT.recv_queue.qsize(),
-            "base_dir": NFCLIENT.base_dir,
-            "broker_tx": NFCLIENT.stats_send_to_broker,
-            "broker_rx": NFCLIENT.stats_recv_from_broker,
-            "broker_reconnects": NFCLIENT.stats_reconnect_to_broker,
+            "zmq-name": NFCLIENT.zmq_name,
+            "recv-queue-size": NFCLIENT.recv_queue.qsize(),
+            "broker": {
+                "endpoint": NFCLIENT.broker,
+                "reconnects": NFCLIENT.stats_reconnect_to_broker,
+                "messages-rx": NFCLIENT.stats_recv_from_broker,
+                "messages-tx": NFCLIENT.stats_send_to_broker,
+            },
+            "directories": {
+                "base-dir": NFCLIENT.base_dir,
+                "jobs-dir": NFCLIENT.jobs_dir,
+                "events-dir": NFCLIENT.events_dir,
+                "public-keys-dir": NFCLIENT.public_keys_dir,
+                "private-keys-dir": NFCLIENT.private_keys_dir,
+            },
+            "security": {
+                "client-private-key-file": NFCLIENT.client_private_key_file,
+                "broker-public-key-file": NFCLIENT.broker_public_key_file,
+            },
         }
 
 
@@ -252,12 +267,9 @@ def start_picle_shell(
         # inject NFCLIENT to all imported models' global space
         builtins.NFCLIENT = NFCLIENT
 
-        try:
-            # start PICLE interactive shell
-            shell = App(NorFabShell)
-            shell.start()
+        # start PICLE interactive shell
+        shell = App(NorFabShell)
+        shell.start()
 
-            print("\nExiting...")
-            nf.destroy()
-        except KeyboardInterrupt as e:
-            pass
+        print("Exiting...")
+        nf.destroy()

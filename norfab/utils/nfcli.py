@@ -150,12 +150,12 @@ def nfcli():
     # start broker only
     if BROKER:
         nf = NorFab(inventory=INVENTORY, log_level=LOGLEVEL)
-        nf.start(start_broker=True, start_workers=False)
+        nf.start(start_broker=True, workers=False)
         nf.run()
     # start workers only
     elif WORKERS:
         nf = NorFab(inventory=INVENTORY, log_level=LOGLEVEL)
-        nf.start(start_broker=False, start_workers=True)
+        nf.start(start_broker=False, workers=True)
         nf.run()
     # start interactive client shell only
     elif CLIENT:
@@ -165,7 +165,7 @@ def nfcli():
             start_broker=False,
             log_level=LOGLEVEL,
         )
-    # start interactive shell with broker and all workers
+    # default, start everything locally - interactive shell, broker and all workers
     elif SHELL:
         start_picle_shell(
             inventory=INVENTORY,
