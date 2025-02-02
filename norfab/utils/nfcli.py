@@ -6,7 +6,7 @@ from norfab.core.nfapi import NorFab
 try:
     from norfab.clients.picle_shell_client import start_picle_shell
 except ImportError as e:
-    print("Failed to import NorFab Shell, needed libs not found - {e}")
+    print(f"Failed to import NorFab Shell, needed libs not found - {e}")
 
 norfab_base_inventory = """
 # broker settings

@@ -1,16 +1,11 @@
 FROM python:3.9.7-slim-bullseye
 
 RUN apt-get update && \
-    apt-get install --no-install-recommends -y dumb-init && \
     apt-get clean && \
-    pip install --no-cache-dir pip setuptools wheel poetry --upgrade && \
-    chmod 775 /usr/bin/dumb-init
+    pip install --no-cache-dir pip setuptools wheel poetry --upgrade
 
 RUN pip install --no-cache-dir norfab[nornir] --upgrade
 
-WORKDIR "/etc/norfab/"
-ENTRYPOINT ["/usr/bin/dumb-init"]
-
 ARG LOG_LEVEL=INFO
 
-CMD ["nfcli", "-w", "-l", ${LOG_LEVEL}]
+ENTRYPOINT cd /etc/norfab/ && nfcli -w -l ${LOG_LEVEL}
