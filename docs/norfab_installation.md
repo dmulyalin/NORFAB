@@ -23,7 +23,7 @@ pip install norfab[full]
 
 ### NORFAB CLI Dependencies
 
-Need to install NorFab Interactive CLI dependencies
+To install NorFab Interactive CLI dependencies
 
 ```
 pip install norfab[nfcli]
@@ -31,7 +31,7 @@ pip install norfab[nfcli]
 
 ### Robot Client Dependencies
 
-Need to install Robot library dependencies
+To install Robot library dependencies
 
 ```
 pip install norfab[robot]
@@ -39,7 +39,7 @@ pip install norfab[robot]
 
 ### Nornir Service Dependencies
 
-Need to install Nornir service dependencies
+To install Nornir service dependencies
 
 ```
 pip install norfab[nornirservice]
@@ -47,7 +47,7 @@ pip install norfab[nornirservice]
 
 ### Netbox Service Dependencies
 
-Need to install Netbox service dependencies
+To install Netbox service dependencies
 
 ```
 pip install norfab[netboxservice]

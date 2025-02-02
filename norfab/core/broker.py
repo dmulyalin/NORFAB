@@ -158,7 +158,8 @@ class NFPBroker:
         # Start an authenticator for this context.
         self.auth = ThreadAuthenticator(self.ctx)
         self.auth.start()
-        self.auth.allow("0.0.0.0")
+        # self.auth.allow("0.0.0.0")
+        self.auth.allow_any = True
         # Tell the authenticator how to handle CURVE requests
         self.auth.configure_curve(location=zmq.auth.CURVE_ALLOW_ANY)
 

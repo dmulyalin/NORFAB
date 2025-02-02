@@ -15,17 +15,17 @@ log = logging.getLogger(__name__)
 try:
     from norfab.workers import NornirWorker
 except ImportError as e:
-    log.error(f"Failed to import NornirWorker, needed libs not found - {e}")
+    log.warning(f"Failed to import NornirWorker, needed libs not found - {e}")
 
 try:
     from norfab.workers import NetboxWorker
 except ImportError as e:
-    log.error(f"Failed to import NetboxWorker, needed libs not found - {e}")
+    log.warning(f"Failed to import NetboxWorker, needed libs not found - {e}")
 
 try:
     from norfab.workers import AgentWorker
 except ImportError as e:
-    log.error(f"Failed to import AgentWorker, needed libs not found - {e}")
+    log.warning(f"Failed to import AgentWorker, needed libs not found - {e}")
 
 
 def start_broker_process(

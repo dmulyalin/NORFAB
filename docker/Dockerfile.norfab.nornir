@@ -6,4 +6,6 @@ RUN apt-get update && \
 
 RUN pip install --no-cache-dir norfab[nornirservice] --upgrade
 
+ENV LOG_LEVEL=INFO
+
 ENTRYPOINT cd /etc/norfab/ && nfcli -w -l $LOG_LEVEL

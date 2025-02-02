@@ -1,12 +1,15 @@
 import argparse
 import os
+import logging
 
 from norfab.core.nfapi import NorFab
+
+log = logging.getLogger(__name__)
 
 try:
     from norfab.clients.picle_shell_client import start_picle_shell
 except ImportError as e:
-    print(f"Failed to import NorFab Shell, needed libs not found - {e}")
+    log.warning(f"Failed to import NorFab Shell, needed libs not found - {e}")
 
 norfab_base_inventory = """
 # broker settings
