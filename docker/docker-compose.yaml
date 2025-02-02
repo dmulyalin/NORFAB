@@ -1,0 +1,23 @@
+version: "3.9"
+
+services:
+
+  norfab:
+    container_name: "norfab"
+    hostname: 'norfab'
+    build:
+      context: .
+      dockerfile: Dockerfile.norfab
+    environment:
+      LOG_LEVEL: "${LOG_LEVEL}"
+      BROKER: "${BROKER}"
+      WORKERS: "${WORKERS}"
+    volumes:
+      # bind folder with norfab files
+      - type: bind
+        source: ./norfab/
+        target: /etc/norfab/
+    # expose REST API port
+    ports:
+      - "5555:5555/tcp"
+        

@@ -1,0 +1,10 @@
+
+service: nornir
+broker_endpoint: "tcp://127.0.0.1:5555"
+
+# Nornir inventory and configuration
+runner: 
+  plugin: RetryRunner
+hosts: {}
+default: {}
+groups: {}

@@ -197,6 +197,11 @@ def nfcli():
         nf = NorFab(inventory=INVENTORY, log_level=LOGLEVEL)
         nf.start(start_broker=False, workers=True)
         nf.run()
+    # start broker and workers
+    elif BROKER and WORKERS:
+        nf = NorFab(inventory=INVENTORY, log_level=LOGLEVEL)
+        nf.start(start_broker=True, workers=True)
+        nf.run()
     # start interactive client shell only
     elif CLIENT:
         start_picle_shell(

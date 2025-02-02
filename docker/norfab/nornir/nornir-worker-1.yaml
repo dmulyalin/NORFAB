@@ -1,0 +1,7 @@
+
+hosts:
+  ios-device-1:
+    hostname: 192.168.1.1
+    platform: cisco_ios
+    username: admin
+    password: admin

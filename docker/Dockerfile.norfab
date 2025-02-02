@@ -1,0 +1,15 @@
+FROM python:3.9.7-slim-bullseye
+
+ADD norfabinit.py /usr/local/bin/norfabinit
+
+RUN apt-get update && \
+    apt-get install --no-install-recommends -y dumb-init && \
+    apt-get clean && \
+    pip install --no-cache-dir pip setuptools wheel poetry --upgrade && \
+    chmod 775 /usr/bin/dumb-init && \
+    chmod 775 /usr/local/bin/saltinit
+
+RUN pip install --no-cache-dir norfab[full] --upgrade
+
+ENTRYPOINT ["/usr/bin/dumb-init"]
+CMD ["/usr/local/bin/norfabinit"]
