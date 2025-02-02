@@ -8,7 +8,6 @@ norfab_base_inventory = """
 # broker settings
 broker:
   endpoint: "tcp://127.0.0.1:5555"
-  public_key: "I%%LVg$#t2Aw(SC/G%UPf&U3gYMk=hZ{p}J4/uFu"
   
 # workers inventory section
 workers:
@@ -118,6 +117,13 @@ def nfcli():
         default=None,
         help="Create NorFab environment",
     )
+    run_options.add_argument(
+        "--show-broker-shared-key",
+        action="store_true",
+        dest="SHOW_BROKER_SHARED_KEY",
+        default=False,
+        help="Show broker shared key",
+    )
 
     # extract argparser arguments:
     args = argparser.parse_args()
@@ -129,6 +135,39 @@ def nfcli():
     SHELL = args.SHELL
     CLIENT = args.CLIENT
     CREATE_ENV = args.CREATE_ENV
+    SHOW_BROKER_SHARED_KEY = args.SHOW_BROKER_SHARED_KEY
+
+    # retrieve broker shared key
+    if SHOW_BROKER_SHARED_KEY:
+        if not os.path.exists(
+            os.path.join("__norfab__", "files", "broker", "public_keys", "broker.key")
+        ):
+            return (
+                f"\nCurrent folder '{os.getcwd()}' does not contain"
+                f"__norfab__ environment, \nplease create one and start "
+                f" NorFab broker first:\n\n"
+                f" - run 'nfcli --create-env my-norfab-env' to create NorFab folders\n"
+                f" - run 'cd my-norfab-env' and run 'nfcli -b -l INFO' to start broker\n"
+                f" - press CTRL+C to exit and run `nfcli --show-broker-shared-key`\n"
+            )
+        with open(
+            os.path.join("__norfab__", "files", "broker", "public_keys", "broker.key"),
+            "r",
+        ) as f:
+            content = f.read()
+            key_value = [
+                i.split("public-key = ")[1]
+                for i in content.splitlines()
+                if "public-key" in i
+            ][0]
+            return (
+                f"\nNorFab broker public key content:\n\n'''\n{content}\n'''\n\n"
+                f"Key file location: '{os.path.join('__norfab__', 'files', 'broker', 'public_keys', 'broker.key')}'\n\n"
+                f"Copy above key into NorFab clients and workers 'public_keys/broker.key' "
+                f"file or \nput public-key value into clients and workers inventory.yaml "
+                f"'broker' section \nunder 'shared_key' parameter:\n\n"
+                f"broker:\n  shared_key: {key_value}\n"
+            )
 
     # create NorFab environment
     if CREATE_ENV:
@@ -143,9 +182,9 @@ def nfcli():
         with open(os.path.join(CREATE_ENV, "nornir", "nornir-worker-1.yaml"), "w") as f:
             f.write(nornir_service_base_inventory_worker)
         return (
-            (f"Done, run 'nfcli' to start NorFab")
+            (f"\nDone, run 'nfcli' to start NorFab\n")
             if CREATE_ENV == "."
-            else (f"Done, 'cd {CREATE_ENV}' and run 'nfcli' to start NorFab")
+            else (f"\nDone, 'cd {CREATE_ENV}' and run 'nfcli' to start NorFab\n")
         )
 
     # start broker only

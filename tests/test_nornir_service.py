@@ -125,7 +125,7 @@ class TestNornirCli:
             b"nornir",
             "cli",
             kwargs={
-                "commands": "nf://nf_tests_inventory/cli/commands.txt",
+                "commands": "nf://cli/commands.txt",
                 "cli_dry_run": True,
             },
         )
@@ -145,7 +145,7 @@ class TestNornirCli:
             "cli",
             workers="nornir-worker-1",
             kwargs={
-                "commands": "nf://nf_tests_inventory/cli/commands_non_existing.txt"
+                "commands": "nf://cli/commands_non_existing.txt"
             },
         )
         pprint.pprint(ret)
@@ -158,7 +158,7 @@ class TestNornirCli:
             b"nornir",
             "cli",
             kwargs={
-                "commands": "nf://nf_tests_inventory/cli/show_interfaces.j2",
+                "commands": "nf://cli/show_interfaces.j2",
                 "cli_dry_run": True,
             },
         )
@@ -187,7 +187,7 @@ class TestNornirCli:
             "cli",
             workers="nornir-worker-1",
             kwargs={
-                "run_ttp": "nf://nf_tests_inventory/ttp/parse_eos_intf.txt",
+                "run_ttp": "nf://ttp/parse_eos_intf.txt",
                 "FB": ["ceos-spine-*"],
                 "enable": True,
             },
@@ -208,7 +208,7 @@ class TestNornirCli:
             "cli",
             workers="nornir-worker-1",
             kwargs={
-                "commands": "nf://nf_tests_inventory/cli/test_commands_template_with_norfab_call.j2",
+                "commands": "nf://cli/test_commands_template_with_norfab_call.j2",
                 "cli_dry_run": True,
                 "FL": ["ceos-spine-1"],
             },
@@ -234,7 +234,7 @@ class TestNornirCli:
             "cli",
             workers="nornir-worker-1",
             kwargs={
-                "commands": "nf://nf_tests_inventory/cli/test_commands_template_with_nornir_worker_call.j2",
+                "commands": "nf://cli/test_commands_template_with_nornir_worker_call.j2",
                 "cli_dry_run": True,
                 "FL": ["ceos-spine-1", "ceos-spine-2"],
             },
@@ -301,7 +301,7 @@ class TestNornirCli:
                 "job_data": {"commands": ["show version", "show clock"]},
                 "FL": ["ceos-spine-1", "ceos-spine-2"],
                 "cli_dry_run": True,
-                "commands": "nf://nf_tests_inventory/cli/template_with_job_data.txt",
+                "commands": "nf://cli/template_with_job_data.txt",
             },
         )
         pprint.pprint(ret)
@@ -318,10 +318,10 @@ class TestNornirCli:
             b"nornir",
             "cli",
             kwargs={
-                "job_data": "nf://nf_tests_inventory/cli/job_data_1.txt",
+                "job_data": "nf://cli/job_data_1.txt",
                 "FL": ["ceos-spine-1", "ceos-spine-2"],
                 "cli_dry_run": True,
-                "commands": "nf://nf_tests_inventory/cli/template_with_job_data.txt",
+                "commands": "nf://cli/template_with_job_data.txt",
             },
         )
         pprint.pprint(ret)
@@ -339,10 +339,10 @@ class TestNornirCli:
             "cli",
             workers=["nornir-worker-1"],
             kwargs={
-                "job_data": "nf://nf_tests_inventory/cli/job_data_non_exist.txt",
+                "job_data": "nf://cli/job_data_non_exist.txt",
                 "FL": ["ceos-spine-1", "ceos-spine-2"],
                 "cli_dry_run": True,
-                "commands": "nf://nf_tests_inventory/cli/template_with_job_data.txt",
+                "commands": "nf://cli/template_with_job_data.txt",
             },
         )
         pprint.pprint(ret)
@@ -357,10 +357,10 @@ class TestNornirCli:
             "cli",
             workers=["nornir-worker-1"],
             kwargs={
-                "job_data": "nf://nf_tests_inventory/cli/job_data_wrong_yaml.txt",
+                "job_data": "nf://cli/job_data_wrong_yaml.txt",
                 "FL": ["ceos-spine-1", "ceos-spine-2"],
                 "cli_dry_run": True,
-                "commands": "nf://nf_tests_inventory/cli/template_with_job_data.txt",
+                "commands": "nf://cli/template_with_job_data.txt",
             },
         )
         pprint.pprint(ret)
@@ -420,7 +420,7 @@ class TestNornirTask:
             b"nornir",
             "task",
             workers=["nornir-worker-1"],
-            kwargs={"plugin": "nf://nf_tests_inventory/nornir_tasks/dummy.py"},
+            kwargs={"plugin": "nf://nornir_tasks/dummy.py"},
         )
         pprint.pprint(ret)
 
@@ -433,18 +433,18 @@ class TestNornirTask:
             b"nornir",
             "task",
             workers=["nornir-worker-1"],
-            kwargs={"plugin": "nf://nf_tests_inventory/nornir_tasks/_non_existing_.py"},
+            kwargs={"plugin": "nf://nornir_tasks/_non_existing_.py"},
         )
         pprint.pprint(ret, width=150)
 
         for worker, results in ret.items():
             assert results["failed"] == True
             assert (
-                "nornir-worker-1 - 'nf://nf_tests_inventory/nornir_tasks/_non_existing_.py' task plugin download failed"
+                "nornir-worker-1 - 'nf://nornir_tasks/_non_existing_.py' task plugin download failed"
                 in results["errors"][0]
             )
             assert (
-                "nornir-worker-1 - 'nf://nf_tests_inventory/nornir_tasks/_non_existing_.py' task plugin download failed"
+                "nornir-worker-1 - 'nf://nornir_tasks/_non_existing_.py' task plugin download failed"
                 in results["messages"][0]
             )
 
@@ -477,7 +477,7 @@ class TestNornirTask:
             "task",
             workers=["nornir-worker-1"],
             kwargs={
-                "plugin": "nf://nf_tests_inventory/nornir_tasks/dummy_with_error.py"
+                "plugin": "nf://nornir_tasks/dummy_with_error.py"
             },
         )
         pprint.pprint(ret, width=150)
@@ -495,7 +495,7 @@ class TestNornirTask:
             "task",
             workers=["nornir-worker-1"],
             kwargs={
-                "plugin": "nf://nf_tests_inventory/nornir_tasks/dummy_with_subtasks.py"
+                "plugin": "nf://nornir_tasks/dummy_with_subtasks.py"
             },
         )
         pprint.pprint(ret)
@@ -711,7 +711,7 @@ class TestNornirCfg:
             "cfg",
             workers=["nornir-worker-1", "nornir-worker-2"],
             kwargs={
-                "config": "nf://nf_tests_inventory/cfg/config_1.txt",
+                "config": "nf://cfg/config_1.txt",
                 "cfg_dry_run": True,
             },
         )
@@ -730,7 +730,7 @@ class TestNornirCfg:
             "cfg",
             workers=["nornir-worker-1", "nornir-worker-2"],
             kwargs={
-                "config": "nf://nf_tests_inventory/cfg/config_non_existing.txt",
+                "config": "nf://cfg/config_non_existing.txt",
                 "cfg_dry_run": True,
             },
         )
@@ -745,7 +745,7 @@ class TestNornirCfg:
             "cfg",
             workers=["nornir-worker-1", "nornir-worker-2"],
             kwargs={
-                "config": "nf://nf_tests_inventory/cfg/config_2.txt",
+                "config": "nf://cfg/config_2.txt",
                 "cfg_dry_run": True,
             },
         )
@@ -839,7 +839,7 @@ class TestNornirCfg:
             "cfg",
             workers=["nornir-worker-1", "nornir-worker-2"],
             kwargs={
-                "config": "nf://nf_tests_inventory/cfg/config_with_includes.txt",
+                "config": "nf://cfg/config_with_includes.txt",
                 "cfg_dry_run": True,
             },
         )
@@ -865,7 +865,7 @@ class TestNornirCfg:
             "cfg",
             workers=["nornir-worker-1", "nornir-worker-2"],
             kwargs={
-                "config": "nf://nf_tests_inventory/cfg/config_with_includes_non_exist.txt",
+                "config": "nf://cfg/config_with_includes_non_exist.txt",
                 "cfg_dry_run": True,
             },
         )
@@ -881,7 +881,7 @@ class TestNornirCfg:
             "cfg",
             workers=["nornir-worker-1", "nornir-worker-2"],
             kwargs={
-                "config": "nf://nf_tests_inventory/cfg/config_with_if_and_includes.txt",
+                "config": "nf://cfg/config_with_if_and_includes.txt",
                 "cfg_dry_run": True,
             },
         )
@@ -901,7 +901,7 @@ class TestNornirCfg:
             "cfg",
             workers=["nornir-worker-1", "nornir-worker-2"],
             kwargs={
-                "config": "nf://nf_tests_inventory/cfg/config_with_job_data.txt",
+                "config": "nf://cfg/config_with_job_data.txt",
                 "cfg_dry_run": True,
                 "job_data": {
                     "commands": ["interface loopback 555", "description foobar"]
@@ -923,9 +923,9 @@ class TestNornirCfg:
             "cfg",
             workers=["nornir-worker-1", "nornir-worker-2"],
             kwargs={
-                "config": "nf://nf_tests_inventory/cfg/config_with_job_data.txt",
+                "config": "nf://cfg/config_with_job_data.txt",
                 "cfg_dry_run": True,
-                "job_data": "nf://nf_tests_inventory/cfg/config_job_data_1.txt",
+                "job_data": "nf://cfg/config_job_data_1.txt",
             },
         )
         pprint.pprint(ret)
@@ -943,9 +943,9 @@ class TestNornirCfg:
             "cfg",
             workers=["nornir-worker-1", "nornir-worker-2"],
             kwargs={
-                "config": "nf://nf_tests_inventory/cfg/config_with_job_data.txt",
+                "config": "nf://cfg/config_with_job_data.txt",
                 "cfg_dry_run": True,
-                "job_data": "nf://nf_tests_inventory/cfg/config_job_data_non_exist.txt",
+                "job_data": "nf://cfg/config_job_data_non_exist.txt",
             },
         )
         pprint.pprint(ret)
@@ -965,7 +965,7 @@ class TestNornirTest:
             b"nornir",
             "test",
             workers=["nornir-worker-1"],
-            kwargs={"suite": "nf://nf_tests_inventory/nornir_test_suites/suite_1.txt"},
+            kwargs={"suite": "nf://nornir_test_suites/suite_1.txt"},
         )
         pprint.pprint(ret)
 
@@ -986,7 +986,7 @@ class TestNornirTest:
             b"nornir",
             "test",
             workers=["nornir-worker-1"],
-            kwargs={"suite": "nf://nf_tests_inventory/nornir_test_suites/suite_2.txt"},
+            kwargs={"suite": "nf://nornir_test_suites/suite_2.txt"},
         )
         pprint.pprint(ret)
 
@@ -1008,7 +1008,7 @@ class TestNornirTest:
             "test",
             workers=["nornir-worker-1"],
             kwargs={
-                "suite": "nf://nf_tests_inventory/nornir_test_suites/suite_1.txt",
+                "suite": "nf://nornir_test_suites/suite_1.txt",
                 "subset": "check*version",
             },
         )
@@ -1030,7 +1030,7 @@ class TestNornirTest:
             "test",
             workers=["nornir-worker-1"],
             kwargs={
-                "suite": "nf://nf_tests_inventory/nornir_test_suites/suite_1.txt",
+                "suite": "nf://nornir_test_suites/suite_1.txt",
                 "dry_run": True,
             },
         )
@@ -1056,7 +1056,7 @@ class TestNornirTest:
             "test",
             workers=["nornir-worker-1"],
             kwargs={
-                "suite": "nf://nf_tests_inventory/nornir_test_suites/suite_1.txt",
+                "suite": "nf://nornir_test_suites/suite_1.txt",
                 "to_dict": True,
             },
         )
@@ -1080,7 +1080,7 @@ class TestNornirTest:
             "test",
             workers=["nornir-worker-1"],
             kwargs={
-                "suite": "nf://nf_tests_inventory/nornir_test_suites/suite_1.txt",
+                "suite": "nf://nornir_test_suites/suite_1.txt",
                 "to_dict": False,
             },
         )
@@ -1100,7 +1100,7 @@ class TestNornirTest:
             "test",
             workers=["nornir-worker-1"],
             kwargs={
-                "suite": "nf://nf_tests_inventory/nornir_test_suites/suite_1.txt",
+                "suite": "nf://nornir_test_suites/suite_1.txt",
                 "remove_tasks": False,
             },
         )
@@ -1121,7 +1121,7 @@ class TestNornirTest:
             "test",
             workers=["nornir-worker-1"],
             kwargs={
-                "suite": "nf://nf_tests_inventory/nornir_test_suites/suite_1.txt",
+                "suite": "nf://nornir_test_suites/suite_1.txt",
                 "failed_only": True,
             },
         )
@@ -1144,7 +1144,7 @@ class TestNornirTest:
             "test",
             workers=["nornir-worker-1"],
             kwargs={
-                "suite": "nf://nf_tests_inventory/nornir_test_suites/suite_non_existing.txt"
+                "suite": "nf://nornir_test_suites/suite_non_existing.txt"
             },
         )
         pprint.pprint(ret)
@@ -1160,7 +1160,7 @@ class TestNornirTest:
             "test",
             workers=["nornir-worker-1"],
             kwargs={
-                "suite": "nf://nf_tests_inventory/nornir_test_suites/suite_bad_yaml.txt"
+                "suite": "nf://nornir_test_suites/suite_bad_yaml.txt"
             },
         )
         pprint.pprint(ret)
@@ -1176,7 +1176,7 @@ class TestNornirTest:
             "test",
             workers=["nornir-worker-1"],
             kwargs={
-                "suite": "nf://nf_tests_inventory/nornir_test_suites/suite_bad_jinja2.txt"
+                "suite": "nf://nornir_test_suites/suite_bad_jinja2.txt"
             },
         )
         pprint.pprint(ret)
@@ -1192,7 +1192,7 @@ class TestNornirTest:
             "test",
             workers=["nornir-worker-1"],
             kwargs={
-                "suite": "nf://nf_tests_inventory/nornir_test_suites/test_suite_custom_fun.txt",
+                "suite": "nf://nornir_test_suites/test_suite_custom_fun.txt",
                 "FC": "ceos-spine-",
             },
         )
@@ -1225,7 +1225,7 @@ class TestNornirTest:
             "test",
             workers=["nornir-worker-1"],
             kwargs={
-                "suite": "nf://nf_tests_inventory/nornir_test_suites/test_nornir_test_with_nftask.txt",
+                "suite": "nf://nornir_test_suites/test_nornir_test_with_nftask.txt",
                 "FC": "ceos-spine-",
                 "add_details": True,
                 "to_dict": False,
@@ -1245,7 +1245,7 @@ class TestNornirTest:
             "test",
             workers=["nornir-worker-1"],
             kwargs={
-                "suite": "nf://nf_tests_inventory/nornir_test_suites/test_nornir_test_with_nftask.txt",
+                "suite": "nf://nornir_test_suites/test_nornir_test_with_nftask.txt",
                 "FC": "ceos-spine-",
                 "add_details": True,
                 "to_dict": True,
@@ -1270,7 +1270,7 @@ class TestNornirTest:
             "test",
             workers=["nornir-worker-1"],
             kwargs={
-                "suite": "nf://nf_tests_inventory/nornir_test_suites/test_suite_with_include.txt",
+                "suite": "nf://nornir_test_suites/test_suite_with_include.txt",
                 "FC": "ceos-spine-",
                 "dry_run": True,
             },
@@ -1293,7 +1293,7 @@ class TestNornirTest:
             "test",
             workers=["nornir-worker-1"],
             kwargs={
-                "suite": "nf://nf_tests_inventory/nornir_test_suites/test_suite_with_include.txt",
+                "suite": "nf://nornir_test_suites/test_suite_with_include.txt",
                 "FC": "ceos-spine-",
             },
         )
@@ -1315,7 +1315,7 @@ class TestNornirTest:
             "test",
             workers=["nornir-worker-1"],
             kwargs={
-                "suite": "nf://nf_tests_inventory/nornir_test_suites/test_nornir_test_suite_with_job_data.txt",
+                "suite": "nf://nornir_test_suites/test_nornir_test_suite_with_job_data.txt",
                 "FC": "ceos-spine-",
                 "job_data": {"some_conditional": True},
                 "dry_run": True,
@@ -1531,7 +1531,7 @@ class TestNornirParse:
             workers=["nornir-worker-1"],
             kwargs={
                 "plugin": "ttp",
-                "template": "nf://nf_tests_inventory/ttp/parse_eos_intf.txt",
+                "template": "nf://ttp/parse_eos_intf.txt",
             },
         )
         pprint.pprint(ret)
@@ -1595,7 +1595,7 @@ class TestNornirJinja2Filters:
             "cli",
             workers=["nornir-worker-1"],
             kwargs={
-                "commands": "nf://nf_tests_inventory/cli/test_network_hosts.txt",
+                "commands": "nf://cli/test_network_hosts.txt",
                 "cli_dry_run": True,
             },
         )
@@ -1614,7 +1614,7 @@ class TestNornirJinja2Filters:
             "cli",
             workers=["nornir-worker-1"],
             kwargs={
-                "commands": "nf://nf_tests_inventory/cli/test_network_hosts_with_prefixlen.txt",
+                "commands": "nf://cli/test_network_hosts_with_prefixlen.txt",
                 "cli_dry_run": True,
             },
         )
@@ -1640,7 +1640,7 @@ class TestNornirFileCopy:
             "file_copy",
             workers=["nornir-worker-1"],
             kwargs={
-                "source_file": "nf://nf_tests_inventory/nornir/files/file_copy_test.txt",
+                "source_file": "nf://nornir/files/file_copy_test.txt",
                 "dry_run": True,
                 "FC": "spine",
             },
@@ -1674,7 +1674,7 @@ class TestNornirFileCopy:
             "file_copy",
             workers=["nornir-worker-1"],
             kwargs={
-                "source_file": "nf://nf_tests_inventory/nornir/files/file_copy_test.txt",
+                "source_file": "nf://nornir/files/file_copy_test.txt",
                 "FC": "spine",
                 "FM": "arista_eos",
             },
@@ -1715,7 +1715,7 @@ class TestNornirFileCopy:
             "file_copy",
             workers=["nornir-worker-1"],
             kwargs={
-                "source_file": "nf://nf_tests_inventory/nornir/files/file_not_exist.txt",
+                "source_file": "nf://nornir/files/file_not_exist.txt",
                 "FC": "spine",
                 "FM": "arista_eos",
             },

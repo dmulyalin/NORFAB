@@ -33,7 +33,7 @@ class PyAtsWorker(NFPWorker):
 
     def __init__(
         self,
-        base_dir: str,
+        inventory: str,
         broker: str,
         service: str,
         worker_name: str,
@@ -41,11 +41,11 @@ class PyAtsWorker(NFPWorker):
         init_done_event=None,
         log_level: str = "WARNING",
     ):
-        super().__init__(base_dir, broker, service, worker_name, exit_event, log_level)
+        super().__init__(inventory, broker, service, worker_name, exit_event, log_level)
         self.init_done_event = init_done_event
 
         # get inventory from broker
-        self.inventory = self.load_inventory()
+        self.pyats_inventory = self.load_inventory()
 
         # pull PyAts inventory from Netbox
         self._pull_netbox_inventory()
@@ -59,7 +59,7 @@ class PyAtsWorker(NFPWorker):
     def _init_pyats(self):
         self.pyats = testbed.load(
             {
-                "devices": self.inventory.get("devices", {}),
+                "devices": self.pyats_inventory.get("devices", {}),
             }
         )
 

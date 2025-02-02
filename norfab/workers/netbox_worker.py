@@ -110,7 +110,7 @@ class NetboxWorker(NFPWorker):
 
     def __init__(
         self,
-        base_dir,
+        inventory,
         broker,
         worker_name,
         service: str = b"netbox",
@@ -120,31 +120,33 @@ class NetboxWorker(NFPWorker):
         log_queue: object = None,
     ):
         super().__init__(
-            base_dir, broker, service, worker_name, exit_event, log_level, log_queue
+            inventory, broker, service, worker_name, exit_event, log_level, log_queue
         )
         self.init_done_event = init_done_event
         self.cache = None
 
         # get inventory from broker
-        self.inventory = self.load_inventory()
-        if not self.inventory:
+        self.netbox_inventory = self.load_inventory()
+        if not self.netbox_inventory:
             log.critical(
                 f"{self.name} - Broker {self.broker} returned no inventory for {self.name}, killing myself..."
             )
             self.destroy()
 
-        assert self.inventory.get(
+        assert self.netbox_inventory.get(
             "instances"
         ), f"{self.name} - inventory has no Netbox instances"
 
         # extract parameters from imvemtory
-        self.netbox_connect_timeout = self.inventory.get("netbox_connect_timeout", 10)
-        self.netbox_read_timeout = self.inventory.get("netbox_read_timeout", 300)
-        self.cache_use = self.inventory.get("cache_use", True)
-        self.cache_ttl = self.inventory.get("cache_ttl", 31557600)  # 1 Year
+        self.netbox_connect_timeout = self.netbox_inventory.get(
+            "netbox_connect_timeout", 10
+        )
+        self.netbox_read_timeout = self.netbox_inventory.get("netbox_read_timeout", 300)
+        self.cache_use = self.netbox_inventory.get("cache_use", True)
+        self.cache_ttl = self.netbox_inventory.get("cache_ttl", 31557600)  # 1 Year
 
         # find default instance
-        for name, params in self.inventory["instances"].items():
+        for name, params in self.netbox_inventory["instances"].items():
             if params.get("default") is True:
                 self.default_instance = name
                 break
@@ -172,7 +174,7 @@ class NetboxWorker(NFPWorker):
 
     def get_netbox_inventory(self) -> dict:
         return Result(
-            task=f"{self.name}:get_netbox_inventory", result=dict(self.inventory)
+            task=f"{self.name}:get_netbox_inventory", result=dict(self.netbox_inventory)
         )
 
     def get_netbox_version(self, **kwargs) -> dict:
@@ -196,7 +198,7 @@ class NetboxWorker(NFPWorker):
         if instance:
             ret.result[instance] = self._query_netbox_status(instance)
         else:
-            for name in self.inventory["instances"].keys():
+            for name in self.netbox_inventory["instances"].keys():
                 ret.result[name] = self._query_netbox_status(name)
         return ret
 
@@ -226,7 +228,7 @@ class NetboxWorker(NFPWorker):
             )
 
     def _query_netbox_status(self, name):
-        params = self.inventory["instances"][name]
+        params = self.netbox_inventory["instances"][name]
         ret = {
             "error": None,
             "status": True,
@@ -263,9 +265,9 @@ class NetboxWorker(NFPWorker):
         :param name: Netbox instance name
         """
         if name:
-            ret = self.inventory["instances"][name]
+            ret = self.netbox_inventory["instances"][name]
         else:
-            ret = self.inventory["instances"][self.default_instance]
+            ret = self.netbox_inventory["instances"][self.default_instance]
 
         # check if need to disable SSL warnings
         if ret.get("ssl_verify") == False:

@@ -33,7 +33,7 @@ def start_broker_process(
 
 
 def start_worker_process(
-    base_dir: str,
+    inventory: str,
     broker_endpoint: str,
     service: str,
     worker_name: str,
@@ -45,7 +45,7 @@ def start_worker_process(
     try:
         if service == "nornir":
             worker = NornirWorker(
-                base_dir=base_dir,
+                inventory=inventory,
                 broker=broker_endpoint,
                 service=b"nornir",
                 worker_name=worker_name,
@@ -57,7 +57,7 @@ def start_worker_process(
             worker.work()
         elif service == "netbox":
             worker = NetboxWorker(
-                base_dir=base_dir,
+                inventory=inventory,
                 broker=broker_endpoint,
                 service=b"netbox",
                 worker_name=worker_name,
@@ -69,7 +69,7 @@ def start_worker_process(
             worker.work()
         elif service == "agent":
             worker = AgentWorker(
-                base_dir=base_dir,
+                inventory=inventory,
                 broker=broker_endpoint,
                 service=b"agent",
                 worker_name=worker_name,
@@ -125,6 +125,14 @@ class NorFab:
         self.broker_exit_event = Event()
         self.workers_exit_event = Event()
         self.clients_exit_event = Event()
+
+        # create needed folders to kickstart the logs
+        os.makedirs(
+            os.path.join(self.inventory.base_dir, "__norfab__", "files"), exist_ok=True
+        )
+        os.makedirs(
+            os.path.join(self.inventory.base_dir, "__norfab__", "logs"), exist_ok=True
+        )
 
         self.setup_logging()
         signal.signal(signal.SIGINT, self.handle_ctrl_c)
@@ -212,7 +220,7 @@ class NorFab:
                 "process": Process(
                     target=start_worker_process,
                     args=(
-                        self.inventory.base_dir,
+                        self.inventory,
                         self.broker_endpoint,
                         worker_inventory["service"],
                         worker_name,
@@ -351,7 +359,7 @@ class NorFab:
 
         if broker_endpoint or self.broker_endpoint:
             client = NFPClient(
-                self.inventory.base_dir,
+                self.inventory,
                 broker_endpoint or self.broker_endpoint,
                 "NFPClient",
                 self.clients_exit_event,

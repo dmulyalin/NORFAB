@@ -26,7 +26,7 @@ from uuid import uuid4  # random uuid
 from .security import generate_certificates
 from . import NFP
 from .zhelpers import dump
-
+from norfab.core.inventory import NorFabInventory
 from typing import Union, List
 
 log = logging.getLogger(__name__)
@@ -82,12 +82,20 @@ class NFPClient(object):
     client_private_key_file = None
     broker_public_key_file = None
 
-    def __init__(self, base_dir, broker, name, exit_event=None, event_queue=None):
+    def __init__(
+        self,
+        inventory: NorFabInventory,
+        broker,
+        name,
+        exit_event=None,
+        event_queue=None,
+    ):
+        self.inventory = inventory
         self.name = name
         self.zmq_name = f"{self.name}-{uuid4().hex}"
         self.broker = broker
         self.base_dir = os.path.join(
-            base_dir, "__norfab__", "files", "client", self.name
+            self.inventory.base_dir, "__norfab__", "files", "client", self.name
         )
         self.jobs_dir = os.path.join(self.base_dir, "jobs")
         self.events_dir = os.path.join(self.base_dir, "events")
@@ -103,8 +111,9 @@ class NFPClient(object):
             self.base_dir,
             cert_name=self.name,
             broker_keys_dir=os.path.join(
-                os.getcwd(), "__norfab__", "files", "broker", "public_keys"
+                self.inventory.base_dir, "__norfab__", "files", "broker", "public_keys"
             ),
+            inventory=self.inventory,
         )
         self.public_keys_dir = os.path.join(self.base_dir, "public_keys")
         self.private_keys_dir = os.path.join(self.base_dir, "private_keys")

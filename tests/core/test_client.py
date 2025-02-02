@@ -20,13 +20,13 @@ class TestClientApi:
         ret = json.loads(reply["results"])
         pprint.pprint(ret)
 
-        for k, v in {
-            "address": "tcp://127.0.0.1:5555",
-            "keepalive": 2500,
-            "multiplier": 6,
-            "services count": 2,
-            "status": "active",
-            "workers count": 4,
-        }.items():
+        for k in [
+            "endpoint",
+            "keepalives",
+            "multiplier",
+            "services count",
+            "status",
+            "workers count",
+        ]:
             assert k in ret, "Not all broker params returned"
             assert ret[k], "Some broker params seems wrong"

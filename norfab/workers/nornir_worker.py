@@ -209,7 +209,7 @@ class NornirWorker(NFPWorker):
 
     def __init__(
         self,
-        base_dir: str,
+        inventory: str,
         broker: str,
         worker_name: str,
         service: str = b"nornir",
@@ -219,7 +219,7 @@ class NornirWorker(NFPWorker):
         log_queue: object = None,
     ):
         super().__init__(
-            base_dir, broker, service, worker_name, exit_event, log_level, log_queue
+            inventory, broker, service, worker_name, exit_event, log_level, log_queue
         )
         self.init_done_event = init_done_event
         self.tf_base_path = os.path.join(self.base_dir, "tf")
@@ -228,7 +228,7 @@ class NornirWorker(NFPWorker):
         self.connections_lock = Lock()
 
         # get inventory from broker
-        self.inventory = self.load_inventory()
+        self.nornir_inventory = self.load_inventory()
 
         # pull Nornir inventory from Netbox
         self._pull_netbox_inventory()
@@ -248,25 +248,25 @@ class NornirWorker(NFPWorker):
     def _init_nornir(self):
         # initiate Nornir
         self.nr = InitNornir(
-            logging=self.inventory.get("logging", {"enabled": False}),
-            runner=self.inventory.get("runner", {}),
+            logging=self.nornir_inventory.get("logging", {"enabled": False}),
+            runner=self.nornir_inventory.get("runner", {}),
             inventory={
                 "plugin": "DictInventory",
                 "options": {
-                    "hosts": self.inventory.get("hosts", {}),
-                    "groups": self.inventory.get("groups", {}),
-                    "defaults": self.inventory.get("defaults", {}),
+                    "hosts": self.nornir_inventory.get("hosts", {}),
+                    "groups": self.nornir_inventory.get("groups", {}),
+                    "defaults": self.nornir_inventory.get("defaults", {}),
                 },
             },
-            user_defined=self.inventory.get("user_defined", {}),
+            user_defined=self.nornir_inventory.get("user_defined", {}),
         )
 
     def _pull_netbox_inventory(self):
         """Function to query inventory from Netbox"""
         # exit if has no Netbox data in inventory
-        if isinstance(self.inventory.get("netbox"), dict):
-            kwargs = self.inventory["netbox"]
-        elif self.inventory.get("netbox") is True:
+        if isinstance(self.nornir_inventory.get("netbox"), dict):
+            kwargs = self.nornir_inventory["netbox"]
+        elif self.nornir_inventory.get("netbox") is True:
             kwargs = {}
         else:
             return
@@ -277,8 +277,8 @@ class NornirWorker(NFPWorker):
 
         # check if need to add devices list
         if "filters" not in kwargs and "devices" not in kwargs:
-            if self.inventory.get("hosts"):
-                kwargs["devices"] = list(self.inventory["hosts"])
+            if self.nornir_inventory.get("hosts"):
+                kwargs["devices"] = list(self.nornir_inventory["hosts"])
             else:
                 log.critical(
                     f"{self.name} - inventory has no hosts, netbox "
@@ -305,7 +305,7 @@ class NornirWorker(NFPWorker):
 
         # merge Netbox inventory into Nornir inventory
         if wdata["failed"] is False and wdata["result"].get("hosts"):
-            merge_recursively(self.inventory, wdata["result"])
+            merge_recursively(self.nornir_inventory, wdata["result"])
         else:
             log.warning(
                 f"{self.name} - '{kwargs.get('instance', 'default')}' Netbox "

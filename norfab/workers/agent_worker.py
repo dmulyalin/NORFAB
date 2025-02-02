@@ -30,7 +30,7 @@ class AgentWorker(NFPWorker):
 
     def __init__(
         self,
-        base_dir,
+        inventory,
         broker: str,
         worker_name: str,
         service: str = b"agent",
@@ -40,16 +40,18 @@ class AgentWorker(NFPWorker):
         log_queue: object = None,
     ):
         super().__init__(
-            base_dir, broker, service, worker_name, exit_event, log_level, log_queue
+            inventory, broker, service, worker_name, exit_event, log_level, log_queue
         )
         self.init_done_event = init_done_event
 
         # get inventory from broker
-        self.inventory = self.load_inventory()
-        self.llm_model = self.inventory.get("llm_model", "llama3.1:8b")
-        self.llm_temperature = self.inventory.get("llm_temperature", 0.5)
-        self.llm_base_url = self.inventory.get("llm_base_url", "http://127.0.0.1:11434")
-        self.llm_flavour = self.inventory.get("llm_flavour", "ollama")
+        self.agent_inventory = self.load_inventory()
+        self.llm_model = self.agent_inventory.get("llm_model", "llama3.1:8b")
+        self.llm_temperature = self.agent_inventory.get("llm_temperature", 0.5)
+        self.llm_base_url = self.agent_inventory.get(
+            "llm_base_url", "http://127.0.0.1:11434"
+        )
+        self.llm_flavour = self.agent_inventory.get("llm_flavour", "ollama")
 
         if self.llm_flavour == "ollama":
             self.llm = OllamaLLM(
@@ -88,7 +90,7 @@ class AgentWorker(NFPWorker):
         return Result(result=libs)
 
     def get_inventory(self):
-        return Result(result=self.inventory)
+        return Result(result=self.agent_inventory)
 
     def get_status(self):
         return Result(result="OK")

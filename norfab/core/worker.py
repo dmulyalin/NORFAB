@@ -35,6 +35,7 @@ from .inventory import logging_config_producer
 from typing import Any, Callable, Dict, List, Optional, Union
 from .exceptions import NorfabJobFailedError
 from .models import NorFabEvent
+from norfab.core.inventory import NorFabInventory
 
 log = logging.getLogger(__name__)
 
@@ -417,7 +418,7 @@ class NFPWorker:
 
     def __init__(
         self,
-        base_dir: str,
+        inventory: NorFabInventory,
         broker: str,
         service: str,
         name: str,
@@ -428,6 +429,7 @@ class NFPWorker:
         keepalive: int = 2500,
     ):
         self.setup_logging(log_queue, log_level)
+        self.inventory = inventory
         self.broker = broker
         self.service = service
         self.name = name
@@ -441,7 +443,7 @@ class NFPWorker:
 
         # create base directories
         self.base_dir = os.path.join(
-            base_dir, "__norfab__", "files", "worker", self.name
+            self.inventory.base_dir, "__norfab__", "files", "worker", self.name
         )
         self.base_dir_jobs = os.path.join(self.base_dir, "jobs")
         os.makedirs(self.base_dir, exist_ok=True)
@@ -465,8 +467,9 @@ class NFPWorker:
             self.base_dir,
             cert_name=self.name,
             broker_keys_dir=os.path.join(
-                os.getcwd(), "__norfab__", "files", "broker", "public_keys"
+                self.inventory.base_dir, "__norfab__", "files", "broker", "public_keys"
             ),
+            inventory=self.inventory,
         )
         self.public_keys_dir = os.path.join(self.base_dir, "public_keys")
         self.secret_keys_dir = os.path.join(self.base_dir, "private_keys")
@@ -488,7 +491,7 @@ class NFPWorker:
                 pass
 
         self.client = NFPClient(
-            base_dir,
+            self.inventory,
             self.broker,
             name=f"{self.name}-NFPClient",
             exit_event=self.exit_event,

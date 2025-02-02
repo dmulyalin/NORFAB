@@ -1,17 +1,17 @@
 - test: custom
-  function_file: "nf://nf_tests_inventory/nornir_test_suites/cust_fun_3.py"
+  function_file: "nf://nornir_test_suites/cust_fun_3.py"
   name: test_cust_fun_3
   task: 
     - show clock
     - show ip int brief
 - test: custom
-  function_file: "nf://nf_tests_inventory/nornir_test_suites/cust_fun_2.py"
+  function_file: "nf://nornir_test_suites/cust_fun_2.py"
   use_all_tasks: True
   name: test_cust_fun_2
   task: 
     - show clock
     - show ip int brief
 - test: custom
-  function_file: "nf://nf_tests_inventory/nornir_test_suites/cust_fun_1.py"
+  function_file: "nf://nornir_test_suites/cust_fun_1.py"
   task: show clock
   name: test_cust_fun_1

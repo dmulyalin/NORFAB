@@ -64,23 +64,23 @@ class FakenosWorker(NFPWorker):
 
     def __init__(
         self,
-        base_dir,
+        inventory,
         broker,
         service,
         worker_name,
         exit_event=None,
         log_level="WARNING",
     ):
-        super().__init__(base_dir, broker, service, worker_name, exit_event, log_level)
+        super().__init__(inventory, broker, service, worker_name, exit_event, log_level)
 
         # get inventory from broker
-        self.inventory = self.load_inventory()
+        self.fakenos_inventory = self.load_inventory()
 
         # start FakeNOS Network
         self.network = FakeNOS(
             inventory={
-                "hosts": self.inventory.get("hosts", {}),
-                "default": self.inventory.get("default", {}),
+                "hosts": self.fakenos_inventory.get("hosts", {}),
+                "default": self.fakenos_inventory.get("default", {}),
             }
         )
         self.network.start()
@@ -113,7 +113,7 @@ class FakenosWorker(NFPWorker):
         return "Done"
 
     def get_inventory(self):
-        return dict(self.inventory)
+        return dict(self.fakenos_inventory)
 
     def get_hosts(self):
         return list(self.network.hosts)
