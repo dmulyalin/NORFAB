@@ -8,9 +8,23 @@ from multiprocessing import Process, Event, Queue
 from norfab.core.broker import NFPBroker
 from norfab.core.client import NFPClient
 from norfab.core.inventory import NorFabInventory
-from norfab.workers import NornirWorker, NetboxWorker, AgentWorker
 
 log = logging.getLogger(__name__)
+
+try:
+    from norfab.workers import NornirWorker
+except ImportError as e:
+    log.error("Failed to import NornirWorker, needed libs not found - {e}")
+
+try:
+    from norfab.workers import NetboxWorker
+except ImportError as e:
+    log.error("Failed to import NetboxWorker, needed libs not found - {e}")
+
+try:
+    from norfab.workers import AgentWorker
+except ImportError as e:
+    log.error("Failed to import AgentWorker, needed libs not found - {e}")
 
 
 def start_broker_process(
