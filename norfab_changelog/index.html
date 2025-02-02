@@ -80,7 +80,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#020" class="md-skip">
+        <a href="#021" class="md-skip">
           Skip to content
         </a>
       
@@ -557,6 +557,39 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#021" class="md-nav__link">
+    <span class="md-ellipsis">
+      0.2.1
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="0.2.1">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#changes" class="md-nav__link">
+    <span class="md-ellipsis">
+      CHANGES
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#features" class="md-nav__link">
+    <span class="md-ellipsis">
+      FEATURES
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#020" class="md-nav__link">
     <span class="md-ellipsis">
       0.2.0
@@ -567,7 +600,7 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#changes" class="md-nav__link">
+  <a href="#changes_1" class="md-nav__link">
     <span class="md-ellipsis">
       CHANGES
     </span>
@@ -590,7 +623,7 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#features" class="md-nav__link">
+  <a href="#features_1" class="md-nav__link">
     <span class="md-ellipsis">
       FEATURES
     </span>
@@ -618,7 +651,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#changes_1" class="md-nav__link">
+  <a href="#changes_2" class="md-nav__link">
     <span class="md-ellipsis">
       CHANGES
     </span>
@@ -642,7 +675,7 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#changes_2" class="md-nav__link">
+  <a href="#changes_3" class="md-nav__link">
     <span class="md-ellipsis">
       Changes
     </span>
@@ -651,7 +684,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#features_1" class="md-nav__link">
+  <a href="#features_2" class="md-nav__link">
     <span class="md-ellipsis">
       Features
     </span>
@@ -2533,6 +2566,39 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#021" class="md-nav__link">
+    <span class="md-ellipsis">
+      0.2.1
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="0.2.1">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#changes" class="md-nav__link">
+    <span class="md-ellipsis">
+      CHANGES
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#features" class="md-nav__link">
+    <span class="md-ellipsis">
+      FEATURES
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#020" class="md-nav__link">
     <span class="md-ellipsis">
       0.2.0
@@ -2543,7 +2609,7 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#changes" class="md-nav__link">
+  <a href="#changes_1" class="md-nav__link">
     <span class="md-ellipsis">
       CHANGES
     </span>
@@ -2566,7 +2632,7 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#features" class="md-nav__link">
+  <a href="#features_1" class="md-nav__link">
     <span class="md-ellipsis">
       FEATURES
     </span>
@@ -2594,7 +2660,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#changes_1" class="md-nav__link">
+  <a href="#changes_2" class="md-nav__link">
     <span class="md-ellipsis">
       CHANGES
     </span>
@@ -2618,7 +2684,7 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#changes_2" class="md-nav__link">
+  <a href="#changes_3" class="md-nav__link">
     <span class="md-ellipsis">
       Changes
     </span>
@@ -2627,7 +2693,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#features_1" class="md-nav__link">
+  <a href="#features_2" class="md-nav__link">
     <span class="md-ellipsis">
       Features
     </span>
@@ -2693,8 +2759,21 @@
 
   <h1>Changelog</h1>
 
-<h2 id="020">0.2.0<a class="headerlink" href="#020" title="Permanent link">¤</a></h2>
+<h2 id="021">0.2.1<a class="headerlink" href="#021" title="Permanent link">¤</a></h2>
 <h3 id="changes">CHANGES<a class="headerlink" href="#changes" title="Permanent link">¤</a></h3>
+<ol>
+<li>Improved libs imports handling to account for distributed deployment</li>
+<li>Improved logging handling</li>
+<li>Fixed nfcli issue with starting components onf NorFab #2</li>
+<li>Changed CTRL+C handling to trigger graceful NorFab exit</li>
+</ol>
+<h3 id="features">FEATURES<a class="headerlink" href="#features" title="Permanent link">¤</a></h3>
+<ol>
+<li>Added <code>broker -&gt; shared_secret</code> parameter in <code>inventory.yaml</code> to configure clients and workers broker shared secret key</li>
+<li>Added and tested docker files</li>
+</ol>
+<h2 id="020">0.2.0<a class="headerlink" href="#020" title="Permanent link">¤</a></h2>
+<h3 id="changes_1">CHANGES<a class="headerlink" href="#changes_1" title="Permanent link">¤</a></h3>
 <ol>
 <li>refactored <code>get_circuits</code> to use <code>threadpoolexecutor</code> to fetch circuits path from netbox</li>
 <li>adding <code>job_data</code> json load to nornir cli, cfg and test tasks</li>
@@ -2704,7 +2783,7 @@
 <li>Fixing netbox <code>get_devices</code> dry run test</li>
 <li>Fixed netbox <code>get_circuits</code> devices site retrieval handling</li>
 </ol>
-<h2 id="features">FEATURES<a class="headerlink" href="#features" title="Permanent link">¤</a></h2>
+<h2 id="features_1">FEATURES<a class="headerlink" href="#features_1" title="Permanent link">¤</a></h2>
 <ol>
 <li>Added cache to Netbox <code>get_circuits</code> and <code>get_devices</code> tasks</li>
 <li>Added new <code>agent</code> worker to stsart working on use cases to interface with LLMs</li>
@@ -2714,7 +2793,7 @@
 <ol>
 <li>FIxed Netbox CLI Shell handling of NFCLIENT</li>
 </ol>
-<h3 id="changes_1">CHANGES<a class="headerlink" href="#changes_1" title="Permanent link">¤</a></h3>
+<h3 id="changes_2">CHANGES<a class="headerlink" href="#changes_2" title="Permanent link">¤</a></h3>
 <ol>
 <li>Updated and tested dependencies for Netmiko 4.5.0</li>
 <li>Updated and tested dependencies for Nornir 3.5.0</li>
@@ -2722,7 +2801,7 @@
 </ol>
 <hr />
 <h2 id="010">0.1.0<a class="headerlink" href="#010" title="Permanent link">¤</a></h2>
-<h3 id="changes_2">Changes<a class="headerlink" href="#changes_2" title="Permanent link">¤</a></h3>
+<h3 id="changes_3">Changes<a class="headerlink" href="#changes_3" title="Permanent link">¤</a></h3>
 <ol>
 <li>Changes to Nornir service module files structure</li>
 <li>PICLE dependency updated: 0.7.<em> -&gt; 0.8.</em></li>
@@ -2730,7 +2809,7 @@
 <li>Nornir tests changed <code>table</code> argument to be set to <code>True</code> by default</li>
 <li>Improved <code>nfapi</code> broker start logic to wait until broker fully initialized before proceeding to start workers</li>
 </ol>
-<h3 id="features_1">Features<a class="headerlink" href="#features_1" title="Permanent link">¤</a></h3>
+<h3 id="features_2">Features<a class="headerlink" href="#features_2" title="Permanent link">¤</a></h3>
 <ol>
 <li>Added support for Nornir parse task to source TTP template from file with autocompletion</li>
 <li>Added Nornir File Copy task to copy files to devices using SCP</li>

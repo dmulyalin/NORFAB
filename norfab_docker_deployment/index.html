@@ -79,6 +79,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#broker-and-workers-containers-deployment" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -475,6 +480,17 @@
       
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Docker Deployment
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -484,6 +500,41 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#broker-and-workers-containers-deployment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Broker and Workers Containers Deployment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#client-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      Client Setup
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -2352,6 +2403,32 @@
   
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#broker-and-workers-containers-deployment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Broker and Workers Containers Deployment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#client-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      Client Setup
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -2363,6 +2440,17 @@
               <article class="md-content__inner md-typeset">
                 
                   
+  
+<nav class="md-tags" >
+  
+    
+    
+    
+      <a href="../tags/#norfab" class="md-tag">norfab</a>
+    
+  
+</nav>
+
 
   
   
@@ -2370,6 +2458,145 @@
 
   <h1>Docker Deployment</h1>
 
+<p>NorFab comes with a set of docker files to get NorFab up and running on the Docker.</p>
+<p><img alt="Network Automations Fabric Architecture" src="../images/docker_run.jpg" /></p>
+<p>Broker and workers deployed in docker environment, while clients can run on Windows, Linux or MAC machine connecting to the broker instance.</p>
+<p>Prerequisites:</p>
+<ol>
+<li>Docker setup is independent from this guide and assumption is that docker is installed and running </li>
+<li>Docker compose utility is available on the docker host</li>
+<li>GIT also need to be installed on the docker host</li>
+</ol>
+<p>Assumptions:</p>
+<ol>
+<li>Docker host IP address is 192.168.1.130 and it is accessible by clients on TCP port 5555, docker host IP address of course will be different in your setup, adjust clients <code>inventory.yaml</code> file accordingly.</li>
+</ol>
+<h2 id="broker-and-workers-containers-deployment">Broker and Workers Containers Deployment<a class="headerlink" href="#broker-and-workers-containers-deployment" title="Permanent link">¤</a></h2>
+<p>First, need to clone NorFab repository to the local folder on the docker host:</p>
+<div class="highlight"><pre><span></span><code>cd ~/
+git clone https://github.com/dmulyalin/NORFAB.git norfab
+</code></pre></div>
+<p>To build NorFab docker images we are going to use <code>docker compose</code> utility, it will create broker and nornir service workers containers:</p>
+<div class="highlight"><pre><span></span><code>cd norfab/docker
+docker compose build
+</code></pre></div>
+<p>Once build finishes we can start the containers:</p>
+<div class="highlight"><pre><span></span><code>docker compose start
+</code></pre></div>
+<p>After broker reports that it is started and worker shows that it is registered with broker, this is a good indication that things are going ok:</p>
+<div class="highlight"><pre><span></span><code>root@dockervm:/home/user/norfab/docker# docker compose up
+[+] Running 2/0
+ ✔ Container norfab-broker          Created                   0.0s 
+ ✔ Container norfab-service-nornir  Created                   0.0s 
+Attaching to norfab-broker, norfab-service-nornir
+norfab-broker          | 2025-02-02 10:40:20.453 INFO [norfab.core.nfapi:210 ] -- Started broker, broker listening for connections on &#39;tcp://10.0.0.100:5555&#39;
+norfab-service-nornir  | 2025-02-02 10:40:21.528 INFO [norfab.core.worker:557 ] -- nornir-worker-1 - registered to broker at &#39;tcp://10.0.0.100:5555&#39;, service &#39;nornir&#39;
+norfab-broker          | 2025-02-02 10:40:21.530 INFO [norfab.core.broker:317 ] -- NFPBroker - registered new worker nornir-worker-1
+norfab-service-nornir  | 2025-02-02 10:40:21.554 INFO [nornir_salt.plugins.inventory.DictInventory:138 ] -- nornir-salt.DictInventory inventory data validated
+norfab-service-nornir  | 2025-02-02 10:40:21.566 INFO [norfab.workers.nornir_worker:246 ] -- nornir-worker-1 - Started
+...
+</code></pre></div>
+<p>Folder <code>norfab/docker/norfab</code> mounted to the containers as a volume under <code>/etc/norfab</code> path and this is the content of <code>inventory.yaml</code> file:</p>
+<div class="highlight"><pre><span></span><code># broker settings
+broker:
+  endpoint: &quot;tcp://10.0.0.100:5555&quot;
+
+# workers inventory section
+workers:
+  nornir-*:
+    - nornir/common.yaml  
+  nornir-worker-1:
+    - nornir/nornir-worker-1.yaml
+
+# list what entities we want to start on this node
+topology:
+  broker: True
+  workers:
+    - nornir-worker-1
+</code></pre></div>
+<p>Docker compose starts a broker process on <code>norfab-broker</code> container that uses <code>10.0.0.100</code> IP address and starts a single Nornir Service worker process named <code>nornir-worker-1</code> on a <code>norfab-service-nornir</code> container. </p>
+<p>File <code>inventory.yaml</code> can be adjusted to configure additional Nornir service workers to make <code>norfab-service-nornir</code> container run as many Nornir Service worker processes as needed.</p>
+<p>Before we proceed with setting up the client, need to grab encryption public key value from the broker, run these commands:</p>
+<div class="highlight"><pre><span></span><code>docker exec -it norfab-broker bash
+cd /etc/norfab/
+nfcli --show-broker-shared-key
+</code></pre></div>
+<p>Running above commands will produce similar to this output:</p>
+<div class="highlight"><pre><span></span><code>root@user:/home/user/norfab/docker# docker exec -it norfab-broker bash
+root@norfab-broker:/# cd /etc/norfab
+root@norfab-broker:/etc/norfab# nfcli --show-broker-shared-key
+NorFab broker public key content:
+
+&#39;&#39;&#39;
+#   ****  Generated on 2025-02-02 09:31:04.387927 by pyzmq  ****
+#   ZeroMQ CURVE Public Certificate
+#   Exchange securely, or use a secure mechanism to verify the contents
+#   of this file after exchange. Store public certificates in your home
+#   directory, in the .curve subdirectory.
+
+metadata
+curve
+    public-key = &quot;j{5-J9&lt;Qs:!@CVFsO$)UH&gt;mf%mP&lt;05[#%bBf(ofo&quot;
+
+&#39;&#39;&#39;
+
+Key file location: &#39;__norfab__/files/broker/public_keys/broker.key&#39;
+
+Copy above key into NorFab clients and workers &#39;public_keys/broker.key&#39; file or 
+put public-key value into clients and workers inventory.yaml &#39;broker&#39; section 
+under &#39;shared_key&#39; parameter:
+
+broker:
+  shared_key: &quot;j{5-J9&lt;Qs:!@CVFsO$)UH&gt;mf%mP&lt;05[#%bBf(ofo&quot;
+
+root@norfab-broker:/etc/norfab# 
+</code></pre></div>
+<p>Public key value NorFab clients will need in this case is:</p>
+<div class="highlight"><pre><span></span><code>&quot;j{5-J9&lt;Qs:!@CVFsO$)UH&gt;mf%mP&lt;05[#%bBf(ofo&quot;
+</code></pre></div>
+<h2 id="client-setup">Client Setup<a class="headerlink" href="#client-setup" title="Permanent link">¤</a></h2>
+<p>After broker and worker containers are running need to setup a NorFab client, client can run on any machine that can connect to the docker host on its IP address on TCP port 5555.</p>
+<p>First, lets install NorFab on the client machine:</p>
+<div class="highlight"><pre><span></span><code>pip install norfab[nfcli]
+</code></pre></div>
+<p>Second, need to create a folder to host NorFab files:</p>
+<div class="highlight"><pre><span></span><code>nfcli --create-env norfab-env
+</code></pre></div>
+<p>Next need to configure broker endpoint pointing to docker host IP (<code>192.168.1.130</code> in this example) and broker encryption key in the <code>norfab-env/inventory.yaml</code> under <code>broker</code> section:</p>
+<div class="highlight"><pre><span></span><code># broker settings
+broker:
+  endpoint: &quot;tcp://192.168.1.130:5555&quot;
+  shared_key: &quot;j{5-J9&lt;Qs:!@CVFsO$)UH&gt;mf%mP&lt;05[#%bBf(ofo&quot;
+</code></pre></div>
+<p>All the other <code>inventory.yaml</code> file content can be deleted, folder <code>norfab-env/nornir</code> also can be deleted. Client only need <code>inventory.yaml</code> file with broker endpoint and broker shared key details to successfully connect with the broker.</p>
+<p>Lastly, run <code>nfcli</code> client from within <code>norfab-env</code> folder:</p>
+<div class="highlight"><pre><span></span><code>cd norfab-env
+nfcli -c
+</code></pre></div>
+<p>NorFan interactive shell should start:</p>
+<div class="highlight"><pre><span></span><code>Welcome to NorFab Interactive Shell.
+
+nf#show broker
+ status: active
+ keepalives:
+   interval: 2500
+   multiplier: 6
+ workers count: 1
+ services count: 1
+ directories:
+   base-dir: /etc/norfab
+   private-keys-dir: /etc/norfab/__norfab__/files/broker/private_keys
+   public-keys-dir: /etc/norfab/__norfab__/files/broker/public_keys
+ security:
+   broker-private-key-file: /etc/norfab/__norfab__/files/broker/private_keys/broker.key_secret
+   broker-public-key-file: /etc/norfab/__norfab__/files/broker/public_keys/broker.key
+nf#show workers
+ name             service  status  holdtime  keepalives tx/rx  alive (s) 
+ nornir-worker-1  nornir   alive   12.6      835 / 835         2104
+nf#
+</code></pre></div>
+<p>Successfully running <code>show broker</code> and <code>show workers</code> commands is a good indication that everything works well and you did a great job setting up NorFab in a distributed dockerized fashion <img alt="😄" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.1.0/assets/72x72/1f604.png" title=":smile:" />.</p>
+<p>Next steps would be to adjust <code>inventory.yaml</code> file on the docker host to configure Nornir Service workers to manage your environment, for further details on how to do it refer to <a href="../workers/nornir/services_nornir_service/">Nornir Service documentations</a>. Good Luck 🤞</p>
 
 
 
@@ -2377,6 +2604,8 @@
 
 
 
+  
+  
 
 
 
