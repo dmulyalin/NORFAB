@@ -9,7 +9,7 @@ services:
       context: .
       dockerfile: Dockerfile.norfab.broker
     environment:
-      LOG_LEVEL: "${LOG_LEVEL}"
+      LOG_LEVEL: INFO
     volumes:
       # bind folder with norfab files
       - type: bind
@@ -29,7 +29,7 @@ services:
       context: .
       dockerfile: Dockerfile.norfab.nornir
     environment:
-      LOG_LEVEL: "${LOG_LEVEL}"
+      LOG_LEVEL: INFO
     volumes:
       # bind folder with norfab files
       - type: bind

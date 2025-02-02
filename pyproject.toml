@@ -99,6 +99,7 @@ nfcli = [
     "rich",
     "tabulate",
     "pydantic",
+    "nornir-salt"
 ]
 nornirservice = [
     "nornir",

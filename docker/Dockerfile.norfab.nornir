@@ -4,8 +4,6 @@ RUN apt-get update && \
     apt-get clean && \
     pip install --no-cache-dir pip setuptools wheel poetry --upgrade
 
-RUN pip install --no-cache-dir norfab[nornir] --upgrade
+RUN pip install --no-cache-dir norfab[nornirservice] --upgrade
 
-ARG LOG_LEVEL=INFO
-
-ENTRYPOINT cd /etc/norfab/ && nfcli -w -l ${LOG_LEVEL}
+ENTRYPOINT cd /etc/norfab/ && nfcli -w -l $LOG_LEVEL
