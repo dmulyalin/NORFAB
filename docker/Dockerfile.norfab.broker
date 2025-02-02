@@ -4,7 +4,7 @@ RUN apt-get update && \
     apt-get install --no-install-recommends -y dumb-init && \
     apt-get clean && \
     pip install --no-cache-dir pip setuptools wheel poetry --upgrade && \
-    chmod 775 /usr/bin/dumb-init && \
+    chmod 775 /usr/bin/dumb-init
 
 RUN pip install --no-cache-dir norfab --upgrade
 

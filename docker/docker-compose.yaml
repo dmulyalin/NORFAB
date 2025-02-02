@@ -15,6 +15,9 @@ services:
       - type: bind
         source: ./norfab/
         target: /etc/norfab/
+    networks:
+      net0:
+        ipv4_address: 10.0.0.100
     # expose ZeroMQ port
     ports:
       - "5555:5555/tcp"
@@ -32,3 +35,15 @@ services:
       - type: bind
         source: ./norfab/
         target: /etc/norfab/
+    networks:
+      net0:
+        ipv4_address: 10.0.0.101
+    depends_on:
+      - norfab-broker
+
+networks:
+  net0:
+    ipam:
+      config:
+        - subnet: 10.0.0.0/24
+          gateway: 10.0.0.1
