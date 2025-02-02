@@ -2,22 +2,33 @@ version: "3.9"
 
 services:
 
-  norfab:
-    container_name: "norfab"
-    hostname: 'norfab'
+  norfab-broker:
+    container_name: "norfab-broker"
+    hostname: 'norfab-broker'
     build:
       context: .
-      dockerfile: Dockerfile.norfab
+      dockerfile: Dockerfile.norfab.broker
     environment:
       LOG_LEVEL: "${LOG_LEVEL}"
-      BROKER: "${BROKER}"
-      WORKERS: "${WORKERS}"
     volumes:
       # bind folder with norfab files
       - type: bind
         source: ./norfab/
         target: /etc/norfab/
-    # expose REST API port
+    # expose ZeroMQ port
     ports:
       - "5555:5555/tcp"
         
+  norfab-service-nornir:
+    container_name: "norfab-service-nornir"
+    hostname: 'norfab-service-nornir'
+    build:
+      context: .
+      dockerfile: Dockerfile.norfab.nornir
+    environment:
+      LOG_LEVEL: "${LOG_LEVEL}"
+    volumes:
+      # bind folder with norfab files
+      - type: bind
+        source: ./norfab/
+        target: /etc/norfab/

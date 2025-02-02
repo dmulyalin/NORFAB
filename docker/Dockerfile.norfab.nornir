@@ -1,15 +1,16 @@
 FROM python:3.9.7-slim-bullseye
 
-ADD norfabinit.py /usr/local/bin/norfabinit
-
 RUN apt-get update && \
     apt-get install --no-install-recommends -y dumb-init && \
     apt-get clean && \
     pip install --no-cache-dir pip setuptools wheel poetry --upgrade && \
-    chmod 775 /usr/bin/dumb-init && \
-    chmod 775 /usr/local/bin/saltinit
+    chmod 775 /usr/bin/dumb-init
 
-RUN pip install --no-cache-dir norfab[full] --upgrade
+RUN pip install --no-cache-dir norfab[nornir] --upgrade
 
+WORKDIR "/etc/norfab/"
 ENTRYPOINT ["/usr/bin/dumb-init"]
-CMD ["/usr/local/bin/norfabinit"]
+
+ARG LOG_LEVEL=INFO
+
+CMD ["nfcli", "-w", "-l", ${LOG_LEVEL}]
