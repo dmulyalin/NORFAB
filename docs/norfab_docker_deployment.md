@@ -3,7 +3,7 @@ tags:
   - norfab
 ---
 
-NorFab comes with a set of docker files to get NorFab up and running on docker.
+NorFab comes with a set of docker files to get NorFab up and running on the Docker.
 
 ![Network Automations Fabric Architecture](images/docker_run.jpg)
 
@@ -12,12 +12,12 @@ Broker and workers deployed in docker environment, while clients can run on Wind
 Prerequisites:
 
 1. Docker setup is independent from this guide and assumption is that docker is installed and running 
-2. Docker compose utility is available on the host
-3. GIT also need to be installed on the system
+2. Docker compose utility is available on the docker host
+3. GIT also need to be installed on the docker host
 
 Assumptions:
 
-1. Docker host IP address is 192.168.1.130 and it is accessible by clients on TCP port 5555, docker host iP address of course will chane in your setup, adjust clinets' `inventory.yaml` file accordingly.
+1. Docker host IP address is 192.168.1.130 and it is accessible by clients on TCP port 5555, docker host IP address of course will be different in your setup, adjust clients `inventory.yaml` file accordingly.
 
 ## Broker and Workers Containers Deployment
 
@@ -35,7 +35,7 @@ cd norfab/docker
 docker compose build
 ```
 
-Once build finished we can start the containers:
+Once build finishes we can start the containers:
 
 ```
 docker compose start
@@ -57,7 +57,7 @@ norfab-service-nornir  | 2025-02-02 10:40:21.566 INFO [norfab.workers.nornir_wor
 ...
 ```
 
-Folder `norfab/docker/norfab` mounter to the containers as a volume under `/etc/norfab` path and this is the content of `inventory.yaml` file:
+Folder `norfab/docker/norfab` mounted to the containers as a volume under `/etc/norfab` path and this is the content of `inventory.yaml` file:
 
 ``` inventory.yaml
 # broker settings
@@ -78,11 +78,11 @@ topology:
     - nornir-worker-1
 ```
 
-Docker compose starts a broker process on `norfab-broker` container under `10.0.0.100` IP address and a single Nornir Service worker process named `nornir-worker-1` on a `norfab-service-nornir` container. 
+Docker compose starts a broker process on `norfab-broker` container that uses `10.0.0.100` IP address and starts a single Nornir Service worker process named `nornir-worker-1` on a `norfab-service-nornir` container. 
 
-File `inventory.yaml` can be adjusted to configure additional Nornir service workers to make `norfab-service-nornir` container run as many Nornir Service worker processes as we need.
+File `inventory.yaml` can be adjusted to configure additional Nornir service workers to make `norfab-service-nornir` container run as many Nornir Service worker processes as needed.
 
-Before we proceed with setting up the client, need to grab encryption public key value from the broker:
+Before we proceed with setting up the client, need to grab encryption public key value from the broker, run these commands:
 
 ```
 docker exec -it norfab-broker bash
@@ -123,13 +123,17 @@ broker:
 root@norfab-broker:/etc/norfab# 
 ```
 
-Public key value NorFab clients will need in this case is `"j{5-J9<Qs:!@CVFsO$)UH>mf%mP<05[#%bBf(ofo"`
+Public key value NorFab clients will need in this case is:
+
+```
+"j{5-J9<Qs:!@CVFsO$)UH>mf%mP<05[#%bBf(ofo"
+```
 
 ## Client Setup
 
 After broker and worker containers are running need to setup a NorFab client, client can run on any machine that can connect to the docker host on its IP address on TCP port 5555.
 
-Firs, lets install norfab on the client machine:
+First, lets install NorFab on the client machine:
 
 ```
 pip install norfab[nfcli]
@@ -139,25 +143,51 @@ Second, need to create a folder to host NorFab files:
 
 ```
 nfcli --create-env norfab-env
-cd norfab-env
 ```
 
-Next need to configure broker encryption key in the `norfab-env/inventory.yaml` under `broker` section and all the other content can be deleted:
+Next need to configure broker endpoint pointing to docker host IP (`192.168.1.130` in this example) and broker encryption key in the `norfab-env/inventory.yaml` under `broker` section:
 
 ``` inventory.yaml
 # broker settings
 broker:
-  endpoint: "tcp://10.0.0.100:5555"
+  endpoint: "tcp://192.168.1.130:5555"
   shared_key: "j{5-J9<Qs:!@CVFsO$)UH>mf%mP<05[#%bBf(ofo"
 ```
 
-Folder `norfab-env/nornir` also can be deleted. Client only need `inventory.yaml` file with broker endpoint and broker shared key details to successfully connect with the broker.
+All the other `inventory.yaml` file content can be deleted, folder `norfab-env/nornir` also can be deleted. Client only need `inventory.yaml` file with broker endpoint and broker shared key details to successfully connect with the broker.
 
-Last, run `nfcli` client from withing `norfab-env` folder:
+Lastly, run `nfcli` client from within `norfab-env` folder:
 
 ```
+cd norfab-env
 nfcli -c
 ```
 
+NorFan interactive shell should start:
 
+```
+Welcome to NorFab Interactive Shell.
 
+nf#show broker
+ status: active
+ keepalives:
+   interval: 2500
+   multiplier: 6
+ workers count: 1
+ services count: 1
+ directories:
+   base-dir: /etc/norfab
+   private-keys-dir: /etc/norfab/__norfab__/files/broker/private_keys
+   public-keys-dir: /etc/norfab/__norfab__/files/broker/public_keys
+ security:
+   broker-private-key-file: /etc/norfab/__norfab__/files/broker/private_keys/broker.key_secret
+   broker-public-key-file: /etc/norfab/__norfab__/files/broker/public_keys/broker.key
+nf#show workers
+ name             service  status  holdtime  keepalives tx/rx  alive (s) 
+ nornir-worker-1  nornir   alive   12.6      835 / 835         2104
+nf#
+```
+
+Successfully running `show broker` and `show workers` commands is a good indication that everything works well and you did a great job setting up NorFab in a distributed dockerized fashion :smile:.
+
+Next steps would be to adjust `inventory.yaml` file on the docker host to configure Nornir Service workers to manage your environment, for further details on how to do it refer to [Nornir Service documentations](workers/nornir/services_nornir_service.md). Good Luck 🤞
