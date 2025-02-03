@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "norfab"
-version = "0.2.2"
+version = "0.2.3"
 description = "Network Automations Fabric [NorFab] - communication networks automations"
 authors = ["Denis Mulyalin <d.mulyalin@gmail.com>"]
 maintainers = ["Denis Mulyalin <d.mulyalin@gmail.com>"]
@@ -135,7 +135,7 @@ nornirservice = [
 netboxservice = [
     "requests",
     "pynetbox",
-    "diskcache",
+    "diskcache"
 ]
 robot = [
     "robot"
@@ -146,6 +146,7 @@ agentservice = [
     "langchain-core",
     "langchain-ollama",
     "ollama",
+    "jinja2"
 ]
 full = [
     "picle",

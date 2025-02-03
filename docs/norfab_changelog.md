@@ -1,8 +1,12 @@
-## 0.2.2
+## 0.2.3
 
 ### FEATURES
 
 1. Added nfcli `--workers-list` option to specify a list of workers to start
+
+### CHANGES
+
+1. Fixed handling of jinja2 import for the worker to make it optional 
 
 ## 0.2.1
 

@@ -29,8 +29,6 @@ from uuid import uuid4
 from .client import NFPClient
 from .keepalives import KeepAliver
 from .security import generate_certificates
-from jinja2 import Environment, FileSystemLoader
-from jinja2.nodes import Include
 from .inventory import logging_config_producer
 from typing import Any, Callable, Dict, List, Optional, Union
 from .exceptions import NorfabJobFailedError
@@ -38,6 +36,14 @@ from .models import NorFabEvent
 from norfab.core.inventory import NorFabInventory
 
 log = logging.getLogger(__name__)
+
+try:
+    from jinja2 import Environment
+    from jinja2.nodes import Include
+except ImportError as e:
+    log.warning(
+        f"Failed importing Jinja2 libs, if worker not using Jinja2 this can be ignored, error - {e}"
+    )
 
 signal.signal(signal.SIGINT, signal.SIG_IGN)
 # --------------------------------------------------------------------------------------------
