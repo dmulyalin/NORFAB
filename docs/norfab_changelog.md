@@ -1,3 +1,9 @@
+## 0.2.2
+
+### FEATURES
+
+1. Added nfcli `--workers-list` option to specify a list of workers to start
+
 ## 0.2.1
 
 ### CHANGES
@@ -5,12 +11,12 @@
 1. Improved libs imports handling to account for distributed deployment
 2. Improved logging handling
 3. Fixed nfcli issue with starting components onf NorFab #2
+4. Changed CTRL+C handling to trigger graceful NorFab exit
 
 ### FEATURES
 
 1. Added `broker -> shared_secret` parameter in `inventory.yaml` to configure clients and workers broker shared secret key
 2. Added and tested docker files
-
 
 ## 0.2.0
 

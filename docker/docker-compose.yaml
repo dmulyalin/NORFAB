@@ -41,6 +41,25 @@ services:
     depends_on:
       - norfab-broker
 
+  norfab-service-netbox:
+    container_name: "norfab-service-netbox"
+    hostname: 'norfab-service-netbox'
+    build:
+      context: .
+      dockerfile: Dockerfile.norfab.netbox
+    environment:
+      LOG_LEVEL: INFO
+    volumes:
+      # bind folder with norfab files
+      - type: bind
+        source: ./norfab/
+        target: /etc/norfab/
+    networks:
+      net0:
+        ipv4_address: 10.0.0.102
+    depends_on:
+      - norfab-broker
+
 networks:
   net0:
     ipam:

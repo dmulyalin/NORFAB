@@ -61,7 +61,7 @@ def nfcli():
             f"Norfab PICLE Shell Tool"
             f"\n\n"
             f"Sample Usage:\n"
-            f"  nf -i ./norfab_lab/inventory.yaml"
+            f"  nfcli -i ./norfab_lab/inventory.yaml"
         ),
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
@@ -92,6 +92,14 @@ def nfcli():
         dest="WORKERS",
         default=None,
         help="Start NorFab worker processes as defined in inventory file",
+    )
+    run_options.add_argument(
+        "-wl",
+        "--workers-list",
+        action="store",
+        dest="WORKERS_LIST",
+        default="",
+        help="Comma-separated list of NorFab worker processes names to start",
     )
     run_options.add_argument(
         "-c",
@@ -136,6 +144,7 @@ def nfcli():
     args = argparser.parse_args()
     INVENTORY = args.INVENTORY
     WORKERS = args.WORKERS
+    WORKERS_LIST = args.WORKERS_LIST
     INVENTORY = args.INVENTORY
     BROKER = args.BROKER
     LOGLEVEL = args.LOGLEVEL
@@ -143,6 +152,8 @@ def nfcli():
     CLIENT = args.CLIENT
     CREATE_ENV = args.CREATE_ENV
     SHOW_BROKER_SHARED_KEY = args.SHOW_BROKER_SHARED_KEY
+
+    WORKERS_LIST = [i.strip() for i in WORKERS_LIST.split(",")]
 
     # retrieve broker shared key
     if SHOW_BROKER_SHARED_KEY:
@@ -200,14 +211,14 @@ def nfcli():
         nf.start(start_broker=True, workers=False)
         nf.run()
     # start workers only
-    elif WORKERS:
+    elif WORKERS or WORKERS_LIST:
         nf = NorFab(inventory=INVENTORY, log_level=LOGLEVEL)
-        nf.start(start_broker=False, workers=True)
+        nf.start(start_broker=False, workers=WORKERS_LIST if WORKERS_LIST else True)
         nf.run()
     # start broker and workers
-    elif BROKER and WORKERS:
+    elif BROKER and (WORKERS or WORKERS_LIST):
         nf = NorFab(inventory=INVENTORY, log_level=LOGLEVEL)
-        nf.start(start_broker=True, workers=True)
+        nf.start(start_broker=True, workers=WORKERS_LIST if WORKERS_LIST else True)
         nf.run()
     # start interactive client shell only
     elif CLIENT:
@@ -221,7 +232,7 @@ def nfcli():
     elif SHELL:
         start_picle_shell(
             inventory=INVENTORY,
-            workers=True,
+            workers=WORKERS_LIST if WORKERS_LIST else True,
             start_broker=True,
             log_level=LOGLEVEL,
         )

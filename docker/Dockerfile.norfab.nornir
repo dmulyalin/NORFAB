@@ -1,6 +1,7 @@
 FROM python:3.9.7-slim-bullseye
 
 RUN apt-get update && \
+    apt-get install --no-install-recommends -y openssh-client && \
     apt-get clean && \
     pip install --no-cache-dir pip setuptools wheel poetry --upgrade
 
@@ -8,4 +9,4 @@ RUN pip install --no-cache-dir norfab[nornirservice] --upgrade
 
 ENV LOG_LEVEL=INFO
 
-ENTRYPOINT cd /etc/norfab/ && nfcli -w -l $LOG_LEVEL
+ENTRYPOINT cd /etc/norfab/ && nfcli --workers-list nornir-worker-1 -l $LOG_LEVEL

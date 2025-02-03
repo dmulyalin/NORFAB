@@ -9,9 +9,13 @@ workers:
     - nornir/common.yaml  
   nornir-worker-1:
     - nornir/nornir-worker-1.yaml
+  netbox-*:
+    - netbox/common.yaml
     
 # list what entities we want to start on this node
 topology:
   broker: True
   workers:
     - nornir-worker-1
+    - netbox-worker-1
+    - netbox-worker-2
