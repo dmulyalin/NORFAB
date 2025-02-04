@@ -117,7 +117,7 @@ root
     └── cfg:    Configure devices over CLI interface
         ├── timeout:    Job timeout
         ├── workers:    Filter worker to target, default 'all'
-        ├── add_details:    Add task details to results
+        ├── add_details:    Add task details to results, default 'False'
         ├── run_num_workers:    RetryRunner number of threads for tasks execution
         ├── run_num_connectors:    RetryRunner number of threads for device connections
         ├── run_connect_retry:    RetryRunner number of connection attempts
@@ -130,7 +130,7 @@ root
         ├── tf_skip_failed:    Save results to file for failed tasks
         ├── diff:    File group name to run the diff for
         ├── diff_last:    File version number to diff, default is 1 (last)
-        ├── progress:    Emit execution progress
+        ├── progress:    Display progress events, default 'True'
         ├── table:    Table format (brief, terse, extend) or parameters or True
         ├── headers:    Table headers
         ├── headers_exclude:    Table headers to exclude
@@ -149,7 +149,7 @@ root
         ├── FN:    Negate the match
         ├── hosts:    Filter hosts to target
         ├── cfg_dry_run:    Dry run cfg function
-        ├── *config:    List of configuration commands to send to devices, default 'PydanticUndefined'
+        ├── *config:    List of configuration commands to send to devices
         ├── plugin:    Configuration plugin parameters
         │   ├── netmiko:    Use Netmiko plugin to configure devices
         │   │   ├── enable:    Attempt to enter enable-mode
@@ -158,13 +158,16 @@ root
         │   │   ├── strip_command:    Determines whether or not to strip the command
         │   │   ├── read_timeout:    Absolute timer to send to read_channel_timing
         │   │   ├── config_mode_command:    The command to enter into config mode
-        │   │   ├── cmd_verify:    Whether or not to verify command echo for each command in config_set
         │   │   ├── enter_config_mode:    Do you enter config mode before sending config commands
         │   │   ├── error_pattern:    Regular expression pattern to detect config errors in the output
         │   │   ├── terminator:    Regular expression pattern to use as an alternate terminator
         │   │   ├── bypass_commands:    Regular expression pattern indicating configuration commands, cmd_verify is automatically disabled
-        │   │   ├── commit:    Commit configuration or not or dictionary with commit parameters
-        │   │   ├── commit_final_delay:    Time to wait before doing final commit
+        │   │   ├── commit:    Commit configuration, default 'True'
+        │   │   ├── commit-confirm:    Perform commit confirm on supported platforms
+        │   │   ├── commit-confirm-delay:    Confirmed commit rollback timeout in minutes, used with commit-confirm
+        │   │   ├── commit-final-delay:    Time to wait in seconds before doing final commit, used with commit-confirm
+        │   │   ├── commit-comment:    Commit operation comment
+        │   │   └── batch:    Commands count to send in batches
         │   ├── scrapli:    Use Scrapli plugin to configure devices
         │   │   ├── dry_run:    Apply changes or not, also tests if possible to enter config mode
         │   │   ├── strip_prompt:    Strip prompt from returned output

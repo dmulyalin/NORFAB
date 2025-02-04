@@ -45,3 +45,28 @@ class TestJunipervMX:
             for host, res in results["result"].items():
                 for command in commands:
                     assert res[command], f"{host} - show command is wrong"
+
+    @skip_if_not_has_vmx_1
+    def test_nornir_cfg_netmiko_commit_confirm(self, nfclient):
+        config = ['set interfaces lo0 unit 0 description "bla"']
+        ret = nfclient.run_job(
+            "nornir",
+            "cfg",
+            workers=["nornir-worker-6"],
+            kwargs={
+                "config": config,
+                "plugin": "netmiko",
+                "commit": {"confirm": True, "confirm_delay": 5, "comment": "foo"},
+                "commit_final_delay": 3,
+            },
+        )
+
+        pprint.pprint(ret, width=150)
+
+        for worker, results in ret.items():
+            assert results["result"], f"{worker} returned no results"
+            assert results["failed"] is False, f"{worker} failed to run the task"
+            for host, res in results["result"].items():
+                assert (
+                    'commit confirmed 5 comment "foo"' in res["netmiko_send_config"]
+                ), f"{host} - seems commit confirmed did not work"

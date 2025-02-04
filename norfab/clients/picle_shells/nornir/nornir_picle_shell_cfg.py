@@ -66,13 +66,29 @@ class NrCfgPluginNetmiko(BaseModel):
         None,
         description="Regular expression pattern indicating configuration commands, cmd_verify is automatically disabled",
     )
-    commit: Optional[Union[StrictBool, dict]] = Field(
-        None,
-        description="Commit configuration or not or dictionary with commit parameters",
+    commit: Optional[Union[StrictBool, StrictStr]] = Field(
+        True,
+        description="Commit configuration",
         json_schema_extra={"presence": True},
     )
+    commit_confirm: Optional[StrictBool] = Field(
+        None,
+        description="Perform commit confirm on supported platforms",
+        alias="commit-confirm",
+        json_schema_extra={"presence": True},
+    )
+    commit_confirm_delay: Optional[StrictInt] = Field(
+        None,
+        description="Confirmed commit rollback timeout in minutes, used with commit-confirm",
+        alias="commit-confirm-delay",
+    )
     commit_final_delay: Optional[StrictInt] = Field(
-        None, description="Time to wait before doing final commit"
+        None,
+        description="Time to wait in seconds before doing final commit, used with commit-confirm",
+        alias="commit-final-delay",
+    )
+    commit_comment: Optional[StrictStr] = Field(
+        None, description="Commit operation comment", alias="commit-comment"
     )
     batch: Optional[StrictInt] = Field(
         None, description="Commands count to send in batches"
@@ -81,6 +97,19 @@ class NrCfgPluginNetmiko(BaseModel):
     @staticmethod
     def run(*args, **kwargs):
         kwargs["plugin"] = "netmiko"
+
+        # handle commit command for netmiko
+        if kwargs.pop("commit_confirm", None) is True:
+            kwargs["commit"] = {
+                "confirm": True,
+                "confirm_delay": kwargs.pop("commit_confirm_delay", None),
+            }
+        if kwargs.get("commit_comment"):
+            if isinstance(kwargs["commit"], dict):
+                kwargs["commit"]["comment"] = kwargs.pop("commit_comment")
+            else:
+                kwargs["commit"] = {"comment": kwargs.pop("commit_comment")}
+
         return NornirCfgShell.run(*args, **kwargs)
 
     class PicleConfig:
@@ -205,7 +234,7 @@ class NornirCfgShell(
         timeout = kwargs.pop("timeout", 600)
 
         # extract job_data
-        if kwargs.get("job_data"):
+        if kwargs.get("job_data") and not kwargs["job_data"].startswith("nf://"):
             kwargs["job_data"] = json.loads(kwargs["job_data"])
 
         # extract Tabulate arguments

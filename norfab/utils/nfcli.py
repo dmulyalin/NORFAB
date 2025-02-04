@@ -98,7 +98,7 @@ def nfcli():
         "--workers-list",
         action="store",
         dest="WORKERS_LIST",
-        default="",
+        default=None,
         help="Comma-separated list of NorFab worker processes names to start",
     )
     run_options.add_argument(
@@ -153,7 +153,8 @@ def nfcli():
     CREATE_ENV = args.CREATE_ENV
     SHOW_BROKER_SHARED_KEY = args.SHOW_BROKER_SHARED_KEY
 
-    WORKERS_LIST = [i.strip() for i in WORKERS_LIST.split(",")]
+    if WORKERS_LIST is not None:
+        WORKERS_LIST = [i.strip() for i in WORKERS_LIST.split(",") if i.strip()]
 
     # retrieve broker shared key
     if SHOW_BROKER_SHARED_KEY:

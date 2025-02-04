@@ -283,10 +283,11 @@ class NorFab:
         if workers is False or workers is None:
             workers = []
         elif isinstance(workers, list) and workers:
-            workers = workers
+            workers = [w.strip() for w in workers if w.strip()]
         # start workers defined in inventory
         elif workers is True:
             workers = self.inventory.topology.get("workers", [])
+
         # exit if no workers
         if not workers:
             return
@@ -295,7 +296,11 @@ class NorFab:
         for worker_name in workers:
             if isinstance(worker_name, dict):
                 worker_name = tuple(worker_name)[0]
-            workers_to_start.add(worker_name)
+            if worker_name:
+                workers_to_start.add(worker_name)
+            else:
+                log.error(f"'{worker_name}' - worker name is bad, skipping..")
+                continue
 
         while workers_to_start != set(self.workers_processes.keys()):
             for worker in workers:
@@ -303,9 +308,11 @@ class NorFab:
                 if isinstance(worker, dict):
                     worker_name = tuple(worker)[0]
                     worker_data = worker[worker_name]
-                else:
+                elif worker:
                     worker_name = worker
                     worker_data = {}
+                else:
+                    continue
                 # verify if need to start this worker
                 if worker_name not in workers_to_start:
                     continue
@@ -344,8 +351,14 @@ class NorFab:
         """
         Helper method to run the loop before CTRL+C called
         """
+        if not self.broker and not self.workers_processes:
+            log.critical(
+                f"NorFab detected no broker or worker processes running, exiting.."
+            )
+            return
+
         while self.exiting is False:
-            time.sleep(0.5)
+            time.sleep(0.1)
 
     def destroy(self) -> None:
         """

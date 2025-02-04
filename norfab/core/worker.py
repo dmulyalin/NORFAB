@@ -34,16 +34,10 @@ from typing import Any, Callable, Dict, List, Optional, Union
 from .exceptions import NorfabJobFailedError
 from .models import NorFabEvent
 from norfab.core.inventory import NorFabInventory
+from jinja2 import Environment
+from jinja2.nodes import Include
 
 log = logging.getLogger(__name__)
-
-try:
-    from jinja2 import Environment
-    from jinja2.nodes import Include
-except ImportError as e:
-    log.warning(
-        f"Failed importing Jinja2 libs, if worker not using Jinja2 this can be ignored, error - {e}"
-    )
 
 signal.signal(signal.SIGINT, signal.SIG_IGN)
 # --------------------------------------------------------------------------------------------

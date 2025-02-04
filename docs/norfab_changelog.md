@@ -1,3 +1,17 @@
+## 0.2.4
+
+### BUGS
+
+1. Fixed nfcli `--workers-list` handling
+2. Fixed `job_data` url handling for nornir cli/cfg/test tasks
+3. Fixed nfapi handling of empty worker name
+
+### FEATURES
+
+1. Added a set of confirmed commit shell commands to nornir cfg netmiko plugin
+
+---
+
 ## 0.2.3
 
 ### FEATURES
@@ -7,6 +21,8 @@
 ### CHANGES
 
 1. Fixed handling of jinja2 import for the worker to make it optional 
+
+---
 
 ## 0.2.1
 
@@ -21,6 +37,8 @@
 
 1. Added `broker -> shared_secret` parameter in `inventory.yaml` to configure clients and workers broker shared secret key
 2. Added and tested docker files
+
+---
 
 ## 0.2.0
 
@@ -38,6 +56,8 @@
 
 1. Added cache to Netbox `get_circuits` and `get_devices` tasks
 2. Added new `agent` worker to stsart working on use cases to interface with LLMs
+
+---
 
 ## 0.1.1
 

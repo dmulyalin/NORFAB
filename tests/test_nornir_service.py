@@ -144,9 +144,7 @@ class TestNornirCli:
             b"nornir",
             "cli",
             workers="nornir-worker-1",
-            kwargs={
-                "commands": "nf://cli/commands_non_existing.txt"
-            },
+            kwargs={"commands": "nf://cli/commands_non_existing.txt"},
         )
         pprint.pprint(ret)
 
@@ -476,9 +474,7 @@ class TestNornirTask:
             b"nornir",
             "task",
             workers=["nornir-worker-1"],
-            kwargs={
-                "plugin": "nf://nornir_tasks/dummy_with_error.py"
-            },
+            kwargs={"plugin": "nf://nornir_tasks/dummy_with_error.py"},
         )
         pprint.pprint(ret, width=150)
 
@@ -494,9 +490,7 @@ class TestNornirTask:
             b"nornir",
             "task",
             workers=["nornir-worker-1"],
-            kwargs={
-                "plugin": "nf://nornir_tasks/dummy_with_subtasks.py"
-            },
+            kwargs={"plugin": "nf://nornir_tasks/dummy_with_subtasks.py"},
         )
         pprint.pprint(ret)
 
@@ -1143,9 +1137,7 @@ class TestNornirTest:
             b"nornir",
             "test",
             workers=["nornir-worker-1"],
-            kwargs={
-                "suite": "nf://nornir_test_suites/suite_non_existing.txt"
-            },
+            kwargs={"suite": "nf://nornir_test_suites/suite_non_existing.txt"},
         )
         pprint.pprint(ret)
 
@@ -1159,9 +1151,7 @@ class TestNornirTest:
             b"nornir",
             "test",
             workers=["nornir-worker-1"],
-            kwargs={
-                "suite": "nf://nornir_test_suites/suite_bad_yaml.txt"
-            },
+            kwargs={"suite": "nf://nornir_test_suites/suite_bad_yaml.txt"},
         )
         pprint.pprint(ret)
 
@@ -1175,9 +1165,7 @@ class TestNornirTest:
             b"nornir",
             "test",
             workers=["nornir-worker-1"],
-            kwargs={
-                "suite": "nf://nornir_test_suites/suite_bad_jinja2.txt"
-            },
+            kwargs={"suite": "nf://nornir_test_suites/suite_bad_jinja2.txt"},
         )
         pprint.pprint(ret)
 

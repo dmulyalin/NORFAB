@@ -81,7 +81,7 @@ class NornirTestShell(
         timeout = kwargs.pop("timeout", 600)
 
         # extract job_data
-        if kwargs.get("job_data"):
+        if kwargs.get("job_data") and not kwargs["job_data"].startswith("nf://"):
             kwargs["job_data"] = json.loads(kwargs["job_data"])
 
         # extract Tabulate arguments
