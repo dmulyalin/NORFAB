@@ -115,7 +115,7 @@ def start_worker_process(
             worker = FastAPIWorker(
                 inventory=inventory,
                 broker=broker_endpoint,
-                service=b"agent",
+                service=b"fastapi",
                 worker_name=worker_name,
                 exit_event=exit_event,
                 init_done_event=init_done_event,

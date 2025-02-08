@@ -1,9 +1,3 @@
-"""
-PICLE Shell CLient
-==================
-
-Client that implements interactive shell to work with NorFab.
-"""
 import logging
 
 from picle.models import PipeFunctionsModel, Outputters

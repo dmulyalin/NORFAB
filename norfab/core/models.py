@@ -48,3 +48,37 @@ class NorFabEvent(BaseModel):
             self.timestamp = datetime.now().strftime("%d-%b-%Y %H:%M:%S.%f")[:-3]
 
         return self
+
+
+# ------------------------------------------------------
+# NorFab Response Models
+# ------------------------------------------------------
+
+
+class WorkerResult(BaseModel):
+    errors: List[StrictStr] = Field(..., mandatory=True)
+    failed: StrictBool = Field(..., mandatory=True)
+    juuid: StrictStr = Field(..., mandatory=True)
+    messages: List[StrictStr] = Field(..., mandatory=True)
+    result: Any = Field(..., mandatory=True)
+
+
+class ClientPostJobResponse(BaseModel):
+    errors: List[StrictStr] = Field(..., mandatory=True)
+    status: StrictStr = Field(..., mandatory=True)
+    uuid: StrictStr = Field(..., mandatory=True)
+    workers: List[StrictStr] = Field(..., mandatory=True)
+
+
+class ClientGetJobWorkers(BaseModel):
+    dispatched: List[StrictStr] = Field(..., mandatory=True)
+    done: List[StrictStr] = Field(..., mandatory=True)
+    pending: List[StrictStr] = Field(..., mandatory=True)
+    requested: StrictStr = Field(..., mandatory=True)
+
+
+class ClientGetJobResponse(BaseModel):
+    errors: List[StrictStr] = Field(..., mandatory=True)
+    status: StrictStr = Field(..., mandatory=True)
+    workers: ClientGetJobWorkers = Field(..., mandatory=True)
+    results: Dict[StrictStr, WorkerResult] = Field(..., mandatory=True)

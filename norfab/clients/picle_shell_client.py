@@ -31,8 +31,9 @@ from norfab.core.nfapi import NorFab
 
 from .picle_shells.nornir import nornir_picle_shell
 from .picle_shells.netbox import netbox_picle_shell
-from .picle_shells.norfab_jobs_shell import NorFabJobsShellCommands
 from .picle_shells.agent import agent_picle_shell
+from .picle_shells.fastapi import fastapi_picle_shell
+from .picle_shells.norfab_jobs_shell import NorFabJobsShellCommands
 
 NFCLIENT = None
 RICHCONSOLE = Console()
@@ -277,6 +278,9 @@ class NorFabShell(BaseModel):
     )
     agent: agent_picle_shell.AgentServiceCommands = Field(
         None, description="AI Agent service"
+    )
+    fastapi: fastapi_picle_shell.FastAPIServiceCommands = Field(
+        None, description="FastAPI service"
     )
 
     class PicleConfig:
