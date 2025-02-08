@@ -2671,6 +2671,9 @@
 
 
 <h1 id="nornir-service-test-task">Nornir Service Test Task<a class="headerlink" href="#nornir-service-test-task" title="Permanent link">¤</a></h1>
+<blockquote>
+<p>task api name: <code>test</code></p>
+</blockquote>
 <p>The Nornir Service <code>test</code> task designed to facilitate the execution of network tests. This task provides network operations engineers and network automation developers with tools to validate network configurations, ensure compliance, and monitor network performance. By leveraging the capabilities of the Nornir service, users can automate testing process, identify issues proactively, and maintain a robust network infrastructure.</p>
 <p>Nornir service <code>test</code> task uses Nornir <a href="https://nornir-salt.readthedocs.io/en/latest/Processors/TestsProcessor.html">TestsProcessor</a> to run the tests and support test suites definition in YAML format, where test suite YAML files can be stored on and sourced from broker.</p>
 <h2 id="nornir-test-sample-usage">Nornir Test Sample Usage<a class="headerlink" href="#nornir-test-sample-usage" title="Permanent link">¤</a></h2>
@@ -3016,8 +3019,7 @@ nf#
 
             <details class="quote">
               <summary>Source code in <code>norfab\workers\nornir_worker.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 898</span>
-<span class="normal"> 899</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 899</span>
 <span class="normal"> 900</span>
 <span class="normal"> 901</span>
 <span class="normal"> 902</span>
@@ -3173,7 +3175,8 @@ nf#
 <span class="normal">1052</span>
 <span class="normal">1053</span>
 <span class="normal">1054</span>
-<span class="normal">1055</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">test</span><span class="p">(</span>
+<span class="normal">1055</span>
+<span class="normal">1056</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">test</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">suite</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">list</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
     <span class="n">subset</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>

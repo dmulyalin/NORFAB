@@ -80,7 +80,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#024" class="md-skip">
+        <a href="#030" class="md-skip">
           Skip to content
         </a>
       
@@ -567,6 +567,30 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#030" class="md-nav__link">
+    <span class="md-ellipsis">
+      0.3.0
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="0.3.0">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#features" class="md-nav__link">
+    <span class="md-ellipsis">
+      FEATURES
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#024" class="md-nav__link">
     <span class="md-ellipsis">
       0.2.4
@@ -586,7 +610,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#features" class="md-nav__link">
+  <a href="#features_1" class="md-nav__link">
     <span class="md-ellipsis">
       FEATURES
     </span>
@@ -610,7 +634,7 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#features_1" class="md-nav__link">
+  <a href="#features_2" class="md-nav__link">
     <span class="md-ellipsis">
       FEATURES
     </span>
@@ -652,7 +676,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#features_2" class="md-nav__link">
+  <a href="#features_3" class="md-nav__link">
     <span class="md-ellipsis">
       FEATURES
     </span>
@@ -699,7 +723,7 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#features_3" class="md-nav__link">
+  <a href="#features_4" class="md-nav__link">
     <span class="md-ellipsis">
       FEATURES
     </span>
@@ -760,7 +784,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#features_4" class="md-nav__link">
+  <a href="#features_5" class="md-nav__link">
     <span class="md-ellipsis">
       Features
     </span>
@@ -2708,6 +2732,30 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#030" class="md-nav__link">
+    <span class="md-ellipsis">
+      0.3.0
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="0.3.0">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#features" class="md-nav__link">
+    <span class="md-ellipsis">
+      FEATURES
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#024" class="md-nav__link">
     <span class="md-ellipsis">
       0.2.4
@@ -2727,7 +2775,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#features" class="md-nav__link">
+  <a href="#features_1" class="md-nav__link">
     <span class="md-ellipsis">
       FEATURES
     </span>
@@ -2751,7 +2799,7 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#features_1" class="md-nav__link">
+  <a href="#features_2" class="md-nav__link">
     <span class="md-ellipsis">
       FEATURES
     </span>
@@ -2793,7 +2841,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#features_2" class="md-nav__link">
+  <a href="#features_3" class="md-nav__link">
     <span class="md-ellipsis">
       FEATURES
     </span>
@@ -2840,7 +2888,7 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#features_3" class="md-nav__link">
+  <a href="#features_4" class="md-nav__link">
     <span class="md-ellipsis">
       FEATURES
     </span>
@@ -2901,7 +2949,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#features_4" class="md-nav__link">
+  <a href="#features_5" class="md-nav__link">
     <span class="md-ellipsis">
       Features
     </span>
@@ -2968,6 +3016,16 @@
 
   <h1>Changelog</h1>
 
+<h2 id="030">0.3.0<a class="headerlink" href="#030" title="Permanent link">¤</a></h2>
+<h3 id="features">FEATURES<a class="headerlink" href="#features" title="Permanent link">¤</a></h3>
+<ol>
+<li>Added "show version" support for nfcli client to display versions of locally installed libraries, fixes. #4</li>
+<li>Added "show broker version" support for nfcli client to  retrieve broker report of the version of libraries broker is running on, fixes. #4</li>
+<li>Added support "show broker inventory" command to display broker inventory</li>
+<li>Simple inventory added support to produce a serialized dictionary output</li>
+<li>Broker added "show_broker_inventory" and "show_broker_version" MMI endpoints</li>
+<li>Added support for simple inventory service to render inventory using Jinja2, renderer passed on <code>env</code> variable that contains operating system environment variables, allowing to source any env data into NorFab inventory for both broker and workers. #5</li>
+</ol>
 <h2 id="024">0.2.4<a class="headerlink" href="#024" title="Permanent link">¤</a></h2>
 <h3 id="bugs">BUGS<a class="headerlink" href="#bugs" title="Permanent link">¤</a></h3>
 <ol>
@@ -2975,13 +3033,13 @@
 <li>Fixed <code>job_data</code> url handling for nornir cli/cfg/test tasks</li>
 <li>Fixed nfapi handling of empty worker name</li>
 </ol>
-<h3 id="features">FEATURES<a class="headerlink" href="#features" title="Permanent link">¤</a></h3>
+<h3 id="features_1">FEATURES<a class="headerlink" href="#features_1" title="Permanent link">¤</a></h3>
 <ol>
 <li>Added a set of confirmed commit shell commands to nornir cfg netmiko plugin</li>
 </ol>
 <hr />
 <h2 id="023">0.2.3<a class="headerlink" href="#023" title="Permanent link">¤</a></h2>
-<h3 id="features_1">FEATURES<a class="headerlink" href="#features_1" title="Permanent link">¤</a></h3>
+<h3 id="features_2">FEATURES<a class="headerlink" href="#features_2" title="Permanent link">¤</a></h3>
 <ol>
 <li>Added nfcli <code>--workers-list</code> option to specify a list of workers to start</li>
 </ol>
@@ -2998,7 +3056,7 @@
 <li>Fixed nfcli issue with starting components onf NorFab #2</li>
 <li>Changed CTRL+C handling to trigger graceful NorFab exit</li>
 </ol>
-<h3 id="features_2">FEATURES<a class="headerlink" href="#features_2" title="Permanent link">¤</a></h3>
+<h3 id="features_3">FEATURES<a class="headerlink" href="#features_3" title="Permanent link">¤</a></h3>
 <ol>
 <li>Added <code>broker -&gt; shared_secret</code> parameter in <code>inventory.yaml</code> to configure clients and workers broker shared secret key</li>
 <li>Added and tested docker files</li>
@@ -3015,7 +3073,7 @@
 <li>Fixing netbox <code>get_devices</code> dry run test</li>
 <li>Fixed netbox <code>get_circuits</code> devices site retrieval handling</li>
 </ol>
-<h2 id="features_3">FEATURES<a class="headerlink" href="#features_3" title="Permanent link">¤</a></h2>
+<h2 id="features_4">FEATURES<a class="headerlink" href="#features_4" title="Permanent link">¤</a></h2>
 <ol>
 <li>Added cache to Netbox <code>get_circuits</code> and <code>get_devices</code> tasks</li>
 <li>Added new <code>agent</code> worker to stsart working on use cases to interface with LLMs</li>
@@ -3042,7 +3100,7 @@
 <li>Nornir tests changed <code>table</code> argument to be set to <code>True</code> by default</li>
 <li>Improved <code>nfapi</code> broker start logic to wait until broker fully initialized before proceeding to start workers</li>
 </ol>
-<h3 id="features_4">Features<a class="headerlink" href="#features_4" title="Permanent link">¤</a></h3>
+<h3 id="features_5">Features<a class="headerlink" href="#features_5" title="Permanent link">¤</a></h3>
 <ol>
 <li>Added support for Nornir parse task to source TTP template from file with autocompletion</li>
 <li>Added Nornir File Copy task to copy files to devices using SCP</li>

@@ -2563,6 +2563,9 @@
 
 
 <h1 id="netbox-get-nornir-inventory-task">Netbox Get Nornir Inventory Task<a class="headerlink" href="#netbox-get-nornir-inventory-task" title="Permanent link">¤</a></h1>
+<blockquote>
+<p>task api name: <code>get_nornir_inventory</code></p>
+</blockquote>
 <h2 id="get-nornir-inventory-sample-usage">Get Nornir Inventory Sample Usage<a class="headerlink" href="#get-nornir-inventory-sample-usage" title="Permanent link">¤</a></h2>
 <h2 id="norfab-netbox-get-nornir-inventory-command-shell-reference">NORFAB Netbox Get Nornir Inventory Command Shell Reference<a class="headerlink" href="#norfab-netbox-get-nornir-inventory-command-shell-reference" title="Permanent link">¤</a></h2>
 <p>NorFab shell supports these command options for Netbox <code>get_nornir_inventory</code> task:</p>
@@ -2746,8 +2749,7 @@
 
             <details class="quote">
               <summary>Source code in <code>norfab\workers\netbox_worker.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1262</span>
-<span class="normal">1263</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1263</span>
 <span class="normal">1264</span>
 <span class="normal">1265</span>
 <span class="normal">1266</span>
@@ -2864,7 +2866,8 @@
 <span class="normal">1377</span>
 <span class="normal">1378</span>
 <span class="normal">1379</span>
-<span class="normal">1380</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_nornir_inventory</span><span class="p">(</span>
+<span class="normal">1380</span>
+<span class="normal">1381</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_nornir_inventory</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">filters</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">devices</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>

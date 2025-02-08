@@ -1896,22 +1896,22 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#broker-inventory" class="md-nav__link">
+  <a href="#broker-inventory-section" class="md-nav__link">
     <span class="md-ellipsis">
-      Broker Inventory
+      Broker Inventory Section
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#workers-inventory" class="md-nav__link">
+  <a href="#workers-inventory-section" class="md-nav__link">
     <span class="md-ellipsis">
-      Workers Inventory
+      Workers Inventory Section
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Workers Inventory">
+    <nav class="md-nav" aria-label="Workers Inventory Section">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1929,9 +1929,27 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#topology-inventory" class="md-nav__link">
+  <a href="#topology-inventory-section" class="md-nav__link">
     <span class="md-ellipsis">
-      Topology Inventory
+      Topology Inventory Section
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#logging-inventory-section" class="md-nav__link">
+    <span class="md-ellipsis">
+      Logging Inventory Section
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#jinja2-support" class="md-nav__link">
+    <span class="md-ellipsis">
+      Jinja2 Support
     </span>
   </a>
   
@@ -2516,22 +2534,22 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#broker-inventory" class="md-nav__link">
+  <a href="#broker-inventory-section" class="md-nav__link">
     <span class="md-ellipsis">
-      Broker Inventory
+      Broker Inventory Section
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#workers-inventory" class="md-nav__link">
+  <a href="#workers-inventory-section" class="md-nav__link">
     <span class="md-ellipsis">
-      Workers Inventory
+      Workers Inventory Section
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Workers Inventory">
+    <nav class="md-nav" aria-label="Workers Inventory Section">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -2549,9 +2567,27 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#topology-inventory" class="md-nav__link">
+  <a href="#topology-inventory-section" class="md-nav__link">
     <span class="md-ellipsis">
-      Topology Inventory
+      Topology Inventory Section
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#logging-inventory-section" class="md-nav__link">
+    <span class="md-ellipsis">
+      Logging Inventory Section
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#jinja2-support" class="md-nav__link">
+    <span class="md-ellipsis">
+      Jinja2 Support
     </span>
   </a>
   
@@ -2577,24 +2613,61 @@
 
 
 <h1 id="norfab-inventory">NorFab Inventory<a class="headerlink" href="#norfab-inventory" title="Permanent link">¤</a></h1>
-<p>NorFab comes with Simple Inventory Datastore (SID) hosted by broker.</p>
-<h2 id="broker-inventory">Broker Inventory<a class="headerlink" href="#broker-inventory" title="Permanent link">¤</a></h2>
-<p>TBD</p>
-<h2 id="workers-inventory">Workers Inventory<a class="headerlink" href="#workers-inventory" title="Permanent link">¤</a></h2>
-<p>To understand how Simple Inventory Datastore serves workers inventory 
-it is good to know that each worker has a unique name to identify it.</p>
-<p>With that in mind, the goal is to map inventory data to individual worker
-by its name.</p>
-<p>For example, let's pretend that worker name is <code>nornir-worker-1</code> and we have
-<code>common.yaml</code> and <code>nornir-worker-1.yaml</code> files with inventory data  that
-we need to provide worker with.</p>
-<p>To do the mapping between worker name and inventory files we can put this
-in NorFab inventory (<code>inventory.yaml</code>) file:</p>
-<div class="highlight"><pre><span></span><code>workers:
-  nornir-*:
-    - nornir/common.yaml  
-  nornir-worker-1:
-    - nornir/nornir-worker-1.yaml
+<p>NorFab comes with Simple Inventory Datastore (SID) hosted by broker, allowing workers to source inventory data from broker.</p>
+<p>NorFab inventory separated in sections, each responsible for configuring different aspects of the system.</p>
+<div class="highlight"><span class="filename">inventory.yaml</span><pre><span></span><code><span class="nt">broker</span><span class="p">:</span><span class="w"> </span><span class="c1"># (1)!</span>
+<span class="w">  </span><span class="nt">endpoint</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;tcp://127.0.0.1:5555&quot;</span><span class="w"> </span><span class="c1"># (2)!</span>
+
+<span class="nt">workers</span><span class="p">:</span><span class="w"> </span><span class="c1"># (3)!</span>
+<span class="w">  </span><span class="nt">nornir-*</span><span class="p">:</span><span class="w"> </span><span class="c1"># (4)!</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nornir/common.yaml</span><span class="w">   </span>
+<span class="w">  </span><span class="nt">nornir-worker-1</span><span class="p">:</span><span class="w"> </span><span class="c1"># (5)!</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nornir/nornir-worker-1.yaml</span>
+
+<span class="nt">topology</span><span class="p">:</span><span class="w"> </span><span class="c1"># (6)!</span>
+<span class="w">  </span><span class="nt">broker</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span><span class="w"> </span><span class="c1"># (7)!</span>
+<span class="w">  </span><span class="nt">workers</span><span class="p">:</span><span class="w"> </span><span class="c1"># (8)!</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nornir-worker-1</span>
+
+<span class="nt">logging</span><span class="p">:</span><span class="w"> </span><span class="c1"># (9)!</span>
+<span class="w">  </span><span class="nt">handlers</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">terminal</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">level</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">WARNING</span>
+<span class="w">    </span><span class="nt">file</span><span class="p">:</span><span class="w"> </span>
+<span class="w">      </span><span class="nt">level</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">INFO</span>
+</code></pre></div>
+<ol>
+<li>Broker configuration inventory section</li>
+<li>URL to listen for connections on - <code>localhost</code> port <code>5555</code> in this case</li>
+<li>Workers configuration inventory section</li>
+<li><a href="https://docs.python.org/3/library/fnmatch.html">glob pattern</a> that will match all workers with <code>nornir-</code> in the name and map <code>common.yaml</code> file content for each of them</li>
+<li>Worker definition to map inventory file to a specific worker that has name <code>nornir-worker-1</code></li>
+<li>Topology section to define what components to run</li>
+<li>Start broker process</li>
+<li>List of workers names to start processes for</li>
+<li>Logging configuration section</li>
+</ol>
+<h2 id="broker-inventory-section">Broker Inventory Section<a class="headerlink" href="#broker-inventory-section" title="Permanent link">¤</a></h2>
+<p>Broker inventory <strong>must</strong> have <code>broker_endpoint</code> parameter defined for workers and clients to identify how connect with broker, and for broker itself to identify where to listen for connections.</p>
+<div class="highlight"><span class="filename">inventory.yaml</span><pre><span></span><code><span class="c1"># broker settings</span>
+<span class="nt">broker</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">endpoint</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;tcp://127.0.0.1:5555&quot;</span>
+<span class="w">  </span><span class="nt">shared_key</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;5z1:yW}]n?UXhGmz+5CeHN1&gt;:S9k!eCh6JyIhJqO&quot;</span>
+</code></pre></div>
+<p>In addition these parameters are supported</p>
+<ol>
+<li><code>shared_key</code> - broker encryption shared key may or may not be needed depending of type of the setup you are running, in case if all components - broker, client and workers run on same machine, configuring <code>shared_key</code> parameter is options, as <code>nfapi</code> is smart enough to auto-configure all workers and client with correct broker shared key. In case if broker and workers with clients are distributed i.e. running in separate containers or on separate machines, <code>share_key</code> parameter <strong>must</strong> be configured on all workers and clients to match shared key used by broker.</li>
+</ol>
+<h2 id="workers-inventory-section">Workers Inventory Section<a class="headerlink" href="#workers-inventory-section" title="Permanent link">¤</a></h2>
+<p>To understand how Simple Inventory Datastore serves workers inventory it is good to know that each worker has a unique name to identify it.</p>
+<p>With that in mind, the goal is to map inventory data to individual worker by its name.</p>
+<p>For example, let's pretend that worker name is <code>nornir-worker-1</code> and we have <code>common.yaml</code> and <code>nornir-worker-1.yaml</code> files with inventory data  that we need to provide worker with.</p>
+<p>To do the mapping between worker name and inventory files we can put this in NorFab inventory (<code>inventory.yaml</code>) file:</p>
+<div class="highlight"><span class="filename">inventory.yaml</span><pre><span></span><code><span class="nt">workers</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">nornir-*</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nornir/common.yaml</span><span class="w">  </span>
+<span class="w">  </span><span class="nt">nornir-worker-1</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nornir/nornir-worker-1.yaml</span>
 </code></pre></div>
 <p>Where files structure would look like this:</p>
 <div class="highlight"><pre><span></span><code>└───rootfolder
@@ -2604,12 +2677,7 @@ in NorFab inventory (<code>inventory.yaml</code>) file:</p>
             common.yaml
             nornir-worker-1.yaml
 </code></pre></div>
-<p>As you can see, <code>inventory.yaml</code> file contains <code>workers</code> section with a
-dictionary keyed by glob patterns to match against workers' names, once
-worker name matched by the pattern, all items in the list underneaths that
-pattern being loaded and recursively merged. As such, process continues 
-until all patterns evaluated. Final output of the process is a combined
-inventory data of all the matched files.</p>
+<p>As you can see, <code>inventory.yaml</code> file contains <code>workers</code> section with a dictionary keyed by <a href="https://docs.python.org/3/library/fnmatch.html">glob patterns</a>  to match against workers' names, once worker name matched by the pattern, all items in the list underneaths that pattern being loaded and recursively merged. As such, process continues until all patterns evaluated. Final output of the process is a combined inventory data of all the matched files.</p>
 <p>The recursive logic of combining inventory data files is pretty 
 straightforward - each next data file merged into the previous data file 
 overriding the overlapping values.</p>
@@ -2620,9 +2688,9 @@ supported.</p>
 <p>For example, we have a group of two workers with names <code>netbox-wroker-1.1</code> and
 <code>netbox-worker-1.2</code> and we want to map <code>netbox_common.yaml</code> to both of the workers,
 in that case NorFab inventory (<code>inventory.yaml</code>) file could have this content:</p>
-<div class="highlight"><pre><span></span><code>workers:
-  netbox-worker-1.*:
-    - nornir/netbox_common.yaml  
+<div class="highlight"><span class="filename">inventory.yaml</span><pre><span></span><code><span class="nt">workers</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">netbox-worker-1.*</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nornir/netbox_common.yaml</span><span class="w">  </span>
 </code></pre></div>
 <p>Where files structure would look like this:</p>
 <div class="highlight"><pre><span></span><code>└───rootfolder
@@ -2631,22 +2699,36 @@ in that case NorFab inventory (<code>inventory.yaml</code>) file could have this
     └───netbox
             netbox_common.yaml
 </code></pre></div>
-<p>Both workers will be served with  <code>netbox_common.yaml</code> file content as an
-inventory data.</p>
+<p>Both workers will be served with  <code>netbox_common.yaml</code> file content as an inventory data.</p>
 <h3 id="workers-inventory-parameters">Workers Inventory Parameters<a class="headerlink" href="#workers-inventory-parameters" title="Permanent link">¤</a></h3>
 <p>Workers inventory can contain these common parameters:</p>
 <ol>
 <li><code>service</code> - name of the service this worker belongs to</li>
-<li><code>broker_endpoint</code> - Broker URL to connect to</li>
 </ol>
 <p>Sample worker base inventory:</p>
 <div class="highlight"><pre><span></span><code><span class="nt">service</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nornir</span>
-<span class="nt">broker_endpoint</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;tcp://127.0.0.1:5555&quot;</span>
 </code></pre></div>
 <p>The rest of the inventory data is worker specific.</p>
-<h2 id="topology-inventory">Topology Inventory<a class="headerlink" href="#topology-inventory" title="Permanent link">¤</a></h2>
-<p>Topology section of NorFab inventory identifies the components
-that need to be started on the given node.</p>
+<h2 id="topology-inventory-section">Topology Inventory Section<a class="headerlink" href="#topology-inventory-section" title="Permanent link">¤</a></h2>
+<p>Topology section of NorFab inventory identifies the components that need to be started on the given node.</p>
+<h2 id="logging-inventory-section">Logging Inventory Section<a class="headerlink" href="#logging-inventory-section" title="Permanent link">¤</a></h2>
+<p>Logging inventory section allows to configure logging parameters such file retention option, logging to remote hosts, logging levels etc.</p>
+<h2 id="jinja2-support">Jinja2 Support<a class="headerlink" href="#jinja2-support" title="Permanent link">¤</a></h2>
+<p>Starting with version 0.3.0 NorFab support Jinja2 syntax rendering of inventory files content, in addition, <code>env</code> variable available to source content of environment variables:</p>
+<div class="highlight"><span class="filename">inventory.yaml</span><pre><span></span><code><span class="nt">logging</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">handlers</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">terminal</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">level</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{{</span><span class="w"> </span><span class="nv">env.get(&quot;TERMINAL_LOGGING_LEVEL&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;WARNING&quot;</span><span class="nv">)</span><span class="w"> </span><span class="p p-Indicator">}}</span>
+<span class="w">    </span><span class="nt">file</span><span class="p">:</span><span class="w"> </span>
+<span class="w">      </span><span class="nt">level</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{{</span><span class="w"> </span><span class="nv">env.get(&quot;FILE_LOGGING_LEVEL&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;INFO&quot;</span><span class="nv">)</span><span class="w"> </span><span class="p p-Indicator">}}</span>
+</code></pre></div>
+<p>Above example demonstrates how terminal and file logging level can be sourced from environment using Jinja2 syntax. </p>
+<p>In addition, all workers inventory files also passed through Jinja2 renderer with access to <code>env</code> variable:</p>
+<div class="highlight"><span class="filename">nornir/common.yaml</span><pre><span></span><code><span class="nt">defaults</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">username</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{{</span><span class="w"> </span><span class="nv">env.get(&quot;NORNIR_USERNAME&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;nornir&quot;</span><span class="nv">)</span><span class="w"> </span><span class="p p-Indicator">}}</span>
+<span class="w">  </span><span class="nt">password</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{{</span><span class="w"> </span><span class="nv">env.get(&quot;NORNIR_PASSWORD&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;password&quot;</span><span class="w"> </span><span class="nv">)</span><span class="w"> </span><span class="p p-Indicator">}}</span>
+</code></pre></div>
+<p>In above example default nornir username and password sourced from environment variables.</p>
 
 
 

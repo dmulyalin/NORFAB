@@ -2743,6 +2743,9 @@
 
 
 <h1 id="nornir-service-cfg-task">Nornir Service CFG Task<a class="headerlink" href="#nornir-service-cfg-task" title="Permanent link">¤</a></h1>
+<blockquote>
+<p>task api name: <code>cfg</code></p>
+</blockquote>
 <p>Nornir service <code>cfg</code> task designed to send configuration to devices using SSH and Telnet. Nornir <code>cfg</code> can use Netmiko, Scrapli and NAPALM libraries to configure devices.</p>
 <h2 id="nornir-cfg-sample-usage">Nornir CFG Sample Usage<a class="headerlink" href="#nornir-cfg-sample-usage" title="Permanent link">¤</a></h2>
 <p>Example of sending configuration commands to devices.</p>
@@ -3056,8 +3059,7 @@ Command Line Interface (CLI)</p>
 
             <details class="quote">
               <summary>Source code in <code>norfab\workers\nornir_worker.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">803</span>
-<span class="normal">804</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">804</span>
 <span class="normal">805</span>
 <span class="normal">806</span>
 <span class="normal">807</span>
@@ -3149,7 +3151,8 @@ Command Line Interface (CLI)</p>
 <span class="normal">893</span>
 <span class="normal">894</span>
 <span class="normal">895</span>
-<span class="normal">896</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">cfg</span><span class="p">(</span>
+<span class="normal">896</span>
+<span class="normal">897</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">cfg</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">config</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span>
     <span class="n">plugin</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;netmiko&quot;</span><span class="p">,</span>

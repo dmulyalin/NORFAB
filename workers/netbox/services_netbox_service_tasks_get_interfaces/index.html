@@ -2563,6 +2563,9 @@
 
 
 <h1 id="netbox-get-interfaces-task">Netbox Get Interfaces Task<a class="headerlink" href="#netbox-get-interfaces-task" title="Permanent link">¤</a></h1>
+<blockquote>
+<p>task api name: <code>get_interfaces</code></p>
+</blockquote>
 <h2 id="get-interfaces-sample-usage">Get Interfaces Sample Usage<a class="headerlink" href="#get-interfaces-sample-usage" title="Permanent link">¤</a></h2>
 <h2 id="norfab-netbox-get-interfaces-command-shell-reference">NORFAB Netbox Get Interfaces Command Shell Reference<a class="headerlink" href="#norfab-netbox-get-interfaces-command-shell-reference" title="Permanent link">¤</a></h2>
 <p>NorFab shell supports these command options for Netbox <code>get_interfaces</code> task:</p>
@@ -2698,8 +2701,7 @@
 
             <details class="quote">
               <summary>Source code in <code>norfab\workers\netbox_worker.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">690</span>
-<span class="normal">691</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">691</span>
 <span class="normal">692</span>
 <span class="normal">693</span>
 <span class="normal">694</span>
@@ -2826,7 +2828,8 @@
 <span class="normal">815</span>
 <span class="normal">816</span>
 <span class="normal">817</span>
-<span class="normal">818</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_interfaces</span><span class="p">(</span>
+<span class="normal">818</span>
+<span class="normal">819</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_interfaces</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">instance</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">devices</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>

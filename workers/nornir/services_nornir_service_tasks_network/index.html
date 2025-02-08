@@ -2581,6 +2581,9 @@
 
 
 <h1 id="nornir-service-network-task">Nornir Service Network Task<a class="headerlink" href="#nornir-service-network-task" title="Permanent link">¤</a></h1>
+<blockquote>
+<p>task api name: <code>network</code></p>
+</blockquote>
 <p>The Nornir Service Network Task is a component of NorFab's Nornir service designed to facilitate various network-related operations. This task suite provides network professionals with essential tools for managing, troubleshooting, and monitoring network infrastructure. By leveraging the capabilities of the Nornir service, users can perform critical network functions such as ICMP echo requests (ping) and DNS resolution checks, ensuring the reliability and performance of their network devices and services.</p>
 <p>Key features of the Nornir Service Network Task include:</p>
 <ul>
@@ -2747,8 +2750,7 @@ nf#
 
             <details class="quote">
               <summary>Source code in <code>norfab\workers\nornir_worker.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1066</span>
-<span class="normal">1067</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1067</span>
 <span class="normal">1068</span>
 <span class="normal">1069</span>
 <span class="normal">1070</span>
@@ -2772,7 +2774,8 @@ nf#
 <span class="normal">1088</span>
 <span class="normal">1089</span>
 <span class="normal">1090</span>
-<span class="normal">1091</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">network</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fun</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="normal">1091</span>
+<span class="normal">1092</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">network</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fun</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Task to call various network related utility functions.</span>
 

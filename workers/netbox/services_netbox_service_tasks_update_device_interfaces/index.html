@@ -2581,6 +2581,9 @@
 
 
 <h1 id="netbox-update-device-interfaces-task">Netbox Update Device Interfaces Task<a class="headerlink" href="#netbox-update-device-interfaces-task" title="Permanent link">¤</a></h1>
+<blockquote>
+<p>task api name: <code>update_device_interfaces</code></p>
+</blockquote>
 <p>The Netbox Update Device Interfaces Task is a feature of the NorFab Netbox Service that allows you to synchronize and update the interface data of your network devices in Netbox. This task ensures that the interface configurations in Netbox are accurate and up-to-date, reflecting the current state of your network infrastructure.</p>
 <p>Keeping interface data accurate and up-to-date is crucial for effective network management. The Netbox Update Device Interfaces Task automates the process of updating interface information, such as interface names, statuses, mac addresses, and other relevant details.</p>
 <p><strong>How it works</strong> - Netbox worker on a call to update interfaces task fetches live data from network devices using nominated datasource, by default it is Nornir service <a href="../../nornir/services_nornir_service_tasks_parse/">parse</a> task using NAPALM <code>get_interfaces</code> getter. Once data retrieved from network, Netbox worker updates records in Netbox database for device interfaces.</p>
@@ -2799,8 +2802,7 @@ provided by NAPALM get_interfaces getter:</p>
 
             <details class="quote">
               <summary>Source code in <code>norfab\workers\netbox_worker.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1454</span>
-<span class="normal">1455</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1455</span>
 <span class="normal">1456</span>
 <span class="normal">1457</span>
 <span class="normal">1458</span>
@@ -2902,7 +2904,8 @@ provided by NAPALM get_interfaces getter:</p>
 <span class="normal">1554</span>
 <span class="normal">1555</span>
 <span class="normal">1556</span>
-<span class="normal">1557</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">update_device_interfaces</span><span class="p">(</span>
+<span class="normal">1557</span>
+<span class="normal">1558</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">update_device_interfaces</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">instance</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">dry_run</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>

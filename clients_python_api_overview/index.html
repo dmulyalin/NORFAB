@@ -2456,9 +2456,7 @@
 
 
 <h1 id="norfab-python-api">NORFAB Python API<a class="headerlink" href="#norfab-python-api" title="Permanent link">¤</a></h1>
-<p>NorFab python API exists to run the Automations fabric, components
-that need to be started defined in <code>inventory.yaml</code> file. To start
-working with NorFab need to import core object and instantiate it.</p>
+<p>NorFab Python API can be used to interact with automations fabric To start working with Python API need to import <code>NorFab</code> object and instantiate it.</p>
 <div class="highlight"><pre><span></span><code>from norfab.core.nfapi import NorFab
 
 nf = NorFab(inventory=&quot;./inventory.yaml&quot;)
@@ -2467,14 +2465,14 @@ nf.destroy()
 </code></pre></div>
 <p>Refer to <a href="../norfab_getting_started/">Getting Started</a> section on 
 how to construct  <code>inventory.yaml</code> file.</p>
-<p>All interaction with NorFab happens via client. On NorFab start an 
-instance of local client created automatically and can be used to 
-submit the jobs</p>
+<p>All interaction with NorFab happens via client, to create a client need to call <code>make_client</code> method:</p>
 <div class="highlight"><pre><span></span><code>import pprint
 from norfab.core.nfapi import NorFab
 
 nf = NorFab(inventory=&quot;./inventory.yaml&quot;)
 nf.start()
+
+client = nf.make_client()
 
 result = nf.client.run_job(
     service=&quot;nornir&quot;,
@@ -2486,6 +2484,7 @@ pprint.pprint(ret)
 
 nf.destroy()
 </code></pre></div>
+<p>Calling <code>destroy</code> method will kill all the clients as well.</p>
 
 
 

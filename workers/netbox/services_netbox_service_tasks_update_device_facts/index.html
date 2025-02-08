@@ -2581,6 +2581,9 @@
 
 
 <h1 id="netbox-update-device-facts-task">Netbox Update Device Facts Task<a class="headerlink" href="#netbox-update-device-facts-task" title="Permanent link">¤</a></h1>
+<blockquote>
+<p>task api name: <code>update_device_facts</code></p>
+</blockquote>
 <h2 id="limitations">Limitations<a class="headerlink" href="#limitations" title="Permanent link">¤</a></h2>
 <p>Datasource <code>nornir</code> uses NAPALM <code>get_facts</code> getter and as such only supports these device platforms:</p>
 <ul>
@@ -2728,8 +2731,7 @@ provided by NAPALM get_facts getter:</p>
 
             <details class="quote">
               <summary>Source code in <code>norfab\workers\netbox_worker.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1382</span>
-<span class="normal">1383</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1383</span>
 <span class="normal">1384</span>
 <span class="normal">1385</span>
 <span class="normal">1386</span>
@@ -2798,7 +2800,8 @@ provided by NAPALM get_facts getter:</p>
 <span class="normal">1449</span>
 <span class="normal">1450</span>
 <span class="normal">1451</span>
-<span class="normal">1452</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">update_device_facts</span><span class="p">(</span>
+<span class="normal">1452</span>
+<span class="normal">1453</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">update_device_facts</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">instance</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">dry_run</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>

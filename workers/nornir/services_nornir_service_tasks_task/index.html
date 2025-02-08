@@ -2581,6 +2581,9 @@
 
 
 <h1 id="nornir-service-task-task">Nornir Service "Task" Task<a class="headerlink" href="#nornir-service-task-task" title="Permanent link">¤</a></h1>
+<blockquote>
+<p>task api name: <code>task</code></p>
+</blockquote>
 <p>The Nornir Service "Task" Task is a versatile component of NorFab's Nornir service, designed to execute any arbitrary Nornir task plugin function. This task provides network automation and developer engineers with the flexibility to run custom Nornir tasks, enabling them to tailor their network automation workflows to meet specific requirements.</p>
 <p>Key features of the Nornir Service "Task" Task include:</p>
 <ul>
@@ -2892,8 +2895,7 @@ to all hosts initiated simultaneously up to the number of <code>num_workers</cod
 
             <details class="quote">
               <summary>Source code in <code>norfab\workers\nornir_worker.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">598</span>
-<span class="normal">599</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">599</span>
 <span class="normal">600</span>
 <span class="normal">601</span>
 <span class="normal">602</span>
@@ -2968,7 +2970,8 @@ to all hosts initiated simultaneously up to the number of <code>num_workers</cod
 <span class="normal">671</span>
 <span class="normal">672</span>
 <span class="normal">673</span>
-<span class="normal">674</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">task</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plugin</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Result</span><span class="p">:</span>
+<span class="normal">674</span>
+<span class="normal">675</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">task</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plugin</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Result</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Task to invoke any of supported Nornir task plugins. This function</span>
 <span class="sd">    performs dynamic import of requested plugin function and executes</span>

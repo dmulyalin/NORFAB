@@ -2563,6 +2563,9 @@
 
 
 <h1 id="nornir-service-file-copy-task">Nornir Service File Copy Task<a class="headerlink" href="#nornir-service-file-copy-task" title="Permanent link">¤</a></h1>
+<blockquote>
+<p>task api name: <code>file_copy</code></p>
+</blockquote>
 <p>The Nornir Service File Copy Task is a component of NorFab's Nornir service, designed to facilitate the transfer of files to and from network devices. This task provides network engineers with a reliable and efficient method for managing device configurations, firmware updates, and other critical files. By leveraging the capabilities of the Nornir service, users can automate file transfers.</p>
 <h2 id="nornir-file-copy-sample-usage">Nornir File Copy Sample Usage<a class="headerlink" href="#nornir-file-copy-sample-usage" title="Permanent link">¤</a></h2>
 <h2 id="norfab-nornir-file-copy-shell-reference">NORFAB Nornir File Copy Shell Reference<a class="headerlink" href="#norfab-nornir-file-copy-shell-reference" title="Permanent link">¤</a></h2>
@@ -2764,8 +2767,7 @@ nf#
 
             <details class="quote">
               <summary>Source code in <code>norfab\workers\nornir_worker.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1162</span>
-<span class="normal">1163</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1163</span>
 <span class="normal">1164</span>
 <span class="normal">1165</span>
 <span class="normal">1166</span>
@@ -2832,7 +2834,8 @@ nf#
 <span class="normal">1227</span>
 <span class="normal">1228</span>
 <span class="normal">1229</span>
-<span class="normal">1230</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">file_copy</span><span class="p">(</span>
+<span class="normal">1230</span>
+<span class="normal">1231</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">file_copy</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">source_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">plugin</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;netmiko&quot;</span><span class="p">,</span>

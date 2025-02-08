@@ -2815,6 +2815,9 @@
 
 
 <h1 id="nornir-service-cli-task">Nornir Service CLI Task<a class="headerlink" href="#nornir-service-cli-task" title="Permanent link">¤</a></h1>
+<blockquote>
+<p>task api name: <code>cli</code></p>
+</blockquote>
 <p>Nornir service <code>cli</code> task designed to retrieve show commands output 
 from devices using SSH and Telnet. Nornir <code>cli</code> uses Netmiko, Scrapli 
 and NAPALM libraries to communicate with devices.</p>
@@ -3344,8 +3347,7 @@ Command Line Interface (CLI)</p>
 
             <details class="quote">
               <summary>Source code in <code>norfab\workers\nornir_worker.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">676</span>
-<span class="normal">677</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">677</span>
 <span class="normal">678</span>
 <span class="normal">679</span>
 <span class="normal">680</span>
@@ -3454,7 +3456,8 @@ Command Line Interface (CLI)</p>
 <span class="normal">783</span>
 <span class="normal">784</span>
 <span class="normal">785</span>
-<span class="normal">786</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">cli</span><span class="p">(</span>
+<span class="normal">786</span>
+<span class="normal">787</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">cli</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">commands</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">plugin</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;netmiko&quot;</span><span class="p">,</span>

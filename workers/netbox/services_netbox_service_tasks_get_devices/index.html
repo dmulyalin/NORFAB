@@ -2563,6 +2563,9 @@
 
 
 <h1 id="netbox-get-devices-task">Netbox Get Devices Task<a class="headerlink" href="#netbox-get-devices-task" title="Permanent link">¤</a></h1>
+<blockquote>
+<p>task api name: <code>get_devices</code></p>
+</blockquote>
 <h2 id="get-devices-sample-usage">Get Devices Sample Usage<a class="headerlink" href="#get-devices-sample-usage" title="Permanent link">¤</a></h2>
 <h2 id="norfab-netbox-get-devices-command-shell-reference">NORFAB Netbox Get Devices Command Shell Reference<a class="headerlink" href="#norfab-netbox-get-devices-command-shell-reference" title="Permanent link">¤</a></h2>
 <p>NorFab shell supports these command options for Netbox <code>get_devices</code> task:</p>
@@ -2698,8 +2701,7 @@
 
             <details class="quote">
               <summary>Source code in <code>norfab\workers\netbox_worker.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">528</span>
-<span class="normal">529</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">529</span>
 <span class="normal">530</span>
 <span class="normal">531</span>
 <span class="normal">532</span>
@@ -2858,7 +2860,8 @@
 <span class="normal">685</span>
 <span class="normal">686</span>
 <span class="normal">687</span>
-<span class="normal">688</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_devices</span><span class="p">(</span>
+<span class="normal">688</span>
+<span class="normal">689</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_devices</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">filters</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">instance</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
