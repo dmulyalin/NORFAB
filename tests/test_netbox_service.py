@@ -27,7 +27,7 @@ class TestNetboxWorker:
         for worker, res in ret.items():
             assert not res["errors"], f"{worker} - received error"
             assert all(
-                k in res["result"] for k in ["broker_endpoint", "service", "instances"]
+                k in res["result"] for k in ["service", "instances"]
             ), f"{worker} - not all netbox inventory data returned"
             assert all(
                 k in res["result"]["instances"] for k in ["dev", "preprod", "prod"]

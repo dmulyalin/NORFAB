@@ -5,6 +5,7 @@ tags:
 
 # Netbox Get Nornir Inventory Task
 
+> task api name: `get_nornir_inventory`
 
 ## Get Nornir Inventory Sample Usage
 

@@ -5,6 +5,7 @@ tags:
 
 # Netbox Rest Inventory Task
 
+> task api name: `rest`
 
 ## Rest Task Sample Usage
 

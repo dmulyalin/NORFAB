@@ -543,6 +543,7 @@ class NornirWorker(NFPWorker):
         Produce Python packages version report
         """
         libs = {
+            "norfab": "",
             "scrapli": "",
             "scrapli-netconf": "",
             "scrapli-community": "",

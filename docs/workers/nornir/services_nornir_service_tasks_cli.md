@@ -5,6 +5,8 @@ tags:
 
 # Nornir Service CLI Task
 
+> task api name: `cli`
+
 Nornir service `cli` task designed to retrieve show commands output 
 from devices using SSH and Telnet. Nornir `cli` uses Netmiko, Scrapli 
 and NAPALM libraries to communicate with devices.

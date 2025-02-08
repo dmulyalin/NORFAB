@@ -5,6 +5,8 @@ tags:
 
 # Netbox Get Interfaces Task
 
+> task api name: `get_interfaces`
+
 ## Get Interfaces Sample Usage
 
 ## NORFAB Netbox Get Interfaces Command Shell Reference

@@ -179,6 +179,7 @@ class NetboxWorker(NFPWorker):
 
     def get_netbox_version(self, **kwargs) -> dict:
         libs = {
+            "norfab": "",
             "pynetbox": "",
             "requests": "",
             "python": sys.version.split(" ")[0],

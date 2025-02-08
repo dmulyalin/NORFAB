@@ -5,6 +5,8 @@ tags:
 
 # Nornir Service Parse Task
 
+> task api name: `parse`
+
 The Nornir Service Parse Task is an integral part of NorFab's Nornir service, designed to facilitate the parsing and extraction of valuable information from network device outputs. This task provides network automation and developer engineers with powerful tools to transform raw command outputs into structured data, enabling more efficient network management and automation workflows.
 
 Key features of the Nornir Service Parse Task include:

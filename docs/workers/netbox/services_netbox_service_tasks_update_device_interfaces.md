@@ -5,6 +5,8 @@ tags:
 
 # Netbox Update Device Interfaces Task
 
+> task api name: `update_device_interfaces`
+
 The Netbox Update Device Interfaces Task is a feature of the NorFab Netbox Service that allows you to synchronize and update the interface data of your network devices in Netbox. This task ensures that the interface configurations in Netbox are accurate and up-to-date, reflecting the current state of your network infrastructure.
 
 Keeping interface data accurate and up-to-date is crucial for effective network management. The Netbox Update Device Interfaces Task automates the process of updating interface information, such as interface names, statuses, mac addresses, and other relevant details.

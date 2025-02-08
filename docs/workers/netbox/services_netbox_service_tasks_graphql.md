@@ -5,6 +5,7 @@ tags:
 
 # Netbox GrapQL Inventory Task
 
+> task api name: `graphql`
 
 ## GrapQL Sample Usage
 

@@ -5,6 +5,7 @@ tags:
 
 # Netbox Get Circuits Task
 
+> task api name: `get_circuits`
 
 ## Get Circuits Sample Usage
 

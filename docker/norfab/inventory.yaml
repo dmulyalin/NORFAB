@@ -12,6 +12,14 @@ workers:
   netbox-*:
     - netbox/common.yaml
     
+# you can also source variables from the environment using Jinja2 syntax
+# logging:
+#   handlers:
+#     terminal:
+#       level: {{ env.get("TERMINAL_LOGGING_LEVEL", "WARNING") }}
+#     file: 
+#       level: {{ env.get("FILE_LOGGING_LEVEL", "INFO") }}
+
 # list what entities we want to start on this node
 topology:
   broker: True

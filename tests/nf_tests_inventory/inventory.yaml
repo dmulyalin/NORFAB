@@ -7,9 +7,9 @@ broker:
 logging:
   handlers:
     terminal:
-      level: WARNING
+      level: {{ env.get("TERMINAL_LOGGING_LEVEL", "WARNING") }}
     file: 
-      level: INFO
+      level: {{ env.get("FILE_LOGGING_LEVEL", "INFO") }}
       
 # workers inventory section
 workers:

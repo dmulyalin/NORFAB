@@ -5,6 +5,8 @@ tags:
 
 # Nornir Service "Task" Task
 
+> task api name: `task`
+
 The Nornir Service "Task" Task is a versatile component of NorFab's Nornir service, designed to execute any arbitrary Nornir task plugin function. This task provides network automation and developer engineers with the flexibility to run custom Nornir tasks, enabling them to tailor their network automation workflows to meet specific requirements.
 
 Key features of the Nornir Service "Task" Task include:

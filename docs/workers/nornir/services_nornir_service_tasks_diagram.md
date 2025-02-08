@@ -5,6 +5,8 @@ tags:
 
 # Nornir Service Diagram Task
 
+> task api name: `diagram`
+
 The Nornir Service Diagram Task is a powerful component of NorFab's Nornir service, designed to create detailed network diagrams. By leveraging the [N2G (Need to Graph)](https://github.com/dmulyalin/N2G/) module, this task enables network engineers and architects to visualize network topologies and configurations, facilitating better network management and planning.
 
 ## Creating Layer-2 Network Diagram

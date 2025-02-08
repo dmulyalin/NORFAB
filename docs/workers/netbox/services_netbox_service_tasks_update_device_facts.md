@@ -5,6 +5,8 @@ tags:
 
 # Netbox Update Device Facts Task
 
+> task api name: `update_device_facts`
+
 ## Limitations
 
 Datasource `nornir` uses NAPALM `get_facts` getter and as such only supports these device platforms:

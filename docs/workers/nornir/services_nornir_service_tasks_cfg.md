@@ -5,6 +5,8 @@ tags:
 
 # Nornir Service CFG Task
 
+> task api name: `cfg`
+
 Nornir service `cfg` task designed to send configuration to devices using SSH and Telnet. Nornir `cfg` can use Netmiko, Scrapli and NAPALM libraries to configure devices.
 
 ## Nornir CFG Sample Usage

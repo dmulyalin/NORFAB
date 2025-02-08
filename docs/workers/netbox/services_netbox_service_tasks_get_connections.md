@@ -5,6 +5,7 @@ tags:
 
 # Netbox Get Connections Task
 
+> task api name: `get_connections`
 
 ## Get Connections Sample Usage
 

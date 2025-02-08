@@ -5,6 +5,8 @@ tags:
 
 # Nornir Service File Copy Task
 
+> task api name: `file_copy`
+
 The Nornir Service File Copy Task is a component of NorFab's Nornir service, designed to facilitate the transfer of files to and from network devices. This task provides network engineers with a reliable and efficient method for managing device configurations, firmware updates, and other critical files. By leveraging the capabilities of the Nornir service, users can automate file transfers.
 
 ## Nornir File Copy Sample Usage

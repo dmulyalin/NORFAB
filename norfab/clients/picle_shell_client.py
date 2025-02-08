@@ -8,6 +8,8 @@ import logging
 import json
 import yaml
 import builtins
+import importlib.metadata
+import sys
 
 from rich.console import Console
 from rich.table import Table
@@ -53,6 +55,30 @@ def print_stats(data: dict):
 # ---------------------------------------------------------------------------------------------
 
 
+class ShowBrokerModel(BaseModel):
+    version: StrictBool = Field(
+        False,
+        description="Show broker version report",
+        json_schema_extra={"presence": True},
+    )
+    inventory: StrictBool = Field(
+        False, description="Show broker inventory", json_schema_extra={"presence": True}
+    )
+
+    class PicleConfig:
+        outputter = print_stats
+
+    @staticmethod
+    def run(*args, **kwargs):
+        if kwargs.get("version"):
+            reply = NFCLIENT.get("mmi.service.broker", "show_broker_version")
+        elif kwargs.get("inventory"):
+            reply = NFCLIENT.get("mmi.service.broker", "show_broker_inventory")
+        else:
+            reply = NFCLIENT.get("mmi.service.broker", "show_broker")
+        return json.loads(reply["results"])
+
+
 class WorkerStatus(str, Enum):
     dead = "dead"
     alive = "alive"
@@ -77,13 +103,15 @@ class ShowWorkersModel(BaseModel):
 
 
 class ShowCommandsModel(BaseModel):
-    version: Callable = Field("show_version", description="show current version")
+    version: Callable = Field(
+        "show_version",
+        description="show nfcli client version report",
+        json_schema_extra={"outputter": print_stats},
+    )
     jobs: NorFabJobsShellCommands = Field(
         None, description="Show NorFab Jobs for all services"
     )
-    broker: Callable = Field(
-        "show_broker", description="show broker details", outputter=print_stats
-    )
+    broker: ShowBrokerModel = Field(None, description="show broker details")
     workers: ShowWorkersModel = Field(None, description="show workers information")
     client: Callable = Field(
         "show_client", description="show client details", outputter=print_stats
@@ -94,12 +122,29 @@ class ShowCommandsModel(BaseModel):
 
     @staticmethod
     def show_version():
-        return "NorFab Version 0.1.0"
+        libs = {
+            "norfab": "",
+            "pyyaml": "",
+            "pyzmq": "",
+            "psutil": "",
+            "tornado": "",
+            "jinja2": "",
+            "picle": "",
+            "rich": "",
+            "tabulate": "",
+            "pydantic": "",
+            "pyreadline3": "",
+            "python": sys.version.split(" ")[0],
+            "platform": sys.platform,
+        }
+        # get version of packages installed
+        for pkg in libs.keys():
+            try:
+                libs[pkg] = importlib.metadata.version(pkg)
+            except importlib.metadata.PackageNotFoundError:
+                pass
 
-    @staticmethod
-    def show_broker():
-        reply = NFCLIENT.get("mmi.service.broker", "show_broker")
-        return json.loads(reply["results"])
+        return libs
 
     @staticmethod
     def show_client():

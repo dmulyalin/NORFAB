@@ -1,3 +1,14 @@
+## 0.3.0
+
+### FEATURES
+
+1. Added "show version" support for nfcli client to display versions of locally installed libraries, fixes. #4
+2. Added "show broker version" support for nfcli client to  retrieve broker report of the version of libraries broker is running on, fixes. #4
+3. Added support "show broker inventory" command to display broker inventory
+4. Simple inventory added support to produce a serialized dictionary output
+5. Broker added "show_broker_inventory" and "show_broker_version" MMI endpoints
+6. Added support for simple inventory service to render inventory using Jinja2, renderer passed on `env` variable that contains operating system environment variables, allowing to source any env data into NorFab inventory for both broker and workers. #5
+
 ## 0.2.4
 
 ### BUGS

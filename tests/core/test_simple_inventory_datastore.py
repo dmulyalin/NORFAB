@@ -1,8 +1,12 @@
 import pytest
 import pprint
 import json
+import os
 
 from norfab.core.inventory import NorFabInventory
+
+os.environ["TERMINAL_LOGGING_LEVEL"] = "INFO"
+os.environ["NORNIR_USERNAME"] = "foo"
 
 
 class TestInventoryLoad:
@@ -23,6 +27,19 @@ class TestInventoryLoad:
         assert isinstance(
             self.inventory.workers.path, str
         ), "Workers inventory path not a string"
+
+    def test_jinja2_rendering(self):
+        # inventory.yaml has logging section populated with logging levels for file and terminal
+        # using jinja2 env context variables, this test verifies that terminal logging variable properly source from
+        # TERMINAL_LOGGING_LEVEL variable set above, while file logging level stays intact since FILE_LOGGING_LEVEL
+        # environment variable not set
+        assert (
+            self.inventory.logging["handlers"]["terminal"]["level"] == "INFO"
+        ), "It seem env variable not sourced"
+        assert (
+            self.inventory.logging["handlers"]["file"]["level"] == "INFO"
+        ), "It seem env variable not sourced"
+        os.environ.pop("TERMINAL_LOGGING_LEVEL", None)  # clean up env variable
 
 
 class TestWorkersInventory:
@@ -76,3 +93,12 @@ class TestWorkersInventory:
         assert (
             nornir_worker_2["groups"]["valueoverwrite"]["port"] == 777
         ), "'valueoverwrite.port' not overriden by nested group"
+
+    def test_jinja2_rendering(self):
+        # nornir/common.yaml has default section populated with username and password sourced
+        # using jinja2 env context variable, this test verifies that username properly source from
+        # NORNIR_USERNAME variable set above, while password stays intact since NORNIR_PASSWORD
+        # environment variable not set
+        nornir_worker_1 = self.inventory.workers["nornir-worker-1"]
+        assert nornir_worker_1["defaults"]["username"] == "foo"
+        assert nornir_worker_1["defaults"]["password"] == "password"

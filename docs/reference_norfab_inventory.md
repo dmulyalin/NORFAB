@@ -1,27 +1,68 @@
 # NorFab Inventory
 
-NorFab comes with Simple Inventory Datastore (SID) hosted by broker.
+NorFab comes with Simple Inventory Datastore (SID) hosted by broker, allowing workers to source inventory data from broker.
 
-## Broker Inventory
+NorFab inventory separated in sections, each responsible for configuring different aspects of the system.
 
-TBD
+``` yaml title="inventory.yaml"
+broker: # (1)!
+  endpoint: "tcp://127.0.0.1:5555" # (2)!
 
-## Workers Inventory
+workers: # (3)!
+  nornir-*: # (4)!
+    - nornir/common.yaml   
+  nornir-worker-1: # (5)!
+    - nornir/nornir-worker-1.yaml
 
-To understand how Simple Inventory Datastore serves workers inventory 
-it is good to know that each worker has a unique name to identify it.
+topology: # (6)!
+  broker: True # (7)!
+  workers: # (8)!
+    - nornir-worker-1
 
-With that in mind, the goal is to map inventory data to individual worker
-by its name.
+logging: # (9)!
+  handlers:
+    terminal:
+      level: WARNING
+    file: 
+      level: INFO
+```
 
-For example, let's pretend that worker name is `nornir-worker-1` and we have
-`common.yaml` and `nornir-worker-1.yaml` files with inventory data  that
-we need to provide worker with.
+1.  Broker configuration inventory section
+2.  URL to listen for connections on - ``localhost`` port ``5555`` in this case
+3.  Workers configuration inventory section
+4.  [glob pattern](https://docs.python.org/3/library/fnmatch.html) that will match all workers with ``nornir-`` in the name and map ``common.yaml`` file content for each of them
+5.  Worker definition to map inventory file to a specific worker that has name ``nornir-worker-1``
+6.  Topology section to define what components to run
+7.  Start broker process
+8.  List of workers names to start processes for
+9.  Logging configuration section
 
-To do the mapping between worker name and inventory files we can put this
-in NorFab inventory (`inventory.yaml`) file:
+## Broker Inventory Section
 
-``` 
+Broker inventory **must** have ``broker_endpoint`` parameter defined for workers and clients to identify how connect with broker, and for broker itself to identify where to listen for connections.
+
+``` yaml title="inventory.yaml"
+# broker settings
+broker:
+  endpoint: "tcp://127.0.0.1:5555"
+  shared_key: "5z1:yW}]n?UXhGmz+5CeHN1>:S9k!eCh6JyIhJqO"
+```
+
+In addition these parameters are supported
+
+1. `shared_key` - broker encryption shared key may or may not be needed depending of type of the setup you are running, in case if all components - broker, client and workers run on same machine, configuring `shared_key` parameter is options, as `nfapi` is smart enough to auto-configure all workers and client with correct broker shared key. In case if broker and workers with clients are distributed i.e. running in separate containers or on separate machines, `share_key` parameter **must** be configured on all workers and clients to match shared key used by broker.
+
+## Workers Inventory Section
+
+To understand how Simple Inventory Datastore serves workers inventory it is good to know that each worker has a unique name to identify it.
+
+With that in mind, the goal is to map inventory data to individual worker by its name.
+
+For example, let's pretend that worker name is `nornir-worker-1` and we have `common.yaml` and `nornir-worker-1.yaml` files with inventory data  that we need to provide worker with.
+
+To do the mapping between worker name and inventory files we can put this in NorFab inventory (`inventory.yaml`) file:
+
+``` yaml title="inventory.yaml"
 workers:
   nornir-*:
     - nornir/common.yaml  
@@ -40,12 +81,7 @@ Where files structure would look like this:
             nornir-worker-1.yaml
 ```
 
-As you can see, `inventory.yaml` file contains `workers` section with a
-dictionary keyed by glob patterns to match against workers' names, once
-worker name matched by the pattern, all items in the list underneaths that
-pattern being loaded and recursively merged. As such, process continues 
-until all patterns evaluated. Final output of the process is a combined
-inventory data of all the matched files.
+As you can see, `inventory.yaml` file contains `workers` section with a dictionary keyed by [glob patterns](https://docs.python.org/3/library/fnmatch.html)  to match against workers' names, once worker name matched by the pattern, all items in the list underneaths that pattern being loaded and recursively merged. As such, process continues until all patterns evaluated. Final output of the process is a combined inventory data of all the matched files.
 
 The recursive logic of combining inventory data files is pretty 
 straightforward - each next data file merged into the previous data file 
@@ -60,7 +96,7 @@ For example, we have a group of two workers with names `netbox-wroker-1.1` and
 `netbox-worker-1.2` and we want to map `netbox_common.yaml` to both of the workers,
 in that case NorFab inventory (`inventory.yaml`) file could have this content:
 
-```
+``` yaml title="inventory.yaml"
 workers:
   netbox-worker-1.*:
     - nornir/netbox_common.yaml  
@@ -76,27 +112,51 @@ Where files structure would look like this:
             netbox_common.yaml
 ```
 
-Both workers will be served with  `netbox_common.yaml` file content as an
-inventory data.
+Both workers will be served with  `netbox_common.yaml` file content as an inventory data.
 
 ### Workers Inventory Parameters
 
 Workers inventory can contain these common parameters:
 
 1. `service` - name of the service this worker belongs to
-2. `broker_endpoint` - Broker URL to connect to
 
 Sample worker base inventory:
 
-``` yaml
+``` yaml title=""
 service: nornir
-broker_endpoint: "tcp://127.0.0.1:5555"
 ```
 
 The rest of the inventory data is worker specific.
 
-## Topology Inventory
+## Topology Inventory Section
 
-Topology section of NorFab inventory identifies the components
-that need to be started on the given node.
+Topology section of NorFab inventory identifies the components that need to be started on the given node.
 
+## Logging Inventory Section
+
+Logging inventory section allows to configure logging parameters such file retention option, logging to remote hosts, logging levels etc.
+
+## Jinja2 Support
+
+Starting with version 0.3.0 NorFab support Jinja2 syntax rendering of inventory files content, in addition, `env` variable available to source content of environment variables:
+
+``` yaml title="inventory.yaml"
+logging:
+  handlers:
+    terminal:
+      level: {{ env.get("TERMINAL_LOGGING_LEVEL", "WARNING") }}
+    file: 
+      level: {{ env.get("FILE_LOGGING_LEVEL", "INFO") }}
+```
+
+Above example demonstrates how terminal and file logging level can be sourced from environment using Jinja2 syntax. 
+
+In addition, all workers inventory files also passed through Jinja2 renderer with access to `env` variable:
+
+``` yaml title="nornir/common.yaml"
+defaults:
+  username: {{ env.get("NORNIR_USERNAME", "nornir") }}
+  password: {{ env.get("NORNIR_PASSWORD", "password" ) }}
+```
+
+In above example default nornir username and password sourced from environment variables.

@@ -8,7 +8,6 @@ Based on Java example by Arkadiusz Orzechowski
 
 import logging
 import sys
-import time
 import json
 import threading
 import random
@@ -17,6 +16,7 @@ import hashlib
 import zmq
 import zmq.auth
 import signal
+import importlib.metadata
 
 from zmq.auth.thread import ThreadAuthenticator
 from binascii import hexlify
@@ -499,6 +499,25 @@ class NFPBroker:
                     "broker-public-key-file": self.broker_public_key_file,
                 },
             }
+        elif task == "show_broker_version":
+            ret = {
+                "norfab": "",
+                "pyyaml": "",
+                "pyzmq": "",
+                "psutil": "",
+                "tornado": "",
+                "jinja2": "",
+                "python": sys.version.split(" ")[0],
+                "platform": sys.platform,
+            }
+            # get version of packages installed
+            for pkg in ret.keys():
+                try:
+                    ret[pkg] = importlib.metadata.version(pkg)
+                except importlib.metadata.PackageNotFoundError:
+                    pass
+        elif task == "show_broker_inventory":
+            ret = self.inventory.dict()
         reply = json.dumps(ret).encode("utf-8")
         self.send_to_client(
             sender, NFP.RESPONSE, b"mmi.service.broker", [uuid, b"200", reply]

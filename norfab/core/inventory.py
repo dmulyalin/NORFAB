@@ -75,7 +75,8 @@ import yaml
 import logging
 import copy
 
-from typing import Any, Union
+from jinja2 import Environment
+from typing import Any, Union, Dict, List
 
 log = logging.getLogger(__name__)
 
@@ -186,6 +187,33 @@ def merge_recursively(data: dict, merge: dict) -> None:
             data[k] = v
 
 
+def render_jinja2_template(
+    template: str, context: dict = None, filters: dict = None
+) -> str:
+    """
+    Helper function to render a list of Jinja2 template.
+
+    :param templates: list of template strings to render
+    :param context: Jinja2 context dictionary
+    :param filter: custom Jinja2 filters
+    :returns: list of rendered strings
+    """
+    rendered = ""
+    filters = filters or {}
+    context = context or {}
+
+    # get OS environment variables
+    context["env"] = {k: v for k, v in os.environ.items()}
+
+    # render template
+    j2env = Environment(loader="BaseLoader")
+    j2env.filters.update(filters)  # add custom filters
+    renderer = j2env.from_string(template)
+    rendered = renderer.render(**context)
+
+    return rendered
+
+
 class WorkersInventory:
     __slots__ = (
         "path",
@@ -221,7 +249,8 @@ class WorkersInventory:
         for item in paths:
             if os.path.isfile(os.path.join(self.path, item)):
                 with open(os.path.join(self.path, item), "r", encoding="utf-8") as f:
-                    merge_recursively(ret, yaml.safe_load(f.read()))
+                    rendered = render_jinja2_template(f.read())
+                    merge_recursively(ret, yaml.safe_load(rendered))
             else:
                 log.error(f"{os.path.join(self.path, item)} - file not found")
                 raise FileNotFoundError(os.path.join(self.path, item))
@@ -251,13 +280,15 @@ class NorFabInventory:
 
     def load(self, path: str) -> None:
         if not os.path.exists(path):
-            log.error(f"{path} - inventory data not found")
-            return
+            msg = f"inventory.yaml file not found under provided path `{path}`"
+            log.critical(msg)
+            raise FileNotFoundError(msg)
 
         assert os.path.isfile(path), "Path not pointing to a file"
 
         with open(path, "r", encoding="utf-8") as f:
-            data = yaml.safe_load(f.read())
+            rendered = render_jinja2_template(f.read())
+            data = yaml.safe_load(rendered)
 
         self.broker = data.pop("broker", {})
         self.workers = WorkersInventory(path, data.pop("workers", {}))
@@ -275,3 +306,14 @@ class NorFabInventory:
             return getattr(self, item)
         else:
             return default
+
+    def dict(self) -> Dict[str, Any]:
+        """
+        Return serialized dictionary of inventory
+        """
+        return {
+            "broker": self.broker,
+            "workers": self.workers.data,
+            "topology": self.topology,
+            "logging": self.logging,
+        }

@@ -71,6 +71,7 @@ class AgentWorker(NFPWorker):
         Produce Python packages version report
         """
         libs = {
+            "norfab": "",
             "langchain": "",
             "langchain-community": "",
             "langchain-core": "",

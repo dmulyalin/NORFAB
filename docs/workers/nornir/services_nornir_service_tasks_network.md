@@ -5,6 +5,8 @@ tags:
 
 # Nornir Service Network Task
 
+> task api name: `network`
+
 The Nornir Service Network Task is a component of NorFab's Nornir service designed to facilitate various network-related operations. This task suite provides network professionals with essential tools for managing, troubleshooting, and monitoring network infrastructure. By leveraging the capabilities of the Nornir service, users can perform critical network functions such as ICMP echo requests (ping) and DNS resolution checks, ensuring the reliability and performance of their network devices and services.
 
 Key features of the Nornir Service Network Task include:

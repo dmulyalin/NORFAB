@@ -23,10 +23,33 @@ class TestClientApi:
         for k in [
             "endpoint",
             "keepalives",
-            "multiplier",
             "services count",
             "status",
             "workers count",
         ]:
+            assert k in ret, "Not all broker params returned"
+            assert ret[k], "Some broker params seems wrong"
+
+    def test_show_broker_version(self, nfclient):
+        reply = nfclient.get(b"mmi.service.broker", "show_broker_version")
+
+        ret = json.loads(reply["results"])
+        pprint.pprint(ret)
+
+        for k in [
+            "norfab",
+            "python",
+            "platform",
+        ]:
+            assert k in ret, "Not all broker params returned"
+            assert ret[k], "Some broker params seems wrong"
+
+    def test_show_broker_inventory(self, nfclient):
+        reply = nfclient.get(b"mmi.service.broker", "show_broker_inventory")
+
+        ret = json.loads(reply["results"])
+        pprint.pprint(ret)
+
+        for k in ["broker", "logging", "workers", "topology"]:
             assert k in ret, "Not all broker params returned"
             assert ret[k], "Some broker params seems wrong"

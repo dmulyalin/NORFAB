@@ -5,6 +5,7 @@ tags:
 
 # Netbox Get Devices Task
 
+> task api name: `get_devices`
 
 ## Get Devices Sample Usage
 
