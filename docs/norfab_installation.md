@@ -60,3 +60,7 @@ pip install norfab[netboxservice]
 | NorFab Core    | :check_mark: | :check_mark: | :check_mark: |
 | Nornir Service | :check_mark: | :check_mark: | :check_mark: |
 | Netbox Service | :check_mark: | :check_mark: | :check_mark: |
+
+## Dependencies Matrix
+
+TBD

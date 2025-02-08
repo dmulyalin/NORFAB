@@ -15,7 +15,7 @@ class KeepAliver:
     :param socket: ZeroMQ socket to use to send keepalives to
     :param multiplier: int, number of keepalives before dead
     :param keepalive: int, interval between keepalives in milliseconds
-    :param exit_event: threading Event, if set, stop sending keepalives
+    :param exit_event: threading Event, global exit event signalled by NFAPI if set, stop sending keepalives
     :param service: string, name of the service to include in keepalives
     :param whoami: string, who am I e.g. NFP.WORKER or NFP.BROKER to use as keepalives header
     :param name: descriptive name to include in logs
@@ -36,6 +36,9 @@ class KeepAliver:
         self.address = address
         self.socket = socket
         self.exit_event = exit_event or threading.Event()
+        self.destroy_event = (
+            threading.Event()
+        )  # destroy event, used by worker to stop keepalives
         self.keepalive = keepalive
         self.multiplier = multiplier
         self.service = service
@@ -64,14 +67,14 @@ class KeepAliver:
         return True
 
     def stop(self):
-        if not self.exit_event.is_set():
-            self.exit_event.set()
+        if not self.destroy_event.is_set():
+            self.destroy_event.set()
         self.keepalive_thread.join()
         return True
 
     def run(self):
         """Send heartbeats at keepalive interval."""
-        while not self.exit_event.is_set():
+        while not self.exit_event.is_set() and not self.destroy_event.is_set():
             if time.time() > self.keepalive_at:  # time to send heartbeat
                 if self.address:
                     msg = [self.address, b"", self.whoami, NFP.KEEPALIVE, self.service]

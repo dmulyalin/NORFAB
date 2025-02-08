@@ -68,6 +68,7 @@ class NFPClient(object):
 
     :param broker: str, broker endpoint e.g. tcp://127.0.0.1:5555
     :param name: str, client name, default is ``NFPClient``
+    :param exit_event: global exit event signalled by NFAPI
     """
 
     broker = None
@@ -129,6 +130,9 @@ class NFPClient(object):
                 pass
 
         self.exit_event = threading.Event() if exit_event is None else exit_event
+        self.destroy_event = (
+            threading.Event()
+        )  # destroy event, used by worker to stop its client
         self.recv_queue = queue.Queue(maxsize=0)
         self.event_queue = event_queue or queue.Queue(maxsize=1000)
 
@@ -203,7 +207,7 @@ class NFPClient(object):
         retries = 3
         while retries > 0:
             # check if need to stop
-            if self.exit_event.is_set():
+            if self.exit_event.is_set() or self.destroy_event.is_set():
                 break
             try:
                 msg = self.recv_queue.get(block=True, timeout=3)
@@ -269,7 +273,7 @@ class NFPClient(object):
         uuid = uuid or uuid4().hex
         args = args or []
         kwargs = kwargs or {}
-        ret = {"status": b"200", "workers": [], "errors": []}
+        ret = {"status": b"200", "workers": [], "errors": [], "uuid": uuid}
 
         if not isinstance(service, bytes):
             service = service.encode("utf-8")
@@ -287,7 +291,7 @@ class NFPClient(object):
         start_time = time.time()
         while timeout > time.time() - start_time:
             # check if need to stop
-            if self.exit_event.is_set():
+            if self.exit_event.is_set() or self.destroy_event.is_set():
                 return ret
             self.send_to_broker(
                 NFP.POST, service, workers, uuid, request
@@ -322,7 +326,7 @@ class NFPClient(object):
         workers_acked = set()
         while timeout > time.time() - start_time:
             # check if need to stop
-            if self.exit_event.is_set():
+            if self.exit_event.is_set() or self.destroy_event.is_set():
                 return ret
             status, response = self.rcv_from_broker(NFP.RESPONSE, service, uuid)
             response = json.loads(response)
@@ -359,7 +363,7 @@ class NFPClient(object):
     def get(
         self,
         service: str,
-        task: str,
+        task: str = None,
         args: list = None,
         kwargs: dict = None,
         workers: str = "all",
@@ -410,7 +414,7 @@ class NFPClient(object):
         start_time = time.time()
         while timeout > time.time() - start_time:
             # check if need to stop
-            if self.exit_event.is_set():
+            if self.exit_event.is_set() or self.destroy_event.is_set():
                 return None
             # dispatch GET request to workers
             self.send_to_broker(NFP.GET, service, workers, uuid, request)
@@ -432,7 +436,7 @@ class NFPClient(object):
             workers_responded = set()
             while timeout > time.time() - start_time:
                 # check if need to stop
-                if self.exit_event.is_set():
+                if self.exit_event.is_set() or self.destroy_event.is_set():
                     return None
                 status, response = self.rcv_from_broker(NFP.RESPONSE, service, uuid)
                 log.debug(
@@ -512,7 +516,7 @@ class NFPClient(object):
         workers_done = set()
         while timeout > time.time() - start_time:
             # check if need to stop
-            if self.exit_event.is_set():
+            if self.exit_event.is_set() or self.destroy_event.is_set():
                 break
             # dispatch GET request to workers
             self.send_to_broker(NFP.GET, service, workers, uuid, request)
@@ -528,7 +532,7 @@ class NFPClient(object):
             workers_responded = set()
             while timeout > time.time() - start_time:
                 # check if need to stop
-                if self.exit_event.is_set():
+                if self.exit_event.is_set() or self.destroy_event.is_set():
                     break
                 status, response = self.rcv_from_broker(NFP.RESPONSE, service, uuid)
                 log.debug(
@@ -624,7 +628,7 @@ class NFPClient(object):
                 start_time = time.time()
                 while timeout > time.time() - start_time:
                     # check if need to stop
-                    if self.exit_event.is_set():
+                    if self.exit_event.is_set() or self.destroy_event.is_set():
                         return "400", ""
                     # ask for chunks
                     while credit:
@@ -726,7 +730,7 @@ class NFPClient(object):
             get = self.get(
                 service, task, [], {}, post_result["workers"], uuid, get_timeout
             )
-            if self.exit_event.is_set():
+            if self.exit_event.is_set() or self.destroy_event.is_set():
                 break
             elif get["status"] == "300":  # PENDING
                 retry -= 1
@@ -798,5 +802,5 @@ class NFPClient(object):
 
     def destroy(self):
         log.info(f"{self.name} - client interrupt received, killing client")
-        self.exit_event.set()
+        self.destroy_event.set()
         self.ctx.destroy()

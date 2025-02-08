@@ -13,27 +13,35 @@ from norfab.core.inventory import NorFabInventory
 log = logging.getLogger(__name__)
 
 try:
-    from norfab.workers import NornirWorker
-except ImportError as e:
+    from norfab.workers.nornir_worker import NornirWorker
+except Exception as e:
     log.warning(
-        f"Failed to import NornirWorker, needed libs not found - {e}, "
+        f"Failed to import NornirWorker, error - {e}, "
         f"this can be ignored if not planning to run Nornir worker."
     )
 
 try:
-    from norfab.workers import NetboxWorker
-except ImportError as e:
+    from norfab.workers.netbox_worker import NetboxWorker
+except Exception as e:
     log.warning(
-        f"Failed to import NetboxWorker, needed libs not found - {e}, "
+        f"Failed to import NetboxWorker, error - {e}, "
         f"this can be ignored if not planning to run Netbox worker."
     )
 
 try:
-    from norfab.workers import AgentWorker
-except ImportError as e:
+    from norfab.workers.agent_worker import AgentWorker
+except Exception as e:
     log.warning(
-        f"Failed to import AgentWorker, needed libs not found - {e}, "
+        f"Failed to import AgentWorker, error - {e}, "
         f"this can be ignored if not planning to run Agent worker."
+    )
+
+try:
+    from norfab.workers.fastapi_worker import FastAPIWorker
+except Exception as e:
+    log.warning(
+        f"Failed to import FastAPIWorker, error - {e}, "
+        f"this can be ignored if not planning to run FastAPI worker."
     )
 
 
@@ -93,6 +101,18 @@ def start_worker_process(
             worker.work()
         elif service == "agent":
             worker = AgentWorker(
+                inventory=inventory,
+                broker=broker_endpoint,
+                service=b"agent",
+                worker_name=worker_name,
+                exit_event=exit_event,
+                init_done_event=init_done_event,
+                log_level=log_level,
+                log_queue=log_queue,
+            )
+            worker.work()
+        elif service == "fastapi":
+            worker = FastAPIWorker(
                 inventory=inventory,
                 broker=broker_endpoint,
                 service=b"agent",

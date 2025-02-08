@@ -1,0 +1,4 @@
+service: fastapi
+
+fastapi: {}
+uvicorn: {}

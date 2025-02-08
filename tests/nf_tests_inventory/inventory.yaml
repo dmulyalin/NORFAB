@@ -36,6 +36,8 @@ workers:
     - pyats/pyats-worker-1.yaml
   agent-1:
     - agents/common.yaml
+  fastapi-worker-*:
+    - fastapi/common.yaml
     
 # list what entities we want to start on this node
 topology:
@@ -54,3 +56,4 @@ topology:
     # - pyats-worker-1
     - nornir-worker-6 # Hosts Juniper vMX
     - agent-1
+    - fastapi-worker-1

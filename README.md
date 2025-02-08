@@ -5,7 +5,12 @@
 [![Code style: black][black-badge]][black-link]
 
 
-# ![logo](docs/images/logo_small.jpg) Network Automations Fabric - NORFAB 
+# ![logo](docs/images/logo_small.jpg) Network Automations Fabric - NORFAB
+
+---
+**Documentation**: [NorFab Docs](https://dmulyalin.github.io/NORFAB/)
+
+---
 
 NORFAB is a tool for extreme network automations.
 
