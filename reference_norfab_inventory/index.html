@@ -1488,7 +1488,7 @@
             
   
   <span class="md-ellipsis">
-    NORFAB Services
+    FastAPI Service
     
   </span>
   
@@ -1498,6 +1498,99 @@
         
         <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_9_5_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_1_9_5">
+            <span class="md-nav__icon md-icon"></span>
+            FastAPI Service
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../workers/fastapi/services_fastapi_service/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Overview
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../workers/fastapi/services_fastapi_service_inventory/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Inventory
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_9_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_1_9_6" id="__nav_1_9_6_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    NORFAB Services
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_9_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_9_6">
             <span class="md-nav__icon md-icon"></span>
             NORFAB Services
           </label>
@@ -2723,12 +2816,18 @@ in that case NorFab inventory (<code>inventory.yaml</code>) file could have this
 <span class="w">      </span><span class="nt">level</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{{</span><span class="w"> </span><span class="nv">env.get(&quot;FILE_LOGGING_LEVEL&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;INFO&quot;</span><span class="nv">)</span><span class="w"> </span><span class="p p-Indicator">}}</span>
 </code></pre></div>
 <p>Above example demonstrates how terminal and file logging level can be sourced from environment using Jinja2 syntax. </p>
-<p>In addition, all workers inventory files also passed through Jinja2 renderer with access to <code>env</code> variable:</p>
+<p>In addition, all workers inventory files also passed through Jinja2 renderer with access to <code>env</code> dictionary variable:</p>
 <div class="highlight"><span class="filename">nornir/common.yaml</span><pre><span></span><code><span class="nt">defaults</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">username</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{{</span><span class="w"> </span><span class="nv">env.get(&quot;NORNIR_USERNAME&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;nornir&quot;</span><span class="nv">)</span><span class="w"> </span><span class="p p-Indicator">}}</span>
 <span class="w">  </span><span class="nt">password</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{{</span><span class="w"> </span><span class="nv">env.get(&quot;NORNIR_PASSWORD&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;password&quot;</span><span class="w"> </span><span class="nv">)</span><span class="w"> </span><span class="p p-Indicator">}}</span>
 </code></pre></div>
 <p>In above example default nornir username and password sourced from environment variables.</p>
+<p><code>env</code> variable passed onto Jinja2 context as a <strong>dictionary</strong> that contains environment variables keys and values, as such any Jinja2 dictionary access operation supported:</p>
+<div class="highlight"><span class="filename">nornir/common.yaml</span><pre><span></span><code><span class="nt">defaults</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">username</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{{</span><span class="w"> </span><span class="nv">env</span><span class="p p-Indicator">[</span><span class="s">&quot;NORNIR_USERNAME&quot;</span><span class="p p-Indicator">]</span><span class="w"> </span><span class="p p-Indicator">}}</span>
+<span class="w">  </span><span class="nt">password</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{{</span><span class="w"> </span><span class="nv">env.NORNIR_PASSWORD</span><span class="w"> </span><span class="p p-Indicator">}}</span>
+<span class="w">  </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{{</span><span class="w"> </span><span class="nv">env.get(&quot;NORNIR_PORT&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">22)</span><span class="w"> </span><span class="p p-Indicator">}}</span>
+</code></pre></div>
 
 
 

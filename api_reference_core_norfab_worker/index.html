@@ -1488,7 +1488,7 @@
             
   
   <span class="md-ellipsis">
-    NORFAB Services
+    FastAPI Service
     
   </span>
   
@@ -1498,6 +1498,99 @@
         
         <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_9_5_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_1_9_5">
+            <span class="md-nav__icon md-icon"></span>
+            FastAPI Service
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../workers/fastapi/services_fastapi_service/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Overview
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../workers/fastapi/services_fastapi_service_inventory/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Inventory
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_9_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_1_9_6" id="__nav_1_9_6_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    NORFAB Services
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_9_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_9_6">
             <span class="md-nav__icon md-icon"></span>
             NORFAB Services
           </label>
@@ -3955,7 +4048,7 @@
     <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> - worker received invenotry data </span><span class="si">{</span><span class="n">inventory_data</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">inventory_data</span><span class="p">[</span><span class="s2">&quot;results&quot;</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">inventory_data</span><span class="p">[</span><span class="s2">&quot;results&quot;</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">inventory_data</span><span class="p">[</span><span class="s2">&quot;results&quot;</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">{}</span>
 </code></pre></div></td></tr></table></div>
