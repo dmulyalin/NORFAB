@@ -352,7 +352,9 @@ class NorFab:
                     )
                 except Exception as e:
                     workers_to_start.discard(worker_name)
-                    log.error(f"'{worker_name}' - failed to start worker, error '{e}'")
+                    log.exception(
+                        f"'{worker_name}' - failed to start worker, error '{e}'"
+                    )
 
             time.sleep(0.01)
 

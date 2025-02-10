@@ -151,7 +151,7 @@ logging:
 
 Above example demonstrates how terminal and file logging level can be sourced from environment using Jinja2 syntax. 
 
-In addition, all workers inventory files also passed through Jinja2 renderer with access to `env` variable:
+In addition, all workers inventory files also passed through Jinja2 renderer with access to `env` dictionary variable:
 
 ``` yaml title="nornir/common.yaml"
 defaults:
@@ -160,3 +160,12 @@ defaults:
 ```
 
 In above example default nornir username and password sourced from environment variables.
+
+`env` variable passed onto Jinja2 context as a **dictionary** that contains environment variables keys and values, as such any Jinja2 dictionary access operation supported:
+
+``` yaml title="nornir/common.yaml"
+defaults:
+  username: {{ env["NORNIR_USERNAME"] }}
+  password: {{ env.NORNIR_PASSWORD }}
+  port: {{ env.get("NORNIR_PORT", 22) }}
+```

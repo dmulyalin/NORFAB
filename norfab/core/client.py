@@ -422,12 +422,13 @@ class NFPClient(object):
             ret["status"] = status
             # received actual GET request results from broker e.g. MMI, SID or FSS services
             if status == b"200":
-                ret["results"] = get_response.decode("utf-8")
+                ret["results"] = json.loads(get_response.decode("utf-8"))
                 break
             # received DISPATCH response from broker
             if status != b"202":
                 msg = f"{status}, {self.name} job '{uuid}' GET Request not accepted by broker '{get_response}'"
                 log.error(msg)
+                ret["status"] = status
                 ret["errors"].append(msg)
                 break
             get_response = json.loads(get_response)

@@ -117,6 +117,9 @@ nav:
             - Inventory: workers/agent/services_agent_service_inventory.md
             - Tasks:
               - Chat: workers/agent/services_agent_service_tasks_chat.md
+        - FastAPI Service:
+            - Overview: workers/fastapi/services_fastapi_service.md
+            - Inventory: workers/fastapi/services_fastapi_service_inventory.md
         - NORFAB Services:
             - MMI: services_norfab_mmi.md
             - Inventory Service: services_norfab_inventory_service.md

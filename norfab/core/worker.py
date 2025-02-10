@@ -594,7 +594,7 @@ class NFPWorker:
         log.debug(f"{self.name} - worker received invenotry data {inventory_data}")
 
         if inventory_data["results"]:
-            return json.loads(inventory_data["results"])
+            return inventory_data["results"]
         else:
             return {}
 

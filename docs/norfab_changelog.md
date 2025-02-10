@@ -1,3 +1,10 @@
+## 0.3.1
+
+### CHANGES
+
+1. Improved logging handling for NFAPI if it failing to start a worker
+2. Update client `get` method to return result as a dictionary for broker MMI, file and inventory services
+
 ## 0.3.0
 
 ### FEATURES
@@ -8,6 +15,7 @@
 4. Simple inventory added support to produce a serialized dictionary output
 5. Broker added "show_broker_inventory" and "show_broker_version" MMI endpoints
 6. Added support for simple inventory service to render inventory using Jinja2, renderer passed on `env` variable that contains operating system environment variables, allowing to source any env data into NorFab inventory for both broker and workers. #5
+7. Created `fastapi` service to host REST API for NorFab
 
 ## 0.2.4
 

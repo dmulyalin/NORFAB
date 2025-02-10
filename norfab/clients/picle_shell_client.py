@@ -77,7 +77,10 @@ class ShowBrokerModel(BaseModel):
             reply = NFCLIENT.get("mmi.service.broker", "show_broker_inventory")
         else:
             reply = NFCLIENT.get("mmi.service.broker", "show_broker")
-        return json.loads(reply["results"])
+        if reply["errors"]:
+            return "\n".join(reply["errors"])
+        else:
+            return reply["results"]
 
 
 class WorkerStatus(str, Enum):
@@ -100,7 +103,10 @@ class ShowWorkersModel(BaseModel):
         reply = NFCLIENT.get(
             "mmi.service.broker", "show_workers", args=args, kwargs=kwargs
         )
-        return json.loads(reply["results"])
+        if reply["errors"]:
+            return "\n".join(reply["errors"])
+        else:
+            return reply["results"]
 
 
 class ShowCommandsModel(BaseModel):
