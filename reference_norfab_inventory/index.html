@@ -2807,7 +2807,7 @@ in that case NorFab inventory (<code>inventory.yaml</code>) file could have this
 <h2 id="logging-inventory-section">Logging Inventory Section<a class="headerlink" href="#logging-inventory-section" title="Permanent link">¤</a></h2>
 <p>Logging inventory section allows to configure logging parameters such file retention option, logging to remote hosts, logging levels etc.</p>
 <h2 id="jinja2-support">Jinja2 Support<a class="headerlink" href="#jinja2-support" title="Permanent link">¤</a></h2>
-<p>Starting with version 0.3.0 NorFab support Jinja2 syntax rendering of inventory files content, in addition, <code>env</code> variable available to source content of environment variables:</p>
+<p>Starting with version 0.3.0 NorFab supports Jinja2 syntax rendering of inventory files, in addition, <code>env</code> dictionary variable available to source environment variables:</p>
 <div class="highlight"><span class="filename">inventory.yaml</span><pre><span></span><code><span class="nt">logging</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">handlers</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">terminal</span><span class="p">:</span>
@@ -2816,13 +2816,12 @@ in that case NorFab inventory (<code>inventory.yaml</code>) file could have this
 <span class="w">      </span><span class="nt">level</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{{</span><span class="w"> </span><span class="nv">env.get(&quot;FILE_LOGGING_LEVEL&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;INFO&quot;</span><span class="nv">)</span><span class="w"> </span><span class="p p-Indicator">}}</span>
 </code></pre></div>
 <p>Above example demonstrates how terminal and file logging level can be sourced from environment using Jinja2 syntax. </p>
-<p>In addition, all workers inventory files also passed through Jinja2 renderer with access to <code>env</code> dictionary variable:</p>
+<p>All workers inventory files also passed through Jinja2 renderer with access to <code>env</code> dictionary variable:</p>
 <div class="highlight"><span class="filename">nornir/common.yaml</span><pre><span></span><code><span class="nt">defaults</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">username</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{{</span><span class="w"> </span><span class="nv">env.get(&quot;NORNIR_USERNAME&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;nornir&quot;</span><span class="nv">)</span><span class="w"> </span><span class="p p-Indicator">}}</span>
 <span class="w">  </span><span class="nt">password</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{{</span><span class="w"> </span><span class="nv">env.get(&quot;NORNIR_PASSWORD&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;password&quot;</span><span class="w"> </span><span class="nv">)</span><span class="w"> </span><span class="p p-Indicator">}}</span>
 </code></pre></div>
-<p>In above example default nornir username and password sourced from environment variables.</p>
-<p><code>env</code> variable passed onto Jinja2 context as a <strong>dictionary</strong> that contains environment variables keys and values, as such any Jinja2 dictionary access operation supported:</p>
+<p><code>env</code> variable passed onto Jinja2 context as a <strong>dictionary</strong> that contains environment variables keys and values supporting all Jinja2 dictionary access operations:</p>
 <div class="highlight"><span class="filename">nornir/common.yaml</span><pre><span></span><code><span class="nt">defaults</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">username</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{{</span><span class="w"> </span><span class="nv">env</span><span class="p p-Indicator">[</span><span class="s">&quot;NORNIR_USERNAME&quot;</span><span class="p p-Indicator">]</span><span class="w"> </span><span class="p p-Indicator">}}</span>
 <span class="w">  </span><span class="nt">password</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{{</span><span class="w"> </span><span class="nv">env.NORNIR_PASSWORD</span><span class="w"> </span><span class="p p-Indicator">}}</span>
