@@ -138,7 +138,7 @@ Logging inventory section allows to configure logging parameters such file reten
 
 ## Jinja2 Support
 
-Starting with version 0.3.0 NorFab support Jinja2 syntax rendering of inventory files content, in addition, `env` variable available to source content of environment variables:
+Starting with version 0.3.0 NorFab supports Jinja2 syntax rendering of inventory files, in addition, `env` dictionary variable available to source environment variables:
 
 ``` yaml title="inventory.yaml"
 logging:
@@ -151,7 +151,7 @@ logging:
 
 Above example demonstrates how terminal and file logging level can be sourced from environment using Jinja2 syntax. 
 
-In addition, all workers inventory files also passed through Jinja2 renderer with access to `env` dictionary variable:
+All workers inventory files also passed through Jinja2 renderer with access to `env` dictionary variable:
 
 ``` yaml title="nornir/common.yaml"
 defaults:
@@ -159,9 +159,7 @@ defaults:
   password: {{ env.get("NORNIR_PASSWORD", "password" ) }}
 ```
 
-In above example default nornir username and password sourced from environment variables.
-
-`env` variable passed onto Jinja2 context as a **dictionary** that contains environment variables keys and values, as such any Jinja2 dictionary access operation supported:
+`env` variable passed onto Jinja2 context as a **dictionary** that contains environment variables keys and values supporting all Jinja2 dictionary access operations:
 
 ``` yaml title="nornir/common.yaml"
 defaults:

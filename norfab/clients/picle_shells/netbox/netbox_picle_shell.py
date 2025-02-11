@@ -22,12 +22,12 @@ from pydantic import (
     Field,
 )
 from typing import Union, Optional, List, Any, Dict, Callable, Tuple
-from ..common import log_error_or_result, listen_events
-from ..nornir.nornir_picle_shell import NornirCommonArgs, NorniHostsFilters
+from ..common import log_error_or_result
 from .netbox_picle_shell_common import NetboxCommonArgs, NetboxClientRunJobArgs
 from .netbox_picle_shell_get_devices import GetDevices
 from .netbox_picle_shell_cache import NetboxServiceCache
 from .netbox_picle_shell_get_circuits import GetCircuits
+from .netbox_picle_shell_update_device import UpdateDeviceCommands
 
 RICHCONSOLE = Console()
 SERVICE = "netbox"
@@ -205,118 +205,6 @@ class GetCommands(BaseModel):
 # ---------------------------------------------------------------------------------------------
 # NETBOX SERVICE UPDATE SHELL MODEL
 # ---------------------------------------------------------------------------------------------
-
-
-class NornirServiceCommands(NornirCommonArgs):
-    @staticmethod
-    def run(*args, **kwargs):
-        kwargs["via"] = "nornir"
-        return UpdateDeviceInterfacesCommand.run(*args, **kwargs)
-
-    class PicleConfig:
-        outputter = Outputters.outputter_rich_json
-
-
-class UpdateDatasources(BaseModel):
-    nornir: NornirServiceCommands = Field(
-        None,
-        description="Use Nornir service to retrieve data from devices",
-    )
-
-
-class UpdateDeviceFactsCommand(NetboxCommonArgs, NetboxClientRunJobArgs):
-    devices: Union[List[StrictStr], StrictStr] = Field(
-        None,
-        description="List of devices to update",
-    )
-    progress: Optional[StrictBool] = Field(
-        None,
-        description="Emit execution progress",
-        json_schema_extra={"presence": True},
-    )
-
-    @staticmethod
-    @listen_events
-    def run(uuid, **kwargs):
-        workers = kwargs.pop("workers", "any")
-        timeout = kwargs.pop("timeout", 600)
-        kwargs["timeout"] = timeout * 0.9
-
-        result = NFCLIENT.run_job(
-            "netbox",
-            "update_device_facts",
-            workers=workers,
-            kwargs=kwargs,
-            timeout=timeout,
-            uuid=uuid,
-        )
-
-        result = log_error_or_result(result)
-
-        return result
-
-    class PicleConfig:
-        outputter = Outputters.outputter_rich_json
-
-
-class UpdateDeviceInterfacesCommand(NetboxCommonArgs, NetboxClientRunJobArgs):
-    dry_run: Optional[StrictBool] = Field(
-        None,
-        description="Return information that would be pushed to Netbox but do not push it",
-        json_schema_extra={"presence": True},
-    )
-    devices: Union[List[StrictStr], StrictStr] = Field(
-        None,
-        description="Devices to update",
-    )
-    progress: Optional[StrictBool] = Field(
-        None,
-        description="Emit execution progress",
-        json_schema_extra={"presence": True},
-    )
-    datasource: UpdateDatasources = Field(
-        "nornir",
-        description="Service to use to retrieve device data",
-    )
-    dry_run: Optional[StrictBool] = Field(
-        None,
-        description="Return information that would be pushed to Netbox but do not push it",
-        json_schema_extra={"presence": True},
-    )
-
-    @staticmethod
-    @listen_events
-    def run(uuid, **kwargs):
-        workers = kwargs.pop("workers", "any")
-        timeout = kwargs.pop("timeout", 600)
-        kwargs["timeout"] = timeout * 0.9
-
-        result = NFCLIENT.run_job(
-            "netbox",
-            "update_device_interfaces",
-            workers=workers,
-            kwargs=kwargs,
-            timeout=timeout,
-            uuid=uuid,
-        )
-
-        result = log_error_or_result(result)
-
-        return result
-
-    class PicleConfig:
-        outputter = Outputters.outputter_rich_json
-
-
-class UpdateDeviceCommands(BaseModel):
-    facts: UpdateDeviceFactsCommand = Field(
-        None,
-        description="Update device serial, OS version",
-    )
-    interfaces: UpdateDeviceInterfacesCommand = Field(
-        None,
-        description="Update device interfaces",
-    )
 
 
 class UpdateCommands(BaseModel):

@@ -4,6 +4,12 @@
 
 1. Improved logging handling for NFAPI if it failing to start a worker
 2. Update client `get` method to return result as a dictionary for broker MMI, file and inventory services
+3. Enhanced Netbox `update_device_facts` and `update_device_interface` to support `batch_size` argument - a number of devices to process at a time
+4. Improved nfcli shell for Netbox service to provide more arguments for `netbox update device facts` command
+
+### FEATURES
+
+1. Added Netbox Service `update_device_ip` task to retrieve device interface IP addresses and create them in Netbox
 
 ## 0.3.0
 

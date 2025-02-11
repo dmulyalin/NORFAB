@@ -1387,6 +1387,7 @@ class NetboxWorker(NFPWorker):
         datasource: str = "nornir",
         timeout: int = 60,
         devices: list = None,
+        batch_size: int = 10,
         **kwargs,
     ) -> dict:
         """
@@ -1399,6 +1400,7 @@ class NetboxWorker(NFPWorker):
         :param dry_run: return information that would be pushed to Netbox but do not push it
         :param datasource: service name to use to retrieve devices' data, default is nornir parse task
         :param timeout: seconds to wait before timeout data retrieval job
+        :param batch_size: number of devices to process at a time
         :param kwargs: any additional arguments to send to service for device data retrieval
         :returns: dictionary keyed by device name with updated details
         """
@@ -1409,46 +1411,58 @@ class NetboxWorker(NFPWorker):
         kwargs["add_details"] = True
 
         if datasource == "nornir":
-            if devices:
-                kwargs["FL"] = devices
-            data = self.client.run_job(
-                "nornir",
-                "parse",
-                kwargs=kwargs,
-                workers="all",
-                timeout=timeout,
-            )
-            for worker, results in data.items():
-                for host, host_data in results["result"].items():
-                    if host_data["napalm_get"]["failed"]:
+            for i in range(0, len(devices), batch_size):
+                kwargs["FL"] = devices[i : i + batch_size]
+                kwargs["getters"] = "get_facts"
+                self.event(
+                    f"retrieving facts data for devices {', '.join(kwargs['FL'])}",
+                    resource=instance,
+                )
+                data = self.client.run_job(
+                    "nornir",
+                    "parse",
+                    kwargs=kwargs,
+                    workers="all",
+                    timeout=timeout,
+                )
+                for worker, results in data.items():
+                    if results["failed"]:
                         log.error(
-                            f"{host} facts update failed: '{host_data['napalm_get']['exception']}'"
-                        )
-                        self.event(
-                            f"{host} facts update failed",
-                            resource=instance,
-                            status="failed",
-                            severity="WARNING",
+                            f"{worker} get_facts failed, errors: {'; '.join(results['errors'])}"
                         )
                         continue
-                    nb_device = nb.dcim.devices.get(name=host)
-                    if not nb_device:
-                        raise Exception(f"'{host}' does not exist in Netbox")
-                    facts = host_data["napalm_get"]["result"]["get_facts"]
-                    # update serial number
-                    nb_device.serial = facts["serial_number"]
-                    if not dry_run:
-                        nb_device.save()
-                    result[host] = {
-                        "update_device_facts_dry_run"
-                        if dry_run
-                        else "update_device_facts": {
-                            "serial": facts["serial_number"],
+                    for host, host_data in results["result"].items():
+                        if host_data["napalm_get"]["failed"]:
+                            log.error(
+                                f"{host} facts update failed: '{host_data['napalm_get']['exception']}'"
+                            )
+                            self.event(
+                                f"{host} facts update failed",
+                                resource=instance,
+                                status="failed",
+                                severity="WARNING",
+                            )
+                            continue
+                        nb_device = nb.dcim.devices.get(name=host)
+                        if not nb_device:
+                            raise Exception(f"'{host}' does not exist in Netbox")
+                        facts = host_data["napalm_get"]["result"]["get_facts"]
+                        # update serial number
+                        nb_device.serial = facts["serial_number"]
+                        if not dry_run:
+                            nb_device.save()
+                        result[host] = {
+                            "update_device_facts_dry_run"
+                            if dry_run
+                            else "update_device_facts": {
+                                "serial": facts["serial_number"],
+                            }
                         }
-                    }
-                    self.event(f"{host} facts updated", resource=instance)
+                        self.event(f"{host} facts updated", resource=instance)
         else:
-            raise UnsupportedServiceError(f"'{datasource}' service not supported")
+            raise UnsupportedServiceError(
+                f"'{datasource}' datasource service not supported"
+            )
 
         return ret
 
@@ -1460,11 +1474,12 @@ class NetboxWorker(NFPWorker):
         timeout: int = 60,
         devices: list = None,
         create: bool = True,
+        batch_size: int = 10,
         **kwargs,
     ) -> dict:
         """
         Function to update device interfaces in Netbox using information
-        provided by NAPALM get_interfaces getter:
+        provided by NAPALM `get_interfaces` getter:
 
         - interface name
         - interface description
@@ -1478,6 +1493,7 @@ class NetboxWorker(NFPWorker):
         :param datasource: service name to use to retrieve devices' data, default is nornir parse task
         :param timeout: seconds to wait before timeout data retrieval job
         :param create: create missing interfaces
+        :param batch_size: number of devices to process at a time
         :param kwargs: any additional arguments to send to service for device data retrieval
         :returns: dictionary keyed by device name with update details
         """
@@ -1487,73 +1503,82 @@ class NetboxWorker(NFPWorker):
         nb = self._get_pynetbox(instance)
 
         if datasource == "nornir":
-            if devices:
-                kwargs["FL"] = devices
-            kwargs["getters"] = "get_interfaces"
-            data = self.client.run_job(
-                "nornir",
-                "parse",
-                kwargs=kwargs,
-                workers="all",
-                timeout=timeout,
-            )
-            for worker, results in data.items():
-                for host, host_data in results["result"].items():
-                    updated, created = {}, {}
-                    result[host] = {
-                        "update_device_interfaces_dry_run"
-                        if dry_run
-                        else "update_device_interfaces": updated,
-                        "created_device_interfaces_dry_run"
-                        if dry_run
-                        else "created_device_interfaces": created,
-                    }
-                    interfaces = host_data["napalm_get"]["get_interfaces"]
-                    nb_device = nb.dcim.devices.get(name=host)
-                    if not nb_device:
-                        raise Exception(f"'{host}' does not exist in Netbox")
-                    nb_interfaces = nb.dcim.interfaces.filter(device_id=nb_device.id)
-                    # update existing interfaces
-                    for nb_interface in nb_interfaces:
-                        if nb_interface.name not in interfaces:
-                            continue
-                        interface = interfaces.pop(nb_interface.name)
-                        nb_interface.description = interface["description"]
-                        nb_interface.mtu = interface["mtu"]
-                        nb_interface.speed = interface["speed"] * 1000
-                        nb_interface.mac_address = interface["mac_address"]
-                        nb_interface.enabled = interface["is_enabled"]
-                        if dry_run is not True:
-                            nb_interface.save()
-                        updated[nb_interface.name] = interface
-                        self.event(
-                            f"{host} updated interface {nb_interface.name}",
-                            resource=instance,
+            for i in range(0, len(devices), batch_size):
+                kwargs["FL"] = devices[i : i + batch_size]
+                kwargs["getters"] = "get_interfaces"
+                data = self.client.run_job(
+                    "nornir",
+                    "parse",
+                    kwargs=kwargs,
+                    workers="all",
+                    timeout=timeout,
+                )
+                for worker, results in data.items():
+                    if results["failed"]:
+                        log.error(
+                            f"{worker} get_interfaces failed, errors: {'; '.join(results['errors'])}"
                         )
-                    # create new interfaces
-                    if create is not True:
                         continue
-                    for interface_name, interface in interfaces.items():
-                        interface["type"] = "other"
-                        nb_interface = nb.dcim.interfaces.create(
-                            name=interface_name,
-                            device={"name": nb_device.name},
-                            type=interface["type"],
+                    for host, host_data in results["result"].items():
+                        updated, created = {}, {}
+                        result[host] = {
+                            "update_device_interfaces_dry_run"
+                            if dry_run
+                            else "update_device_interfaces": updated,
+                            "created_device_interfaces_dry_run"
+                            if dry_run
+                            else "created_device_interfaces": created,
+                        }
+                        interfaces = host_data["napalm_get"]["get_interfaces"]
+                        nb_device = nb.dcim.devices.get(name=host)
+                        if not nb_device:
+                            raise Exception(f"'{host}' does not exist in Netbox")
+                        nb_interfaces = nb.dcim.interfaces.filter(
+                            device_id=nb_device.id
                         )
-                        nb_interface.description = interface["description"]
-                        nb_interface.mtu = interface["mtu"]
-                        nb_interface.speed = interface["speed"] * 1000
-                        nb_interface.mac_address = interface["mac_address"]
-                        nb_interface.enabled = interface["is_enabled"]
-                        if dry_run is not True:
-                            nb_interface.save()
-                        created[interface_name] = interface
-                        self.event(
-                            f"{host} created interface {nb_interface.name}",
-                            resource=instance,
-                        )
+                        # update existing interfaces
+                        for nb_interface in nb_interfaces:
+                            if nb_interface.name not in interfaces:
+                                continue
+                            interface = interfaces.pop(nb_interface.name)
+                            nb_interface.description = interface["description"]
+                            nb_interface.mtu = interface["mtu"]
+                            nb_interface.speed = interface["speed"] * 1000
+                            nb_interface.mac_address = interface["mac_address"]
+                            nb_interface.enabled = interface["is_enabled"]
+                            if dry_run is not True:
+                                nb_interface.save()
+                            updated[nb_interface.name] = interface
+                            self.event(
+                                f"{host} updated interface {nb_interface.name}",
+                                resource=instance,
+                            )
+                        # create new interfaces
+                        if create is not True:
+                            continue
+                        for interface_name, interface in interfaces.items():
+                            interface["type"] = "other"
+                            nb_interface = nb.dcim.interfaces.create(
+                                name=interface_name,
+                                device={"name": nb_device.name},
+                                type=interface["type"],
+                            )
+                            nb_interface.description = interface["description"]
+                            nb_interface.mtu = interface["mtu"]
+                            nb_interface.speed = interface["speed"] * 1000
+                            nb_interface.mac_address = interface["mac_address"]
+                            nb_interface.enabled = interface["is_enabled"]
+                            if dry_run is not True:
+                                nb_interface.save()
+                            created[interface_name] = interface
+                            self.event(
+                                f"{host} created interface {nb_interface.name}",
+                                resource=instance,
+                            )
         else:
-            raise UnsupportedServiceError(f"'{datasource}' service not supported")
+            raise UnsupportedServiceError(
+                f"'{datasource}' datasource service not supported"
+            )
 
         return ret
 
@@ -1565,9 +1590,113 @@ class NetboxWorker(NFPWorker):
         timeout: int = 60,
         devices: list = None,
         create: bool = True,
+        batch_size: int = 10,
         **kwargs,
     ) -> dict:
-        pass
+        """
+        Function to update device IP addresses in Netbox using information
+        provided by NAPALM `get_interfaces_ip` getter.
+
+        :param instance: Netbox instance name
+        :param dry_run: return information that would be pushed to Netbox but do not push it
+        :param datasource: service name to use to retrieve devices' data, default is nornir parse task
+        :param timeout: seconds to wait before timeout data retrieval job
+        :param create: create missing IP addresses
+        :param batch_size: number of devices to process at a time
+        :param kwargs: any additional arguments to send to service for device data retrieval
+        :returns: dictionary keyed by device name with update details
+        """
+        result = {}
+        instance = instance or self.default_instance
+        ret = Result(task=f"{self.name}:update_device_ip", result=result)
+        nb = self._get_pynetbox(instance)
+
+        if datasource == "nornir":
+            for i in range(0, len(devices), batch_size):
+                kwargs["FL"] = devices[i : i + batch_size]
+                kwargs["getters"] = "get_interfaces_ip"
+                data = self.client.run_job(
+                    "nornir",
+                    "parse",
+                    kwargs=kwargs,
+                    workers="all",
+                    timeout=timeout,
+                )
+                for worker, results in data.items():
+                    if results["failed"]:
+                        log.error(
+                            f"{worker} get_interfaces_ip failed, errors: {'; '.join(results['errors'])}"
+                        )
+                        continue
+                    for host, host_data in results["result"].items():
+                        updated, created = {}, {}
+                        result[host] = {
+                            "updated_ip_dry_run" if dry_run else "updated_ip": updated,
+                            "created_ip_dry_run" if dry_run else "created_ip": created,
+                        }
+                        interfaces = host_data["napalm_get"]["get_interfaces_ip"]
+                        nb_device = nb.dcim.devices.get(name=host)
+                        if not nb_device:
+                            raise Exception(f"'{host}' does not exist in Netbox")
+                        nb_interfaces = nb.dcim.interfaces.filter(
+                            device_id=nb_device.id
+                        )
+                        # update interface IP addresses
+                        for nb_interface in nb_interfaces:
+                            if nb_interface.name not in interfaces:
+                                continue
+                            interface = interfaces.pop(nb_interface.name)
+                            # merge v6 into v4 addresses to save code repetition
+                            interface["ipv4"].update(interface.pop("ipv6"))
+                            # update/create IP addresses
+                            for ip, ip_data in interface["ipv4"].items():
+                                prefix_length = ip_data["prefix_length"]
+                                # get IP address info from Netbox
+                                nb_ip = nb.ipam.ip_addresses.filter(
+                                    address=f"{ip}/{prefix_length}"
+                                )
+                                if len(nb_ip) > 1:
+                                    log.warning(
+                                        f"{host} got multiple {ip}/{prefix_length} IP addresses from Netbox, "
+                                        f"NorFab Netbox Service only supports handling of non-duplicate IPs."
+                                    )
+                                    continue
+                                # decide what to do
+                                if not nb_ip and create is False:
+                                    continue
+                                elif not nb_ip and create is True:
+                                    if dry_run is not True:
+                                        nb_ip = nb.ipam.ip_addresses.create(
+                                            address=f"{ip}/{prefix_length}"
+                                        )
+                                        nb_ip.assigned_object_type = "dcim.interface"
+                                        nb_ip.assigned_object_id = nb_interface.id
+                                        nb_ip.status = "active"
+                                        nb_ip.save()
+                                    created[f"{ip}/{prefix_length}"] = nb_interface.name
+                                    self.event(
+                                        f"{host} created IP address {ip}/{prefix_length} for {nb_interface.name} interface",
+                                        resource=instance,
+                                    )
+                                elif nb_ip:
+                                    nb_ip = list(nb_ip)[0]
+                                    nb_ip.assigned_object_type = "dcim.interface"
+                                    nb_ip.assigned_object_id = nb_interface.id
+                                    nb_ip.status = "active"
+                                    if dry_run is not True:
+                                        nb_ip.save()
+                                    updated[nb_ip.address] = nb_interface.name
+                                    self.event(
+                                        f"{host} updated IP address {ip}/{prefix_length} for {nb_interface.name} interface",
+                                        resource=instance,
+                                    )
+
+        else:
+            raise UnsupportedServiceError(
+                f"'{datasource}' datasource service not supported"
+            )
+
+        return ret
 
     def get_next_ip(
         self,
