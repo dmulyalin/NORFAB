@@ -49,4 +49,4 @@ class NetboxCommonArgs(BaseModel):
     def source_instance():
         reply = NFCLIENT.run_job("netbox", "get_netbox_inventory", workers="any")
         for worker_name, inventory in reply.items():
-            return list(inventory["instances"])
+            return list(inventory["result"]["instances"])
