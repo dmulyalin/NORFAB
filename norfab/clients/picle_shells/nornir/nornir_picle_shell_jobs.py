@@ -49,7 +49,7 @@ class ListJobsModel(ClientRunJobArgs):
         reply = NFCLIENT.get(
             "mmi.service.broker", "show_workers", kwargs={"service": "nornir"}
         )
-        workers = [i["name"] for i in json.loads(reply["results"])]
+        workers = [i["name"] for i in reply["results"]]
 
         return ["all", "any"] + workers
 
@@ -103,7 +103,7 @@ class JobDetailsModel(ClientRunJobArgs):
         reply = NFCLIENT.get(
             "mmi.service.broker", "show_workers", kwargs={"service": "nornir"}
         )
-        workers = [i["name"] for i in json.loads(reply["results"])]
+        workers = [i["name"] for i in reply["results"]]
 
         return ["all", "any"] + workers
 

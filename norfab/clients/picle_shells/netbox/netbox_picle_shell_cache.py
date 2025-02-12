@@ -47,7 +47,7 @@ class CacheList(NetboxClientRunJobArgs, NetboxCommonArgs):
         reply = NFCLIENT.get(
             "mmi.service.broker", "show_workers", kwargs={"service": "netbox"}
         )
-        reply = json.loads(reply["results"])
+        reply = reply["results"]
         return ["all", "any"] + [w["name"] for w in reply]
 
     @staticmethod
@@ -105,7 +105,7 @@ class CacheClear(NetboxClientRunJobArgs, NetboxCommonArgs):
         reply = NFCLIENT.get(
             "mmi.service.broker", "show_workers", kwargs={"service": "netbox"}
         )
-        reply = json.loads(reply["results"])
+        reply = reply["results"]
         return ["all", "any"] + [w["name"] for w in reply]
 
     @staticmethod
@@ -142,7 +142,7 @@ class CacheGet(NetboxClientRunJobArgs, NetboxCommonArgs):
         reply = NFCLIENT.get(
             "mmi.service.broker", "show_workers", kwargs={"service": "netbox"}
         )
-        reply = json.loads(reply["results"])
+        reply = reply["results"]
         return ["all", "any"] + [w["name"] for w in reply]
 
     @staticmethod

@@ -65,14 +65,14 @@ class NornirTestShell(
         broker_files = reply = NFCLIENT.get(
             "fss.service.broker", "walk", kwargs={"url": "nf://"}
         )
-        return json.loads(broker_files["results"])
+        return broker_files["results"]
 
     @staticmethod
     def source_job_data():
         broker_files = reply = NFCLIENT.get(
             "fss.service.broker", "walk", kwargs={"url": "nf://"}
         )
-        return json.loads(broker_files["results"])
+        return broker_files["results"]
 
     @staticmethod
     @listen_events

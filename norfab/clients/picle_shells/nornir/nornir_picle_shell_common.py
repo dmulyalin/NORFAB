@@ -259,7 +259,7 @@ class NorniHostsFilters(BaseModel):
         reply = NFCLIENT.get(
             "mmi.service.broker", "show_workers", kwargs={"service": "nornir"}
         )
-        reply = json.loads(reply["results"])
+        reply = reply["results"]
         return ["all", "any"] + [w["name"] for w in reply]
 
     @staticmethod

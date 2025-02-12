@@ -20,7 +20,7 @@ class NetboxClientRunJobArgs(ClientRunJobArgs):
     @staticmethod
     def source_workers():
         reply = NFCLIENT.get("mmi.service.broker", "show_workers")
-        reply = json.loads(reply["results"])
+        reply = reply["results"]
         return ["all", "any"] + [
             w["name"] for w in reply if w["service"].startswith("netbox")
         ]
@@ -43,7 +43,7 @@ class NetboxCommonArgs(BaseModel):
             args=[],
             kwargs={"service": "netbox", "status": "alive"},
         )
-        return [i["name"] for i in json.loads(reply["results"])]
+        return [i["name"] for i in reply["results"]]
 
     @staticmethod
     def source_instance():

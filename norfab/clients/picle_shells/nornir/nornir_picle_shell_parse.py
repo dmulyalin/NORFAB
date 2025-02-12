@@ -94,7 +94,7 @@ class TTPParseModel(NorniHostsFilters, NornirCommonArgs, ClientRunJobArgs):
         broker_files = NFCLIENT.get(
             "fss.service.broker", "walk", kwargs={"url": "nf://"}
         )
-        return json.loads(broker_files["results"])
+        return broker_files["results"]
 
     @staticmethod
     @listen_events
