@@ -231,7 +231,7 @@ class WorkersInventory:
             and values being a list of OS paths to files with workers
             inventory data
         """
-        self.path, _ = os.path.split(path)
+        self.path = path
         self.data = data
 
     def __getitem__(self, name: str) -> Any:
@@ -264,21 +264,38 @@ class WorkersInventory:
 class NorFabInventory:
     __slots__ = ("broker", "workers", "topology", "logging", "base_dir")
 
-    def __init__(self, path: str) -> None:
+    def __init__(self, path: str = None, data: dict = None) -> None:
         """
-        NorFabInventory class to instantiate simple inventory.
+        NorFabInventory class to instantiate simple inventory either
+        from file or from dictionary.
 
         :param path: OS path to YAML file with inventory data
+        :param data: NorFab inventory dictionary
         """
-        path = os.path.abspath(path)
-
         self.broker = {}
         self.workers = {}
         self.topology = {}
-        self.base_dir = os.path.split(path)[0]
-        self.load(path)
+        self.logging = {}
 
-    def load(self, path: str) -> None:
+        if data:
+            self.base_dir = os.path.split(os.getcwd())[0]
+            self.load_data(data)
+        elif path:
+            path = os.path.abspath(path)
+            self.base_dir = os.path.split(path)[0]
+            self.load_path(path)
+        else:
+            raise RuntimeError(
+                "Either path to inventory.yaml or inventory data dictionary must be provided."
+            )
+
+    def load_data(self, data) -> None:
+        self.broker = data.pop("broker", {})
+        self.workers = WorkersInventory(self.base_dir, data.pop("workers", {}))
+        self.topology = data.pop("topology", {})
+        self.logging = make_logging_config(self.base_dir, data.pop("logging", {}))
+
+    def load_path(self, path: str) -> None:
         if not os.path.exists(path):
             msg = f"inventory.yaml file not found under provided path `{path}`"
             log.critical(msg)
@@ -290,10 +307,7 @@ class NorFabInventory:
             rendered = render_jinja2_template(f.read())
             data = yaml.safe_load(rendered)
 
-        self.broker = data.pop("broker", {})
-        self.workers = WorkersInventory(path, data.pop("workers", {}))
-        self.topology = data.pop("topology", {})
-        self.logging = make_logging_config(self.base_dir, data.pop("logging", {}))
+        self.load_data(data)
 
     def __getitem__(self, key: str) -> Any:
         if key in self.__slots__:

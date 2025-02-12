@@ -1342,7 +1342,7 @@ class TestUpdateDeviceFacts:
             workers="any",
             kwargs={
                 "datasource": "nornir",
-                "FC": "spine",
+                "devices": ["ceos-spine-1", "ceos-spine-2"],
             },
         )
         pprint.pprint(ret, width=200)

@@ -1405,6 +1405,7 @@ class NetboxWorker(NFPWorker):
         :returns: dictionary keyed by device name with updated details
         """
         result = {}
+        devices = devices or []
         instance = instance or self.default_instance
         ret = Result(task=f"{self.name}:update_device_facts", result=result)
         nb = self._get_pynetbox(instance)
