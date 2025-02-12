@@ -142,6 +142,8 @@ class NorFab:
     def __init__(
         self,
         inventory: str = "./inventory.yaml",
+        inventory_data: dict = None,
+        base_dir: str = None,
         log_level: str = None,
     ) -> None:
         """
@@ -150,16 +152,35 @@ class NorFab:
         ```
         from norfab.core.nfapi import NorFab
 
-        nf = NorFab(inventory=inventory)
+        nf = NorFab(inventory="./inventory.yaml")
         nf.start(start_broker=True, workers=["my-worker-1"])
-        NFCLIENT = nf.client
+        NFCLIENT = nf.make_client()
+        ```
+
+        or using dictionary data
+
+        ```
+        from norfab.core.nfapi import NorFab
+
+        data = {
+            'broker': {'endpoint': 'tcp://127.0.0.1:5555'},
+            'workers': {'my-worker-1': ['workers/common.yaml'],
+        }
+
+        nf = NorFab(inventory_data=data, base_dir="./")
+        nf.start(start_broker=True, workers=["my-worker-1"])
+        NFCLIENT = nf.make_client()
         ```
 
         :param inventory: OS path to NorFab inventory YAML file
+        :param inventory_data: dictionary with NorFab inventory
+        :param base_dir: OS path to base directory to anchor NorFab at
         :param log_level: one or supported logging levels - `CRITICAL`, `ERROR`, `WARNING`, `INFO`, `DEBUG`
         """
         self.exiting = False  # flag to signal that Norfab is exiting
-        self.inventory = NorFabInventory(inventory)
+        self.inventory = NorFabInventory(
+            path=inventory, data=inventory_data, base_dir=base_dir
+        )
         self.log_queue = Queue()
         self.log_level = log_level
         self.broker_endpoint = self.inventory.broker["endpoint"]

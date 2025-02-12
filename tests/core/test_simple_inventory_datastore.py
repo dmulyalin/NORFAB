@@ -2,6 +2,7 @@ import pytest
 import pprint
 import json
 import os
+import yaml
 
 from norfab.core.inventory import NorFabInventory
 
@@ -102,3 +103,66 @@ class TestWorkersInventory:
         nornir_worker_1 = self.inventory.workers["nornir-worker-1"]
         assert nornir_worker_1["defaults"]["username"] == "foo"
         assert nornir_worker_1["defaults"]["password"] == "password"
+
+
+class TestInventoryLoadFromDictionary:
+    data = {
+        "broker": {
+            "endpoint": "tcp://127.0.0.1:5555",
+            "shared_key": "5z1:yW}]n?UXhGmz+5CeHN1>:S9k!eCh6JyIhJqO",
+        },
+        "topology": {
+            "broker": True,
+            "workers": [
+                "netbox-worker-1.1",
+                "netbox-worker-1.2",
+                "nornir-worker-1",
+                "nornir-worker-2",
+                "nornir-worker-3",
+                "nornir-worker-4",
+                {
+                    "nornir-worker-5": {
+                        "depends_on": ["netbox-worker-1.1", "netbox-worker-1.2"]
+                    }
+                },
+                "nornir-worker-6",
+                "agent-1",
+                "fastapi-worker-1",
+            ],
+        },
+        "workers": {
+            "agent-1": ["agents/common.yaml"],
+            "fastapi-worker-*": ["fastapi/common.yaml"],
+            "netbox-worker-1.*": ["netbox/common.yaml"],
+            "nornir-*": ["nornir/common.yaml"],
+            "nornir-worker-1*": ["nornir/nornir-worker-1.yaml"],
+            "nornir-worker-2": [
+                "nornir/nornir-worker-2.yaml",
+                "nornir/nornir-worker-2-extra.yaml",
+            ],
+            "nornir-worker-3": ["nornir/nornir-worker-3-non-existing-data.yaml"],
+            "nornir-worker-4": ["nornir/nornir-worker-4.yaml"],
+            "nornir-worker-5": ["nornir/nornir-worker-5.yaml"],
+            "nornir-worker-6": ["nornir/nornir-worker-6.yaml"],
+            "pyats-*": ["pyats/common.yaml"],
+            "pyats-worker-1*": ["pyats/pyats-worker-1.yaml"],
+        },
+    }
+
+    inventory = NorFabInventory(data=data, base_dir="./nf_tests_inventory/")
+
+    def test_broker_inventory(self):
+        assert self.inventory.broker, "No broker data"
+        assert isinstance(self.inventory.broker, dict), "Broker data not a dictionary"
+        assert (
+            "endpoint" in self.inventory.broker
+        ), "Broker inventory has no 'endpoint' data"
+
+    def test_workers_inventory(self):
+        assert self.inventory.workers.data, "No workers data"
+        assert isinstance(
+            self.inventory.workers.data, dict
+        ), "Workers data not a dictionary"
+        assert isinstance(
+            self.inventory.workers.path, str
+        ), "Workers inventory path not a string"

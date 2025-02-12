@@ -142,7 +142,6 @@ def nfcli():
 
     # extract argparser arguments:
     args = argparser.parse_args()
-    INVENTORY = args.INVENTORY
     WORKERS = args.WORKERS
     WORKERS_LIST = args.WORKERS_LIST
     INVENTORY = args.INVENTORY

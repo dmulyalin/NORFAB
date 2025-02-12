@@ -10,6 +10,7 @@
 ### FEATURES
 
 1. Added Netbox Service `update_device_ip` task to retrieve device interface IP addresses and create them in Netbox
+2. Added support to NorFab simple inventory and nfapi to load inventory from dictionary data as well as to explicitly provide `base_dir` information where to anchor NorFab environment
 
 ## 0.3.0
 

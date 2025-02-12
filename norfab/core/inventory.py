@@ -264,7 +264,9 @@ class WorkersInventory:
 class NorFabInventory:
     __slots__ = ("broker", "workers", "topology", "logging", "base_dir")
 
-    def __init__(self, path: str = None, data: dict = None) -> None:
+    def __init__(
+        self, path: str = None, data: dict = None, base_dir: str = None
+    ) -> None:
         """
         NorFabInventory class to instantiate simple inventory either
         from file or from dictionary.
@@ -278,11 +280,11 @@ class NorFabInventory:
         self.logging = {}
 
         if data:
-            self.base_dir = os.path.split(os.getcwd())[0]
+            self.base_dir = base_dir or os.path.split(os.getcwd())[0]
             self.load_data(data)
         elif path:
             path = os.path.abspath(path)
-            self.base_dir = os.path.split(path)[0]
+            self.base_dir = base_dir or os.path.split(path)[0]
             self.load_path(path)
         else:
             raise RuntimeError(
