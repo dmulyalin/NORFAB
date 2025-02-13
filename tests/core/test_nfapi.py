@@ -12,6 +12,6 @@ class TestNfApi:
         ret = reply["results"]
         pprint.pprint(ret)
 
+        assert len(ret) > 0
         for worker in ret:
-            assert len(ret) > 0
             assert all(k in worker for k in ["holdtime", "name", "service", "status"])
