@@ -114,38 +114,30 @@ class TestInventoryLoadFromDictionary:
         "topology": {
             "broker": True,
             "workers": [
-                "netbox-worker-1.1",
-                "netbox-worker-1.2",
                 "nornir-worker-1",
                 "nornir-worker-2",
-                "nornir-worker-3",
-                "nornir-worker-4",
-                {
-                    "nornir-worker-5": {
-                        "depends_on": ["netbox-worker-1.1", "netbox-worker-1.2"]
-                    }
-                },
-                "nornir-worker-6",
-                "agent-1",
-                "fastapi-worker-1",
             ],
         },
         "workers": {
-            "agent-1": ["agents/common.yaml"],
-            "fastapi-worker-*": ["fastapi/common.yaml"],
-            "netbox-worker-1.*": ["netbox/common.yaml"],
-            "nornir-*": ["nornir/common.yaml"],
+            "nornir-*": [
+                # this portion of inventory is a dictionary and should be handled properly
+                {
+                    "service": "nornir",
+                    "watchdog_interval": 30,
+                    "runner": {
+                        "plugin": "RetryRunner",
+                        "options": {
+                            "num_workers": 100,
+                            "num_connectors": 10,
+                        },
+                    },
+                }
+            ],
             "nornir-worker-1*": ["nornir/nornir-worker-1.yaml"],
             "nornir-worker-2": [
                 "nornir/nornir-worker-2.yaml",
                 "nornir/nornir-worker-2-extra.yaml",
             ],
-            "nornir-worker-3": ["nornir/nornir-worker-3-non-existing-data.yaml"],
-            "nornir-worker-4": ["nornir/nornir-worker-4.yaml"],
-            "nornir-worker-5": ["nornir/nornir-worker-5.yaml"],
-            "nornir-worker-6": ["nornir/nornir-worker-6.yaml"],
-            "pyats-*": ["pyats/common.yaml"],
-            "pyats-worker-1*": ["pyats/pyats-worker-1.yaml"],
         },
     }
 
@@ -166,3 +158,12 @@ class TestInventoryLoadFromDictionary:
         assert isinstance(
             self.inventory.workers.path, str
         ), "Workers inventory path not a string"
+
+    def test_worker_inventory_access(self):
+        wkr = self.inventory["nornir-worker-1"]
+        assert (
+            wkr["runner"]["options"]["num_connectors"] == 10
+        ), "DIctionary item not loaded properly"
+        assert (
+            "ceos-spine-2" in wkr["hosts"] and "ceos-spine-1" in wkr["hosts"]
+        ), "Hosts inventory not correct"

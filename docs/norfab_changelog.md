@@ -11,6 +11,7 @@
 
 1. Added Netbox Service `update_device_ip` task to retrieve device interface IP addresses and create them in Netbox
 2. Added support to NorFab simple inventory and nfapi to load inventory from dictionary data as well as to explicitly provide `base_dir` information where to anchor NorFab environment
+3. Added support for NorFab inventory workers section items to be dictionaries in addition to OS path to YAML files allowing to construct workers inventory out of dictionaries and/or YAML files.
 
 ## 0.3.0
 

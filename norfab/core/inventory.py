@@ -228,7 +228,7 @@ class WorkersInventory:
 
         :param path: OS path to top folder with workers inventory data
         :param data: dictionary keyed by glob patterns matching workers names
-            and values being a list of OS paths to files with workers
+            and values being a list of OS paths to files or dictionaries with workers
             inventory data
         """
         self.path = path
@@ -247,13 +247,20 @@ class WorkersInventory:
 
         # iterate over path items, load and merge them
         for item in paths:
-            if os.path.isfile(os.path.join(self.path, item)):
-                with open(os.path.join(self.path, item), "r", encoding="utf-8") as f:
-                    rendered = render_jinja2_template(f.read())
-                    merge_recursively(ret, yaml.safe_load(rendered))
+            if isinstance(item, str):
+                if os.path.isfile(os.path.join(self.path, item)):
+                    with open(
+                        os.path.join(self.path, item), "r", encoding="utf-8"
+                    ) as f:
+                        rendered = render_jinja2_template(f.read())
+                        merge_recursively(ret, yaml.safe_load(rendered))
+                else:
+                    log.error(f"{os.path.join(self.path, item)} - file not found")
+                    raise FileNotFoundError(os.path.join(self.path, item))
+            elif isinstance(item, dict):
+                merge_recursively(ret, item)
             else:
-                log.error(f"{os.path.join(self.path, item)} - file not found")
-                raise FileNotFoundError(os.path.join(self.path, item))
+                raise TypeError(f"Expecting string or dictionary not {type(item)}")
 
         if ret:
             return ret

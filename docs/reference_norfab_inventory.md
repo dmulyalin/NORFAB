@@ -167,3 +167,57 @@ defaults:
   password: {{ env.NORNIR_PASSWORD }}
   port: {{ env.get("NORNIR_PORT", 22) }}
 ```
+
+## Loading Inventory from Dictionary
+
+By default NorFab supports loading inventory from `inventory.yaml` file together with `workers` section items referring to a list of OS paths to YAML files with workers inventory data. As an alternative it is possible to load full NorFab and its workers inventory from dictionary, this can be useful when working with NorFab Python API directly:
+
+``` python title="Instantiate NorFab out of Dictionary Inventory"
+from norfab.core.nfapi import NorFab
+
+data = {
+    "broker": {
+        "endpoint": "tcp://127.0.0.1:5555",
+        "shared_key": "5z1:yW}]n?UXhGmz+5CeHN1>:S9k!eCh6JyIhJqO",
+    },
+    "workers": {
+        "nornir-*": [
+            {
+                "service": "nornir",
+                "watchdog_interval": 30,
+                "runner": {
+                    "plugin": "RetryRunner",
+                    "options": {
+                        "num_workers": 100,
+                        "num_connectors": 10,
+                    }
+                }
+            }
+        ],
+        "nornir-worker-1*": ["nornir/nornir-worker-1.yaml"],
+        "nornir-worker-2": [
+            "nornir/nornir-worker-2.yaml",
+            "nornir/nornir-worker-2-extra.yaml",
+        ],
+    },
+    "topology": {
+        "broker": True,
+        "workers": [
+            "nornir-worker-1",
+            "nornir-worker-2",
+        ],
+    },
+}
+
+if __name__ == "__main__":
+    nf = NorFab(inventory_data=data, base_dir="./norfab/")
+    nf.start()
+    client = nf.make_client()
+    
+    job_result = client.run_job("nornir", "get_nornir_hosts")
+    print(job_result)
+
+    nf.destroy()
+```
+
+In above example, `data` dictionary contains complete NorFab inventory and passed onto `NorFab` object together with `base_dir` argument to inform NorFab where to search for inventory YAML files, for example `"nornir/nornir-worker-2.yaml"` file will be searched within this path ``"./norfab/nornir/nornir-worker-2.yaml"`` since `./norfab/` is a base directory. Base directory argument is optional and will be automatically set by NorFab to current directory.

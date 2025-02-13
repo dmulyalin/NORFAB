@@ -31,7 +31,19 @@ def nfclient_dict_inventory():
         },
         "topology": {"broker": True, "workers": ["nornir-worker-1", "nornir-worker-2"]},
         "workers": {
-            "nornir-*": ["nornir/common.yaml"],
+            "nornir-*": [
+                {
+                    "service": "nornir",
+                    "watchdog_interval": 30,
+                    "runner": {
+                        "plugin": "RetryRunner",
+                        "options": {
+                            "num_workers": 100,
+                            "num_connectors": 10,
+                        },
+                    },
+                }
+            ],
             "nornir-worker-1*": ["nornir/nornir-worker-1.yaml"],
             "nornir-worker-2": [
                 "nornir/nornir-worker-2.yaml",
