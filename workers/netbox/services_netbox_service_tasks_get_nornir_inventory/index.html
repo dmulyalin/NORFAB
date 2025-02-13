@@ -2659,6 +2659,20 @@
 <blockquote>
 <p>task api name: <code>get_nornir_inventory</code></p>
 </blockquote>
+<p><strong>How it works</strong></p>
+<p>Netbox NorFab workers able to talk with Netbox GraphQL and REST API. Nornir workers can be configured to send a request to Netbox workers on startup to fetch Nornir inventory. Netbox workers in response to such a request will be fetching devices data from Netbox and constructing Nornir inventory returning it to Nornir worker.</p>
+<p><img alt="Netbox get Nornir inventory" src="../../../images/Netbox_get_nornir_inventory.jpg" /></p>
+<ol>
+<li>
+<p>In startup Nornir worker sends <code>get_nornir_inventory</code> request to Netbox NorFab Workers</p>
+</li>
+<li>
+<p>Netbox worker fetched devices data from netbox - hostname, interfaces, circuits, connections etc.</p>
+</li>
+<li>
+<p>Netbox worker constructs Nornir inventory and sends it back to Nornir worker</p>
+</li>
+</ol>
 <h2 id="get-nornir-inventory-sample-usage">Get Nornir Inventory Sample Usage<a class="headerlink" href="#get-nornir-inventory-sample-usage" title="Permanent link">¤</a></h2>
 <h2 id="norfab-netbox-get-nornir-inventory-command-shell-reference">NORFAB Netbox Get Nornir Inventory Command Shell Reference<a class="headerlink" href="#norfab-netbox-get-nornir-inventory-command-shell-reference" title="Permanent link">¤</a></h2>
 <p>NorFab shell supports these command options for Netbox <code>get_nornir_inventory</code> task:</p>
