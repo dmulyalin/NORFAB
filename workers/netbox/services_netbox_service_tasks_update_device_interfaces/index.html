@@ -2750,7 +2750,7 @@ nf#
     <div class="doc doc-contents first">
 
         <p>Function to update device interfaces in Netbox using information
-provided by NAPALM get_interfaces getter:</p>
+provided by NAPALM <code>get_interfaces</code> getter:</p>
 <ul>
 <li>interface name</li>
 <li>interface description</li>
@@ -2854,6 +2854,22 @@ provided by NAPALM get_interfaces getter:</p>
           </tr>
           <tr class="doc-section-item">
             <td>
+                <code>batch_size</code>
+            </td>
+            <td>
+                  <code>int</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>number of devices to process at a time</p>
+              </div>
+            </td>
+            <td>
+                  <code>10</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
                 <code>kwargs</code>
             </td>
             <td>
@@ -2895,22 +2911,7 @@ provided by NAPALM get_interfaces getter:</p>
 
             <details class="quote">
               <summary>Source code in <code>norfab\workers\netbox_worker.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1455</span>
-<span class="normal">1456</span>
-<span class="normal">1457</span>
-<span class="normal">1458</span>
-<span class="normal">1459</span>
-<span class="normal">1460</span>
-<span class="normal">1461</span>
-<span class="normal">1462</span>
-<span class="normal">1463</span>
-<span class="normal">1464</span>
-<span class="normal">1465</span>
-<span class="normal">1466</span>
-<span class="normal">1467</span>
-<span class="normal">1468</span>
-<span class="normal">1469</span>
-<span class="normal">1470</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1470</span>
 <span class="normal">1471</span>
 <span class="normal">1472</span>
 <span class="normal">1473</span>
@@ -2998,7 +2999,33 @@ provided by NAPALM get_interfaces getter:</p>
 <span class="normal">1555</span>
 <span class="normal">1556</span>
 <span class="normal">1557</span>
-<span class="normal">1558</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">update_device_interfaces</span><span class="p">(</span>
+<span class="normal">1558</span>
+<span class="normal">1559</span>
+<span class="normal">1560</span>
+<span class="normal">1561</span>
+<span class="normal">1562</span>
+<span class="normal">1563</span>
+<span class="normal">1564</span>
+<span class="normal">1565</span>
+<span class="normal">1566</span>
+<span class="normal">1567</span>
+<span class="normal">1568</span>
+<span class="normal">1569</span>
+<span class="normal">1570</span>
+<span class="normal">1571</span>
+<span class="normal">1572</span>
+<span class="normal">1573</span>
+<span class="normal">1574</span>
+<span class="normal">1575</span>
+<span class="normal">1576</span>
+<span class="normal">1577</span>
+<span class="normal">1578</span>
+<span class="normal">1579</span>
+<span class="normal">1580</span>
+<span class="normal">1581</span>
+<span class="normal">1582</span>
+<span class="normal">1583</span>
+<span class="normal">1584</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">update_device_interfaces</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">instance</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">dry_run</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -3006,11 +3033,12 @@ provided by NAPALM get_interfaces getter:</p>
     <span class="n">timeout</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">60</span><span class="p">,</span>
     <span class="n">devices</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">create</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
     <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Function to update device interfaces in Netbox using information</span>
-<span class="sd">    provided by NAPALM get_interfaces getter:</span>
+<span class="sd">    provided by NAPALM `get_interfaces` getter:</span>
 
 <span class="sd">    - interface name</span>
 <span class="sd">    - interface description</span>
@@ -3024,6 +3052,7 @@ provided by NAPALM get_interfaces getter:</p>
 <span class="sd">    :param datasource: service name to use to retrieve devices&#39; data, default is nornir parse task</span>
 <span class="sd">    :param timeout: seconds to wait before timeout data retrieval job</span>
 <span class="sd">    :param create: create missing interfaces</span>
+<span class="sd">    :param batch_size: number of devices to process at a time</span>
 <span class="sd">    :param kwargs: any additional arguments to send to service for device data retrieval</span>
 <span class="sd">    :returns: dictionary keyed by device name with update details</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -3033,73 +3062,82 @@ provided by NAPALM get_interfaces getter:</p>
     <span class="n">nb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_pynetbox</span><span class="p">(</span><span class="n">instance</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">datasource</span> <span class="o">==</span> <span class="s2">&quot;nornir&quot;</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">devices</span><span class="p">:</span>
-            <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;FL&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">devices</span>
-        <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;getters&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;get_interfaces&quot;</span>
-        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">run_job</span><span class="p">(</span>
-            <span class="s2">&quot;nornir&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;parse&quot;</span><span class="p">,</span>
-            <span class="n">kwargs</span><span class="o">=</span><span class="n">kwargs</span><span class="p">,</span>
-            <span class="n">workers</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">,</span>
-            <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">,</span>
-        <span class="p">)</span>
-        <span class="k">for</span> <span class="n">worker</span><span class="p">,</span> <span class="n">results</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="k">for</span> <span class="n">host</span><span class="p">,</span> <span class="n">host_data</span> <span class="ow">in</span> <span class="n">results</span><span class="p">[</span><span class="s2">&quot;result&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="n">updated</span><span class="p">,</span> <span class="n">created</span> <span class="o">=</span> <span class="p">{},</span> <span class="p">{}</span>
-                <span class="n">result</span><span class="p">[</span><span class="n">host</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-                    <span class="s2">&quot;update_device_interfaces_dry_run&quot;</span>
-                    <span class="k">if</span> <span class="n">dry_run</span>
-                    <span class="k">else</span> <span class="s2">&quot;update_device_interfaces&quot;</span><span class="p">:</span> <span class="n">updated</span><span class="p">,</span>
-                    <span class="s2">&quot;created_device_interfaces_dry_run&quot;</span>
-                    <span class="k">if</span> <span class="n">dry_run</span>
-                    <span class="k">else</span> <span class="s2">&quot;created_device_interfaces&quot;</span><span class="p">:</span> <span class="n">created</span><span class="p">,</span>
-                <span class="p">}</span>
-                <span class="n">interfaces</span> <span class="o">=</span> <span class="n">host_data</span><span class="p">[</span><span class="s2">&quot;napalm_get&quot;</span><span class="p">][</span><span class="s2">&quot;get_interfaces&quot;</span><span class="p">]</span>
-                <span class="n">nb_device</span> <span class="o">=</span> <span class="n">nb</span><span class="o">.</span><span class="n">dcim</span><span class="o">.</span><span class="n">devices</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">host</span><span class="p">)</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="n">nb_device</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">host</span><span class="si">}</span><span class="s2">&#39; does not exist in Netbox&quot;</span><span class="p">)</span>
-                <span class="n">nb_interfaces</span> <span class="o">=</span> <span class="n">nb</span><span class="o">.</span><span class="n">dcim</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">device_id</span><span class="o">=</span><span class="n">nb_device</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
-                <span class="c1"># update existing interfaces</span>
-                <span class="k">for</span> <span class="n">nb_interface</span> <span class="ow">in</span> <span class="n">nb_interfaces</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="n">nb_interface</span><span class="o">.</span><span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">interfaces</span><span class="p">:</span>
-                        <span class="k">continue</span>
-                    <span class="n">interface</span> <span class="o">=</span> <span class="n">interfaces</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">nb_interface</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-                    <span class="n">nb_interface</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="n">interface</span><span class="p">[</span><span class="s2">&quot;description&quot;</span><span class="p">]</span>
-                    <span class="n">nb_interface</span><span class="o">.</span><span class="n">mtu</span> <span class="o">=</span> <span class="n">interface</span><span class="p">[</span><span class="s2">&quot;mtu&quot;</span><span class="p">]</span>
-                    <span class="n">nb_interface</span><span class="o">.</span><span class="n">speed</span> <span class="o">=</span> <span class="n">interface</span><span class="p">[</span><span class="s2">&quot;speed&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">1000</span>
-                    <span class="n">nb_interface</span><span class="o">.</span><span class="n">mac_address</span> <span class="o">=</span> <span class="n">interface</span><span class="p">[</span><span class="s2">&quot;mac_address&quot;</span><span class="p">]</span>
-                    <span class="n">nb_interface</span><span class="o">.</span><span class="n">enabled</span> <span class="o">=</span> <span class="n">interface</span><span class="p">[</span><span class="s2">&quot;is_enabled&quot;</span><span class="p">]</span>
-                    <span class="k">if</span> <span class="n">dry_run</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">True</span><span class="p">:</span>
-                        <span class="n">nb_interface</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
-                    <span class="n">updated</span><span class="p">[</span><span class="n">nb_interface</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">interface</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">event</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">host</span><span class="si">}</span><span class="s2"> updated interface </span><span class="si">{</span><span class="n">nb_interface</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-                        <span class="n">resource</span><span class="o">=</span><span class="n">instance</span><span class="p">,</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">devices</span><span class="p">),</span> <span class="n">batch_size</span><span class="p">):</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;FL&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">devices</span><span class="p">[</span><span class="n">i</span> <span class="p">:</span> <span class="n">i</span> <span class="o">+</span> <span class="n">batch_size</span><span class="p">]</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;getters&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;get_interfaces&quot;</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">run_job</span><span class="p">(</span>
+                <span class="s2">&quot;nornir&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;parse&quot;</span><span class="p">,</span>
+                <span class="n">kwargs</span><span class="o">=</span><span class="n">kwargs</span><span class="p">,</span>
+                <span class="n">workers</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">,</span>
+                <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="k">for</span> <span class="n">worker</span><span class="p">,</span> <span class="n">results</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">results</span><span class="p">[</span><span class="s2">&quot;failed&quot;</span><span class="p">]:</span>
+                    <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">worker</span><span class="si">}</span><span class="s2"> get_interfaces failed, errors: </span><span class="si">{</span><span class="s1">&#39;; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;errors&#39;</span><span class="p">])</span><span class="si">}</span><span class="s2">&quot;</span>
                     <span class="p">)</span>
-                <span class="c1"># create new interfaces</span>
-                <span class="k">if</span> <span class="n">create</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">True</span><span class="p">:</span>
                     <span class="k">continue</span>
-                <span class="k">for</span> <span class="n">interface_name</span><span class="p">,</span> <span class="n">interface</span> <span class="ow">in</span> <span class="n">interfaces</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                    <span class="n">interface</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;other&quot;</span>
-                    <span class="n">nb_interface</span> <span class="o">=</span> <span class="n">nb</span><span class="o">.</span><span class="n">dcim</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
-                        <span class="n">name</span><span class="o">=</span><span class="n">interface_name</span><span class="p">,</span>
-                        <span class="n">device</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">nb_device</span><span class="o">.</span><span class="n">name</span><span class="p">},</span>
-                        <span class="nb">type</span><span class="o">=</span><span class="n">interface</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">],</span>
+                <span class="k">for</span> <span class="n">host</span><span class="p">,</span> <span class="n">host_data</span> <span class="ow">in</span> <span class="n">results</span><span class="p">[</span><span class="s2">&quot;result&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="n">updated</span><span class="p">,</span> <span class="n">created</span> <span class="o">=</span> <span class="p">{},</span> <span class="p">{}</span>
+                    <span class="n">result</span><span class="p">[</span><span class="n">host</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+                        <span class="s2">&quot;update_device_interfaces_dry_run&quot;</span>
+                        <span class="k">if</span> <span class="n">dry_run</span>
+                        <span class="k">else</span> <span class="s2">&quot;update_device_interfaces&quot;</span><span class="p">:</span> <span class="n">updated</span><span class="p">,</span>
+                        <span class="s2">&quot;created_device_interfaces_dry_run&quot;</span>
+                        <span class="k">if</span> <span class="n">dry_run</span>
+                        <span class="k">else</span> <span class="s2">&quot;created_device_interfaces&quot;</span><span class="p">:</span> <span class="n">created</span><span class="p">,</span>
+                    <span class="p">}</span>
+                    <span class="n">interfaces</span> <span class="o">=</span> <span class="n">host_data</span><span class="p">[</span><span class="s2">&quot;napalm_get&quot;</span><span class="p">][</span><span class="s2">&quot;get_interfaces&quot;</span><span class="p">]</span>
+                    <span class="n">nb_device</span> <span class="o">=</span> <span class="n">nb</span><span class="o">.</span><span class="n">dcim</span><span class="o">.</span><span class="n">devices</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">host</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">nb_device</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">host</span><span class="si">}</span><span class="s2">&#39; does not exist in Netbox&quot;</span><span class="p">)</span>
+                    <span class="n">nb_interfaces</span> <span class="o">=</span> <span class="n">nb</span><span class="o">.</span><span class="n">dcim</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span>
+                        <span class="n">device_id</span><span class="o">=</span><span class="n">nb_device</span><span class="o">.</span><span class="n">id</span>
                     <span class="p">)</span>
-                    <span class="n">nb_interface</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="n">interface</span><span class="p">[</span><span class="s2">&quot;description&quot;</span><span class="p">]</span>
-                    <span class="n">nb_interface</span><span class="o">.</span><span class="n">mtu</span> <span class="o">=</span> <span class="n">interface</span><span class="p">[</span><span class="s2">&quot;mtu&quot;</span><span class="p">]</span>
-                    <span class="n">nb_interface</span><span class="o">.</span><span class="n">speed</span> <span class="o">=</span> <span class="n">interface</span><span class="p">[</span><span class="s2">&quot;speed&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">1000</span>
-                    <span class="n">nb_interface</span><span class="o">.</span><span class="n">mac_address</span> <span class="o">=</span> <span class="n">interface</span><span class="p">[</span><span class="s2">&quot;mac_address&quot;</span><span class="p">]</span>
-                    <span class="n">nb_interface</span><span class="o">.</span><span class="n">enabled</span> <span class="o">=</span> <span class="n">interface</span><span class="p">[</span><span class="s2">&quot;is_enabled&quot;</span><span class="p">]</span>
-                    <span class="k">if</span> <span class="n">dry_run</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">True</span><span class="p">:</span>
-                        <span class="n">nb_interface</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
-                    <span class="n">created</span><span class="p">[</span><span class="n">interface_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">interface</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">event</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">host</span><span class="si">}</span><span class="s2"> created interface </span><span class="si">{</span><span class="n">nb_interface</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-                        <span class="n">resource</span><span class="o">=</span><span class="n">instance</span><span class="p">,</span>
-                    <span class="p">)</span>
+                    <span class="c1"># update existing interfaces</span>
+                    <span class="k">for</span> <span class="n">nb_interface</span> <span class="ow">in</span> <span class="n">nb_interfaces</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">nb_interface</span><span class="o">.</span><span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">interfaces</span><span class="p">:</span>
+                            <span class="k">continue</span>
+                        <span class="n">interface</span> <span class="o">=</span> <span class="n">interfaces</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">nb_interface</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+                        <span class="n">nb_interface</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="n">interface</span><span class="p">[</span><span class="s2">&quot;description&quot;</span><span class="p">]</span>
+                        <span class="n">nb_interface</span><span class="o">.</span><span class="n">mtu</span> <span class="o">=</span> <span class="n">interface</span><span class="p">[</span><span class="s2">&quot;mtu&quot;</span><span class="p">]</span>
+                        <span class="n">nb_interface</span><span class="o">.</span><span class="n">speed</span> <span class="o">=</span> <span class="n">interface</span><span class="p">[</span><span class="s2">&quot;speed&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">1000</span>
+                        <span class="n">nb_interface</span><span class="o">.</span><span class="n">mac_address</span> <span class="o">=</span> <span class="n">interface</span><span class="p">[</span><span class="s2">&quot;mac_address&quot;</span><span class="p">]</span>
+                        <span class="n">nb_interface</span><span class="o">.</span><span class="n">enabled</span> <span class="o">=</span> <span class="n">interface</span><span class="p">[</span><span class="s2">&quot;is_enabled&quot;</span><span class="p">]</span>
+                        <span class="k">if</span> <span class="n">dry_run</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">True</span><span class="p">:</span>
+                            <span class="n">nb_interface</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+                        <span class="n">updated</span><span class="p">[</span><span class="n">nb_interface</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">interface</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">event</span><span class="p">(</span>
+                            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">host</span><span class="si">}</span><span class="s2"> updated interface </span><span class="si">{</span><span class="n">nb_interface</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                            <span class="n">resource</span><span class="o">=</span><span class="n">instance</span><span class="p">,</span>
+                        <span class="p">)</span>
+                    <span class="c1"># create new interfaces</span>
+                    <span class="k">if</span> <span class="n">create</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">True</span><span class="p">:</span>
+                        <span class="k">continue</span>
+                    <span class="k">for</span> <span class="n">interface_name</span><span class="p">,</span> <span class="n">interface</span> <span class="ow">in</span> <span class="n">interfaces</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                        <span class="n">interface</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;other&quot;</span>
+                        <span class="n">nb_interface</span> <span class="o">=</span> <span class="n">nb</span><span class="o">.</span><span class="n">dcim</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+                            <span class="n">name</span><span class="o">=</span><span class="n">interface_name</span><span class="p">,</span>
+                            <span class="n">device</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">nb_device</span><span class="o">.</span><span class="n">name</span><span class="p">},</span>
+                            <span class="nb">type</span><span class="o">=</span><span class="n">interface</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">],</span>
+                        <span class="p">)</span>
+                        <span class="n">nb_interface</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="n">interface</span><span class="p">[</span><span class="s2">&quot;description&quot;</span><span class="p">]</span>
+                        <span class="n">nb_interface</span><span class="o">.</span><span class="n">mtu</span> <span class="o">=</span> <span class="n">interface</span><span class="p">[</span><span class="s2">&quot;mtu&quot;</span><span class="p">]</span>
+                        <span class="n">nb_interface</span><span class="o">.</span><span class="n">speed</span> <span class="o">=</span> <span class="n">interface</span><span class="p">[</span><span class="s2">&quot;speed&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">1000</span>
+                        <span class="n">nb_interface</span><span class="o">.</span><span class="n">mac_address</span> <span class="o">=</span> <span class="n">interface</span><span class="p">[</span><span class="s2">&quot;mac_address&quot;</span><span class="p">]</span>
+                        <span class="n">nb_interface</span><span class="o">.</span><span class="n">enabled</span> <span class="o">=</span> <span class="n">interface</span><span class="p">[</span><span class="s2">&quot;is_enabled&quot;</span><span class="p">]</span>
+                        <span class="k">if</span> <span class="n">dry_run</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">True</span><span class="p">:</span>
+                            <span class="n">nb_interface</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+                        <span class="n">created</span><span class="p">[</span><span class="n">interface_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">interface</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">event</span><span class="p">(</span>
+                            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">host</span><span class="si">}</span><span class="s2"> created interface </span><span class="si">{</span><span class="n">nb_interface</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                            <span class="n">resource</span><span class="o">=</span><span class="n">instance</span><span class="p">,</span>
+                        <span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">UnsupportedServiceError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">datasource</span><span class="si">}</span><span class="s2">&#39; service not supported&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">UnsupportedServiceError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">datasource</span><span class="si">}</span><span class="s2">&#39; datasource service not supported&quot;</span>
+        <span class="p">)</span>
 
     <span class="k">return</span> <span class="n">ret</span>
 </code></pre></div></td></tr></table></div>

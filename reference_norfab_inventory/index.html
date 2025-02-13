@@ -2048,6 +2048,15 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#loading-inventory-from-dictionary" class="md-nav__link">
+    <span class="md-ellipsis">
+      Loading Inventory from Dictionary
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -2686,6 +2695,15 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#loading-inventory-from-dictionary" class="md-nav__link">
+    <span class="md-ellipsis">
+      Loading Inventory from Dictionary
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -2827,6 +2845,55 @@ in that case NorFab inventory (<code>inventory.yaml</code>) file could have this
 <span class="w">  </span><span class="nt">password</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{{</span><span class="w"> </span><span class="nv">env.NORNIR_PASSWORD</span><span class="w"> </span><span class="p p-Indicator">}}</span>
 <span class="w">  </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{{</span><span class="w"> </span><span class="nv">env.get(&quot;NORNIR_PORT&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">22)</span><span class="w"> </span><span class="p p-Indicator">}}</span>
 </code></pre></div>
+<h2 id="loading-inventory-from-dictionary">Loading Inventory from Dictionary<a class="headerlink" href="#loading-inventory-from-dictionary" title="Permanent link">¤</a></h2>
+<p>By default NorFab supports loading inventory from <code>inventory.yaml</code> file together with <code>workers</code> section items referring to a list of OS paths to YAML files with workers inventory data. As an alternative it is possible to load full NorFab and its workers inventory from dictionary, this can be useful when working with NorFab Python API directly:</p>
+<div class="highlight"><span class="filename">Instantiate NorFab out of Dictionary Inventory</span><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">norfab.core.nfapi</span><span class="w"> </span><span class="kn">import</span> <span class="n">NorFab</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;broker&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;endpoint&quot;</span><span class="p">:</span> <span class="s2">&quot;tcp://127.0.0.1:5555&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;shared_key&quot;</span><span class="p">:</span> <span class="s2">&quot;5z1:yW}]n?UXhGmz+5CeHN1&gt;:S9k!eCh6JyIhJqO&quot;</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="s2">&quot;workers&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;nornir-*&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;service&quot;</span><span class="p">:</span> <span class="s2">&quot;nornir&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;watchdog_interval&quot;</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span>
+                <span class="s2">&quot;runner&quot;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s2">&quot;plugin&quot;</span><span class="p">:</span> <span class="s2">&quot;RetryRunner&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;options&quot;</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="s2">&quot;num_workers&quot;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
+                        <span class="s2">&quot;num_connectors&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+                    <span class="p">}</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+        <span class="p">],</span>
+        <span class="s2">&quot;nornir-worker-1*&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;nornir/nornir-worker-1.yaml&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;nornir-worker-2&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="s2">&quot;nornir/nornir-worker-2.yaml&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;nornir/nornir-worker-2-extra.yaml&quot;</span><span class="p">,</span>
+        <span class="p">],</span>
+    <span class="p">},</span>
+    <span class="s2">&quot;topology&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;broker&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s2">&quot;workers&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="s2">&quot;nornir-worker-1&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;nornir-worker-2&quot;</span><span class="p">,</span>
+        <span class="p">],</span>
+    <span class="p">},</span>
+<span class="p">}</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">nf</span> <span class="o">=</span> <span class="n">NorFab</span><span class="p">(</span><span class="n">inventory_data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">base_dir</span><span class="o">=</span><span class="s2">&quot;./norfab/&quot;</span><span class="p">)</span>
+    <span class="n">nf</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+    <span class="n">client</span> <span class="o">=</span> <span class="n">nf</span><span class="o">.</span><span class="n">make_client</span><span class="p">()</span>
+
+    <span class="n">job_result</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">run_job</span><span class="p">(</span><span class="s2">&quot;nornir&quot;</span><span class="p">,</span> <span class="s2">&quot;get_nornir_hosts&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">job_result</span><span class="p">)</span>
+
+    <span class="n">nf</span><span class="o">.</span><span class="n">destroy</span><span class="p">()</span>
+</code></pre></div>
+<p>In above example, <code>data</code> dictionary contains complete NorFab inventory and passed onto <code>NorFab</code> object together with <code>base_dir</code> argument to inform NorFab where to search for inventory YAML files, for example <code>"nornir/nornir-worker-2.yaml"</code> file will be searched within this path <code>"./norfab/nornir/nornir-worker-2.yaml"</code> since <code>./norfab/</code> is a base directory. Base directory argument is optional and will be automatically set by NorFab to current directory.</p>
 
 
 

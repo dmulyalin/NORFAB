@@ -2783,6 +2783,22 @@ provided by NAPALM get_facts getter:</p>
           </tr>
           <tr class="doc-section-item">
             <td>
+                <code>batch_size</code>
+            </td>
+            <td>
+                  <code>int</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>number of devices to process at a time</p>
+              </div>
+            </td>
+            <td>
+                  <code>10</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
                 <code>kwargs</code>
             </td>
             <td>
@@ -2894,13 +2910,29 @@ provided by NAPALM get_facts getter:</p>
 <span class="normal">1450</span>
 <span class="normal">1451</span>
 <span class="normal">1452</span>
-<span class="normal">1453</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">update_device_facts</span><span class="p">(</span>
+<span class="normal">1453</span>
+<span class="normal">1454</span>
+<span class="normal">1455</span>
+<span class="normal">1456</span>
+<span class="normal">1457</span>
+<span class="normal">1458</span>
+<span class="normal">1459</span>
+<span class="normal">1460</span>
+<span class="normal">1461</span>
+<span class="normal">1462</span>
+<span class="normal">1463</span>
+<span class="normal">1464</span>
+<span class="normal">1465</span>
+<span class="normal">1466</span>
+<span class="normal">1467</span>
+<span class="normal">1468</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">update_device_facts</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">instance</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">dry_run</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">datasource</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;nornir&quot;</span><span class="p">,</span>
     <span class="n">timeout</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">60</span><span class="p">,</span>
     <span class="n">devices</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
     <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -2913,56 +2945,70 @@ provided by NAPALM get_facts getter:</p>
 <span class="sd">    :param dry_run: return information that would be pushed to Netbox but do not push it</span>
 <span class="sd">    :param datasource: service name to use to retrieve devices&#39; data, default is nornir parse task</span>
 <span class="sd">    :param timeout: seconds to wait before timeout data retrieval job</span>
+<span class="sd">    :param batch_size: number of devices to process at a time</span>
 <span class="sd">    :param kwargs: any additional arguments to send to service for device data retrieval</span>
 <span class="sd">    :returns: dictionary keyed by device name with updated details</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">result</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">devices</span> <span class="o">=</span> <span class="n">devices</span> <span class="ow">or</span> <span class="p">[]</span>
     <span class="n">instance</span> <span class="o">=</span> <span class="n">instance</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_instance</span>
     <span class="n">ret</span> <span class="o">=</span> <span class="n">Result</span><span class="p">(</span><span class="n">task</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">:update_device_facts&quot;</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="n">result</span><span class="p">)</span>
     <span class="n">nb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_pynetbox</span><span class="p">(</span><span class="n">instance</span><span class="p">)</span>
     <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;add_details&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
 
     <span class="k">if</span> <span class="n">datasource</span> <span class="o">==</span> <span class="s2">&quot;nornir&quot;</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">devices</span><span class="p">:</span>
-            <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;FL&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">devices</span>
-        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">run_job</span><span class="p">(</span>
-            <span class="s2">&quot;nornir&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;parse&quot;</span><span class="p">,</span>
-            <span class="n">kwargs</span><span class="o">=</span><span class="n">kwargs</span><span class="p">,</span>
-            <span class="n">workers</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">,</span>
-            <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">,</span>
-        <span class="p">)</span>
-        <span class="k">for</span> <span class="n">worker</span><span class="p">,</span> <span class="n">results</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="k">for</span> <span class="n">host</span><span class="p">,</span> <span class="n">host_data</span> <span class="ow">in</span> <span class="n">results</span><span class="p">[</span><span class="s2">&quot;result&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="k">if</span> <span class="n">host_data</span><span class="p">[</span><span class="s2">&quot;napalm_get&quot;</span><span class="p">][</span><span class="s2">&quot;failed&quot;</span><span class="p">]:</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">devices</span><span class="p">),</span> <span class="n">batch_size</span><span class="p">):</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;FL&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">devices</span><span class="p">[</span><span class="n">i</span> <span class="p">:</span> <span class="n">i</span> <span class="o">+</span> <span class="n">batch_size</span><span class="p">]</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;getters&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;get_facts&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">event</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;retrieving facts data for devices </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;FL&#39;</span><span class="p">])</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="n">resource</span><span class="o">=</span><span class="n">instance</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">run_job</span><span class="p">(</span>
+                <span class="s2">&quot;nornir&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;parse&quot;</span><span class="p">,</span>
+                <span class="n">kwargs</span><span class="o">=</span><span class="n">kwargs</span><span class="p">,</span>
+                <span class="n">workers</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">,</span>
+                <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="k">for</span> <span class="n">worker</span><span class="p">,</span> <span class="n">results</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">results</span><span class="p">[</span><span class="s2">&quot;failed&quot;</span><span class="p">]:</span>
                     <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">host</span><span class="si">}</span><span class="s2"> facts update failed: &#39;</span><span class="si">{</span><span class="n">host_data</span><span class="p">[</span><span class="s1">&#39;napalm_get&#39;</span><span class="p">][</span><span class="s1">&#39;exception&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
-                    <span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">event</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">host</span><span class="si">}</span><span class="s2"> facts update failed&quot;</span><span class="p">,</span>
-                        <span class="n">resource</span><span class="o">=</span><span class="n">instance</span><span class="p">,</span>
-                        <span class="n">status</span><span class="o">=</span><span class="s2">&quot;failed&quot;</span><span class="p">,</span>
-                        <span class="n">severity</span><span class="o">=</span><span class="s2">&quot;WARNING&quot;</span><span class="p">,</span>
+                        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">worker</span><span class="si">}</span><span class="s2"> get_facts failed, errors: </span><span class="si">{</span><span class="s1">&#39;; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;errors&#39;</span><span class="p">])</span><span class="si">}</span><span class="s2">&quot;</span>
                     <span class="p">)</span>
                     <span class="k">continue</span>
-                <span class="n">nb_device</span> <span class="o">=</span> <span class="n">nb</span><span class="o">.</span><span class="n">dcim</span><span class="o">.</span><span class="n">devices</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">host</span><span class="p">)</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="n">nb_device</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">host</span><span class="si">}</span><span class="s2">&#39; does not exist in Netbox&quot;</span><span class="p">)</span>
-                <span class="n">facts</span> <span class="o">=</span> <span class="n">host_data</span><span class="p">[</span><span class="s2">&quot;napalm_get&quot;</span><span class="p">][</span><span class="s2">&quot;result&quot;</span><span class="p">][</span><span class="s2">&quot;get_facts&quot;</span><span class="p">]</span>
-                <span class="c1"># update serial number</span>
-                <span class="n">nb_device</span><span class="o">.</span><span class="n">serial</span> <span class="o">=</span> <span class="n">facts</span><span class="p">[</span><span class="s2">&quot;serial_number&quot;</span><span class="p">]</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="n">dry_run</span><span class="p">:</span>
-                    <span class="n">nb_device</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
-                <span class="n">result</span><span class="p">[</span><span class="n">host</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-                    <span class="s2">&quot;update_device_facts_dry_run&quot;</span>
-                    <span class="k">if</span> <span class="n">dry_run</span>
-                    <span class="k">else</span> <span class="s2">&quot;update_device_facts&quot;</span><span class="p">:</span> <span class="p">{</span>
-                        <span class="s2">&quot;serial&quot;</span><span class="p">:</span> <span class="n">facts</span><span class="p">[</span><span class="s2">&quot;serial_number&quot;</span><span class="p">],</span>
+                <span class="k">for</span> <span class="n">host</span><span class="p">,</span> <span class="n">host_data</span> <span class="ow">in</span> <span class="n">results</span><span class="p">[</span><span class="s2">&quot;result&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="k">if</span> <span class="n">host_data</span><span class="p">[</span><span class="s2">&quot;napalm_get&quot;</span><span class="p">][</span><span class="s2">&quot;failed&quot;</span><span class="p">]:</span>
+                        <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">host</span><span class="si">}</span><span class="s2"> facts update failed: &#39;</span><span class="si">{</span><span class="n">host_data</span><span class="p">[</span><span class="s1">&#39;napalm_get&#39;</span><span class="p">][</span><span class="s1">&#39;exception&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
+                        <span class="p">)</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">event</span><span class="p">(</span>
+                            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">host</span><span class="si">}</span><span class="s2"> facts update failed&quot;</span><span class="p">,</span>
+                            <span class="n">resource</span><span class="o">=</span><span class="n">instance</span><span class="p">,</span>
+                            <span class="n">status</span><span class="o">=</span><span class="s2">&quot;failed&quot;</span><span class="p">,</span>
+                            <span class="n">severity</span><span class="o">=</span><span class="s2">&quot;WARNING&quot;</span><span class="p">,</span>
+                        <span class="p">)</span>
+                        <span class="k">continue</span>
+                    <span class="n">nb_device</span> <span class="o">=</span> <span class="n">nb</span><span class="o">.</span><span class="n">dcim</span><span class="o">.</span><span class="n">devices</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">host</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">nb_device</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">host</span><span class="si">}</span><span class="s2">&#39; does not exist in Netbox&quot;</span><span class="p">)</span>
+                    <span class="n">facts</span> <span class="o">=</span> <span class="n">host_data</span><span class="p">[</span><span class="s2">&quot;napalm_get&quot;</span><span class="p">][</span><span class="s2">&quot;result&quot;</span><span class="p">][</span><span class="s2">&quot;get_facts&quot;</span><span class="p">]</span>
+                    <span class="c1"># update serial number</span>
+                    <span class="n">nb_device</span><span class="o">.</span><span class="n">serial</span> <span class="o">=</span> <span class="n">facts</span><span class="p">[</span><span class="s2">&quot;serial_number&quot;</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">dry_run</span><span class="p">:</span>
+                        <span class="n">nb_device</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+                    <span class="n">result</span><span class="p">[</span><span class="n">host</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+                        <span class="s2">&quot;update_device_facts_dry_run&quot;</span>
+                        <span class="k">if</span> <span class="n">dry_run</span>
+                        <span class="k">else</span> <span class="s2">&quot;update_device_facts&quot;</span><span class="p">:</span> <span class="p">{</span>
+                            <span class="s2">&quot;serial&quot;</span><span class="p">:</span> <span class="n">facts</span><span class="p">[</span><span class="s2">&quot;serial_number&quot;</span><span class="p">],</span>
+                        <span class="p">}</span>
                     <span class="p">}</span>
-                <span class="p">}</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">event</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">host</span><span class="si">}</span><span class="s2"> facts updated&quot;</span><span class="p">,</span> <span class="n">resource</span><span class="o">=</span><span class="n">instance</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">event</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">host</span><span class="si">}</span><span class="s2"> facts updated&quot;</span><span class="p">,</span> <span class="n">resource</span><span class="o">=</span><span class="n">instance</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">UnsupportedServiceError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">datasource</span><span class="si">}</span><span class="s2">&#39; service not supported&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">UnsupportedServiceError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">datasource</span><span class="si">}</span><span class="s2">&#39; datasource service not supported&quot;</span>
+        <span class="p">)</span>
 
     <span class="k">return</span> <span class="n">ret</span>
 </code></pre></div></td></tr></table></div>
