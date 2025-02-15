@@ -2698,19 +2698,19 @@
   <h1>NORFAB Hooks System</h1>
 
 <h2 id="norfab-hooks">NORFAB Hooks<a class="headerlink" href="#norfab-hooks" title="Permanent link">¤</a></h2>
-<p>Hooks is a set of of functions to run during NorFab execution lifespan events.</p>
-<p>NorFab supports definition of hook inside of <code>inventory.yaml</code> file within <code>hooks</code> section.</p>
-<p>Supported attach points:</p>
-<ul>
-<li><code>startup</code> - list of functions to run right after NorFab nfapi fully initialized. Startup hook function must accept <code>norfab</code> object as a single argument.</li>
-<li><code>exit</code> - list of functions to run right before NorFab nfapi initiates exit sequence. Exit hook function must accept <code>norfab</code> object as a single argument.</li>
-</ul>
+<p>Hooks is a set of functions to run during NorFab execution lifespan.</p>
+<p>NorFab supports definition of hooks inside <code>inventory.yaml</code> file within <code>hooks</code> section.</p>
 <p>Each hook defined as a dictionary that can contain these keys:</p>
 <ul>
 <li><code>function</code> - Python import path for hook function</li>
 <li><code>attachpoint</code> - one of the attach points indicating when to run hook function e.g. <code>startup</code></li>
 <li><code>args</code> - optional list of function positional arguments</li>
 <li><code>kwargs</code> - optional dictionary of function key-word arguments</li>
+</ul>
+<p>Supported attach points:</p>
+<ul>
+<li><code>startup</code> - list of functions to run right after NorFab nfapi fully initialized. Startup hook function must accept <code>norfab</code> object as a single argument.</li>
+<li><code>exit</code> - list of functions to run right before NorFab nfapi initiates exit sequence. Exit hook function must accept <code>norfab</code> object as a single argument.</li>
 </ul>
 <p>Sample hooks definition:</p>
 <div class="highlight"><span class="filename">inventory.yaml</span><pre><span></span><code><span class="nt">hooks</span><span class="p">:</span>
