@@ -29,6 +29,7 @@ from nornir_salt.plugins.functions import (
     FFun,
     ResultSerializer,
     HostsKeepalive,
+    InventoryFun,
 )
 from nornir_salt.plugins.processors import (
     TestsProcessor,
@@ -526,7 +527,7 @@ class NornirWorker(NFPWorker):
         else:
             return Result(result=list(filtered_nornir.inventory.hosts))
 
-    def get_nornir_inventory(self, **kwargs: dict) -> dict:
+    def get_inventory(self, **kwargs: dict) -> dict:
         """
         Retrieve running Nornir inventory for requested hosts
 
@@ -534,11 +535,9 @@ class NornirWorker(NFPWorker):
         """
         filters = {k: kwargs.pop(k) for k in list(kwargs.keys()) if k in FFun_functions}
         filtered_nornir = FFun(self.nr, **filters)
-        return Result(
-            result=filtered_nornir.inventory.dict(), task="get_nornir_inventory"
-        )
+        return Result(result=filtered_nornir.inventory.dict(), task="get_inventory")
 
-    def get_nornir_version(self):
+    def get_version(self):
         """
         Produce Python packages version report
         """
@@ -1229,3 +1228,29 @@ class NornirWorker(NFPWorker):
         self.watchdog.connections_clean()
 
         return ret
+
+    def runtime_inventory(self, action, **kwargs) -> dict:
+        """
+        Method to work with Nornir inventory in a runtime.
+
+        Supported actions:
+
+        - `create_host` or `create` - creates new host or replaces existing host object
+        - `read_host` or `read` - read host inventory content
+        - `update_host` or `update` - non recursively update host attributes if host exists
+            in Nornir inventory, do not create host if it does not exist
+        - `delete_host` or `delete` - deletes host object from Nornir Inventory
+        - `load` - to simplify calling multiple functions
+        - `read_inventory` - read inventory content for groups, default and hosts
+        - `read_host_data` - to return host's data under provided path keys
+        - `list_hosts` - return a list of inventory's host names
+        - `list_hosts_platforms` - return a dictionary of hosts' platforms
+        - `update_defaults` - non recursively update defaults attributes
+
+        :param action: action to perform on inventory
+        :param kwargs: argument to use with the calling action
+        """
+        # clean up kwargs
+        _ = kwargs.pop("progress", None)
+        self.event(f"Performing '{action}' action")
+        return Result(result=InventoryFun(self.nr, call=action, **kwargs))

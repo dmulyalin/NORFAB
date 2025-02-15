@@ -102,7 +102,7 @@ class FastAPIWorker(NFPWorker):
             },
         )
 
-    def get_fastapi_version(self):
+    def get_version(self):
         """
         Produce Python packages version report
         """
@@ -122,7 +122,13 @@ class FastAPIWorker(NFPWorker):
             except importlib.metadata.PackageNotFoundError:
                 pass
 
-        return Result(result=libs)
+        return Result(task=f"{self.name}:get_version", result=libs)
+
+    def get_inventory(self):
+        return Result(
+            result={**self.fastapi_inventory, "uvicorn": self.uvicorn_inventory},
+            task=f"{self.name}:get_inventory",
+        )
 
 
 # ------------------------------------------------------------------

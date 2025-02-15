@@ -172,12 +172,12 @@ class NetboxWorker(NFPWorker):
     # Netbox Service Functions that exposed for calling
     # ----------------------------------------------------------------------
 
-    def get_netbox_inventory(self) -> dict:
+    def get_inventory(self) -> dict:
         return Result(
-            task=f"{self.name}:get_netbox_inventory", result=dict(self.netbox_inventory)
+            task=f"{self.name}:get_inventory", result=dict(self.netbox_inventory)
         )
 
-    def get_netbox_version(self, **kwargs) -> dict:
+    def get_version(self, **kwargs) -> dict:
         libs = {
             "norfab": "",
             "pynetbox": "",
@@ -192,7 +192,7 @@ class NetboxWorker(NFPWorker):
             except importlib.metadata.PackageNotFoundError:
                 pass
 
-        return Result(task=f"{self.name}:get_netbox_version", result=libs)
+        return Result(task=f"{self.name}:get_version", result=libs)
 
     def get_netbox_status(self, instance=None) -> dict:
         ret = Result(result={}, task=f"{self.name}:get_netbox_status")
@@ -1007,6 +1007,7 @@ class NetboxWorker(NFPWorker):
         :param cache: if `True` or 'refresh' update cache, `False` do not update cache
         """
         cid = circuit.pop("cid")
+        ckt_cache_data = {}  # ckt data dictionary to save in cache
         circuit["tags"] = [i["name"] for i in circuit["tags"]]
         circuit["type"] = circuit["type"]["name"]
         circuit["provider"] = circuit["provider"]["name"]
@@ -1018,6 +1019,8 @@ class NetboxWorker(NFPWorker):
         termination_z = circuit["termination_z"]
         termination_a = termination_a["id"] if termination_a else None
         termination_z = termination_z["id"] if termination_z else None
+
+        log.info(f"{self.name}:get_circuits - {cid} tracing circuit terminations path")
 
         # retrieve A or Z termination path using Netbox REST API
         if termination_a is not None:
@@ -1063,35 +1066,45 @@ class NetboxWorker(NFPWorker):
         circuit["is_active"] = circuit_path[0]["is_active"]
 
         # map path ends to devices
-        if end_a["device"] and end_a["device"] in devices:
-            ret.result[end_a["device"]][cid] = copy.deepcopy(circuit)
-            ret.result[end_a["device"]][cid]["interface"] = end_a["name"]
+        if end_a["device"]:
+            device_data = copy.deepcopy(circuit)
+            device_data["interface"] = end_a["name"]
             if end_z["device"]:
-                ret.result[end_a["device"]][cid]["remote_device"] = end_z["device"]
-                ret.result[end_a["device"]][cid]["remote_interface"] = end_z["name"]
+                device_data["remote_device"] = end_z["device"]
+                device_data["remote_interface"] = end_z["name"]
             elif end_z["provider_network"]:
-                ret.result[end_a["device"]][cid]["provider_network"] = end_z["name"]
-            # save data to cache
-            if cache != False:
-                cache_key = f"get_circuits::{end_a['device']}::{cid}"
-                self.cache.set(
-                    cache_key, ret.result[end_a["device"]][cid], expire=self.cache_ttl
-                )
-        if end_z["device"] and end_z["device"] in devices:
-            ret.result[end_z["device"]][cid] = copy.deepcopy(circuit)
-            ret.result[end_z["device"]][cid]["interface"] = end_z["name"]
+                device_data["provider_network"] = end_z["name"]
+            # save device data in cache
+            ckt_cache_data[end_a["device"]] = device_data
+            # include device data in result
+            if end_a["device"] in devices:
+                ret.result[end_a["device"]][cid] = device_data
+        if end_z["device"]:
+            device_data = copy.deepcopy(circuit)
+            device_data["interface"] = end_z["name"]
             if end_a["device"]:
-                ret.result[end_z["device"]][cid]["remote_device"] = end_a["device"]
-                ret.result[end_z["device"]][cid]["remote_interface"] = end_a["name"]
+                device_data["remote_device"] = end_a["device"]
+                device_data["remote_interface"] = end_a["name"]
             elif end_a["provider_network"]:
-                ret.result[end_z["device"]][cid]["provider_network"] = end_a["name"]
-            # save data to cache
-            if cache != False:
-                cache_key = f"get_circuits::{end_z['device']}::{cid}"
-                self.cache.set(
-                    cache_key, ret.result[end_z["device"]][cid], expire=self.cache_ttl
+                device_data["provider_network"] = end_a["name"]
+            # save device data in cache
+            ckt_cache_data[end_z["device"]] = device_data
+            # include device data in result
+            if end_z["device"] in devices:
+                ret.result[end_z["device"]][cid] = device_data
+
+        # save data to cache
+        if cache != False:
+            ckt_cache_key = f"get_circuits::{cid}"
+            if ckt_cache_data:
+                self.cache.set(ckt_cache_key, ckt_cache_data, expire=self.cache_ttl)
+                log.info(
+                    f"{self.name}:get_circuits - {cid} cached circuit data for future use"
                 )
 
+        log.info(
+            f"{self.name}:get_circuits - {cid} circuit data mapped to devices using data from Netbox"
+        )
         return True
 
     def get_circuits(
@@ -1164,6 +1177,7 @@ class NetboxWorker(NFPWorker):
         )
 
         if cache == True or cache == "force":
+            log.info(f"{self.name}:get_circuits - retrieving circuits data from cache")
             cid_list = []  #  new cid list for follow up query
             # retrieve last updated data from Netbox for circuits and their terminations
             last_updated = self.graphql(
@@ -1189,33 +1203,45 @@ class NetboxWorker(NFPWorker):
             self.cache.expire()  # remove expired items from cache
             for device in devices:
                 for circuit in last_updated.result:
-                    circuit_cache_key = f"get_circuits::{device}::{circuit['cid']}"
+                    circuit_cache_key = f"get_circuits::{circuit['cid']}"
+                    log.info(
+                        f"{self.name}:get_circuits - searching cache for key {circuit_cache_key}"
+                    )
                     # check if cache is up to date and use it if so
                     if circuit_cache_key in self.cache:
                         cache_ckt = self.cache[circuit_cache_key]
+                        # check if device uses this circuit
+                        if device not in cache_ckt:
+                            continue
                         # use cache forcefully
                         if cache == "force":
-                            ret.result[device][circuit["cid"]] = cache_ckt
+                            ret.result[device][circuit["cid"]] = cache_ckt[device]
                         # check circuit cache is up to date
-                        if cache_ckt["last_updated"] != circuit["last_updated"]:
+                        if cache_ckt[device]["last_updated"] != circuit["last_updated"]:
                             continue
                         if (
-                            cache_ckt["termination_a"]
+                            cache_ckt[device]["termination_a"]
                             and circuit["termination_a"]
-                            and cache_ckt["termination_a"]["last_updated"]
+                            and cache_ckt[device]["termination_a"]["last_updated"]
                             != circuit["termination_a"]["last_updated"]
                         ):
                             continue
                         if (
-                            cache_ckt["termination_z"]
+                            cache_ckt[device]["termination_z"]
                             and circuit["termination_z"]
-                            and cache_ckt["termination_z"]["last_updated"]
+                            and cache_ckt[device]["termination_z"]["last_updated"]
                             != circuit["termination_z"]["last_updated"]
                         ):
                             continue
-                        ret.result[device][circuit["cid"]] = cache_ckt
+                        ret.result[device][circuit["cid"]] = cache_ckt[device]
+                        log.info(
+                            f"{self.name}:get_circuits - {circuit['cid']} retrieved data from cache"
+                        )
                     elif circuit["cid"] not in cid_list:
                         cid_list.append(circuit["cid"])
+                        log.info(
+                            f"{self.name}:get_circuits - {circuit['cid']} no cache data found, fetching from Netbox"
+                        )
             # form new filters dictionary to fetch remaining circuits data
             circuits_filters_dict = {}
             if cid_list:
@@ -1246,9 +1272,10 @@ class NetboxWorker(NFPWorker):
 
             # iterate over circuits and map them to devices
             log.info(
-                f"{self.name}:get_circuits - mapping device endpoints for {len(all_circuits)} circuits"
+                f"{self.name}:get_circuits - retrieved data for {len(all_circuits)} "
+                f"circuits from netbox, mapping circuits to devices"
             )
-            with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
+            with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
                 results = [
                     executor.submit(
                         self._map_circuit, circuit, ret, instance, devices, cache
@@ -1648,7 +1675,7 @@ class NetboxWorker(NFPWorker):
                                 continue
                             interface = interfaces.pop(nb_interface.name)
                             # merge v6 into v4 addresses to save code repetition
-                            interface["ipv4"].update(interface.pop("ipv6"))
+                            interface["ipv4"].update(interface.pop("ipv6", {}))
                             # update/create IP addresses
                             for ip, ip_data in interface["ipv4"].items():
                                 prefix_length = ip_data["prefix_length"]

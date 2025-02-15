@@ -19,7 +19,7 @@ class TestNetboxWorker:
     def test_get_netbox_inventory(self, nfclient):
         ret = nfclient.run_job(
             "netbox",
-            "get_netbox_inventory",
+            "get_inventory",
             workers="any",
         )
         pprint.pprint(ret)
@@ -36,7 +36,7 @@ class TestNetboxWorker:
     def test_get_netbox_version(self, nfclient):
         ret = nfclient.run_job(
             "netbox",
-            "get_netbox_version",
+            "get_version",
             workers="any",
         )
         pprint.pprint(ret)
@@ -1332,6 +1332,41 @@ class TestGetCircuits:
                                 "remote_interface",
                             ]
                         ), f"{worker}:{device}:{cid} not all circuit data returned"
+
+    def test_get_circuits_cache_content(self, nfclient):
+        circuits_cache = nfclient.run_job(
+            "netbox",
+            "cache_get",
+            workers="all",
+            kwargs={"keys": "get_circuits*"},
+        )
+
+        pprint.pprint(circuits_cache)
+
+        for worker, res in circuits_cache.items():
+            if "get_circuits::CID1" in res["result"]:
+                assert (
+                    res["result"]["get_circuits::CID1"]["fceos4"]["remote_device"]
+                    == "fceos5"
+                )
+                assert (
+                    res["result"]["get_circuits::CID1"]["fceos5"]["remote_device"]
+                    == "fceos4"
+                )
+            if "get_circuits::CID2" in res["result"]:
+                assert (
+                    res["result"]["get_circuits::CID2"]["fceos4"]["remote_device"]
+                    == "fceos5"
+                )
+                assert (
+                    res["result"]["get_circuits::CID2"]["fceos5"]["remote_device"]
+                    == "fceos4"
+                )
+            if "get_circuits::CID3" in res["result"]:
+                assert (
+                    res["result"]["get_circuits::CID3"]["fceos4"]["provider_network"]
+                    == "Provider1-Net1"
+                )
 
 
 class TestUpdateDeviceFacts:

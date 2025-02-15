@@ -136,6 +136,50 @@ Topology section of NorFab inventory identifies the components that need to be s
 
 Logging inventory section allows to configure logging parameters such file retention option, logging to remote hosts, logging levels etc.
 
+## Hooks Section
+
+Hooks section allows to configure a list of functions to run during NorFab execution lifespan events.
+
+Supported attach points:
+
+- `startup` - list of functions to run right after NorFab nfapi started broker and worker process and fully initialized. Startup hook function must accept `norfab` object as a single argument.
+- `exit` - list of functions to run right before NorFab nfapi initiates exit sequence. Exit hook function must accept `norfab` object as a single argument.
+
+Each hook defined as a dictionary that can contain these keys:
+
+- `function` - Python import path for hook function
+- `attachpoint` - one of the attach points indicating when to run hook function e.g. `startup`
+- `args` - optional list of function positional arguments
+- `kwargs` - optional dictionary of function key-word arguments
+
+Sample hooks definition:
+
+``` yaml title="inventory.yaml"
+hooks:
+  - attachpoint: startup
+    function: "hooks.functions.do_on_startup"
+    args: []
+    kwargs: {}
+    description: "Function to run on startup"
+  - attachpoint: exit
+    function: "hooks.functions.do_on_exit"
+    args: []
+    kwargs: {}
+    description: "Function to run on startup"
+```
+
+Where hook functions are:
+
+``` python title="hooks/functions.py"
+def do_on_startup(norfab):
+    print("Startup hook executed")
+
+def do_on_exit(norfab):
+    print("Exit hook executed")
+```
+
+Function import path is a dot separated path used to import module file that contains hook functions, where individual function name is a last item in dot separated path definition. For example `hooks.functions.do_on_startup` path is equivalent of running Python import `from hooks.functions import do_on_startup`.
+
 ## Jinja2 Support
 
 Starting with version 0.3.0 NorFab supports Jinja2 syntax rendering of inventory files, in addition, `env` dictionary variable available to source environment variables:

@@ -121,7 +121,10 @@ class ShowCommandsModel(BaseModel):
     broker: ShowBrokerModel = Field(None, description="show broker details")
     workers: ShowWorkersModel = Field(None, description="show workers information")
     client: Callable = Field(
-        "show_client", description="show client details", outputter=print_stats
+        "show_client", description="Show client details", outputter=print_stats
+    )
+    inventory: Callable = Field(
+        "show_inventory", description="Show NorFab inventory", outputter=print_stats
     )
 
     class PicleConfig:
@@ -179,6 +182,10 @@ class ShowCommandsModel(BaseModel):
                 "broker-public-key-file": NFCLIENT.broker_public_key_file,
             },
         }
+
+    @staticmethod
+    def show_inventory():
+        return NFCLIENT.inventory.dict()
 
 
 # ---------------------------------------------------------------------------------------------

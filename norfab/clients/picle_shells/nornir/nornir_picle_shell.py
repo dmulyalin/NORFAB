@@ -26,6 +26,7 @@ from .nornir_picle_shell_network import NornirNetworkShell
 from .nornir_picle_shell_diagram import NornirDiagramShell
 from .nornir_picle_shell_file_copy import NornirFileCopyShell
 from .nornir_picle_shell_jobs import NornirJobsShell
+from .nornir_picle_shell_inventory import NornirInventoryShell
 from typing import Union, Optional, List, Any, Dict, Callable, Tuple
 from nornir_salt.plugins.functions import TabulateFormatter
 
@@ -142,7 +143,7 @@ class NornirShowInventoryModel(NorniHostsFilters, ClientRunJobArgs):
 
         result = NFCLIENT.run_job(
             "nornir",
-            "get_nornir_inventory",
+            "get_inventory",
             kwargs=kwargs,
             workers=workers,
             timeout=timeout,
@@ -160,7 +161,7 @@ class NornirShowCommandsModel(BaseModel):
         description="show Nornir hosts",
     )
     version: Callable = Field(
-        "get_nornir_version",
+        "get_version",
         description="show Nornir service version report",
     )
     watchdog: ShowWatchDogModel = Field(
@@ -174,9 +175,9 @@ class NornirShowCommandsModel(BaseModel):
         pipe = PipeFunctionsModel
 
     @staticmethod
-    def get_nornir_version(**kwargs):
+    def get_version(**kwargs):
         workers = kwargs.pop("workers", "all")
-        result = NFCLIENT.run_job("nornir", "get_nornir_version", workers=workers)
+        result = NFCLIENT.run_job("nornir", "get_version", workers=workers)
         return log_error_or_result(result)
 
 
@@ -200,12 +201,14 @@ class NornirServiceCommands(BaseModel):
     file_copy: NornirFileCopyShell = Field(
         None, description="Copy files to/from devices", alias="file-copy"
     )
+    inventory: NornirInventoryShell = Field(
+        None, description="Work with Nornir inventory"
+    )
 
     # netconf:
     # file:
     # gnmi:
     # snmp:
-    # inventory:
 
     show: NornirShowCommandsModel = Field(
         None, description="Show Nornir service parameters"

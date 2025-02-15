@@ -9,6 +9,7 @@ netbox:
     cables: True
   nbdata: True
   primary_ip: "ipv4"
+  circuits: True
   devices:
     - fceos4
     - fceos5

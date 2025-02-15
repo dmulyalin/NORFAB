@@ -33,7 +33,7 @@ class FastAPIShowInventoryModel(ClientRunJobArgs):
 
         result = NFCLIENT.run_job(
             "fastapi",
-            "get_fastapi_inventory",
+            "get_inventory",
             kwargs=kwargs,
             workers=workers,
             timeout=timeout,
@@ -47,7 +47,7 @@ class FastAPIShowCommandsModel(BaseModel):
         description="show FastAPI inventory data",
     )
     version: Callable = Field(
-        "get_fastapi_version",
+        "get_version",
         description="show FastAPI service version report",
     )
 
@@ -56,9 +56,9 @@ class FastAPIShowCommandsModel(BaseModel):
         pipe = PipeFunctionsModel
 
     @staticmethod
-    def get_fastapi_version(**kwargs):
+    def get_version(**kwargs):
         workers = kwargs.pop("workers", "all")
-        result = NFCLIENT.run_job("fastapi", "get_fastapi_version", workers=workers)
+        result = NFCLIENT.run_job("fastapi", "get_version", workers=workers)
         return log_error_or_result(result)
 
 

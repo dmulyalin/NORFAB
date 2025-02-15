@@ -11,7 +11,7 @@ import json
 
 class TestFastAPIWorker:
     def test_get_fastapi_inventory(self, nfclient):
-        ret = nfclient.run_job(b"fastapi", "get_fastapi_inventory")
+        ret = nfclient.run_job(b"fastapi", "get_inventory")
         pprint.pprint(ret)
 
         for worker_name, data in ret.items():
@@ -20,7 +20,7 @@ class TestFastAPIWorker:
             ), f"{worker_name} inventory incomplete"
 
     def test_get_fastapi_version(self, nfclient):
-        ret = nfclient.run_job(b"fastapi", "get_fastapi_version")
+        ret = nfclient.run_job(b"fastapi", "get_version")
         pprint.pprint(ret)
 
         assert isinstance(ret, dict), f"Expected dictionary but received {type(ret)}"
@@ -50,13 +50,13 @@ class TestFastAPIServer:
 
         assert res["errors"] == [], f"Having errors: '{res['errors']}'"
         assert res["status"] == "200", f"Unexpected status: '{res['status']}'"
-        assert res["uuid"], f"Unexpectd uuid value '{res['uuid']}'"
+        assert res["uuid"], f"Unexpected uuid value '{res['uuid']}'"
         assert len(res["workers"]) > 0, f"No workers targeted"
 
     def test_job_post_noargs_nokwargs(self, nfclient):
         resp = requests.post(
             url="http://127.0.0.1:8000/job",
-            data=json.dumps({"service": "nornir", "task": "get_nornir_version"}),
+            data=json.dumps({"service": "nornir", "task": "get_version"}),
         )
         resp.raise_for_status()
         res = resp.json()
@@ -64,14 +64,14 @@ class TestFastAPIServer:
 
         assert res["errors"] == [], f"Having errors: '{res['errors']}'"
         assert res["status"] == "200", f"Unexpected status: '{res['status']}'"
-        assert res["uuid"], f"Unexpectd uuid value '{res['uuid']}'"
+        assert res["uuid"], f"Unexpected uuid value '{res['uuid']}'"
         assert len(res["workers"]) > 0, f"No workers targeted"
 
     def test_job_get(self, nfclient):
         # post the job first
         post_resp = requests.post(
             url="http://127.0.0.1:8000/job",
-            data=json.dumps({"service": "nornir", "task": "get_nornir_version"}),
+            data=json.dumps({"service": "nornir", "task": "get_version"}),
         )
         post_resp.raise_for_status()
         post_res = post_resp.json()

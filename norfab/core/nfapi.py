@@ -390,6 +390,10 @@ class NorFab:
             )
             self.destroy()
 
+        # run startup hooks
+        for f in self.inventory.hooks.get("startup", []):
+            f["function"](self, *f.get("args", []), **f.get("kwargs", {}))
+
     def run(self):
         """
         Helper method to run the loop before CTRL+C called
@@ -407,6 +411,10 @@ class NorFab:
         """
         Stop NORFAB processes.
         """
+        # run exit hooks
+        for f in self.inventory.hooks.get("exit", []):
+            f["function"](self, *f.get("args", []), **f.get("kwargs", {}))
+
         if self.exiting is not True:
             self.exiting = True  # indicate that NorFab already exiting
             # stop client

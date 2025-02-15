@@ -9,7 +9,7 @@ import random
 
 class TestNornirWorker:
     def test_get_nornir_inventory(self, nfclient):
-        ret = nfclient.run_job(b"nornir", "get_nornir_inventory")
+        ret = nfclient.run_job(b"nornir", "get_inventory")
         pprint.pprint(ret)
 
         for worker_name, data in ret.items():
@@ -28,7 +28,7 @@ class TestNornirWorker:
             assert len(data) > 0 or data == []
 
     def test_get_nornir_version(self, nfclient):
-        ret = nfclient.run_job(b"nornir", "get_nornir_version")
+        ret = nfclient.run_job(b"nornir", "get_version")
         pprint.pprint(ret)
 
         assert isinstance(ret, dict), f"Expected dictionary but received {type(ret)}"
@@ -1714,3 +1714,45 @@ class TestNornirFileCopy:
             assert results["result"] is None, f"{worker} returned results"
             assert results["failed"] is True, f"{worker} did not fail to run the task"
             assert "fetch file failed" in results["errors"][0]
+
+
+# ----------------------------------------------------------------------------
+# NORNIR RUNTIME INVENTORY TESTS
+# ----------------------------------------------------------------------------
+
+
+class TestNornirRunTimeInventory:
+    def test_runtime_inventory_create_host(self, nfclient):
+        ret = nfclient.run_job(
+            "nornir",
+            "runtime_inventory",
+            workers=["nornir-worker-1"],
+            kwargs={"action": "create_host", "name": "foobar"},
+        )
+
+        pprint.pprint(ret)
+
+        for worker, results in ret.items():
+            assert results["failed"] is False, f"{worker} failed to run the task"
+            assert results["result"]["foobar"] == True
+
+    def test_runtime_inventory_delete_host(self, nfclient):
+        ret_create = nfclient.run_job(
+            "nornir",
+            "runtime_inventory",
+            workers=["nornir-worker-1"],
+            kwargs={"action": "create_host", "name": "foobar"},
+        )
+
+        ret = nfclient.run_job(
+            "nornir",
+            "runtime_inventory",
+            workers=["nornir-worker-1"],
+            kwargs={"action": "delete_host", "name": "foobar"},
+        )
+
+        pprint.pprint(ret)
+
+        for worker, results in ret.items():
+            assert results["failed"] is False, f"{worker} failed to run the task"
+            assert results["result"]["foobar"] == True

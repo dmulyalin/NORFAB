@@ -42,7 +42,8 @@ def nfclient_dict_inventory():
                             "num_connectors": 10,
                         },
                     },
-                }
+                },
+                "nornir/common.yaml",
             ],
             "nornir-worker-1*": ["nornir/nornir-worker-1.yaml"],
             "nornir-worker-2": [

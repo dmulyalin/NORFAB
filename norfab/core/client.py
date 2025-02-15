@@ -27,7 +27,7 @@ from .security import generate_certificates
 from . import NFP
 from .zhelpers import dump
 from norfab.core.inventory import NorFabInventory
-from typing import Union, List
+from typing import Union, List, Callable, Any
 
 log = logging.getLogger(__name__)
 

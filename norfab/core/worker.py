@@ -599,8 +599,16 @@ class NFPWorker:
             return {}
 
     def worker_exit(self) -> None:
-        """Method to override in child classes"""
-        return
+        """Method to override in child classes with a set of actions to perform on exit call"""
+        return None
+
+    def get_inventory(self) -> Dict:
+        """Method to override in child classes to retrieve worker inventory"""
+        raise NotImplementedError
+
+    def get_version(self) -> Dict:
+        """Method to override in child classes to retrieve worker version report"""
+        raise NotImplementedError
 
     def destroy(self, message=None):
         self.worker_exit()

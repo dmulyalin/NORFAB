@@ -74,6 +74,7 @@ import fnmatch
 import yaml
 import logging
 import copy
+import sys
 
 from jinja2 import Environment
 from typing import Any, Union, Dict, List
@@ -187,6 +188,34 @@ def merge_recursively(data: dict, merge: dict) -> None:
             data[k] = v
 
 
+def make_hooks(base_dir, hooks):
+    """
+    Function to load hook functions
+    """
+    ret = {"startup": [], "exit": []}
+
+    # make sure to include current and base_dir directories in search path
+    if os.getcwd() not in sys.path:
+        sys.path.append(os.getcwd())
+    if base_dir not in sys.path:
+        sys.path.append(base_dir)
+
+    # load hook functions one by one
+    for item in hooks:
+        try:
+            *imp_str, hook_function_name = item["function"].split(".")
+            imp_str = ".".join(imp_str)
+            log.info(f"Importing hook '{imp_str}' function '{hook_function_name}'")
+            hook_module = __import__(imp_str, fromlist=[""])
+            item["function"] = getattr(hook_module, hook_function_name)
+            ret[item.pop("attachpoint")].append(item)
+            log.info(f"Successfully loaded hook function {item['function']}")
+        except Exception as e:
+            log.exception(f"Failed loading hook {item}")
+
+    return ret
+
+
 def render_jinja2_template(
     template: str, context: dict = None, filters: dict = None
 ) -> str:
@@ -269,7 +298,7 @@ class WorkersInventory:
 
 
 class NorFabInventory:
-    __slots__ = ("broker", "workers", "topology", "logging", "base_dir")
+    __slots__ = ("broker", "workers", "topology", "logging", "base_dir", "hooks")
 
     def __init__(
         self, path: str = None, data: dict = None, base_dir: str = None
@@ -285,6 +314,7 @@ class NorFabInventory:
         self.workers = {}
         self.topology = {}
         self.logging = {}
+        self.hooks = {}
 
         if data:
             self.base_dir = base_dir or os.path.split(os.getcwd())[0]
@@ -303,6 +333,7 @@ class NorFabInventory:
         self.workers = WorkersInventory(self.base_dir, data.pop("workers", {}))
         self.topology = data.pop("topology", {})
         self.logging = make_logging_config(self.base_dir, data.pop("logging", {}))
+        self.hooks = make_hooks(self.base_dir, data.pop("hooks", {}))
 
     def load_path(self, path: str) -> None:
         if not os.path.exists(path):
@@ -339,4 +370,14 @@ class NorFabInventory:
             "workers": self.workers.data,
             "topology": self.topology,
             "logging": self.logging,
+            "hooks": {
+                "startup": [
+                    {**i, "function": i["function"].__name__}
+                    for i in self.hooks["startup"]
+                ],
+                "exit": [
+                    {**i, "function": i["function"].__name__}
+                    for i in self.hooks["exit"]
+                ],
+            },
         }

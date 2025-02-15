@@ -88,11 +88,11 @@ class GrapQLCommands(NetboxClientRunJobArgs, NetboxCommonArgs):
 
 class NetboxShowCommandsModel(NetboxClientRunJobArgs, NetboxCommonArgs):
     inventory: Callable = Field(
-        "get_netbox_inventory",
+        "get_inventory",
         description="show Netbox inventory data",
     )
     version: Callable = Field(
-        "get_netbox_version",
+        "get_version",
         description="show Netbox service version report",
     )
     status: Callable = Field(
@@ -109,16 +109,16 @@ class NetboxShowCommandsModel(NetboxClientRunJobArgs, NetboxCommonArgs):
         pipe = PipeFunctionsModel
 
     @staticmethod
-    def get_netbox_inventory(**kwargs):
+    def get_inventory(**kwargs):
         workers = kwargs.pop("workers", "all")
-        result = NFCLIENT.run_job("netbox", "get_netbox_inventory", workers=workers)
+        result = NFCLIENT.run_job("netbox", "get_inventory", workers=workers)
         result = log_error_or_result(result)
         return result
 
     @staticmethod
-    def get_netbox_version(**kwargs):
+    def get_version(**kwargs):
         workers = kwargs.pop("workers", "all")
-        result = NFCLIENT.run_job("netbox", "get_netbox_version", workers=workers)
+        result = NFCLIENT.run_job("netbox", "get_version", workers=workers)
         result = log_error_or_result(result)
         return result
 

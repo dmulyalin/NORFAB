@@ -1,3 +1,15 @@
+## 0.4.0
+
+## CHANGES
+
+1. Improved netbox get_circuits logic.
+2. Standartised worker `get_version` and `get_inventory` methods
+
+## Features
+
+1. Added `runtime_inventory` task to Nornir service
+2. Added support to configure `startup` and `exit` hook functions in inventory to be executed by nfapi on start and on exit.
+
 ## 0.3.1
 
 ### CHANGES

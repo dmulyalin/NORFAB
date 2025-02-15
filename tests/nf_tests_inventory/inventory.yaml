@@ -57,3 +57,16 @@ topology:
     - nornir-worker-6 # Hosts Juniper vMX
     - agent-1
     - fastapi-worker-1
+    
+hooks:
+  - attachpoint: startup
+    function: "hooks.startup.do_on_startup"
+    args: []
+    kwargs: {}
+    description: "Function to run on startup"
+  - attachpoint: exit
+    function: "hooks.startup.do_on_exit"
+    args: []
+    kwargs: {}
+    description: "Function to run on startup"
+    

@@ -97,6 +97,7 @@ nav:
               - Parse: workers/nornir/services_nornir_service_tasks_parse.md
               - Diagram: workers/nornir/services_nornir_service_tasks_diagram.md
               - File Copy: workers/nornir/services_nornir_service_tasks_file_copy.md
+              - Runtime Inventory: workers/nornir/services_nornir_service_tasks_runtime_inventory.md
             - Jina2 Filters Reference: workers/nornir/services_nornir_service_jinja2_filters.md
         - Netbox Service: 
             - Overview: workers/netbox/services_netbox_service.md
@@ -112,7 +113,7 @@ nav:
               - GETNext IP: workers/netbox/services_netbox_service_tasks_get_next_ip.md
               - UPDATE Device Facts: workers/netbox/services_netbox_service_tasks_update_device_facts.md
               - UPDATE Device Interfaces: workers/netbox/services_netbox_service_tasks_update_device_interfaces.md
-        - Agent Service:
+        - Ollama Agent Service:
             - Overview: workers/agent/services_agent_service.md
             - Inventory: workers/agent/services_agent_service_inventory.md
             - Tasks:
@@ -128,10 +129,12 @@ nav:
             - Events Service: services_norfab_events_service.md
     - Clients:
         - NORFAB Clients: clients_overview.md
-        - NORFAB Shell: clients_nfcli_overview.md
+        - NFCLI Shell: clients_nfcli_overview.md
         - Python API: clients_python_api_overview.md
         - REST API: clients_rest_api_overview.md
         - ROBOT API: clients_robot_client_overview.md
+    - Customization:
+        - NORFAB Hooks System: customization/norfab_hooks.md
 - References:
     - NORFAB Inventory: reference_norfab_inventory.md
     - API Reference:
