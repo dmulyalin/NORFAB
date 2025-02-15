@@ -12,28 +12,28 @@
         <meta name="author" content="Denis Mulyalin">
       
       
-        <link rel="canonical" href="https://dmulyalin.github.io/NORFAB/reference_architecture_norfab/">
+        <link rel="canonical" href="https://dmulyalin.github.io/NORFAB/customization/norfab_hooks/">
       
       
-        <link rel="prev" href="../api_reference_clients_robot_client/">
+        <link rel="prev" href="../../clients_robot_client_overview/">
       
       
-        <link rel="next" href="../reference_architecture_nfp/">
+        <link rel="next" href="../../reference_norfab_inventory/">
       
       
-      <link rel="icon" href="../images/logo.jpg">
+      <link rel="icon" href="../../images/logo.jpg">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.2">
     
     
       
-        <title>NORFAB Architecture - Network Automations Fabric [NORFAB]</title>
+        <title>NORFAB Hooks System - Network Automations Fabric [NORFAB]</title>
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.d7758b05.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.d7758b05.min.css">
       
         
-        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
       
       
 
@@ -52,9 +52,9 @@
       
     
     
-      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
     
-    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -80,7 +80,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#high-level-design" class="md-skip">
+        <a href="#norfab-hooks" class="md-skip">
           Skip to content
         </a>
       
@@ -96,9 +96,9 @@
 
 <header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href=".." title="Network Automations Fabric [NORFAB]" class="md-header__button md-logo" aria-label="Network Automations Fabric [NORFAB]" data-md-component="logo">
+    <a href="../.." title="Network Automations Fabric [NORFAB]" class="md-header__button md-logo" aria-label="Network Automations Fabric [NORFAB]" data-md-component="logo">
       
-  <img src="../images/logo.jpg" alt="logo">
+  <img src="../../images/logo.jpg" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -115,7 +115,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              NORFAB Architecture
+              NORFAB Hooks System
             
           </span>
         </div>
@@ -214,11 +214,13 @@
         
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href=".." class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../.." class="md-tabs__link">
           
   
   NORFAB
@@ -232,13 +234,11 @@
         
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
-        <a href="../reference_norfab_inventory/" class="md-tabs__link">
+      <li class="md-tabs__item">
+        <a href="../../reference_norfab_inventory/" class="md-tabs__link">
           
   
   References
@@ -254,7 +254,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../tags/" class="md-tabs__link">
+      <a href="../../tags/" class="md-tabs__link">
         
   
     
@@ -294,9 +294,9 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href=".." title="Network Automations Fabric [NORFAB]" class="md-nav__button md-logo" aria-label="Network Automations Fabric [NORFAB]" data-md-component="logo">
+    <a href="../.." title="Network Automations Fabric [NORFAB]" class="md-nav__button md-logo" aria-label="Network Automations Fabric [NORFAB]" data-md-component="logo">
       
-  <img src="../images/logo.jpg" alt="logo">
+  <img src="../../images/logo.jpg" alt="logo">
 
     </a>
     Network Automations Fabric [NORFAB]
@@ -320,25 +320,30 @@
       
   
   
+    
   
   
+  
     
     
     
+      
+        
+        
       
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" checked>
         
           
-          <label class="md-nav__link" for="__nav_1" id="__nav_1_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_1" id="__nav_1_label" tabindex="">
             
   
   <span class="md-ellipsis">
@@ -350,7 +355,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_1">
             <span class="md-nav__icon md-icon"></span>
             NORFAB
@@ -364,7 +369,7 @@
   
   
     <li class="md-nav__item">
-      <a href=".." class="md-nav__link">
+      <a href="../.." class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -386,7 +391,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../norfab_installation/" class="md-nav__link">
+      <a href="../../norfab_installation/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -408,7 +413,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../norfab_getting_started/" class="md-nav__link">
+      <a href="../../norfab_getting_started/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -430,7 +435,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../norfab_why_use_norfab/" class="md-nav__link">
+      <a href="../../norfab_why_use_norfab/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -452,7 +457,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../norfab_distributed_deployment/" class="md-nav__link">
+      <a href="../../norfab_distributed_deployment/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -474,7 +479,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../norfab_docker_deployment/" class="md-nav__link">
+      <a href="../../norfab_docker_deployment/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -496,7 +501,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../norfab_help_with_norfab/" class="md-nav__link">
+      <a href="../../norfab_help_with_norfab/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -518,7 +523,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../norfab_changelog/" class="md-nav__link">
+      <a href="../../norfab_changelog/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -545,17 +550,20 @@
       
       
         
+          
+          
+        
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
       
         
         
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_9" >
         
           
-          <label class="md-nav__link" for="__nav_1_9" id="__nav_1_9_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_1_9" id="__nav_1_9_label" tabindex="">
             
   
   <span class="md-ellipsis">
@@ -581,7 +589,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../services_overview/" class="md-nav__link">
+      <a href="../../services_overview/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -644,7 +652,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../workers/nornir/services_nornir_service/" class="md-nav__link">
+      <a href="../../workers/nornir/services_nornir_service/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -666,7 +674,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../workers/nornir/services_nornir_service_inventory/" class="md-nav__link">
+      <a href="../../workers/nornir/services_nornir_service_inventory/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -729,7 +737,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../workers/nornir/services_nornir_service_tasks_task/" class="md-nav__link">
+      <a href="../../workers/nornir/services_nornir_service_tasks_task/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -751,7 +759,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../workers/nornir/services_nornir_service_tasks_cli/" class="md-nav__link">
+      <a href="../../workers/nornir/services_nornir_service_tasks_cli/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -773,7 +781,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../workers/nornir/services_nornir_service_tasks_cfg/" class="md-nav__link">
+      <a href="../../workers/nornir/services_nornir_service_tasks_cfg/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -795,7 +803,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../workers/nornir/services_nornir_service_tasks_test/" class="md-nav__link">
+      <a href="../../workers/nornir/services_nornir_service_tasks_test/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -817,7 +825,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../workers/nornir/services_nornir_service_tasks_network/" class="md-nav__link">
+      <a href="../../workers/nornir/services_nornir_service_tasks_network/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -839,7 +847,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../workers/nornir/services_nornir_service_tasks_parse/" class="md-nav__link">
+      <a href="../../workers/nornir/services_nornir_service_tasks_parse/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -861,7 +869,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../workers/nornir/services_nornir_service_tasks_diagram/" class="md-nav__link">
+      <a href="../../workers/nornir/services_nornir_service_tasks_diagram/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -883,7 +891,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../workers/nornir/services_nornir_service_tasks_file_copy/" class="md-nav__link">
+      <a href="../../workers/nornir/services_nornir_service_tasks_file_copy/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -905,7 +913,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../workers/nornir/services_nornir_service_tasks_runtime_inventory/" class="md-nav__link">
+      <a href="../../workers/nornir/services_nornir_service_tasks_runtime_inventory/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -935,7 +943,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../workers/nornir/services_nornir_service_jinja2_filters/" class="md-nav__link">
+      <a href="../../workers/nornir/services_nornir_service_jinja2_filters/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1006,7 +1014,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../workers/netbox/services_netbox_service/" class="md-nav__link">
+      <a href="../../workers/netbox/services_netbox_service/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1028,7 +1036,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../workers/netbox/services_netbox_service_inventory/" class="md-nav__link">
+      <a href="../../workers/netbox/services_netbox_service_inventory/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1091,7 +1099,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../workers/netbox/services_netbox_service_tasks_graphql/" class="md-nav__link">
+      <a href="../../workers/netbox/services_netbox_service_tasks_graphql/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1113,7 +1121,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../workers/netbox/services_netbox_service_tasks_rest/" class="md-nav__link">
+      <a href="../../workers/netbox/services_netbox_service_tasks_rest/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1135,7 +1143,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../workers/netbox/services_netbox_service_tasks_get_devices/" class="md-nav__link">
+      <a href="../../workers/netbox/services_netbox_service_tasks_get_devices/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1157,7 +1165,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../workers/netbox/services_netbox_service_tasks_get_interfaces/" class="md-nav__link">
+      <a href="../../workers/netbox/services_netbox_service_tasks_get_interfaces/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1179,7 +1187,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../workers/netbox/services_netbox_service_tasks_get_connections/" class="md-nav__link">
+      <a href="../../workers/netbox/services_netbox_service_tasks_get_connections/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1201,7 +1209,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../workers/netbox/services_netbox_service_tasks_get_circuits/" class="md-nav__link">
+      <a href="../../workers/netbox/services_netbox_service_tasks_get_circuits/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1223,7 +1231,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../workers/netbox/services_netbox_service_tasks_get_nornir_inventory/" class="md-nav__link">
+      <a href="../../workers/netbox/services_netbox_service_tasks_get_nornir_inventory/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1245,7 +1253,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../workers/netbox/services_netbox_service_tasks_get_next_ip/" class="md-nav__link">
+      <a href="../../workers/netbox/services_netbox_service_tasks_get_next_ip/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1267,7 +1275,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../workers/netbox/services_netbox_service_tasks_update_device_facts/" class="md-nav__link">
+      <a href="../../workers/netbox/services_netbox_service_tasks_update_device_facts/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1289,7 +1297,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../workers/netbox/services_netbox_service_tasks_update_device_interfaces/" class="md-nav__link">
+      <a href="../../workers/netbox/services_netbox_service_tasks_update_device_interfaces/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1368,7 +1376,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../workers/agent/services_agent_service/" class="md-nav__link">
+      <a href="../../workers/agent/services_agent_service/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1390,7 +1398,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../workers/agent/services_agent_service_inventory/" class="md-nav__link">
+      <a href="../../workers/agent/services_agent_service_inventory/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1453,7 +1461,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../workers/agent/services_agent_service_tasks_chat/" class="md-nav__link">
+      <a href="../../workers/agent/services_agent_service_tasks_chat/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1532,7 +1540,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../workers/fastapi/services_fastapi_service/" class="md-nav__link">
+      <a href="../../workers/fastapi/services_fastapi_service/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1554,7 +1562,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../workers/fastapi/services_fastapi_service_inventory/" class="md-nav__link">
+      <a href="../../workers/fastapi/services_fastapi_service_inventory/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1625,7 +1633,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../services_norfab_mmi.md" class="md-nav__link">
+      <a href="../../services_norfab_mmi.md" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1647,7 +1655,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../services_norfab_inventory_service.md" class="md-nav__link">
+      <a href="../../services_norfab_inventory_service.md" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1669,7 +1677,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../services_norfab_file_service.md" class="md-nav__link">
+      <a href="../../services_norfab_file_service.md" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1691,7 +1699,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../services_norfab_jobs_service.md" class="md-nav__link">
+      <a href="../../services_norfab_jobs_service.md" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1713,7 +1721,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../services_norfab_events_service.md" class="md-nav__link">
+      <a href="../../services_norfab_events_service.md" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1756,17 +1764,20 @@
       
       
         
+          
+          
+        
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
       
         
         
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_10" >
         
           
-          <label class="md-nav__link" for="__nav_1_10" id="__nav_1_10_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_1_10" id="__nav_1_10_label" tabindex="">
             
   
   <span class="md-ellipsis">
@@ -1792,7 +1803,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../clients_overview/" class="md-nav__link">
+      <a href="../../clients_overview/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1814,7 +1825,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../clients_nfcli_overview/" class="md-nav__link">
+      <a href="../../clients_nfcli_overview/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1836,7 +1847,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../clients_python_api_overview/" class="md-nav__link">
+      <a href="../../clients_python_api_overview/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1858,7 +1869,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../clients_rest_api_overview/" class="md-nav__link">
+      <a href="../../clients_rest_api_overview/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1880,7 +1891,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../clients_robot_client_overview/" class="md-nav__link">
+      <a href="../../clients_robot_client_overview/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1907,6 +1918,135 @@
                 
   
   
+    
+  
+  
+  
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_11" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_1_11" id="__nav_1_11_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Customization
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_11_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_1_11">
+            <span class="md-nav__icon md-icon"></span>
+            Customization
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    NORFAB Hooks System
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    NORFAB Hooks System
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#norfab-hooks" class="md-nav__link">
+    <span class="md-ellipsis">
+      NORFAB Hooks
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
   
   
     
@@ -1922,93 +2062,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_11" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
         
           
-          <label class="md-nav__link" for="__nav_1_11" id="__nav_1_11_label" tabindex="0">
-            
-  
-  <span class="md-ellipsis">
-    Customization
-    
-  </span>
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_11_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_1_11">
-            <span class="md-nav__icon md-icon"></span>
-            Customization
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../customization/norfab_hooks/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    NORFAB Hooks System
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-    
-      
-      
-  
-  
-    
-  
-  
-  
-    
-    
-    
-      
-        
-        
-      
-      
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
-        
-          
-          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
             
   
   <span class="md-ellipsis">
@@ -2020,7 +2077,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_2">
             <span class="md-nav__icon md-icon"></span>
             References
@@ -2034,7 +2091,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../reference_norfab_inventory/" class="md-nav__link">
+      <a href="../../reference_norfab_inventory/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2061,20 +2118,17 @@
       
       
         
-          
-          
-        
       
     
     
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2" >
         
           
-          <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="">
+          <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="0">
             
   
   <span class="md-ellipsis">
@@ -2141,7 +2195,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api_reference_core_norfab_nfapi/" class="md-nav__link">
+      <a href="../../api_reference_core_norfab_nfapi/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2163,7 +2217,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api_reference_core_norfab_broker/" class="md-nav__link">
+      <a href="../../api_reference_core_norfab_broker/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2185,7 +2239,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api_reference_core_norfab_worker/" class="md-nav__link">
+      <a href="../../api_reference_core_norfab_worker/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2207,7 +2261,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api_reference_core_norfab_client/" class="md-nav__link">
+      <a href="../../api_reference_core_norfab_client/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2229,7 +2283,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api_reference_core_norfab_simple_inventory/" class="md-nav__link">
+      <a href="../../api_reference_core_norfab_simple_inventory/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2251,7 +2305,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api_reference_core_norfab_exceptions/" class="md-nav__link">
+      <a href="../../api_reference_core_norfab_exceptions/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2322,7 +2376,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../workers/nornir/api_reference_workers_nornir_worker/" class="md-nav__link">
+      <a href="../../workers/nornir/api_reference_workers_nornir_worker/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2344,7 +2398,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../workers/netbox/api_reference_workers_netbox_worker/" class="md-nav__link">
+      <a href="../../workers/netbox/api_reference_workers_netbox_worker/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2415,7 +2469,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api_reference_clients_nfcli_client/" class="md-nav__link">
+      <a href="../../api_reference_clients_nfcli_client/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2437,7 +2491,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api_reference_clients_robot_client/" class="md-nav__link">
+      <a href="../../api_reference_clients_robot_client/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2472,30 +2526,25 @@
                 
   
   
-    
   
   
-  
     
     
     
       
       
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_3" >
         
           
-          
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_3" checked>
-        
-          
-          <label class="md-nav__link" for="__nav_2_3" id="__nav_2_3_label" tabindex="">
+          <label class="md-nav__link" for="__nav_2_3" id="__nav_2_3_label" tabindex="0">
             
   
   <span class="md-ellipsis">
@@ -2507,7 +2556,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_3_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_3_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_2_3">
             <span class="md-nav__icon md-icon"></span>
             Architecture
@@ -2518,29 +2567,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  <span class="md-ellipsis">
-    NORFAB Architecture
-    
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../reference_architecture_norfab/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2550,51 +2580,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#high-level-design" class="md-nav__link">
-    <span class="md-ellipsis">
-      High Level Design
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#low-level-design" class="md-nav__link">
-    <span class="md-ellipsis">
-      Low Level Design
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#jobs-execution-flow" class="md-nav__link">
-    <span class="md-ellipsis">
-      Jobs Execution Flow
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -2607,7 +2592,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../reference_architecture_nfp/" class="md-nav__link">
+      <a href="../../reference_architecture_nfp/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2644,7 +2629,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../tags/" class="md-nav__link">
+      <a href="../../tags/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2683,27 +2668,9 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#high-level-design" class="md-nav__link">
+  <a href="#norfab-hooks" class="md-nav__link">
     <span class="md-ellipsis">
-      High Level Design
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#low-level-design" class="md-nav__link">
-    <span class="md-ellipsis">
-      Low Level Design
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#jobs-execution-flow" class="md-nav__link">
-    <span class="md-ellipsis">
-      Jobs Execution Flow
+      NORFAB Hooks
     </span>
   </a>
   
@@ -2728,27 +2695,44 @@
   
 
 
-  <h1>NORFAB Architecture</h1>
+  <h1>NORFAB Hooks System</h1>
 
-<h2 id="high-level-design">High Level Design<a class="headerlink" href="#high-level-design" title="Permanent link">¤</a></h2>
-<hr />
-<p><img alt="High Level Architecture" src="../images/ArcOverview-HighLevel.png" /></p>
-<h2 id="low-level-design">Low Level Design<a class="headerlink" href="#low-level-design" title="Permanent link">¤</a></h2>
-<hr />
-<p>Low level design revolves around resource oriented services - services
-that manage resources, where resources could be databases, network devices,
-file system etc.</p>
-<p><img alt="NorFab Low Level Design" src="../images/ArcOverview-NFP.png" /></p>
-<h2 id="jobs-execution-flow">Jobs Execution Flow<a class="headerlink" href="#jobs-execution-flow" title="Permanent link">¤</a></h2>
-<hr />
-<p>There are multiple job flows implemented:</p>
+<h2 id="norfab-hooks">NORFAB Hooks<a class="headerlink" href="#norfab-hooks" title="Permanent link">¤</a></h2>
+<p>Hooks is a set of of functions to run during NorFab execution lifespan events.</p>
+<p>NorFab supports definition of hook inside of <code>inventory.yaml</code> file within <code>hooks</code> section.</p>
+<p>Supported attach points:</p>
 <ul>
-<li><strong>JOB POST FLOW</strong> - for clients to publish jobs to workers</li>
-<li><strong>JOB LOOP</strong> - job execution performed by workers</li>
-<li><strong>JOB GET FLOW</strong> - for clients to retrieve job execution results</li>
+<li><code>startup</code> - list of functions to run right after NorFab nfapi fully initialized. Startup hook function must accept <code>norfab</code> object as a single argument.</li>
+<li><code>exit</code> - list of functions to run right before NorFab nfapi initiates exit sequence. Exit hook function must accept <code>norfab</code> object as a single argument.</li>
 </ul>
-<p>Above flows depicted on the diagram.</p>
-<p><img alt="Jobs Flow" src="../images/ArcOverview-Jobs%20Flow.png" /></p>
+<p>Each hook defined as a dictionary that can contain these keys:</p>
+<ul>
+<li><code>function</code> - Python import path for hook function</li>
+<li><code>attachpoint</code> - one of the attach points indicating when to run hook function e.g. <code>startup</code></li>
+<li><code>args</code> - optional list of function positional arguments</li>
+<li><code>kwargs</code> - optional dictionary of function key-word arguments</li>
+</ul>
+<p>Sample hooks definition:</p>
+<div class="highlight"><span class="filename">inventory.yaml</span><pre><span></span><code><span class="nt">hooks</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">attachpoint</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">startup</span>
+<span class="w">    </span><span class="nt">function</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;hooks.functions.do_on_startup&quot;</span>
+<span class="w">    </span><span class="nt">args</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[]</span>
+<span class="w">    </span><span class="nt">kwargs</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{}</span>
+<span class="w">    </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Function</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">run</span><span class="nv"> </span><span class="s">on</span><span class="nv"> </span><span class="s">startup&quot;</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">attachpoint</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">exit</span>
+<span class="w">    </span><span class="nt">function</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;hooks.functions.do_on_exit&quot;</span>
+<span class="w">    </span><span class="nt">args</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[]</span>
+<span class="w">    </span><span class="nt">kwargs</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{}</span>
+<span class="w">    </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Function</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">run</span><span class="nv"> </span><span class="s">on</span><span class="nv"> </span><span class="s">startup&quot;</span>
+</code></pre></div>
+<p>Where hook functions are:</p>
+<div class="highlight"><span class="filename">hooks/functions.py</span><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">do_on_startup</span><span class="p">(</span><span class="n">norfab</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Startup hook executed&quot;</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">do_on_exit</span><span class="p">(</span><span class="n">norfab</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Exit hook executed&quot;</span><span class="p">)</span>
+</code></pre></div>
+<p>Function import path is a dot separated path used to import module file that contains hook functions, where individual function name is a last item in dot separated path definition. For example <code>hooks.functions.do_on_startup</code> path is equivalent of running Python import <code>from hooks.functions import do_on_startup</code>.</p>
 
 
 
@@ -2829,10 +2813,10 @@ file system etc.</p>
       <div class="md-progress" data-md-component="progress" role="progressbar"></div>
     
     
-    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.top", "toc.follow", "navigation.instant", "navigation.instant.progress", "content.footnote.tooltips", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.f8cc74c7.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.top", "toc.follow", "navigation.instant", "navigation.instant.progress", "content.footnote.tooltips", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.f8cc74c7.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.f13b1293.min.js"></script>
+      <script src="../../assets/javascripts/bundle.f13b1293.min.js"></script>
       
     
   </body>

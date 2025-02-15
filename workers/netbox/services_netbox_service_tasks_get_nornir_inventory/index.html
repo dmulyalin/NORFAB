@@ -908,6 +908,28 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../nornir/services_nornir_service_tasks_runtime_inventory/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Runtime Inventory
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1406,7 +1428,7 @@
             
   
   <span class="md-ellipsis">
-    Agent Service
+    Ollama Agent Service
     
   </span>
   
@@ -1417,7 +1439,7 @@
         <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_9_4_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_1_9_4">
             <span class="md-nav__icon md-icon"></span>
-            Agent Service
+            Ollama Agent Service
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
@@ -1881,7 +1903,7 @@
         
   
   <span class="md-ellipsis">
-    NORFAB Shell
+    NFCLI Shell
     
   </span>
   
@@ -1948,6 +1970,80 @@
   
   <span class="md-ellipsis">
     ROBOT API
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_11" >
+        
+          
+          <label class="md-nav__link" for="__nav_1_11" id="__nav_1_11_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Customization
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_11_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_11">
+            <span class="md-nav__icon md-icon"></span>
+            Customization
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../customization/norfab_hooks/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NORFAB Hooks System
     
   </span>
   
@@ -2659,6 +2755,7 @@
 <blockquote>
 <p>task api name: <code>get_nornir_inventory</code></p>
 </blockquote>
+<p>This task designed to provide Nornir workers with inventory data sourced from Netbox.</p>
 <p><strong>How it works</strong></p>
 <p>Netbox NorFab workers able to talk with Netbox GraphQL and REST API. Nornir workers can be configured to request Nornir inventory from Netbox workers on startup. Netbox workers in response to such a request will be fetching devices data from Netbox and constructing Nornir inventory returning it to Nornir worker.</p>
 <p><img alt="Netbox get Nornir inventory" src="../../../images/Netbox_get_nornir_inventory.jpg" /></p>
@@ -2667,7 +2764,7 @@
 <p>On startup Nornir worker sends <code>get_nornir_inventory</code> request to Netbox NorFab Workers</p>
 </li>
 <li>
-<p>Netbox worker fetches devices data from netbox - hostnames, interfaces, ip addresses, circuits, connections, configuration contexts data etc.</p>
+<p>Netbox worker fetches devices data from netbox - hostnames, interfaces, ip addresses, circuits, connections, configuration contexts etc.</p>
 </li>
 <li>
 <p>Netbox worker constructs Nornir inventory and sends it back to Nornir worker</p>
@@ -2856,34 +2953,7 @@
 
             <details class="quote">
               <summary>Source code in <code>norfab\workers\netbox_worker.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1263</span>
-<span class="normal">1264</span>
-<span class="normal">1265</span>
-<span class="normal">1266</span>
-<span class="normal">1267</span>
-<span class="normal">1268</span>
-<span class="normal">1269</span>
-<span class="normal">1270</span>
-<span class="normal">1271</span>
-<span class="normal">1272</span>
-<span class="normal">1273</span>
-<span class="normal">1274</span>
-<span class="normal">1275</span>
-<span class="normal">1276</span>
-<span class="normal">1277</span>
-<span class="normal">1278</span>
-<span class="normal">1279</span>
-<span class="normal">1280</span>
-<span class="normal">1281</span>
-<span class="normal">1282</span>
-<span class="normal">1283</span>
-<span class="normal">1284</span>
-<span class="normal">1285</span>
-<span class="normal">1286</span>
-<span class="normal">1287</span>
-<span class="normal">1288</span>
-<span class="normal">1289</span>
-<span class="normal">1290</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1290</span>
 <span class="normal">1291</span>
 <span class="normal">1292</span>
 <span class="normal">1293</span>
@@ -2974,7 +3044,34 @@
 <span class="normal">1378</span>
 <span class="normal">1379</span>
 <span class="normal">1380</span>
-<span class="normal">1381</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_nornir_inventory</span><span class="p">(</span>
+<span class="normal">1381</span>
+<span class="normal">1382</span>
+<span class="normal">1383</span>
+<span class="normal">1384</span>
+<span class="normal">1385</span>
+<span class="normal">1386</span>
+<span class="normal">1387</span>
+<span class="normal">1388</span>
+<span class="normal">1389</span>
+<span class="normal">1390</span>
+<span class="normal">1391</span>
+<span class="normal">1392</span>
+<span class="normal">1393</span>
+<span class="normal">1394</span>
+<span class="normal">1395</span>
+<span class="normal">1396</span>
+<span class="normal">1397</span>
+<span class="normal">1398</span>
+<span class="normal">1399</span>
+<span class="normal">1400</span>
+<span class="normal">1401</span>
+<span class="normal">1402</span>
+<span class="normal">1403</span>
+<span class="normal">1404</span>
+<span class="normal">1405</span>
+<span class="normal">1406</span>
+<span class="normal">1407</span>
+<span class="normal">1408</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_nornir_inventory</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">filters</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">devices</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>

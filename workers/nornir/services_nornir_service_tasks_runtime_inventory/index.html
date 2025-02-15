@@ -12,28 +12,28 @@
         <meta name="author" content="Denis Mulyalin">
       
       
-        <link rel="canonical" href="https://dmulyalin.github.io/NORFAB/reference_architecture_norfab/">
+        <link rel="canonical" href="https://dmulyalin.github.io/NORFAB/workers/nornir/services_nornir_service_tasks_runtime_inventory/">
       
       
-        <link rel="prev" href="../api_reference_clients_robot_client/">
+        <link rel="prev" href="../services_nornir_service_tasks_file_copy/">
       
       
-        <link rel="next" href="../reference_architecture_nfp/">
+        <link rel="next" href="../services_nornir_service_jinja2_filters/">
       
       
-      <link rel="icon" href="../images/logo.jpg">
+      <link rel="icon" href="../../../images/logo.jpg">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.2">
     
     
       
-        <title>NORFAB Architecture - Network Automations Fabric [NORFAB]</title>
+        <title>Runtime Inventory - Network Automations Fabric [NORFAB]</title>
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.d7758b05.min.css">
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.d7758b05.min.css">
       
         
-        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.06af60db.min.css">
       
       
 
@@ -52,9 +52,9 @@
       
     
     
-      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+      <link rel="stylesheet" href="../../../assets/_mkdocstrings.css">
     
-    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -80,7 +80,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#high-level-design" class="md-skip">
+        <a href="#nornir-service-runtime-inventory-task" class="md-skip">
           Skip to content
         </a>
       
@@ -96,9 +96,9 @@
 
 <header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href=".." title="Network Automations Fabric [NORFAB]" class="md-header__button md-logo" aria-label="Network Automations Fabric [NORFAB]" data-md-component="logo">
+    <a href="../../.." title="Network Automations Fabric [NORFAB]" class="md-header__button md-logo" aria-label="Network Automations Fabric [NORFAB]" data-md-component="logo">
       
-  <img src="../images/logo.jpg" alt="logo">
+  <img src="../../../images/logo.jpg" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -115,7 +115,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              NORFAB Architecture
+              Runtime Inventory
             
           </span>
         </div>
@@ -214,11 +214,13 @@
         
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href=".." class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../.." class="md-tabs__link">
           
   
   NORFAB
@@ -232,13 +234,11 @@
         
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
-        <a href="../reference_norfab_inventory/" class="md-tabs__link">
+      <li class="md-tabs__item">
+        <a href="../../../reference_norfab_inventory/" class="md-tabs__link">
           
   
   References
@@ -254,7 +254,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../tags/" class="md-tabs__link">
+      <a href="../../../tags/" class="md-tabs__link">
         
   
     
@@ -294,9 +294,9 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href=".." title="Network Automations Fabric [NORFAB]" class="md-nav__button md-logo" aria-label="Network Automations Fabric [NORFAB]" data-md-component="logo">
+    <a href="../../.." title="Network Automations Fabric [NORFAB]" class="md-nav__button md-logo" aria-label="Network Automations Fabric [NORFAB]" data-md-component="logo">
       
-  <img src="../images/logo.jpg" alt="logo">
+  <img src="../../../images/logo.jpg" alt="logo">
 
     </a>
     Network Automations Fabric [NORFAB]
@@ -320,25 +320,30 @@
       
   
   
+    
   
   
+  
     
     
     
+      
+        
+        
       
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" checked>
         
           
-          <label class="md-nav__link" for="__nav_1" id="__nav_1_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_1" id="__nav_1_label" tabindex="">
             
   
   <span class="md-ellipsis">
@@ -350,7 +355,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_1">
             <span class="md-nav__icon md-icon"></span>
             NORFAB
@@ -364,7 +369,7 @@
   
   
     <li class="md-nav__item">
-      <a href=".." class="md-nav__link">
+      <a href="../../.." class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -386,7 +391,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../norfab_installation/" class="md-nav__link">
+      <a href="../../../norfab_installation/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -408,7 +413,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../norfab_getting_started/" class="md-nav__link">
+      <a href="../../../norfab_getting_started/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -430,7 +435,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../norfab_why_use_norfab/" class="md-nav__link">
+      <a href="../../../norfab_why_use_norfab/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -452,7 +457,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../norfab_distributed_deployment/" class="md-nav__link">
+      <a href="../../../norfab_distributed_deployment/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -474,7 +479,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../norfab_docker_deployment/" class="md-nav__link">
+      <a href="../../../norfab_docker_deployment/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -496,7 +501,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../norfab_help_with_norfab/" class="md-nav__link">
+      <a href="../../../norfab_help_with_norfab/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -518,7 +523,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../norfab_changelog/" class="md-nav__link">
+      <a href="../../../norfab_changelog/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -537,25 +542,30 @@
                 
   
   
+    
   
   
+  
     
     
     
       
       
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_9" >
         
           
-          <label class="md-nav__link" for="__nav_1_9" id="__nav_1_9_label" tabindex="0">
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_9" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_1_9" id="__nav_1_9_label" tabindex="">
             
   
   <span class="md-ellipsis">
@@ -567,7 +577,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_9_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_9_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_1_9">
             <span class="md-nav__icon md-icon"></span>
             Services
@@ -581,7 +591,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../services_overview/" class="md-nav__link">
+      <a href="../../../services_overview/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -600,8 +610,10 @@
                 
   
   
+    
   
   
+  
     
     
     
@@ -611,11 +623,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_9_2" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_9_2" checked>
         
           
           <label class="md-nav__link" for="__nav_1_9_2" id="__nav_1_9_2_label" tabindex="0">
@@ -630,7 +642,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_9_2_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_9_2_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_1_9_2">
             <span class="md-nav__icon md-icon"></span>
             Nornir Service
@@ -644,7 +656,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../workers/nornir/services_nornir_service/" class="md-nav__link">
+      <a href="../services_nornir_service/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -666,7 +678,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../workers/nornir/services_nornir_service_inventory/" class="md-nav__link">
+      <a href="../services_nornir_service_inventory/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -685,8 +697,10 @@
                 
   
   
+    
   
   
+  
     
     
     
@@ -696,11 +710,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_9_2_3" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_9_2_3" checked>
         
           
           <label class="md-nav__link" for="__nav_1_9_2_3" id="__nav_1_9_2_3_label" tabindex="0">
@@ -715,7 +729,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_1_9_2_3_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_1_9_2_3_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_1_9_2_3">
             <span class="md-nav__icon md-icon"></span>
             Tasks
@@ -729,7 +743,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../workers/nornir/services_nornir_service_tasks_task/" class="md-nav__link">
+      <a href="../services_nornir_service_tasks_task/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -751,7 +765,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../workers/nornir/services_nornir_service_tasks_cli/" class="md-nav__link">
+      <a href="../services_nornir_service_tasks_cli/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -773,7 +787,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../workers/nornir/services_nornir_service_tasks_cfg/" class="md-nav__link">
+      <a href="../services_nornir_service_tasks_cfg/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -795,7 +809,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../workers/nornir/services_nornir_service_tasks_test/" class="md-nav__link">
+      <a href="../services_nornir_service_tasks_test/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -817,7 +831,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../workers/nornir/services_nornir_service_tasks_network/" class="md-nav__link">
+      <a href="../services_nornir_service_tasks_network/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -839,7 +853,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../workers/nornir/services_nornir_service_tasks_parse/" class="md-nav__link">
+      <a href="../services_nornir_service_tasks_parse/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -861,7 +875,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../workers/nornir/services_nornir_service_tasks_diagram/" class="md-nav__link">
+      <a href="../services_nornir_service_tasks_diagram/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -883,7 +897,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../workers/nornir/services_nornir_service_tasks_file_copy/" class="md-nav__link">
+      <a href="../services_nornir_service_tasks_file_copy/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -902,10 +916,31 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../workers/nornir/services_nornir_service_tasks_runtime_inventory/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Runtime Inventory
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -915,6 +950,53 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#sample-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      Sample Usage
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#norfab-nornir-runtime-inventory-shell-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      NORFAB Nornir Runtime Inventory Shell Reference
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#python-api-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      Python API Reference
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -935,7 +1017,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../workers/nornir/services_nornir_service_jinja2_filters/" class="md-nav__link">
+      <a href="../services_nornir_service_jinja2_filters/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1006,7 +1088,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../workers/netbox/services_netbox_service/" class="md-nav__link">
+      <a href="../../netbox/services_netbox_service/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1028,7 +1110,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../workers/netbox/services_netbox_service_inventory/" class="md-nav__link">
+      <a href="../../netbox/services_netbox_service_inventory/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1091,7 +1173,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../workers/netbox/services_netbox_service_tasks_graphql/" class="md-nav__link">
+      <a href="../../netbox/services_netbox_service_tasks_graphql/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1113,7 +1195,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../workers/netbox/services_netbox_service_tasks_rest/" class="md-nav__link">
+      <a href="../../netbox/services_netbox_service_tasks_rest/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1135,7 +1217,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../workers/netbox/services_netbox_service_tasks_get_devices/" class="md-nav__link">
+      <a href="../../netbox/services_netbox_service_tasks_get_devices/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1157,7 +1239,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../workers/netbox/services_netbox_service_tasks_get_interfaces/" class="md-nav__link">
+      <a href="../../netbox/services_netbox_service_tasks_get_interfaces/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1179,7 +1261,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../workers/netbox/services_netbox_service_tasks_get_connections/" class="md-nav__link">
+      <a href="../../netbox/services_netbox_service_tasks_get_connections/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1201,7 +1283,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../workers/netbox/services_netbox_service_tasks_get_circuits/" class="md-nav__link">
+      <a href="../../netbox/services_netbox_service_tasks_get_circuits/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1223,7 +1305,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../workers/netbox/services_netbox_service_tasks_get_nornir_inventory/" class="md-nav__link">
+      <a href="../../netbox/services_netbox_service_tasks_get_nornir_inventory/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1245,7 +1327,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../workers/netbox/services_netbox_service_tasks_get_next_ip/" class="md-nav__link">
+      <a href="../../netbox/services_netbox_service_tasks_get_next_ip/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1267,7 +1349,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../workers/netbox/services_netbox_service_tasks_update_device_facts/" class="md-nav__link">
+      <a href="../../netbox/services_netbox_service_tasks_update_device_facts/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1289,7 +1371,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../workers/netbox/services_netbox_service_tasks_update_device_interfaces/" class="md-nav__link">
+      <a href="../../netbox/services_netbox_service_tasks_update_device_interfaces/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1368,7 +1450,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../workers/agent/services_agent_service/" class="md-nav__link">
+      <a href="../../agent/services_agent_service/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1390,7 +1472,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../workers/agent/services_agent_service_inventory/" class="md-nav__link">
+      <a href="../../agent/services_agent_service_inventory/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1453,7 +1535,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../workers/agent/services_agent_service_tasks_chat/" class="md-nav__link">
+      <a href="../../agent/services_agent_service_tasks_chat/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1532,7 +1614,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../workers/fastapi/services_fastapi_service/" class="md-nav__link">
+      <a href="../../fastapi/services_fastapi_service/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1554,7 +1636,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../workers/fastapi/services_fastapi_service_inventory/" class="md-nav__link">
+      <a href="../../fastapi/services_fastapi_service_inventory/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1625,7 +1707,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../services_norfab_mmi.md" class="md-nav__link">
+      <a href="../../../services_norfab_mmi.md" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1647,7 +1729,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../services_norfab_inventory_service.md" class="md-nav__link">
+      <a href="../../../services_norfab_inventory_service.md" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1669,7 +1751,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../services_norfab_file_service.md" class="md-nav__link">
+      <a href="../../../services_norfab_file_service.md" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1691,7 +1773,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../services_norfab_jobs_service.md" class="md-nav__link">
+      <a href="../../../services_norfab_jobs_service.md" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1713,7 +1795,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../services_norfab_events_service.md" class="md-nav__link">
+      <a href="../../../services_norfab_events_service.md" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1756,17 +1838,20 @@
       
       
         
+          
+          
+        
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
       
         
         
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_10" >
         
           
-          <label class="md-nav__link" for="__nav_1_10" id="__nav_1_10_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_1_10" id="__nav_1_10_label" tabindex="">
             
   
   <span class="md-ellipsis">
@@ -1792,7 +1877,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../clients_overview/" class="md-nav__link">
+      <a href="../../../clients_overview/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1814,7 +1899,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../clients_nfcli_overview/" class="md-nav__link">
+      <a href="../../../clients_nfcli_overview/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1836,7 +1921,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../clients_python_api_overview/" class="md-nav__link">
+      <a href="../../../clients_python_api_overview/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1858,7 +1943,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../clients_rest_api_overview/" class="md-nav__link">
+      <a href="../../../clients_rest_api_overview/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1880,7 +1965,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../clients_robot_client_overview/" class="md-nav__link">
+      <a href="../../../clients_robot_client_overview/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1915,17 +2000,20 @@
       
       
         
+          
+          
+        
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
       
         
         
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_11" >
         
           
-          <label class="md-nav__link" for="__nav_1_11" id="__nav_1_11_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_1_11" id="__nav_1_11_label" tabindex="">
             
   
   <span class="md-ellipsis">
@@ -1951,7 +2039,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../customization/norfab_hooks/" class="md-nav__link">
+      <a href="../../../customization/norfab_hooks/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1985,30 +2073,25 @@
       
   
   
-    
   
   
-  
     
     
     
-      
-        
-        
       
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
         
           
-          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
             
   
   <span class="md-ellipsis">
@@ -2020,7 +2103,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_2">
             <span class="md-nav__icon md-icon"></span>
             References
@@ -2034,7 +2117,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../reference_norfab_inventory/" class="md-nav__link">
+      <a href="../../../reference_norfab_inventory/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2061,20 +2144,17 @@
       
       
         
-          
-          
-        
       
     
     
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2" >
         
           
-          <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="">
+          <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="0">
             
   
   <span class="md-ellipsis">
@@ -2141,7 +2221,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api_reference_core_norfab_nfapi/" class="md-nav__link">
+      <a href="../../../api_reference_core_norfab_nfapi/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2163,7 +2243,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api_reference_core_norfab_broker/" class="md-nav__link">
+      <a href="../../../api_reference_core_norfab_broker/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2185,7 +2265,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api_reference_core_norfab_worker/" class="md-nav__link">
+      <a href="../../../api_reference_core_norfab_worker/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2207,7 +2287,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api_reference_core_norfab_client/" class="md-nav__link">
+      <a href="../../../api_reference_core_norfab_client/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2229,7 +2309,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api_reference_core_norfab_simple_inventory/" class="md-nav__link">
+      <a href="../../../api_reference_core_norfab_simple_inventory/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2251,7 +2331,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api_reference_core_norfab_exceptions/" class="md-nav__link">
+      <a href="../../../api_reference_core_norfab_exceptions/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2322,7 +2402,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../workers/nornir/api_reference_workers_nornir_worker/" class="md-nav__link">
+      <a href="../api_reference_workers_nornir_worker/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2344,7 +2424,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../workers/netbox/api_reference_workers_netbox_worker/" class="md-nav__link">
+      <a href="../../netbox/api_reference_workers_netbox_worker/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2415,7 +2495,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api_reference_clients_nfcli_client/" class="md-nav__link">
+      <a href="../../../api_reference_clients_nfcli_client/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2437,7 +2517,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api_reference_clients_robot_client/" class="md-nav__link">
+      <a href="../../../api_reference_clients_robot_client/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2472,30 +2552,25 @@
                 
   
   
-    
   
   
-  
     
     
     
       
       
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_3" >
         
           
-          
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_3" checked>
-        
-          
-          <label class="md-nav__link" for="__nav_2_3" id="__nav_2_3_label" tabindex="">
+          <label class="md-nav__link" for="__nav_2_3" id="__nav_2_3_label" tabindex="0">
             
   
   <span class="md-ellipsis">
@@ -2507,7 +2582,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_3_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_3_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_2_3">
             <span class="md-nav__icon md-icon"></span>
             Architecture
@@ -2518,29 +2593,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  <span class="md-ellipsis">
-    NORFAB Architecture
-    
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../../reference_architecture_norfab/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2550,51 +2606,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#high-level-design" class="md-nav__link">
-    <span class="md-ellipsis">
-      High Level Design
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#low-level-design" class="md-nav__link">
-    <span class="md-ellipsis">
-      Low Level Design
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#jobs-execution-flow" class="md-nav__link">
-    <span class="md-ellipsis">
-      Jobs Execution Flow
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -2607,7 +2618,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../reference_architecture_nfp/" class="md-nav__link">
+      <a href="../../../reference_architecture_nfp/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2644,7 +2655,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../tags/" class="md-nav__link">
+      <a href="../../../tags/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2675,6 +2686,8 @@
   
   
   
+    
+  
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
@@ -2683,27 +2696,27 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#high-level-design" class="md-nav__link">
+  <a href="#sample-usage" class="md-nav__link">
     <span class="md-ellipsis">
-      High Level Design
+      Sample Usage
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#low-level-design" class="md-nav__link">
+  <a href="#norfab-nornir-runtime-inventory-shell-reference" class="md-nav__link">
     <span class="md-ellipsis">
-      Low Level Design
+      NORFAB Nornir Runtime Inventory Shell Reference
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#jobs-execution-flow" class="md-nav__link">
+  <a href="#python-api-reference" class="md-nav__link">
     <span class="md-ellipsis">
-      Jobs Execution Flow
+      Python API Reference
     </span>
   </a>
   
@@ -2723,38 +2736,260 @@
                 
                   
 
+  <nav class="md-tags" >
+    
+      
+      
+      
+        <a href="../../../tags/#tag:nornir" class="md-tag">nornir</a>
+      
+    
+  </nav>
+
 
   
   
 
 
-  <h1>NORFAB Architecture</h1>
-
-<h2 id="high-level-design">High Level Design<a class="headerlink" href="#high-level-design" title="Permanent link">¤</a></h2>
-<hr />
-<p><img alt="High Level Architecture" src="../images/ArcOverview-HighLevel.png" /></p>
-<h2 id="low-level-design">Low Level Design<a class="headerlink" href="#low-level-design" title="Permanent link">¤</a></h2>
-<hr />
-<p>Low level design revolves around resource oriented services - services
-that manage resources, where resources could be databases, network devices,
-file system etc.</p>
-<p><img alt="NorFab Low Level Design" src="../images/ArcOverview-NFP.png" /></p>
-<h2 id="jobs-execution-flow">Jobs Execution Flow<a class="headerlink" href="#jobs-execution-flow" title="Permanent link">¤</a></h2>
-<hr />
-<p>There are multiple job flows implemented:</p>
+<h1 id="nornir-service-runtime-inventory-task">Nornir Service Runtime Inventory Task<a class="headerlink" href="#nornir-service-runtime-inventory-task" title="Permanent link">¤</a></h1>
+<blockquote>
+<p>task api name: <code>runtime_inventory</code></p>
+</blockquote>
+<p>The Nornir Service <code>runtime_inventory</code> task designed to work with Nornir inventory content at a runtime. This task uses nornir-salt <code>InventoryFun</code> functions to create, read, update or delete hosts.</p>
+<h2 id="sample-usage">Sample Usage<a class="headerlink" href="#sample-usage" title="Permanent link">¤</a></h2>
+<p>Sample NorFab client call to invoke inventory host creation:</p>
+<div class="highlight"><pre><span></span><code><span class="n">result</span> <span class="o">=</span> <span class="n">nfclient</span><span class="o">.</span><span class="n">run_job</span><span class="p">(</span>
+    <span class="s2">&quot;nornir&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;runtime_inventory&quot;</span><span class="p">,</span>
+    <span class="n">workers</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;nornir-worker-1&quot;</span><span class="p">],</span>
+    <span class="n">kwargs</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="s2">&quot;create_host&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;foobar&quot;</span>
+    <span class="p">},</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>Supported actions are:</p>
 <ul>
-<li><strong>JOB POST FLOW</strong> - for clients to publish jobs to workers</li>
-<li><strong>JOB LOOP</strong> - job execution performed by workers</li>
-<li><strong>JOB GET FLOW</strong> - for clients to retrieve job execution results</li>
+<li><code>create_host</code> or <code>create</code> - creates new host or replaces existing host object</li>
+<li><code>read_host</code> or <code>read</code> - read host inventory content</li>
+<li><code>update_host</code> or <code>update</code> - non recursively update host attributes if host exists in Nornir inventory, do not create host if it does not exist</li>
+<li><code>delete_host</code> or <code>delete</code> - deletes host object from Nornir Inventory</li>
+<li><code>load</code> - to simplify calling multiple functions</li>
+<li><code>read_inventory</code> - read inventory content for groups, default and hosts</li>
+<li><code>read_host_data</code> - to return host's data under provided path keys</li>
+<li><code>list_hosts</code> - return a list of inventory's host names</li>
+<li><code>list_hosts_platforms</code> - return a dictionary of hosts' platforms</li>
+<li><code>update_defaults</code> - non recursively update defaults attributes</li>
 </ul>
-<p>Above flows depicted on the diagram.</p>
-<p><img alt="Jobs Flow" src="../images/ArcOverview-Jobs%20Flow.png" /></p>
+<p>Sample nfcli command to create host:</p>
+<div class="highlight"><pre><span></span><code>nf#nornir inventory create-host name foobar
+--------------------------------------------- Job Events -----------------------------------------------
+15-Feb-2025 11:12:38.908 d42e073070b94d408225af2a880d1d26 job started
+15-Feb-2025 11:12:38.939 INFO nornir-worker-5 running nornir.runtime_inventory  - Performing &#39;create_host&#39; action
+15-Feb-2025 11:12:39.162 d42e073070b94d408225af2a880d1d26 job completed in 0.254 seconds
+
+--------------------------------------------- Job Results --------------------------------------------
+
+{
+    &quot;nornir-worker-5&quot;: {
+        &quot;foobar&quot;: true
+    }
+}
+nf#
+</code></pre></div>
+<h2 id="norfab-nornir-runtime-inventory-shell-reference">NORFAB Nornir Runtime Inventory Shell Reference<a class="headerlink" href="#norfab-nornir-runtime-inventory-shell-reference" title="Permanent link">¤</a></h2>
+<p>NorFab shell supports these command options for Nornir <code>runtime_inventory</code> task:</p>
+<div class="highlight"><pre><span></span><code>nf#man tree nornir.inventory
+root
+└── nornir:    Nornir service
+    └── inventory:    Work with Nornir inventory
+        ├── create-host:    Create new host
+        │   ├── timeout:    Job timeout
+        │   ├── workers:    Nornir workers to target, default &#39;any&#39;
+        │   ├── *name:    Name of the host
+        │   ├── username:    Host connections username
+        │   ├── password:    Host connections password
+        │   ├── platform:    Host platform recognized by connection plugin
+        │   ├── hostname:    Hostname of the host to initiate connection with, IP address or FQDN
+        │   ├── port:    TCP port to initiate connection with, default &#39;22&#39;
+        │   ├── connection-options:    JSON string with connection options
+        │   ├── groups:    List of groups to associate with this host
+        │   ├── data:    JSON string with arbitrary host data
+        │   └── progress:    Display progress events, default &#39;True&#39;
+        ├── update-host:    Update existing host details
+        │   ├── timeout:    Job timeout
+        │   ├── workers:    Nornir workers to target, default &#39;all&#39;
+        │   ├── *name:    Name of the host
+        │   ├── username:    Host connections username
+        │   ├── password:    Host connections password
+        │   ├── hostname:    Hostname of the host to initiate connection with, IP address or FQDN
+        │   ├── port:    TCP port to initiate connection with, default &#39;22&#39;
+        │   ├── connection-options:    JSON string with connection options
+        │   ├── groups:    List of groups to associate with this host
+        │   ├── groups-action:    Action to perform with groups, default &#39;append&#39;
+        │   ├── data:    JSON string with arbitrary host data
+        │   └── progress:    Display progress events, default &#39;True&#39;
+        ├── delete-host:    Delete host from inventory
+        │   ├── timeout:    Job timeout
+        │   ├── workers:    Nornir workers to target, default &#39;all&#39;
+        │   ├── *name:    Name of the host
+        │   └── progress:    Display progress events, default &#39;True&#39;
+        └── read-host-data:    Return host data at given dor-separated key path
+            ├── timeout:    Job timeout
+            ├── workers:    Nornir workers to target, default &#39;all&#39;
+            ├── FO:    Filter hosts using Filter Object
+            ├── FB:    Filter hosts by name using Glob Patterns
+            ├── FH:    Filter hosts by hostname
+            ├── FC:    Filter hosts containment of pattern in name
+            ├── FR:    Filter hosts by name using Regular Expressions
+            ├── FG:    Filter hosts by group
+            ├── FP:    Filter hosts by hostname using IP Prefix
+            ├── FL:    Filter hosts by names list
+            ├── FM:    Filter hosts by platform
+            ├── FX:    Filter hosts excluding them by name
+            ├── FN:    Negate the match
+            ├── hosts:    Filter hosts to target
+            ├── *keys:    Dot separated path within host data, examples: config.interfaces.Lo0
+            └── progress:    Display progress events, default &#39;True&#39;
+nf#
+</code></pre></div>
+<p><code>*</code> - mandatory/required command argument</p>
+<h2 id="python-api-reference">Python API Reference<a class="headerlink" href="#python-api-reference" title="Permanent link">¤</a></h2>
+
+
+<div class="doc doc-object doc-function">
+
+
+
+
+    <div class="doc doc-contents first">
+
+        <p>Method to work with Nornir inventory in a runtime.</p>
+<p>Supported actions:</p>
+<ul>
+<li><code>create_host</code> or <code>create</code> - creates new host or replaces existing host object</li>
+<li><code>read_host</code> or <code>read</code> - read host inventory content</li>
+<li><code>update_host</code> or <code>update</code> - non recursively update host attributes if host exists
+    in Nornir inventory, do not create host if it does not exist</li>
+<li><code>delete_host</code> or <code>delete</code> - deletes host object from Nornir Inventory</li>
+<li><code>load</code> - to simplify calling multiple functions</li>
+<li><code>read_inventory</code> - read inventory content for groups, default and hosts</li>
+<li><code>read_host_data</code> - to return host's data under provided path keys</li>
+<li><code>list_hosts</code> - return a list of inventory's host names</li>
+<li><code>list_hosts_platforms</code> - return a dictionary of hosts' platforms</li>
+<li><code>update_defaults</code> - non recursively update defaults attributes</li>
+</ul>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>action</code>
+            </td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>action to perform on inventory</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>kwargs</code>
+            </td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>argument to use with the calling action</p>
+              </div>
+            </td>
+            <td>
+                  <code>{}</code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+            <details class="quote">
+              <summary>Source code in <code>norfab\workers\nornir_worker.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1232</span>
+<span class="normal">1233</span>
+<span class="normal">1234</span>
+<span class="normal">1235</span>
+<span class="normal">1236</span>
+<span class="normal">1237</span>
+<span class="normal">1238</span>
+<span class="normal">1239</span>
+<span class="normal">1240</span>
+<span class="normal">1241</span>
+<span class="normal">1242</span>
+<span class="normal">1243</span>
+<span class="normal">1244</span>
+<span class="normal">1245</span>
+<span class="normal">1246</span>
+<span class="normal">1247</span>
+<span class="normal">1248</span>
+<span class="normal">1249</span>
+<span class="normal">1250</span>
+<span class="normal">1251</span>
+<span class="normal">1252</span>
+<span class="normal">1253</span>
+<span class="normal">1254</span>
+<span class="normal">1255</span>
+<span class="normal">1256</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">runtime_inventory</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">action</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Method to work with Nornir inventory in a runtime.</span>
+
+<span class="sd">    Supported actions:</span>
+
+<span class="sd">    - `create_host` or `create` - creates new host or replaces existing host object</span>
+<span class="sd">    - `read_host` or `read` - read host inventory content</span>
+<span class="sd">    - `update_host` or `update` - non recursively update host attributes if host exists</span>
+<span class="sd">        in Nornir inventory, do not create host if it does not exist</span>
+<span class="sd">    - `delete_host` or `delete` - deletes host object from Nornir Inventory</span>
+<span class="sd">    - `load` - to simplify calling multiple functions</span>
+<span class="sd">    - `read_inventory` - read inventory content for groups, default and hosts</span>
+<span class="sd">    - `read_host_data` - to return host&#39;s data under provided path keys</span>
+<span class="sd">    - `list_hosts` - return a list of inventory&#39;s host names</span>
+<span class="sd">    - `list_hosts_platforms` - return a dictionary of hosts&#39; platforms</span>
+<span class="sd">    - `update_defaults` - non recursively update defaults attributes</span>
+
+<span class="sd">    :param action: action to perform on inventory</span>
+<span class="sd">    :param kwargs: argument to use with the calling action</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># clean up kwargs</span>
+    <span class="n">_</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;progress&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">event</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Performing &#39;</span><span class="si">{</span><span class="n">action</span><span class="si">}</span><span class="s2">&#39; action&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">Result</span><span class="p">(</span><span class="n">result</span><span class="o">=</span><span class="n">InventoryFun</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nr</span><span class="p">,</span> <span class="n">call</span><span class="o">=</span><span class="n">action</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
 
 
 
 
 
 
+
+  
+  
 
 
 
@@ -2829,10 +3064,10 @@ file system etc.</p>
       <div class="md-progress" data-md-component="progress" role="progressbar"></div>
     
     
-    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.top", "toc.follow", "navigation.instant", "navigation.instant.progress", "content.footnote.tooltips", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.f8cc74c7.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.top", "toc.follow", "navigation.instant", "navigation.instant.progress", "content.footnote.tooltips", "content.code.copy", "content.code.annotate"], "search": "../../../assets/javascripts/workers/search.f8cc74c7.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.f13b1293.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.f13b1293.min.js"></script>
       
     
   </body>

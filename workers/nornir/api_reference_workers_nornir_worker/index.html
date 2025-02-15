@@ -898,6 +898,28 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../services_nornir_service_tasks_runtime_inventory/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Runtime Inventory
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1324,7 +1346,7 @@
             
   
   <span class="md-ellipsis">
-    Agent Service
+    Ollama Agent Service
     
   </span>
   
@@ -1335,7 +1357,7 @@
         <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_9_4_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_1_9_4">
             <span class="md-nav__icon md-icon"></span>
-            Agent Service
+            Ollama Agent Service
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
@@ -1796,7 +1818,7 @@
         
   
   <span class="md-ellipsis">
-    NORFAB Shell
+    NFCLI Shell
     
   </span>
   
@@ -1863,6 +1885,77 @@
   
   <span class="md-ellipsis">
     ROBOT API
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_11" >
+        
+          
+          <label class="md-nav__link" for="__nav_1_11" id="__nav_1_11_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Customization
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_11_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_11">
+            <span class="md-nav__icon md-icon"></span>
+            Customization
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../customization/norfab_hooks/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NORFAB Hooks System
     
   </span>
   
@@ -2383,18 +2476,18 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#norfab.workers.nornir_worker.NornirWorker.get_nornir_inventory" class="md-nav__link">
+  <a href="#norfab.workers.nornir_worker.NornirWorker.get_inventory" class="md-nav__link">
     <span class="md-ellipsis">
-      get_nornir_inventory
+      get_inventory
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#norfab.workers.nornir_worker.NornirWorker.get_nornir_version" class="md-nav__link">
+  <a href="#norfab.workers.nornir_worker.NornirWorker.get_version" class="md-nav__link">
     <span class="md-ellipsis">
-      get_nornir_version
+      get_version
     </span>
   </a>
   
@@ -2467,6 +2560,15 @@
   <a href="#norfab.workers.nornir_worker.NornirWorker.file_copy" class="md-nav__link">
     <span class="md-ellipsis">
       file_copy
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#norfab.workers.nornir_worker.NornirWorker.runtime_inventory" class="md-nav__link">
+    <span class="md-ellipsis">
+      runtime_inventory
     </span>
   </a>
   
@@ -2872,18 +2974,18 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#norfab.workers.nornir_worker.NornirWorker.get_nornir_inventory" class="md-nav__link">
+  <a href="#norfab.workers.nornir_worker.NornirWorker.get_inventory" class="md-nav__link">
     <span class="md-ellipsis">
-      get_nornir_inventory
+      get_inventory
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#norfab.workers.nornir_worker.NornirWorker.get_nornir_version" class="md-nav__link">
+  <a href="#norfab.workers.nornir_worker.NornirWorker.get_version" class="md-nav__link">
     <span class="md-ellipsis">
-      get_nornir_version
+      get_version
     </span>
   </a>
   
@@ -2956,6 +3058,15 @@
   <a href="#norfab.workers.nornir_worker.NornirWorker.file_copy" class="md-nav__link">
     <span class="md-ellipsis">
       file_copy
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#norfab.workers.nornir_worker.NornirWorker.runtime_inventory" class="md-nav__link">
+    <span class="md-ellipsis">
+      runtime_inventory
     </span>
   </a>
   
@@ -3034,8 +3145,7 @@
 
                   <details class="quote">
                     <summary>Source code in <code>norfab\workers\nornir_worker.py</code></summary>
-                    <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">54</span>
-<span class="normal">55</span>
+                    <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">55</span>
 <span class="normal">56</span>
 <span class="normal">57</span>
 <span class="normal">58</span>
@@ -3051,7 +3161,8 @@
 <span class="normal">68</span>
 <span class="normal">69</span>
 <span class="normal">70</span>
-<span class="normal">71</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">worker</span><span class="p">):</span>
+<span class="normal">71</span>
+<span class="normal">72</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">worker</span><span class="p">):</span>
     <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">worker</span><span class="p">)</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">worker</span> <span class="o">=</span> <span class="n">worker</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">connections_idle_timeout</span> <span class="o">=</span> <span class="n">worker</span><span class="o">.</span><span class="n">inventory</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
@@ -3145,8 +3256,7 @@
 
             <details class="quote">
               <summary>Source code in <code>norfab\workers\nornir_worker.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 94</span>
-<span class="normal"> 95</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 95</span>
 <span class="normal"> 96</span>
 <span class="normal"> 97</span>
 <span class="normal"> 98</span>
@@ -3163,7 +3273,8 @@
 <span class="normal">109</span>
 <span class="normal">110</span>
 <span class="normal">111</span>
-<span class="normal">112</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">connections_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nr</span><span class="p">,</span> <span class="n">plugin</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="normal">112</span>
+<span class="normal">113</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">connections_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nr</span><span class="p">,</span> <span class="n">plugin</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Function to update connection use timestamps for each host</span>
 
@@ -3204,8 +3315,7 @@ not being used over connections_idle_timeout</p>
 
             <details class="quote">
               <summary>Source code in <code>norfab\workers\nornir_worker.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">114</span>
-<span class="normal">115</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">115</span>
 <span class="normal">116</span>
 <span class="normal">117</span>
 <span class="normal">118</span>
@@ -3253,7 +3363,8 @@ not being used over connections_idle_timeout</p>
 <span class="normal">160</span>
 <span class="normal">161</span>
 <span class="normal">162</span>
-<span class="normal">163</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">connections_clean</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="normal">163</span>
+<span class="normal">164</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">connections_clean</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Check if need to tear down connections that are idle -</span>
 <span class="sd">    not being used over connections_idle_timeout</span>
@@ -3324,8 +3435,7 @@ not being used over connections_idle_timeout</p>
 
             <details class="quote">
               <summary>Source code in <code>norfab\workers\nornir_worker.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">165</span>
-<span class="normal">166</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">166</span>
 <span class="normal">167</span>
 <span class="normal">168</span>
 <span class="normal">169</span>
@@ -3354,7 +3464,8 @@ not being used over connections_idle_timeout</p>
 <span class="normal">192</span>
 <span class="normal">193</span>
 <span class="normal">194</span>
-<span class="normal">195</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">connections_keepalive</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="normal">195</span>
+<span class="normal">196</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">connections_keepalive</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Keepalive connections and clean up dead connections if any&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">connections_idle_timeout</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>  <span class="c1"># do not keepalive if idle is 0</span>
         <span class="k">return</span>
@@ -3532,8 +3643,7 @@ not being used over connections_idle_timeout</p>
 
                   <details class="quote">
                     <summary>Source code in <code>norfab\workers\nornir_worker.py</code></summary>
-                    <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">210</span>
-<span class="normal">211</span>
+                    <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">211</span>
 <span class="normal">212</span>
 <span class="normal">213</span>
 <span class="normal">214</span>
@@ -3568,7 +3678,8 @@ not being used over connections_idle_timeout</p>
 <span class="normal">243</span>
 <span class="normal">244</span>
 <span class="normal">245</span>
-<span class="normal">246</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+<span class="normal">246</span>
+<span class="normal">247</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">inventory</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">broker</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -3635,8 +3746,7 @@ not being used over connections_idle_timeout</p>
 
             <details class="quote">
               <summary>Source code in <code>norfab\workers\nornir_worker.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">264</span>
-<span class="normal">265</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">265</span>
 <span class="normal">266</span>
 <span class="normal">267</span>
 <span class="normal">268</span>
@@ -3684,7 +3794,8 @@ not being used over connections_idle_timeout</p>
 <span class="normal">310</span>
 <span class="normal">311</span>
 <span class="normal">312</span>
-<span class="normal">313</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">_pull_netbox_inventory</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="normal">313</span>
+<span class="normal">314</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">_pull_netbox_inventory</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Function to query inventory from Netbox&quot;&quot;&quot;</span>
     <span class="c1"># exit if has no Netbox data in inventory</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nornir_inventory</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;netbox&quot;</span><span class="p">),</span> <span class="nb">dict</span><span class="p">):</span>
@@ -3824,8 +3935,7 @@ to Nornir.</p>
 
             <details class="quote">
               <summary>Source code in <code>norfab\workers\nornir_worker.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">315</span>
-<span class="normal">316</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">316</span>
 <span class="normal">317</span>
 <span class="normal">318</span>
 <span class="normal">319</span>
@@ -3945,7 +4055,8 @@ to Nornir.</p>
 <span class="normal">433</span>
 <span class="normal">434</span>
 <span class="normal">435</span>
-<span class="normal">436</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">_add_processors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nr</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+<span class="normal">436</span>
+<span class="normal">437</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">_add_processors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nr</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Helper function to extract processors arguments and add processors</span>
 <span class="sd">    to Nornir.</span>
@@ -4174,8 +4285,7 @@ combine them in a single string.</p>
 
             <details class="quote">
               <summary>Source code in <code>norfab\workers\nornir_worker.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">438</span>
-<span class="normal">439</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">439</span>
 <span class="normal">440</span>
 <span class="normal">441</span>
 <span class="normal">442</span>
@@ -4201,7 +4311,8 @@ combine them in a single string.</p>
 <span class="normal">462</span>
 <span class="normal">463</span>
 <span class="normal">464</span>
-<span class="normal">465</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">render_jinja2_templates</span><span class="p">(</span>
+<span class="normal">465</span>
+<span class="normal">466</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">render_jinja2_templates</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span> <span class="n">templates</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">context</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">filters</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -4281,8 +4392,7 @@ combine them in a single string.</p>
 
             <details class="quote">
               <summary>Source code in <code>norfab\workers\nornir_worker.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">467</span>
-<span class="normal">468</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">468</span>
 <span class="normal">469</span>
 <span class="normal">470</span>
 <span class="normal">471</span>
@@ -4294,7 +4404,8 @@ combine them in a single string.</p>
 <span class="normal">477</span>
 <span class="normal">478</span>
 <span class="normal">479</span>
-<span class="normal">480</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">load_job_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">job_data</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="normal">480</span>
+<span class="normal">481</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">load_job_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">job_data</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Helper function to download job data and load it using YAML</span>
 
@@ -4329,14 +4440,14 @@ combine them in a single string.</p>
 
             <details class="quote">
               <summary>Source code in <code>norfab\workers\nornir_worker.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">486</span>
-<span class="normal">487</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">487</span>
 <span class="normal">488</span>
 <span class="normal">489</span>
 <span class="normal">490</span>
 <span class="normal">491</span>
 <span class="normal">492</span>
-<span class="normal">493</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">_jinja2_network_hosts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">network</span><span class="p">,</span> <span class="n">pfxlen</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="normal">493</span>
+<span class="normal">494</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">_jinja2_network_hosts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">network</span><span class="p">,</span> <span class="n">pfxlen</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a list of hosts for given network&quot;&quot;&quot;</span>
     <span class="n">ret</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">ip_interface</span> <span class="o">=</span> <span class="n">ipaddress</span><span class="o">.</span><span class="n">ip_interface</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
@@ -4396,8 +4507,7 @@ combine them in a single string.</p>
 
             <details class="quote">
               <summary>Source code in <code>norfab\workers\nornir_worker.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">505</span>
-<span class="normal">506</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">506</span>
 <span class="normal">507</span>
 <span class="normal">508</span>
 <span class="normal">509</span>
@@ -4418,7 +4528,8 @@ combine them in a single string.</p>
 <span class="normal">524</span>
 <span class="normal">525</span>
 <span class="normal">526</span>
-<span class="normal">527</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_nornir_hosts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">details</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+<span class="normal">527</span>
+<span class="normal">528</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_nornir_hosts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">details</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Produce a list of hosts managed by this worker</span>
 
@@ -4450,10 +4561,10 @@ combine them in a single string.</p>
 <div class="doc doc-object doc-function">
 
 
-<h3 id="norfab.workers.nornir_worker.NornirWorker.get_nornir_inventory" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">get_nornir_inventory</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code>
+<h3 id="norfab.workers.nornir_worker.NornirWorker.get_inventory" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">get_inventory</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code>
 
-<a href="#norfab.workers.nornir_worker.NornirWorker.get_nornir_inventory" class="headerlink" title="Permanent link">¤</a></h3>
+<a href="#norfab.workers.nornir_worker.NornirWorker.get_inventory" class="headerlink" title="Permanent link">¤</a></h3>
 
 
     <div class="doc doc-contents ">
@@ -4493,8 +4604,7 @@ combine them in a single string.</p>
 
             <details class="quote">
               <summary>Source code in <code>norfab\workers\nornir_worker.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">529</span>
-<span class="normal">530</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">530</span>
 <span class="normal">531</span>
 <span class="normal">532</span>
 <span class="normal">533</span>
@@ -4502,8 +4612,7 @@ combine them in a single string.</p>
 <span class="normal">535</span>
 <span class="normal">536</span>
 <span class="normal">537</span>
-<span class="normal">538</span>
-<span class="normal">539</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_nornir_inventory</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="normal">538</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_inventory</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Retrieve running Nornir inventory for requested hosts</span>
 
@@ -4511,9 +4620,7 @@ combine them in a single string.</p>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">filters</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">FFun_functions</span><span class="p">}</span>
     <span class="n">filtered_nornir</span> <span class="o">=</span> <span class="n">FFun</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nr</span><span class="p">,</span> <span class="o">**</span><span class="n">filters</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">Result</span><span class="p">(</span>
-        <span class="n">result</span><span class="o">=</span><span class="n">filtered_nornir</span><span class="o">.</span><span class="n">inventory</span><span class="o">.</span><span class="n">dict</span><span class="p">(),</span> <span class="n">task</span><span class="o">=</span><span class="s2">&quot;get_nornir_inventory&quot;</span>
-    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">Result</span><span class="p">(</span><span class="n">result</span><span class="o">=</span><span class="n">filtered_nornir</span><span class="o">.</span><span class="n">inventory</span><span class="o">.</span><span class="n">dict</span><span class="p">(),</span> <span class="n">task</span><span class="o">=</span><span class="s2">&quot;get_inventory&quot;</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -4523,10 +4630,10 @@ combine them in a single string.</p>
 <div class="doc doc-object doc-function">
 
 
-<h3 id="norfab.workers.nornir_worker.NornirWorker.get_nornir_version" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">get_nornir_version</span><span class="p">()</span></code>
+<h3 id="norfab.workers.nornir_worker.NornirWorker.get_version" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">get_version</span><span class="p">()</span></code>
 
-<a href="#norfab.workers.nornir_worker.NornirWorker.get_nornir_version" class="headerlink" title="Permanent link">¤</a></h3>
+<a href="#norfab.workers.nornir_worker.NornirWorker.get_version" class="headerlink" title="Permanent link">¤</a></h3>
 
 
     <div class="doc doc-contents ">
@@ -4535,7 +4642,8 @@ combine them in a single string.</p>
 
             <details class="quote">
               <summary>Source code in <code>norfab\workers\nornir_worker.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">541</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">540</span>
+<span class="normal">541</span>
 <span class="normal">542</span>
 <span class="normal">543</span>
 <span class="normal">544</span>
@@ -4581,8 +4689,7 @@ combine them in a single string.</p>
 <span class="normal">584</span>
 <span class="normal">585</span>
 <span class="normal">586</span>
-<span class="normal">587</span>
-<span class="normal">588</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_nornir_version</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="normal">587</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_version</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Produce Python packages version report</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -4715,7 +4822,8 @@ to all hosts initiated simultaneously up to the number of <code>num_workers</cod
 
             <details class="quote">
               <summary>Source code in <code>norfab\workers\nornir_worker.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">599</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">598</span>
+<span class="normal">599</span>
 <span class="normal">600</span>
 <span class="normal">601</span>
 <span class="normal">602</span>
@@ -4790,8 +4898,7 @@ to all hosts initiated simultaneously up to the number of <code>num_workers</cod
 <span class="normal">671</span>
 <span class="normal">672</span>
 <span class="normal">673</span>
-<span class="normal">674</span>
-<span class="normal">675</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">task</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plugin</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Result</span><span class="p">:</span>
+<span class="normal">674</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">task</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plugin</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Result</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Task to invoke any of supported Nornir task plugins. This function</span>
 <span class="sd">    performs dynamic import of requested plugin function and executes</span>
@@ -5017,7 +5124,8 @@ Command Line Interface (CLI)</p>
 
             <details class="quote">
               <summary>Source code in <code>norfab\workers\nornir_worker.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">677</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">676</span>
+<span class="normal">677</span>
 <span class="normal">678</span>
 <span class="normal">679</span>
 <span class="normal">680</span>
@@ -5126,8 +5234,7 @@ Command Line Interface (CLI)</p>
 <span class="normal">783</span>
 <span class="normal">784</span>
 <span class="normal">785</span>
-<span class="normal">786</span>
-<span class="normal">787</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">cli</span><span class="p">(</span>
+<span class="normal">786</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">cli</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">commands</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">plugin</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;netmiko&quot;</span><span class="p">,</span>
@@ -5259,7 +5366,8 @@ Command Line Interface (CLI)</p>
 
             <details class="quote">
               <summary>Source code in <code>norfab\workers\nornir_worker.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">789</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">788</span>
+<span class="normal">789</span>
 <span class="normal">790</span>
 <span class="normal">791</span>
 <span class="normal">792</span>
@@ -5271,8 +5379,7 @@ Command Line Interface (CLI)</p>
 <span class="normal">798</span>
 <span class="normal">799</span>
 <span class="normal">800</span>
-<span class="normal">801</span>
-<span class="normal">802</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">nb_get_next_ip</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="normal">801</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">nb_get_next_ip</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Task to query next available IP address from Netbox service&quot;&quot;&quot;</span>
     <span class="n">reply</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">run_job</span><span class="p">(</span>
         <span class="s2">&quot;netbox&quot;</span><span class="p">,</span>
@@ -5457,7 +5564,8 @@ Command Line Interface (CLI)</p>
 
             <details class="quote">
               <summary>Source code in <code>norfab\workers\nornir_worker.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">804</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">803</span>
+<span class="normal">804</span>
 <span class="normal">805</span>
 <span class="normal">806</span>
 <span class="normal">807</span>
@@ -5549,8 +5657,7 @@ Command Line Interface (CLI)</p>
 <span class="normal">893</span>
 <span class="normal">894</span>
 <span class="normal">895</span>
-<span class="normal">896</span>
-<span class="normal">897</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">cfg</span><span class="p">(</span>
+<span class="normal">896</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">cfg</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">config</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span>
     <span class="n">plugin</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;netmiko&quot;</span><span class="p">,</span>
@@ -5807,7 +5914,8 @@ Command Line Interface (CLI)</p>
 
             <details class="quote">
               <summary>Source code in <code>norfab\workers\nornir_worker.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 899</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 898</span>
+<span class="normal"> 899</span>
 <span class="normal"> 900</span>
 <span class="normal"> 901</span>
 <span class="normal"> 902</span>
@@ -5963,8 +6071,7 @@ Command Line Interface (CLI)</p>
 <span class="normal">1052</span>
 <span class="normal">1053</span>
 <span class="normal">1054</span>
-<span class="normal">1055</span>
-<span class="normal">1056</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">test</span><span class="p">(</span>
+<span class="normal">1055</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">test</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">suite</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">list</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
     <span class="n">subset</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -6188,7 +6295,8 @@ Command Line Interface (CLI)</p>
 
             <details class="quote">
               <summary>Source code in <code>norfab\workers\nornir_worker.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1067</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1066</span>
+<span class="normal">1067</span>
 <span class="normal">1068</span>
 <span class="normal">1069</span>
 <span class="normal">1070</span>
@@ -6212,8 +6320,7 @@ Command Line Interface (CLI)</p>
 <span class="normal">1088</span>
 <span class="normal">1089</span>
 <span class="normal">1090</span>
-<span class="normal">1091</span>
-<span class="normal">1092</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">network</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fun</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="normal">1091</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">network</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fun</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Task to call various network related utility functions.</span>
 
@@ -6339,7 +6446,8 @@ Command Line Interface (CLI)</p>
 
             <details class="quote">
               <summary>Source code in <code>norfab\workers\nornir_worker.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1094</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1093</span>
+<span class="normal">1094</span>
 <span class="normal">1095</span>
 <span class="normal">1096</span>
 <span class="normal">1097</span>
@@ -6405,8 +6513,7 @@ Command Line Interface (CLI)</p>
 <span class="normal">1157</span>
 <span class="normal">1158</span>
 <span class="normal">1159</span>
-<span class="normal">1160</span>
-<span class="normal">1161</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">parse</span><span class="p">(</span>
+<span class="normal">1160</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">parse</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">plugin</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;napalm&quot;</span><span class="p">,</span>
     <span class="n">getters</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;get_facts&quot;</span><span class="p">,</span>
@@ -6628,7 +6735,8 @@ Command Line Interface (CLI)</p>
 
             <details class="quote">
               <summary>Source code in <code>norfab\workers\nornir_worker.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1163</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1162</span>
+<span class="normal">1163</span>
 <span class="normal">1164</span>
 <span class="normal">1165</span>
 <span class="normal">1166</span>
@@ -6695,8 +6803,7 @@ Command Line Interface (CLI)</p>
 <span class="normal">1227</span>
 <span class="normal">1228</span>
 <span class="normal">1229</span>
-<span class="normal">1230</span>
-<span class="normal">1231</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">file_copy</span><span class="p">(</span>
+<span class="normal">1230</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">file_copy</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">source_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">plugin</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;netmiko&quot;</span><span class="p">,</span>
@@ -6765,6 +6872,135 @@ Command Line Interface (CLI)</p>
     <span class="bp">self</span><span class="o">.</span><span class="n">watchdog</span><span class="o">.</span><span class="n">connections_clean</span><span class="p">()</span>
 
     <span class="k">return</span> <span class="n">ret</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="norfab.workers.nornir_worker.NornirWorker.runtime_inventory" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">runtime_inventory</span><span class="p">(</span><span class="n">action</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code>
+
+<a href="#norfab.workers.nornir_worker.NornirWorker.runtime_inventory" class="headerlink" title="Permanent link">¤</a></h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Method to work with Nornir inventory in a runtime.</p>
+<p>Supported actions:</p>
+<ul>
+<li><code>create_host</code> or <code>create</code> - creates new host or replaces existing host object</li>
+<li><code>read_host</code> or <code>read</code> - read host inventory content</li>
+<li><code>update_host</code> or <code>update</code> - non recursively update host attributes if host exists
+    in Nornir inventory, do not create host if it does not exist</li>
+<li><code>delete_host</code> or <code>delete</code> - deletes host object from Nornir Inventory</li>
+<li><code>load</code> - to simplify calling multiple functions</li>
+<li><code>read_inventory</code> - read inventory content for groups, default and hosts</li>
+<li><code>read_host_data</code> - to return host's data under provided path keys</li>
+<li><code>list_hosts</code> - return a list of inventory's host names</li>
+<li><code>list_hosts_platforms</code> - return a dictionary of hosts' platforms</li>
+<li><code>update_defaults</code> - non recursively update defaults attributes</li>
+</ul>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>action</code>
+            </td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>action to perform on inventory</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>kwargs</code>
+            </td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>argument to use with the calling action</p>
+              </div>
+            </td>
+            <td>
+                  <code>{}</code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+            <details class="quote">
+              <summary>Source code in <code>norfab\workers\nornir_worker.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1232</span>
+<span class="normal">1233</span>
+<span class="normal">1234</span>
+<span class="normal">1235</span>
+<span class="normal">1236</span>
+<span class="normal">1237</span>
+<span class="normal">1238</span>
+<span class="normal">1239</span>
+<span class="normal">1240</span>
+<span class="normal">1241</span>
+<span class="normal">1242</span>
+<span class="normal">1243</span>
+<span class="normal">1244</span>
+<span class="normal">1245</span>
+<span class="normal">1246</span>
+<span class="normal">1247</span>
+<span class="normal">1248</span>
+<span class="normal">1249</span>
+<span class="normal">1250</span>
+<span class="normal">1251</span>
+<span class="normal">1252</span>
+<span class="normal">1253</span>
+<span class="normal">1254</span>
+<span class="normal">1255</span>
+<span class="normal">1256</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">runtime_inventory</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">action</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Method to work with Nornir inventory in a runtime.</span>
+
+<span class="sd">    Supported actions:</span>
+
+<span class="sd">    - `create_host` or `create` - creates new host or replaces existing host object</span>
+<span class="sd">    - `read_host` or `read` - read host inventory content</span>
+<span class="sd">    - `update_host` or `update` - non recursively update host attributes if host exists</span>
+<span class="sd">        in Nornir inventory, do not create host if it does not exist</span>
+<span class="sd">    - `delete_host` or `delete` - deletes host object from Nornir Inventory</span>
+<span class="sd">    - `load` - to simplify calling multiple functions</span>
+<span class="sd">    - `read_inventory` - read inventory content for groups, default and hosts</span>
+<span class="sd">    - `read_host_data` - to return host&#39;s data under provided path keys</span>
+<span class="sd">    - `list_hosts` - return a list of inventory&#39;s host names</span>
+<span class="sd">    - `list_hosts_platforms` - return a dictionary of hosts&#39; platforms</span>
+<span class="sd">    - `update_defaults` - non recursively update defaults attributes</span>
+
+<span class="sd">    :param action: action to perform on inventory</span>
+<span class="sd">    :param kwargs: argument to use with the calling action</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># clean up kwargs</span>
+    <span class="n">_</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;progress&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">event</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Performing &#39;</span><span class="si">{</span><span class="n">action</span><span class="si">}</span><span class="s2">&#39; action&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">Result</span><span class="p">(</span><span class="n">result</span><span class="o">=</span><span class="n">InventoryFun</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nr</span><span class="p">,</span> <span class="n">call</span><span class="o">=</span><span class="n">action</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>

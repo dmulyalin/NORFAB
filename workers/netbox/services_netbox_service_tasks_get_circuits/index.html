@@ -908,6 +908,28 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../nornir/services_nornir_service_tasks_runtime_inventory/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Runtime Inventory
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1406,7 +1428,7 @@
             
   
   <span class="md-ellipsis">
-    Agent Service
+    Ollama Agent Service
     
   </span>
   
@@ -1417,7 +1439,7 @@
         <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_9_4_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_1_9_4">
             <span class="md-nav__icon md-icon"></span>
-            Agent Service
+            Ollama Agent Service
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
@@ -1881,7 +1903,7 @@
         
   
   <span class="md-ellipsis">
-    NORFAB Shell
+    NFCLI Shell
     
   </span>
   
@@ -1948,6 +1970,80 @@
   
   <span class="md-ellipsis">
     ROBOT API
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_11" >
+        
+          
+          <label class="md-nav__link" for="__nav_1_11" id="__nav_1_11_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Customization
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_11_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_11">
+            <span class="md-nav__icon md-icon"></span>
+            Customization
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../customization/norfab_hooks/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NORFAB Hooks System
     
   </span>
   
@@ -2794,20 +2890,7 @@
 
             <details class="quote">
               <summary>Source code in <code>norfab\workers\netbox_worker.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1097</span>
-<span class="normal">1098</span>
-<span class="normal">1099</span>
-<span class="normal">1100</span>
-<span class="normal">1101</span>
-<span class="normal">1102</span>
-<span class="normal">1103</span>
-<span class="normal">1104</span>
-<span class="normal">1105</span>
-<span class="normal">1106</span>
-<span class="normal">1107</span>
-<span class="normal">1108</span>
-<span class="normal">1109</span>
-<span class="normal">1110</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1110</span>
 <span class="normal">1111</span>
 <span class="normal">1112</span>
 <span class="normal">1113</span>
@@ -2958,7 +3041,34 @@
 <span class="normal">1258</span>
 <span class="normal">1259</span>
 <span class="normal">1260</span>
-<span class="normal">1261</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_circuits</span><span class="p">(</span>
+<span class="normal">1261</span>
+<span class="normal">1262</span>
+<span class="normal">1263</span>
+<span class="normal">1264</span>
+<span class="normal">1265</span>
+<span class="normal">1266</span>
+<span class="normal">1267</span>
+<span class="normal">1268</span>
+<span class="normal">1269</span>
+<span class="normal">1270</span>
+<span class="normal">1271</span>
+<span class="normal">1272</span>
+<span class="normal">1273</span>
+<span class="normal">1274</span>
+<span class="normal">1275</span>
+<span class="normal">1276</span>
+<span class="normal">1277</span>
+<span class="normal">1278</span>
+<span class="normal">1279</span>
+<span class="normal">1280</span>
+<span class="normal">1281</span>
+<span class="normal">1282</span>
+<span class="normal">1283</span>
+<span class="normal">1284</span>
+<span class="normal">1285</span>
+<span class="normal">1286</span>
+<span class="normal">1287</span>
+<span class="normal">1288</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_circuits</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">devices</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span>
     <span class="n">cid</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -3028,6 +3138,7 @@
     <span class="p">)</span>
 
     <span class="k">if</span> <span class="n">cache</span> <span class="o">==</span> <span class="kc">True</span> <span class="ow">or</span> <span class="n">cache</span> <span class="o">==</span> <span class="s2">&quot;force&quot;</span><span class="p">:</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">:get_circuits - retrieving circuits data from cache&quot;</span><span class="p">)</span>
         <span class="n">cid_list</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1">#  new cid list for follow up query</span>
         <span class="c1"># retrieve last updated data from Netbox for circuits and their terminations</span>
         <span class="n">last_updated</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">graphql</span><span class="p">(</span>
@@ -3053,33 +3164,45 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">cache</span><span class="o">.</span><span class="n">expire</span><span class="p">()</span>  <span class="c1"># remove expired items from cache</span>
         <span class="k">for</span> <span class="n">device</span> <span class="ow">in</span> <span class="n">devices</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">circuit</span> <span class="ow">in</span> <span class="n">last_updated</span><span class="o">.</span><span class="n">result</span><span class="p">:</span>
-                <span class="n">circuit_cache_key</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;get_circuits::</span><span class="si">{</span><span class="n">device</span><span class="si">}</span><span class="s2">::</span><span class="si">{</span><span class="n">circuit</span><span class="p">[</span><span class="s1">&#39;cid&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="n">circuit_cache_key</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;get_circuits::</span><span class="si">{</span><span class="n">circuit</span><span class="p">[</span><span class="s1">&#39;cid&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">:get_circuits - searching cache for key </span><span class="si">{</span><span class="n">circuit_cache_key</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
                 <span class="c1"># check if cache is up to date and use it if so</span>
                 <span class="k">if</span> <span class="n">circuit_cache_key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cache</span><span class="p">:</span>
                     <span class="n">cache_ckt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cache</span><span class="p">[</span><span class="n">circuit_cache_key</span><span class="p">]</span>
+                    <span class="c1"># check if device uses this circuit</span>
+                    <span class="k">if</span> <span class="n">device</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">cache_ckt</span><span class="p">:</span>
+                        <span class="k">continue</span>
                     <span class="c1"># use cache forcefully</span>
                     <span class="k">if</span> <span class="n">cache</span> <span class="o">==</span> <span class="s2">&quot;force&quot;</span><span class="p">:</span>
-                        <span class="n">ret</span><span class="o">.</span><span class="n">result</span><span class="p">[</span><span class="n">device</span><span class="p">][</span><span class="n">circuit</span><span class="p">[</span><span class="s2">&quot;cid&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">cache_ckt</span>
+                        <span class="n">ret</span><span class="o">.</span><span class="n">result</span><span class="p">[</span><span class="n">device</span><span class="p">][</span><span class="n">circuit</span><span class="p">[</span><span class="s2">&quot;cid&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">cache_ckt</span><span class="p">[</span><span class="n">device</span><span class="p">]</span>
                     <span class="c1"># check circuit cache is up to date</span>
-                    <span class="k">if</span> <span class="n">cache_ckt</span><span class="p">[</span><span class="s2">&quot;last_updated&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="n">circuit</span><span class="p">[</span><span class="s2">&quot;last_updated&quot;</span><span class="p">]:</span>
+                    <span class="k">if</span> <span class="n">cache_ckt</span><span class="p">[</span><span class="n">device</span><span class="p">][</span><span class="s2">&quot;last_updated&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="n">circuit</span><span class="p">[</span><span class="s2">&quot;last_updated&quot;</span><span class="p">]:</span>
                         <span class="k">continue</span>
                     <span class="k">if</span> <span class="p">(</span>
-                        <span class="n">cache_ckt</span><span class="p">[</span><span class="s2">&quot;termination_a&quot;</span><span class="p">]</span>
+                        <span class="n">cache_ckt</span><span class="p">[</span><span class="n">device</span><span class="p">][</span><span class="s2">&quot;termination_a&quot;</span><span class="p">]</span>
                         <span class="ow">and</span> <span class="n">circuit</span><span class="p">[</span><span class="s2">&quot;termination_a&quot;</span><span class="p">]</span>
-                        <span class="ow">and</span> <span class="n">cache_ckt</span><span class="p">[</span><span class="s2">&quot;termination_a&quot;</span><span class="p">][</span><span class="s2">&quot;last_updated&quot;</span><span class="p">]</span>
+                        <span class="ow">and</span> <span class="n">cache_ckt</span><span class="p">[</span><span class="n">device</span><span class="p">][</span><span class="s2">&quot;termination_a&quot;</span><span class="p">][</span><span class="s2">&quot;last_updated&quot;</span><span class="p">]</span>
                         <span class="o">!=</span> <span class="n">circuit</span><span class="p">[</span><span class="s2">&quot;termination_a&quot;</span><span class="p">][</span><span class="s2">&quot;last_updated&quot;</span><span class="p">]</span>
                     <span class="p">):</span>
                         <span class="k">continue</span>
                     <span class="k">if</span> <span class="p">(</span>
-                        <span class="n">cache_ckt</span><span class="p">[</span><span class="s2">&quot;termination_z&quot;</span><span class="p">]</span>
+                        <span class="n">cache_ckt</span><span class="p">[</span><span class="n">device</span><span class="p">][</span><span class="s2">&quot;termination_z&quot;</span><span class="p">]</span>
                         <span class="ow">and</span> <span class="n">circuit</span><span class="p">[</span><span class="s2">&quot;termination_z&quot;</span><span class="p">]</span>
-                        <span class="ow">and</span> <span class="n">cache_ckt</span><span class="p">[</span><span class="s2">&quot;termination_z&quot;</span><span class="p">][</span><span class="s2">&quot;last_updated&quot;</span><span class="p">]</span>
+                        <span class="ow">and</span> <span class="n">cache_ckt</span><span class="p">[</span><span class="n">device</span><span class="p">][</span><span class="s2">&quot;termination_z&quot;</span><span class="p">][</span><span class="s2">&quot;last_updated&quot;</span><span class="p">]</span>
                         <span class="o">!=</span> <span class="n">circuit</span><span class="p">[</span><span class="s2">&quot;termination_z&quot;</span><span class="p">][</span><span class="s2">&quot;last_updated&quot;</span><span class="p">]</span>
                     <span class="p">):</span>
                         <span class="k">continue</span>
-                    <span class="n">ret</span><span class="o">.</span><span class="n">result</span><span class="p">[</span><span class="n">device</span><span class="p">][</span><span class="n">circuit</span><span class="p">[</span><span class="s2">&quot;cid&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">cache_ckt</span>
+                    <span class="n">ret</span><span class="o">.</span><span class="n">result</span><span class="p">[</span><span class="n">device</span><span class="p">][</span><span class="n">circuit</span><span class="p">[</span><span class="s2">&quot;cid&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">cache_ckt</span><span class="p">[</span><span class="n">device</span><span class="p">]</span>
+                    <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">:get_circuits - </span><span class="si">{</span><span class="n">circuit</span><span class="p">[</span><span class="s1">&#39;cid&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> retrieved data from cache&quot;</span>
+                    <span class="p">)</span>
                 <span class="k">elif</span> <span class="n">circuit</span><span class="p">[</span><span class="s2">&quot;cid&quot;</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">cid_list</span><span class="p">:</span>
                     <span class="n">cid_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">circuit</span><span class="p">[</span><span class="s2">&quot;cid&quot;</span><span class="p">])</span>
+                    <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">:get_circuits - </span><span class="si">{</span><span class="n">circuit</span><span class="p">[</span><span class="s1">&#39;cid&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> no cache data found, fetching from Netbox&quot;</span>
+                    <span class="p">)</span>
         <span class="c1"># form new filters dictionary to fetch remaining circuits data</span>
         <span class="n">circuits_filters_dict</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">if</span> <span class="n">cid_list</span><span class="p">:</span>
@@ -3110,9 +3233,10 @@
 
         <span class="c1"># iterate over circuits and map them to devices</span>
         <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">:get_circuits - mapping device endpoints for </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">all_circuits</span><span class="p">)</span><span class="si">}</span><span class="s2"> circuits&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">:get_circuits - retrieved data for </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">all_circuits</span><span class="p">)</span><span class="si">}</span><span class="s2"> &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;circuits from netbox, mapping circuits to devices&quot;</span>
         <span class="p">)</span>
-        <span class="k">with</span> <span class="n">concurrent</span><span class="o">.</span><span class="n">futures</span><span class="o">.</span><span class="n">ThreadPoolExecutor</span><span class="p">(</span><span class="n">max_workers</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span> <span class="k">as</span> <span class="n">executor</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">concurrent</span><span class="o">.</span><span class="n">futures</span><span class="o">.</span><span class="n">ThreadPoolExecutor</span><span class="p">(</span><span class="n">max_workers</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span> <span class="k">as</span> <span class="n">executor</span><span class="p">:</span>
             <span class="n">results</span> <span class="o">=</span> <span class="p">[</span>
                 <span class="n">executor</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_map_circuit</span><span class="p">,</span> <span class="n">circuit</span><span class="p">,</span> <span class="n">ret</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">devices</span><span class="p">,</span> <span class="n">cache</span>

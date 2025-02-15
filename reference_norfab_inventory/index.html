@@ -15,7 +15,7 @@
         <link rel="canonical" href="https://dmulyalin.github.io/NORFAB/reference_norfab_inventory/">
       
       
-        <link rel="prev" href="../clients_robot_client_overview/">
+        <link rel="prev" href="../customization/norfab_hooks/">
       
       
         <link rel="next" href="../api_reference_core_norfab_nfapi/">
@@ -898,6 +898,28 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../workers/nornir/services_nornir_service_tasks_runtime_inventory/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Runtime Inventory
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1324,7 +1346,7 @@
             
   
   <span class="md-ellipsis">
-    Agent Service
+    Ollama Agent Service
     
   </span>
   
@@ -1335,7 +1357,7 @@
         <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_9_4_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_1_9_4">
             <span class="md-nav__icon md-icon"></span>
-            Agent Service
+            Ollama Agent Service
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
@@ -1796,7 +1818,7 @@
         
   
   <span class="md-ellipsis">
-    NORFAB Shell
+    NFCLI Shell
     
   </span>
   
@@ -1863,6 +1885,77 @@
   
   <span class="md-ellipsis">
     ROBOT API
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_11" >
+        
+          
+          <label class="md-nav__link" for="__nav_1_11" id="__nav_1_11_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Customization
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_11_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_11">
+            <span class="md-nav__icon md-icon"></span>
+            Customization
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../customization/norfab_hooks/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NORFAB Hooks System
     
   </span>
   
@@ -2034,6 +2127,15 @@
   <a href="#logging-inventory-section" class="md-nav__link">
     <span class="md-ellipsis">
       Logging Inventory Section
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#hooks-section" class="md-nav__link">
+    <span class="md-ellipsis">
+      Hooks Section
     </span>
   </a>
   
@@ -2687,6 +2789,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#hooks-section" class="md-nav__link">
+    <span class="md-ellipsis">
+      Hooks Section
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#jinja2-support" class="md-nav__link">
     <span class="md-ellipsis">
       Jinja2 Support
@@ -2824,6 +2935,41 @@ in that case NorFab inventory (<code>inventory.yaml</code>) file could have this
 <p>Topology section of NorFab inventory identifies the components that need to be started on the given node.</p>
 <h2 id="logging-inventory-section">Logging Inventory Section<a class="headerlink" href="#logging-inventory-section" title="Permanent link">¤</a></h2>
 <p>Logging inventory section allows to configure logging parameters such file retention option, logging to remote hosts, logging levels etc.</p>
+<h2 id="hooks-section">Hooks Section<a class="headerlink" href="#hooks-section" title="Permanent link">¤</a></h2>
+<p>Hooks section allows to configure a list of functions to run during NorFab execution lifespan events.</p>
+<p>Supported attach points:</p>
+<ul>
+<li><code>startup</code> - list of functions to run right after NorFab nfapi started broker and worker process and fully initialized. Startup hook function must accept <code>norfab</code> object as a single argument.</li>
+<li><code>exit</code> - list of functions to run right before NorFab nfapi initiates exit sequence. Exit hook function must accept <code>norfab</code> object as a single argument.</li>
+</ul>
+<p>Each hook defined as a dictionary that can contain these keys:</p>
+<ul>
+<li><code>function</code> - Python import path for hook function</li>
+<li><code>attachpoint</code> - one of the attach points indicating when to run hook function e.g. <code>startup</code></li>
+<li><code>args</code> - optional list of function positional arguments</li>
+<li><code>kwargs</code> - optional dictionary of function key-word arguments</li>
+</ul>
+<p>Sample hooks definition:</p>
+<div class="highlight"><span class="filename">inventory.yaml</span><pre><span></span><code><span class="nt">hooks</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">attachpoint</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">startup</span>
+<span class="w">    </span><span class="nt">function</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;hooks.functions.do_on_startup&quot;</span>
+<span class="w">    </span><span class="nt">args</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[]</span>
+<span class="w">    </span><span class="nt">kwargs</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{}</span>
+<span class="w">    </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Function</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">run</span><span class="nv"> </span><span class="s">on</span><span class="nv"> </span><span class="s">startup&quot;</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">attachpoint</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">exit</span>
+<span class="w">    </span><span class="nt">function</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;hooks.functions.do_on_exit&quot;</span>
+<span class="w">    </span><span class="nt">args</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[]</span>
+<span class="w">    </span><span class="nt">kwargs</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{}</span>
+<span class="w">    </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Function</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">run</span><span class="nv"> </span><span class="s">on</span><span class="nv"> </span><span class="s">startup&quot;</span>
+</code></pre></div>
+<p>Where hook functions are:</p>
+<div class="highlight"><span class="filename">hooks/functions.py</span><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">do_on_startup</span><span class="p">(</span><span class="n">norfab</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Startup hook executed&quot;</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">do_on_exit</span><span class="p">(</span><span class="n">norfab</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Exit hook executed&quot;</span><span class="p">)</span>
+</code></pre></div>
+<p>Function import path is a dot separated path used to import module file that contains hook functions, where individual function name is a last item in dot separated path definition. For example <code>hooks.functions.do_on_startup</code> path is equivalent of running Python import <code>from hooks.functions import do_on_startup</code>.</p>
 <h2 id="jinja2-support">Jinja2 Support<a class="headerlink" href="#jinja2-support" title="Permanent link">¤</a></h2>
 <p>Starting with version 0.3.0 NorFab supports Jinja2 syntax rendering of inventory files, in addition, <code>env</code> dictionary variable available to source environment variables:</p>
 <div class="highlight"><span class="filename">inventory.yaml</span><pre><span></span><code><span class="nt">logging</span><span class="p">:</span>
