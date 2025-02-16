@@ -1625,6 +1625,39 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Getting Started">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#authentication" class="md-nav__link">
+    <span class="md-ellipsis">
+      Authentication
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#api-documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      API Documentation
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#https-support" class="md-nav__link">
+    <span class="md-ellipsis">
+      HTTPS Support
+    </span>
+  </a>
+  
 </li>
       
         <li class="md-nav__item">
@@ -1662,6 +1695,77 @@
   
 
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_9_5_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_1_9_5_3" id="__nav_1_9_5_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Tasks
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_1_9_5_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_9_5_3">
+            <span class="md-nav__icon md-icon"></span>
+            Tasks
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../services_fastapi_service_task_auth/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Auth
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -2455,6 +2559,28 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference_workers_fastapi_worker" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    FastAPI Worker
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2745,6 +2871,39 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Getting Started">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#authentication" class="md-nav__link">
+    <span class="md-ellipsis">
+      Authentication
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#api-documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      API Documentation
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#https-support" class="md-nav__link">
+    <span class="md-ellipsis">
+      HTTPS Support
+    </span>
+  </a>
+  
 </li>
       
         <li class="md-nav__item">
@@ -2786,9 +2945,10 @@
 
 
 <h1 id="fastapi-rest-api-service">FastAPI REST API Service<a class="headerlink" href="#fastapi-rest-api-service" title="Permanent link">¤</a></h1>
-<p>The FastAPI Service created to serve a set of REST API endpoints to interact with NorFab to start, run, list jobs and to retrieve jobs result.</p>
+<p>The FastAPI Service created to serve a set of REST API endpoints to interact with NorFab to start, run, list and retrieve jobs result.</p>
 <p>NorFab FastAPI Service build using <a href="https://fastapi.tiangolo.com/">FastAPI</a> library, as the name implies, a well adopted open-source library for building RESTful APIs.</p>
 <p><img alt="FastAPI Service Architecture" src="../../../images/FastAPI_Service.jpg" /></p>
+<p>FastAPI Service acts as a thin wrapper for NorFab Python API, accepting northbound REST API requests and translating them into NorFab client API calls, returning job execution results in response.</p>
 <h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">¤</a></h2>
 <p>The FastAPI Service in Norfab provides a robust and efficient way to REST API into NorFab environment for network automation and management tasks. FastAPI is known for its high performance, ease of use, and automatic generation of interactive API documentation. By leveraging FastAPI, Norfab enables developers to utilize scalable and maintainable APIs that can handle a wide range of network automation operations.</p>
 <h2 id="norfab-fastapi-service-key-features">NorFab FastAPI Service Key Features<a class="headerlink" href="#norfab-fastapi-service-key-features" title="Permanent link">¤</a></h2>
@@ -2823,6 +2983,24 @@
 </ul>
 <h2 id="getting-started">Getting Started<a class="headerlink" href="#getting-started" title="Permanent link">¤</a></h2>
 <p>To get started with the FastAPI Service, you need to define the necessary parameters in your NorFab inventory. Refer to the <a href="../services_fastapi_service_inventory/">FastAPI Inventory</a> section for detailed instructions on setting up your inventory and running FastAPI REST API Service with NorFab.</p>
+<h3 id="authentication">Authentication<a class="headerlink" href="#authentication" title="Permanent link">¤</a></h3>
+<p>FastAPI NorFab service supports bearer token authentication using authorization header:</p>
+<div class="highlight"><pre><span></span><code>headers = {&quot;Authorization&quot;: &quot;Bearer f343ff34r3fg4g5g34gf34g34g3g34g4&quot;}
+</code></pre></div>
+<p>Where token is an arbitrary string with no constraints imposed on length or complexity of the token. By default FastAPI Service does not have any bearer tokens stored, instead, every user willing to access REST API need to have token explicitly recorded in FastAPI Service database using nfcli auth commands.</p>
+<p>To create token run this command from nfcli shell:</p>
+<div class="highlight"><pre><span></span><code>nf#fastapi auth create-token username foo token 4565t4yjn56h534gh35h543h5h45h4h4 expire 3600
+{
+    &quot;fastapi-worker-1&quot;: true
+}
+nf#
+</code></pre></div>
+<p><code>expire</code> argument is optional and indicates token expiration time in seconds, if no <code>expire</code> argument provided token does not expire. Multiple tokens can be stored for any given user.</p>
+<p>Refer to <a href="../services_fastapi_service_task_auth/">auth tasks documentation</a> for further details on how to work with FastAPI tokens.</p>
+<h3 id="api-documentation">API Documentation<a class="headerlink" href="#api-documentation" title="Permanent link">¤</a></h3>
+<p>Once FastAPI worker started it serves REST API documentation under  <code>http://&lt;IP Address or FQDN&gt;/docs</code> url for <a href="https://github.com/swagger-api/swagger-ui">Swagger UI</a> documentation and <code>http://&lt;IP Address or FQDN&gt;/redoc</code> for <a href="https://github.com/Rebilly/ReDoc">ReDoc UI</a> documentation. Either of these UIs can be used to try and execute API requests and to familiarize yourself with API endpoints, requests payload and expected responses.</p>
+<h2 id="https-support">HTTPS Support<a class="headerlink" href="#https-support" title="Permanent link">¤</a></h2>
+<p>NorFab FastAPI Service does not support HTTPS natively. To support HTTPS need to use reverse proxy (Nginx, Caddy etc.) or application loadbalancer that will perform TLS termination. Refer to <a href="https://fastapi.tiangolo.com/deployment/concepts/#example-tools-for-https">FastAPI documentation</a> for further details on how to serve FastAPI applications via HTTPS.</p>
 <h2 id="conclusion">Conclusion<a class="headerlink" href="#conclusion" title="Permanent link">¤</a></h2>
 <p>The FastAPI Service in Norfab provides a powerful and efficient RESTful APIs for network automation and management. With its high performance, automatic documentation, and robust feature set, FastAPI enables API integration that can handle a wide range of network operations. By using NorFab FastAPI REST API service, you can enhance your network automation capabilities and streamline your network management processes.</p>
 

@@ -1580,6 +1580,77 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_9_5_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_1_9_5_3" id="__nav_1_9_5_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Tasks
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_1_9_5_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_9_5_3">
+            <span class="md-nav__icon md-icon"></span>
+            Tasks
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../workers/fastapi/services_fastapi_service_task_auth/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Auth
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2368,6 +2439,28 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../workers/fastapi/api_reference_workers_fastapi_worker" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    FastAPI Worker
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2717,39 +2810,39 @@ nf#
 </code></pre></div>
 <p>this will start the NorFab broker process, Nornir worker process, instantiate
 NFCLI client and drop you into interactive command line shell <img alt="🐚" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.1.0/assets/72x72/1f41a.png" title=":shell:" /></p>
-<div class="highlight"><pre><span></span><code><span class="l l-Scalar l-Scalar-Plain">nf#?</span><span class="w"> </span><span class="c1"># (1)!</span>
-<span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">file      File sharing service</span>
-<span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">netbox    Netbox service</span>
-<span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nornir    Nornir service</span>
-<span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">show      NorFab show commands</span>
-<span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">exit      Exit current shell</span>
-<span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">help      Print help message</span>
-<span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pwd       Print current shell path</span>
-<span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">top       Exit to top shell</span>
-<span class="l l-Scalar l-Scalar-Plain">nf#show workers</span><span class="w"> </span><span class="c1"># (2)!</span>
-<span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">name             service  status  holdtime  keepalives tx/rx  alive (s)</span>
-<span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nornir-worker-1  nornir   alive   12.8      58 / 58           149</span>
-<span class="l l-Scalar l-Scalar-Plain">nf#</span>
-<span class="l l-Scalar l-Scalar-Plain">nf#nornir</span><span class="w"> </span><span class="c1"># (3)!</span>
-<span class="l l-Scalar l-Scalar-Plain">nf[nornir]#?</span>
-<span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cfg     Configure devices over CLI interface</span>
-<span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cli     Send CLI commands to devices</span>
-<span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">show    Show Nornir service parameters</span>
-<span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">task    Run Nornir task</span>
-<span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">test    Run network tests</span>
-<span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">end     Exit application</span>
-<span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">exit    Exit current shell</span>
-<span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">help    Print help message</span>
-<span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pwd     Print current shell path</span>
-<span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">top     Exit to top shell</span>
-<span class="l l-Scalar l-Scalar-Plain">nf[nornir]#show hosts table details</span>
-<span class="l l-Scalar l-Scalar-Plain">+-----------------+--------------+------------+-------------+--------+----------+------------+</span>
-<span class="l l-Scalar l-Scalar-Plain">| worker          | host         | platform   | hostname    | port   | groups   | username   |</span>
-<span class="l l-Scalar l-Scalar-Plain">+=================+==============+============+=============+========+==========+============+</span>
-<span class="l l-Scalar l-Scalar-Plain">| nornir-worker-1 | ios-device-1 | cisco_ios  | 192.168.1.1 | None   | []       | admin      |</span>
-<span class="l l-Scalar l-Scalar-Plain">+-----------------+--------------+------------+-------------+--------+----------+------------+</span>
-<span class="l l-Scalar l-Scalar-Plain">nf[nornir]# end</span>
-<span class="l l-Scalar l-Scalar-Plain">Exiting...</span>
+<div class="highlight"><pre><span></span><code>nf#?<span class="w"> </span><span class="c1"># (1)!</span>
+<span class="w"> </span>file<span class="w">      </span>File<span class="w"> </span>sharing<span class="w"> </span>service
+<span class="w"> </span>netbox<span class="w">    </span>Netbox<span class="w"> </span>service
+<span class="w"> </span>nornir<span class="w">    </span>Nornir<span class="w"> </span>service
+<span class="w"> </span>show<span class="w">      </span>NorFab<span class="w"> </span>show<span class="w"> </span>commands
+<span class="w"> </span><span class="nb">exit</span><span class="w">      </span>Exit<span class="w"> </span>current<span class="w"> </span>shell
+<span class="w"> </span><span class="nb">help</span><span class="w">      </span>Print<span class="w"> </span><span class="nb">help</span><span class="w"> </span>message
+<span class="w"> </span><span class="nb">pwd</span><span class="w">       </span>Print<span class="w"> </span>current<span class="w"> </span>shell<span class="w"> </span>path
+<span class="w"> </span>top<span class="w">       </span>Exit<span class="w"> </span>to<span class="w"> </span>top<span class="w"> </span>shell
+nf#show<span class="w"> </span>workers<span class="w"> </span><span class="c1"># (2)!</span>
+<span class="w"> </span>name<span class="w">             </span>service<span class="w">  </span>status<span class="w">  </span>holdtime<span class="w">  </span>keepalives<span class="w"> </span>tx/rx<span class="w">  </span>alive<span class="w"> </span><span class="o">(</span>s<span class="o">)</span>
+<span class="w"> </span>nornir-worker-1<span class="w">  </span>nornir<span class="w">   </span>alive<span class="w">   </span><span class="m">12</span>.8<span class="w">      </span><span class="m">58</span><span class="w"> </span>/<span class="w"> </span><span class="m">58</span><span class="w">           </span><span class="m">149</span>
+nf#
+nf#nornir<span class="w"> </span><span class="c1"># (3)!</span>
+nf<span class="o">[</span>nornir<span class="o">]</span><span class="c1">#?</span>
+<span class="w"> </span>cfg<span class="w">     </span>Configure<span class="w"> </span>devices<span class="w"> </span>over<span class="w"> </span>CLI<span class="w"> </span>interface
+<span class="w"> </span>cli<span class="w">     </span>Send<span class="w"> </span>CLI<span class="w"> </span>commands<span class="w"> </span>to<span class="w"> </span>devices
+<span class="w"> </span>show<span class="w">    </span>Show<span class="w"> </span>Nornir<span class="w"> </span>service<span class="w"> </span>parameters
+<span class="w"> </span>task<span class="w">    </span>Run<span class="w"> </span>Nornir<span class="w"> </span>task
+<span class="w"> </span><span class="nb">test</span><span class="w">    </span>Run<span class="w"> </span>network<span class="w"> </span>tests
+<span class="w"> </span>end<span class="w">     </span>Exit<span class="w"> </span>application
+<span class="w"> </span><span class="nb">exit</span><span class="w">    </span>Exit<span class="w"> </span>current<span class="w"> </span>shell
+<span class="w"> </span><span class="nb">help</span><span class="w">    </span>Print<span class="w"> </span><span class="nb">help</span><span class="w"> </span>message
+<span class="w"> </span><span class="nb">pwd</span><span class="w">     </span>Print<span class="w"> </span>current<span class="w"> </span>shell<span class="w"> </span>path
+<span class="w"> </span>top<span class="w">     </span>Exit<span class="w"> </span>to<span class="w"> </span>top<span class="w"> </span>shell
+nf<span class="o">[</span>nornir<span class="o">]</span><span class="c1">#show hosts table details</span>
++-----------------+--------------+------------+-------------+--------+----------+------------+
+<span class="p">|</span><span class="w"> </span>worker<span class="w">          </span><span class="p">|</span><span class="w"> </span>host<span class="w">         </span><span class="p">|</span><span class="w"> </span>platform<span class="w">   </span><span class="p">|</span><span class="w"> </span>hostname<span class="w">    </span><span class="p">|</span><span class="w"> </span>port<span class="w">   </span><span class="p">|</span><span class="w"> </span>groups<span class="w">   </span><span class="p">|</span><span class="w"> </span>username<span class="w">   </span><span class="p">|</span>
++<span class="o">=================</span>+<span class="o">==============</span>+<span class="o">============</span>+<span class="o">=============</span>+<span class="o">========</span>+<span class="o">==========</span>+<span class="o">============</span>+
+<span class="p">|</span><span class="w"> </span>nornir-worker-1<span class="w"> </span><span class="p">|</span><span class="w"> </span>ios-device-1<span class="w"> </span><span class="p">|</span><span class="w"> </span>cisco_ios<span class="w">  </span><span class="p">|</span><span class="w"> </span><span class="m">192</span>.168.1.1<span class="w"> </span><span class="p">|</span><span class="w"> </span>None<span class="w">   </span><span class="p">|</span><span class="w"> </span><span class="o">[]</span><span class="w">       </span><span class="p">|</span><span class="w"> </span>admin<span class="w">      </span><span class="p">|</span>
++-----------------+--------------+------------+-------------+--------+----------+------------+
+nf<span class="o">[</span>nornir<span class="o">]</span><span class="c1"># end</span>
+Exiting...
 </code></pre></div>
 <ol>
 <li>Question mark plus enter to print commands help</li>
@@ -2758,6 +2851,7 @@ NFCLI client and drop you into interactive command line shell <img alt="🐚" cl
 </ol>
 <p>NorFab CLI supports Tab completions, question mark help together with sub-shells, read more about NorFab CLI and how to use it <a href="../clients_nfcli_overview/">here</a>.</p>
 <p><img alt="⭐" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.1.0/assets/72x72/2b50.png" title=":star:" /> That's it <img alt="⭐" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.1.0/assets/72x72/2b50.png" title=":star:" /></p>
+<p>For more information or to schedule a demo, <a href="mailto:dmulyalin@gmail.com">send us an email</a>.</p>
 
 
 

@@ -1631,6 +1631,77 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_9_5_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_1_9_5_3" id="__nav_1_9_5_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Tasks
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_1_9_5_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_9_5_3">
+            <span class="md-nav__icon md-icon"></span>
+            Tasks
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../fastapi/services_fastapi_service_task_auth/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Auth
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2419,6 +2490,28 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../fastapi/api_reference_workers_fastapi_worker" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    FastAPI Worker
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2704,32 +2797,67 @@
 
 
 <h1 id="nornir-worker-inventory">Nornir Worker Inventory<a class="headerlink" href="#nornir-worker-inventory" title="Permanent link">¤</a></h1>
-<p>Sample Nornir worker inventory definition</p>
-<div class="highlight"><pre><span></span><code>service: nornir
-broker_endpoint: &quot;tcp://127.0.0.1:5555&quot;
-watchdog_interval: 30
-connections_idle_timeout: null
+<p>Content of <code>inventory.yaml</code> need to be updated to include Nornir worker details:</p>
+<div class="highlight"><span class="filename">inventory.yaml</span><pre><span></span><code><span class="nt">broker</span><span class="p">:</span><span class="w"> </span>
+<span class="w">  </span><span class="nt">endpoint</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;tcp://127.0.0.1:5555&quot;</span><span class="w"> </span>
+<span class="w">  </span><span class="nt">shared_key</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;5z1:yW}]n?UXhGmz+5CeHN1&gt;:S9k!eCh6JyIhJqO&quot;</span>
 
-# these parameters mapped to Nornir inventory
-# https://nornir.readthedocs.io/en/latest/tutorial/inventory.html
-runner:
-  plugin: RetryRunner
-  options: 
-    num_workers: 100
-    num_connectors: 10
-    connect_retry: 1
-    connect_backoff: 1000
-    connect_splay: 100
-    task_retry: 1
-    task_backoff: 1000
-    task_splay: 100
-    reconnect_on_fail: True
-    task_timeout: 600
-hosts: {}
-groups: {}
-defaults: {}
-logging: {}
-user_defined: {}
+<span class="nt">workers</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">fastapi-worker-1</span><span class="p">:</span><span class="w"> </span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nornir/nornir-worker-1.yaml</span>
+
+<span class="nt">topology</span><span class="p">:</span><span class="w"> </span>
+<span class="w">  </span><span class="nt">workers</span><span class="p">:</span><span class="w"> </span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nornir-worker-1</span>
+</code></pre></div>
+<p>Sample Nornir worker inventory definition</p>
+<div class="highlight"><span class="filename">nornir/nornir-worker-1.yaml</span><pre><span></span><code><span class="nt">service</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nornir</span>
+<span class="nt">watchdog_interval</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">30</span>
+<span class="nt">connections_idle_timeout</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span>
+
+<span class="c1"># these parameters mapped to Nornir inventory</span>
+<span class="c1"># https://nornir.readthedocs.io/en/latest/tutorial/inventory.html</span>
+<span class="nt">runner</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">plugin</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">RetryRunner</span>
+<span class="w">  </span><span class="nt">options</span><span class="p">:</span><span class="w"> </span>
+<span class="w">    </span><span class="nt">num_workers</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">100</span>
+<span class="w">    </span><span class="nt">num_connectors</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
+<span class="w">    </span><span class="nt">connect_retry</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
+<span class="w">    </span><span class="nt">connect_backoff</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1000</span>
+<span class="w">    </span><span class="nt">connect_splay</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">100</span>
+<span class="w">    </span><span class="nt">task_retry</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
+<span class="w">    </span><span class="nt">task_backoff</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1000</span>
+<span class="w">    </span><span class="nt">task_splay</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">100</span>
+<span class="w">    </span><span class="nt">reconnect_on_fail</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span>
+<span class="w">    </span><span class="nt">task_timeout</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">600</span>
+<span class="nt">hosts</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{}</span>
+<span class="nt">groups</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{}</span>
+<span class="nt">defaults</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{}</span>
+<span class="nt">logging</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{}</span>
+<span class="nt">user_defined</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{}</span>
+
+<span class="c1"># Netbox Service Nornir Inventory integration</span>
+<span class="nt">netbox</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">retry</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span>
+<span class="w">  </span><span class="nt">retry_interval</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
+<span class="w">  </span><span class="nt">instance</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">prod</span>
+<span class="w">  </span><span class="nt">interfaces</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">ip_addresses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span>
+<span class="w">    </span><span class="nt">inventory_items</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span>
+<span class="w">  </span><span class="nt">connections</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">cables</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span>
+<span class="w">  </span><span class="nt">nbdata</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span>
+<span class="w">  </span><span class="nt">circuits</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span>
+<span class="w">  </span><span class="nt">primary_ip</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;ipv4&quot;</span>
+<span class="w">  </span><span class="nt">devices</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">fceos4</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">fceos5</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">fceos8</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ceos1</span>
+<span class="w">  </span><span class="nt">filters</span><span class="p">:</span><span class="w"> </span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">q</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">fceos3</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">manufacturer</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cisco</span>
+<span class="w">      </span><span class="nt">platform</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cisco_xr</span>
 </code></pre></div>
 <p><strong>watchdog_interval</strong></p>
 <p>Watchdog run interval in seconds, default is 30</p>
@@ -2761,9 +2889,9 @@ user_defined: {}
 <span class="w">      </span><span class="nt">platform</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cisco_xr</span>
 </code></pre></div>
 <p><strong>filters</strong></p>
-<p>List for Netbox GraphQL filters to pull devices data. Up to 10 filters supported.</p>
+<p>List of Netbox GraphQL filters to pull devices data. Up to 10 filters supported.</p>
 <p><strong>devices</strong></p>
-<p>List of exact device names to retrieve data for from Netbox, those names used as hosts' names in Nornir inventory.</p>
+<p>List of exact device names to retrieve from Netbox, names used as hosts' names in Nornir inventory.</p>
 <p><strong>retry</strong></p>
 <p>Specifies the number of Netbox data retrieval retry attempts for network operations. This parameter is useful for ensuring that transient network issues do not cause the operation to fail. </p>
 <p><strong>retry_interval</strong></p>
@@ -2786,7 +2914,7 @@ user_defined: {}
 <p><strong>nbdata</strong></p>
 <p>Specifies whether to merge NetBox devices data into Nornir hosts' <code>data</code>. This is useful when need to make Netbox device <code>config_context</code> available in Nornir hosts' <code>data</code> together with other device information such as Netbox <code>site</code>, <code>tags</code>, <code>role</code> etc.</p>
 <p><strong>circuits</strong></p>
-<p>Indicates whether to fetch circuit data from Netbox.</p>
+<p>Indicates whether to fetch circuits data from Netbox and map it to hosts data.</p>
 <p><strong>primary_ip</strong></p>
 <p>Specifies what Netbox device IP address to use for Nornir host's <code>hostname</code> parameter, supported values are <code>ipv4</code>, <code>ip4</code>, <code>ipv6</code> or <code>ip6</code>, uses Netbox device name instead if no primary IP address mapped to the device in Netbox.</p>
 
