@@ -15,6 +15,8 @@ Supported attach points:
 
 - `startup` - list of functions to run right after NorFab nfapi fully initialized. Startup hook function must accept `norfab` object as a single argument.
 - `exit` - list of functions to run right before NorFab nfapi initiates exit sequence. Exit hook function must accept `norfab` object as a single argument.
+- `nornir-startup` - list of functions to run right after Nornir worker fully initialized. Startup hook function must accept `worker` object as a single argument.
+- `nornir-exit` - list of functions to run right before Nornir worker initiates exit sequence. Exit hook function must accept `worker` object as a single argument.
 
 Sample hooks definition:
 

@@ -192,7 +192,7 @@ def make_hooks(base_dir, hooks):
     """
     Function to load hook functions
     """
-    ret = {"startup": [], "exit": []}
+    ret = {}
 
     # make sure to include current and base_dir directories in search path
     if os.getcwd() not in sys.path:
@@ -208,6 +208,7 @@ def make_hooks(base_dir, hooks):
             log.info(f"Importing hook '{imp_str}' function '{hook_function_name}'")
             hook_module = __import__(imp_str, fromlist=[""])
             item["function"] = getattr(hook_module, hook_function_name)
+            ret.setdefault(item["attachpoint"], [])
             ret[item.pop("attachpoint")].append(item)
             log.info(f"Successfully loaded hook function {item['function']}")
         except Exception as e:

@@ -132,6 +132,9 @@ class FastAPIWorker(NFPWorker):
         return Result(task=f"{self.name}:get_version", result=libs)
 
     def get_inventory(self) -> Dict:
+        """
+        Method to return FastAPI worker inventory
+        """
         return Result(
             result={**self.fastapi_inventory, "uvicorn": self.uvicorn_inventory},
             task=f"{self.name}:get_inventory",

@@ -1,17 +1,18 @@
-## 0.4.1
+## 0.5.0
 
 ### FEATURES
 
 1. FastAPI service added bearer authentication support
+2. Added hooks attachpoints `nornir-startup` and `nornir-exit` to influence Nornir service workers startup and exit
 
 ## 0.4.0
 
-## CHANGES
+### CHANGES
 
 1. Improved netbox get_circuits logic.
 2. Standartised worker `get_version` and `get_inventory` methods
 
-## Features
+### Features
 
 1. Added `runtime_inventory` task to Nornir service, #6
 2. Added support to configure `startup` and `exit` hook functions in inventory to be executed by nfapi on start and on exit.

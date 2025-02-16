@@ -69,4 +69,13 @@ hooks:
     args: []
     kwargs: {}
     description: "Function to run on startup"
-    
+  - attachpoint: nornir-startup
+    function: "hooks.startup.nornir_do_on_startup"
+    args: []
+    kwargs: {}
+    description: "Function to run on startup"
+  - attachpoint: nornir-exit
+    function: "hooks.startup.nornir_do_on_exit"
+    args: []
+    kwargs: {}
+    description: "Function to run on startup"

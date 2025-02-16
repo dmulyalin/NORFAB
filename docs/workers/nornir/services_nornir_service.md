@@ -35,4 +35,5 @@ Ncclient, Scrapli NETCONF, pygnmi, puresnmp, TextFSM, TTP etc.
 | **[network](services_nornir_service_tasks_network.md)** | A collection of network utilities such as ping and DNS. | Check device connectivity, verify and resolve DNS records. |
 | **[parse](services_nornir_service_tasks_parse.md)** | Parses command outputs using TextFSM, NAPALM getters or TTP to extract structured data. | Data extraction from CLI outputs, automated report generation, configuration validation. |
 | **[diagram](services_nornir_service_tasks_diagram.md)** | Produce Network L2,  L3, OSPF or ISIS routing diagrams in DrawIO or yED formats. | Automated network documentation, network validation. |
-| **[file_copy](services_nornir_service_tasks_file_copy.md)** | COpy files to network devices over SCP. | Device software upgrades, certificates or license renewal. |
+| **[file_copy](services_nornir_service_tasks_file_copy.md)** | Copy files to network devices over SCP. | Device software upgrades, certificates or license renewal. |
+| **[runtime_inventory](services_nornir_service_tasks_runtime_inventory.md)** | Modify Nornir service runtime inventory. | Add, update or remove Nornir hosts at a runtime. |

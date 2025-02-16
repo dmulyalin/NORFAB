@@ -95,7 +95,7 @@ nf#
 this will start the NorFab broker process, Nornir worker process, instantiate
 NFCLI client and drop you into interactive command line shell :shell:
 
-``` yaml
+``` shell
 nf#? # (1)!
  file      File sharing service
  netbox    Netbox service
@@ -138,3 +138,5 @@ Exiting...
 NorFab CLI supports Tab completions, question mark help together with sub-shells, read more about NorFab CLI and how to use it [here](clients_nfcli_overview.md).
 
 :star: That's it :star:
+
+For more information or to schedule a demo, [send us an email](mailto:dmulyalin@gmail.com).

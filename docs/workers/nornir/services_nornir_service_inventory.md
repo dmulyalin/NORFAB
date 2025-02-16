@@ -1,10 +1,25 @@
 # Nornir Worker Inventory
 
+Content of `inventory.yaml` need to be updated to include Nornir worker details:
+
+``` yaml title="inventory.yaml"
+broker: 
+  endpoint: "tcp://127.0.0.1:5555" 
+  shared_key: "5z1:yW}]n?UXhGmz+5CeHN1>:S9k!eCh6JyIhJqO"
+
+workers:
+  fastapi-worker-1: 
+    - nornir/nornir-worker-1.yaml
+
+topology: 
+  workers: 
+    - nornir-worker-1
+```
+
 Sample Nornir worker inventory definition
 
-```
+``` yaml title="nornir/nornir-worker-1.yaml"
 service: nornir
-broker_endpoint: "tcp://127.0.0.1:5555"
 watchdog_interval: 30
 connections_idle_timeout: null
 
@@ -29,7 +44,7 @@ defaults: {}
 logging: {}
 user_defined: {}
 
-# Netbox Service integration
+# Netbox Service Nornir Inventory integration
 netbox:
   retry: 3
   retry_interval: 1

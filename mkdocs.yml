@@ -121,6 +121,8 @@ nav:
         - FastAPI Service:
             - Overview: workers/fastapi/services_fastapi_service.md
             - Inventory: workers/fastapi/services_fastapi_service_inventory.md
+            - Tasks:
+              - Auth: workers/fastapi/services_fastapi_service_task_auth.md
         - NORFAB Services:
             - MMI: services_norfab_mmi.md
             - Inventory Service: services_norfab_inventory_service.md
@@ -148,6 +150,7 @@ nav:
         - Built-in Workers:
           - Nornir Worker: workers/nornir/api_reference_workers_nornir_worker.md
           - Netbox Worker: workers/netbox/api_reference_workers_netbox_worker.md
+          - FastAPI Worker: workers/fastapi/api_reference_workers_fastapi_worker
         - Built-in Clients:
           - NFCLI Client API: api_reference_clients_nfcli_client.md
           - ROBOT Client API: api_reference_clients_robot_client.md

@@ -244,7 +244,16 @@ class NornirWorker(NFPWorker):
         if self.init_done_event is not None:
             self.init_done_event.set()
 
+        # run startup hooks
+        for f in self.inventory.hooks.get("nornir-startup", []):
+            f["function"](self, *f.get("args", []), **f.get("kwargs", {}))
+
         log.info(f"{self.name} - Started")
+
+    def worker_exit(self):
+        # run exit hooks
+        for f in self.inventory.hooks.get("nornir-exit", []):
+            f["function"](self, *f.get("args", []), **f.get("kwargs", {}))
 
     def _init_nornir(self):
         # initiate Nornir
