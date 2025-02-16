@@ -40,6 +40,9 @@ The FastAPI Service in Norfab provides a robust and efficient way to REST API in
 
 To get started with the FastAPI Service, you need to define the necessary parameters in your NorFab inventory. Refer to the [FastAPI Inventory](services_fastapi_service_inventory.md) section for detailed instructions on setting up your inventory and running FastAPI REST API Service with NorFab.
 
+### Authorization
+
+
 ## Conclusion
 
 The FastAPI Service in Norfab provides a powerful and efficient RESTful APIs for network automation and management. With its high performance, automatic documentation, and robust feature set, FastAPI enables API integration that can handle a wide range of network operations. By using NorFab FastAPI REST API service, you can enhance your network automation capabilities and streamline your network management processes.

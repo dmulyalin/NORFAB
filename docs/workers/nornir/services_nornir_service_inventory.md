@@ -28,6 +28,29 @@ groups: {}
 defaults: {}
 logging: {}
 user_defined: {}
+
+# Netbox Service integration
+netbox:
+  retry: 3
+  retry_interval: 1
+  instance: prod
+  interfaces:
+    ip_addresses: True
+    inventory_items: True
+  connections:
+    cables: True
+  nbdata: True
+  circuits: True
+  primary_ip: "ipv4"
+  devices:
+    - fceos4
+    - fceos5
+    - fceos8
+    - ceos1
+  filters: 
+    - q: fceos3
+    - manufacturer: cisco
+      platform: cisco_xr
 ```
 
 **watchdog_interval**
@@ -70,11 +93,11 @@ netbox:
 
 **filters**
 
-List for Netbox GraphQL filters to pull devices data. Up to 10 filters supported.
+List of Netbox GraphQL filters to pull devices data. Up to 10 filters supported.
 
 **devices**
 
-List of exact device names to retrieve data for from Netbox, those names used as hosts' names in Nornir inventory.
+List of exact device names to retrieve from Netbox, names used as hosts' names in Nornir inventory.
 
 **retry**
 
@@ -111,7 +134,7 @@ Specifies whether to merge NetBox devices data into Nornir hosts' `data`. This i
 
 **circuits**
 
-Indicates whether to fetch circuit data from Netbox.
+Indicates whether to fetch circuits data from Netbox and map it to hosts data.
 
 **primary_ip**
 

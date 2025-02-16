@@ -1,3 +1,9 @@
+## 0.4.1
+
+### FEATURES
+
+1. FastAPI service added bearer authentication support
+
 ## 0.4.0
 
 ## CHANGES
@@ -7,7 +13,7 @@
 
 ## Features
 
-1. Added `runtime_inventory` task to Nornir service
+1. Added `runtime_inventory` task to Nornir service, #6
 2. Added support to configure `startup` and `exit` hook functions in inventory to be executed by nfapi on start and on exit.
 
 ## 0.3.1

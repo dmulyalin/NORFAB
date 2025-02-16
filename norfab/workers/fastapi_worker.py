@@ -9,16 +9,18 @@ import importlib.metadata
 
 from norfab.core.worker import NFPWorker, Result
 from norfab.core.models import WorkerResult, ClientPostJobResponse, ClientGetJobResponse
-from typing import Union, List, Dict, Any, Annotated
-
-
+from typing import Union, List, Dict, Any, Annotated, Optional
+from diskcache import FanoutCache
 from pydantic import BaseModel
+from datetime import datetime, timedelta
 
 log = logging.getLogger(__name__)
 
 try:
     import uvicorn
-    from fastapi import FastAPI, Body
+    from fastapi import Depends, FastAPI, Header, HTTPException, Body
+    from fastapi.security.http import HTTPAuthorizationCredentials, HTTPBearer
+    from starlette import status
 
     HAS_FASTAPI = True
 except ImportError:
@@ -61,8 +63,24 @@ class FastAPIWorker(NFPWorker):
             **self.fastapi_inventory.pop("uvicorn", {}),
         }
 
+        # instantiate cache
+        self.cache_dir = os.path.join(self.base_dir, "cache")
+        os.makedirs(self.cache_dir, exist_ok=True)
+        self.cache = self._get_diskcache()
+        self.cache.expire()
+
         # start FastAPI server
         self.fastapi_start()
+
+        self.init_done_event.set()
+
+    def _get_diskcache(self) -> FanoutCache:
+        return FanoutCache(
+            directory=self.cache_dir,
+            shards=4,
+            timeout=1,  # 1 second
+            size_limit=1073741824,  #  1 GigaByte
+        )
 
     def fastapi_start(self):
         """
@@ -83,8 +101,6 @@ class FastAPIWorker(NFPWorker):
         while not self.uvicorn_server.started:
             time.sleep(0.001)
 
-        self.init_done_event.set()
-
         log.info(
             f"{self.name} - Uvicorn server started, serving FastAPI app at "
             f"http://{self.uvicorn_inventory['host']}:{self.uvicorn_inventory['port']}"
@@ -92,15 +108,6 @@ class FastAPIWorker(NFPWorker):
 
     def worker_exit(self):
         os.kill(os.getpid(), signal.SIGTERM)
-
-    def get_fastapi_inventory(self) -> dict:
-        return Result(
-            task=f"{self.name}:get_fastapi_inventory",
-            result={
-                **dict(self.fastapi_inventory),
-                "uvicorn": self.uvicorn_inventory,
-            },
-        )
 
     def get_version(self):
         """
@@ -124,10 +131,118 @@ class FastAPIWorker(NFPWorker):
 
         return Result(task=f"{self.name}:get_version", result=libs)
 
-    def get_inventory(self):
+    def get_inventory(self) -> Dict:
         return Result(
             result={**self.fastapi_inventory, "uvicorn": self.uvicorn_inventory},
             task=f"{self.name}:get_inventory",
+        )
+
+    def bearer_token_store(self, username: str, token: str, expire: int = None) -> bool:
+        """
+        Method to store bearer token in the database
+
+        :param username: Name of the user to store token for
+        :param token: token string to store
+        :param expire: seconds before token expires
+        """
+        expire = expire or self.fastapi_inventory.get("auth_bearer", {}).get(
+            "token_ttl", expire
+        )
+        self.cache.expire()
+        cache_key = f"bearer_token::{token}"
+        if cache_key in self.cache:
+            user_token = self.cache.get(cache_key)
+        else:
+            user_token = {
+                "token": token,
+                "username": username,
+                "created": str(datetime.now()),
+            }
+        self.cache.set(cache_key, user_token, expire=expire, tag=username)
+
+        return Result(task=f"{self.name}:bearer_token_store", result=True)
+
+    def bearer_token_delete(self, username: str = None, token: str = None) -> bool:
+        """
+        Method to delete bearer token from the database
+
+        :param username: name of the user to delete tokens for
+        :param token: token string to delete, if None, deletes all tokens for the the user
+        """
+        self.cache.expire()
+        token_removed_count = 0
+        if token:
+            cache_key = f"bearer_token::{token}"
+            if cache_key in self.cache:
+                if self.cache.delete(cache_key, retry=True):
+                    token_removed_count = 1
+                else:
+                    raise RuntimeError(f"Failed to remove {username} token from cache")
+        elif username:
+            token_removed_count = self.cache.evict(tag=username, retry=True)
+        else:
+            raise Exception("Cannot delete, either username or token must be provided")
+
+        log.info(
+            f"{self.name} removed {token_removed_count} token(s) for user {username}"
+        )
+
+        return Result(task=f"{self.name}:bearer_token_delete", result=True)
+
+    def bearer_token_list(self, username: str = None) -> list:
+        """
+        List tokens stored in the database
+
+        :param username: Name of the user to list tokens for, returns
+            all tokens if username not provided
+        """
+        self.cache.expire()
+        ret = Result(task=f"{self.name}:bearer_token_list", result=[])
+
+        for cache_key in self.cache:
+            token_data, expires, tag = self.cache.get(
+                cache_key, expire_time=True, tag=True
+            )
+            if username and tag != username:
+                continue
+            if expires is not None:
+                expires = datetime.fromtimestamp(expires)
+            creation = datetime.fromisoformat(token_data["created"])
+            age = datetime.now() - creation
+            ret.result.append(
+                {
+                    "username": token_data["username"],
+                    "token": token_data["token"],
+                    "age": str(age),
+                    "creation": str(creation),
+                    "expires": str(expires),
+                }
+            )
+
+        # return empty result if no tokens found
+        if not ret.result:
+            ret.result = [
+                {
+                    "username": "",
+                    "token": "",
+                    "age": "",
+                    "creation": "",
+                    "expires": "",
+                }
+            ]
+
+        return ret
+
+    def bearer_token_check(self, token: str) -> bool:
+        """
+        Method to check if given token exists in the database
+
+        :param token: token string to check
+        """
+        self.cache.expire()
+        cache_key = f"bearer_token::{token}"
+        return Result(
+            task=f"{self.name}:bearer_token_check", result=cache_key in self.cache
         )
 
 
@@ -136,8 +251,8 @@ class FastAPIWorker(NFPWorker):
 # ------------------------------------------------------------------
 
 
-class RunJobResponse(BaseModel):
-    None
+class UnauthorizedMessage(BaseModel):
+    detail: str = "Bearer token missing or unknown"
 
 
 def make_fast_api_app(worker: object, config: dict) -> FastAPI:
@@ -150,7 +265,24 @@ def make_fast_api_app(worker: object, config: dict) -> FastAPI:
 
     app = FastAPI(**config)
 
-    @app.post("/job")
+    # We will handle a missing token ourselves
+    get_bearer_token = HTTPBearer(auto_error=False)
+
+    def get_token(
+        auth: Optional[HTTPAuthorizationCredentials] = Depends(get_bearer_token),
+    ) -> str:
+        # check token exists in database
+        if auth is None or worker.bearer_token_check(auth.credentials).result is False:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail=UnauthorizedMessage().detail,
+            )
+        return auth.credentials
+
+    @app.post(
+        "/job",
+        responses={status.HTTP_401_UNAUTHORIZED: dict(model=UnauthorizedMessage)},
+    )
     def post_job(
         service: Annotated[
             str, Body(description="The name of the service to post the job to")
@@ -174,6 +306,7 @@ def make_fast_api_app(worker: object, config: dict) -> FastAPI:
         timeout: Annotated[
             int, Body(description="The timeout for the job in seconds")
         ] = 600,
+        token: str = Depends(get_token),
     ) -> ClientPostJobResponse:
         """
         Method to post the job to NorFab.
@@ -201,7 +334,10 @@ def make_fast_api_app(worker: object, config: dict) -> FastAPI:
         )
         return res
 
-    @app.get("/job")
+    @app.get(
+        "/job",
+        responses={status.HTTP_401_UNAUTHORIZED: dict(model=UnauthorizedMessage)},
+    )
     def get_job(
         service: Annotated[
             str, Body(description="The name of the service to get the job from")
@@ -214,6 +350,7 @@ def make_fast_api_app(worker: object, config: dict) -> FastAPI:
         timeout: Annotated[
             int, Body(description="The timeout for the job in seconds")
         ] = 600,
+        token: str = Depends(get_token),
     ) -> ClientGetJobResponse:
         """
         Method to get job results from NorFab.
@@ -235,7 +372,10 @@ def make_fast_api_app(worker: object, config: dict) -> FastAPI:
         )
         return res
 
-    @app.post("/job/run")
+    @app.post(
+        "/job/run",
+        responses={status.HTTP_401_UNAUTHORIZED: dict(model=UnauthorizedMessage)},
+    )
     def run_job(
         service: Annotated[
             str, Body(description="The name of the service to post the job to")
@@ -262,6 +402,7 @@ def make_fast_api_app(worker: object, config: dict) -> FastAPI:
         retry: Annotated[
             int, Body(description="The number of times to try and GET job results")
         ] = 10,
+        token: str = Depends(get_token),
     ) -> Dict[str, WorkerResult]:
         """
         Method to run job and return job results synchronously. This function

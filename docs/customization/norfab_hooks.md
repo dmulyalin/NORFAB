@@ -1,13 +1,8 @@
 ## NORFAB Hooks
 
-Hooks is a set of of functions to run during NorFab execution lifespan events.
+Hooks is a set of functions to run during NorFab execution lifespan.
 
-NorFab supports definition of hook inside of `inventory.yaml` file within `hooks` section.
-
-Supported attach points:
-
-- `startup` - list of functions to run right after NorFab nfapi fully initialized. Startup hook function must accept `norfab` object as a single argument.
-- `exit` - list of functions to run right before NorFab nfapi initiates exit sequence. Exit hook function must accept `norfab` object as a single argument.
+NorFab supports definition of hooks inside `inventory.yaml` file within `hooks` section.
 
 Each hook defined as a dictionary that can contain these keys:
 
@@ -15,6 +10,11 @@ Each hook defined as a dictionary that can contain these keys:
 - `attachpoint` - one of the attach points indicating when to run hook function e.g. `startup`
 - `args` - optional list of function positional arguments
 - `kwargs` - optional dictionary of function key-word arguments
+
+Supported attach points:
+
+- `startup` - list of functions to run right after NorFab nfapi fully initialized. Startup hook function must accept `norfab` object as a single argument.
+- `exit` - list of functions to run right before NorFab nfapi initiates exit sequence. Exit hook function must accept `norfab` object as a single argument.
 
 Sample hooks definition:
 

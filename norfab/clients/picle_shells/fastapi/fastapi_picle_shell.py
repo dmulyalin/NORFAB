@@ -12,6 +12,7 @@ from pydantic import (
 )
 from ..common import ClientRunJobArgs, log_error_or_result, listen_events
 from typing import Union, Optional, List, Any, Dict, Callable, Tuple
+from .fastapi_picle_shell_auth import FastAPIAuthCommandsModel
 
 SERVICE = "fastapi"
 log = logging.getLogger(__name__)
@@ -71,6 +72,7 @@ class FastAPIServiceCommands(BaseModel):
     show: FastAPIShowCommandsModel = Field(
         None, description="Show FastAPI service parameters"
     )
+    auth: FastAPIAuthCommandsModel = Field(None, description="Manage auth tokens")
 
     class PicleConfig:
         subshell = True
