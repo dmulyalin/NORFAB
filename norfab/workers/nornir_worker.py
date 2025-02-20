@@ -241,12 +241,12 @@ class NornirWorker(NFPWorker):
         self.watchdog = WatchDog(self)
         self.watchdog.start()
 
-        if self.init_done_event is not None:
-            self.init_done_event.set()
-
         # run startup hooks
         for f in self.inventory.hooks.get("nornir-startup", []):
             f["function"](self, *f.get("args", []), **f.get("kwargs", {}))
+
+        if self.init_done_event is not None:
+            self.init_done_event.set()
 
         log.info(f"{self.name} - Started")
 

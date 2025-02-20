@@ -1,3 +1,6 @@
+[project]
+name = "norfab"
+
 [tool.poetry]
 name = "norfab"
 version = "0.5.0"
@@ -95,6 +98,12 @@ pymdown-extensions = { version = "*" }
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[project.entry-points."norfab.workers"]
+"nornir" = "norfab.workers.nornir_worker:NornirWorker"
+"netbox" = "norfab.workers.netbox_worker:NetboxWorker"
+"fastapi" = "norfab.workers.fastapi_worker:FastAPIWorker"
+"agent" = "norfab.workers.agent_worker:AgentWorker"
 
 [tool.poetry.scripts]
 nfcli = 'norfab.utils:nfcli.nfcli'

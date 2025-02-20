@@ -3,46 +3,21 @@ import logging.config
 import time
 import os
 import signal
+import sys
 
 from typing import Union
 from multiprocessing import Process, Event, Queue
 from norfab.core.broker import NFPBroker
 from norfab.core.client import NFPClient
 from norfab.core.inventory import NorFabInventory
+from norfab.core import exceptions as norfab_exceptions
+
+if sys.version_info < (3, 10):
+    from importlib_metadata import entry_points, EntryPoint
+else:
+    from importlib.metadata import entry_points, EntryPoint
 
 log = logging.getLogger(__name__)
-
-try:
-    from norfab.workers.nornir_worker import NornirWorker
-except Exception as e:
-    log.warning(
-        f"Failed to import NornirWorker, error - {e}, "
-        f"this can be ignored if not planning to run Nornir worker."
-    )
-
-try:
-    from norfab.workers.netbox_worker import NetboxWorker
-except Exception as e:
-    log.warning(
-        f"Failed to import NetboxWorker, error - {e}, "
-        f"this can be ignored if not planning to run Netbox worker."
-    )
-
-try:
-    from norfab.workers.agent_worker import AgentWorker
-except Exception as e:
-    log.warning(
-        f"Failed to import AgentWorker, error - {e}, "
-        f"this can be ignored if not planning to run Agent worker."
-    )
-
-try:
-    from norfab.workers.fastapi_worker import FastAPIWorker
-except Exception as e:
-    log.warning(
-        f"Failed to import FastAPIWorker, error - {e}, "
-        f"this can be ignored if not planning to run FastAPI worker."
-    )
 
 
 def start_broker_process(
@@ -65,6 +40,7 @@ def start_broker_process(
 
 
 def start_worker_process(
+    worker_plugin: object,
     inventory: str,
     broker_endpoint: str,
     service: str,
@@ -74,59 +50,17 @@ def start_worker_process(
     log_queue=None,
     init_done_event=None,
 ):
-    try:
-        if service == "nornir":
-            worker = NornirWorker(
-                inventory=inventory,
-                broker=broker_endpoint,
-                service=b"nornir",
-                worker_name=worker_name,
-                exit_event=exit_event,
-                init_done_event=init_done_event,
-                log_level=log_level,
-                log_queue=log_queue,
-            )
-            worker.work()
-        elif service == "netbox":
-            worker = NetboxWorker(
-                inventory=inventory,
-                broker=broker_endpoint,
-                service=b"netbox",
-                worker_name=worker_name,
-                exit_event=exit_event,
-                init_done_event=init_done_event,
-                log_level=log_level,
-                log_queue=log_queue,
-            )
-            worker.work()
-        elif service == "agent":
-            worker = AgentWorker(
-                inventory=inventory,
-                broker=broker_endpoint,
-                service=b"agent",
-                worker_name=worker_name,
-                exit_event=exit_event,
-                init_done_event=init_done_event,
-                log_level=log_level,
-                log_queue=log_queue,
-            )
-            worker.work()
-        elif service == "fastapi":
-            worker = FastAPIWorker(
-                inventory=inventory,
-                broker=broker_endpoint,
-                service=b"fastapi",
-                worker_name=worker_name,
-                exit_event=exit_event,
-                init_done_event=init_done_event,
-                log_level=log_level,
-                log_queue=log_queue,
-            )
-            worker.work()
-        else:
-            raise RuntimeError(f"Unsupported service '{service}'")
-    except KeyboardInterrupt:
-        pass
+    worker = worker_plugin(
+        inventory=inventory,
+        broker=broker_endpoint,
+        service=service.encode(encoding="utf-8"),
+        worker_name=worker_name,
+        exit_event=exit_event,
+        init_done_event=init_done_event,
+        log_level=log_level,
+        log_queue=log_queue,
+    )
+    worker.work()
 
 
 class NorFab:
@@ -138,6 +72,7 @@ class NorFab:
     broker = None
     inventory = None
     workers_processes = {}
+    worker_plugins = {}
 
     def __init__(
         self,
@@ -172,10 +107,11 @@ class NorFab:
         NFCLIENT = nf.make_client()
         ```
 
-        :param inventory: OS path to NorFab inventory YAML file
-        :param inventory_data: dictionary with NorFab inventory
-        :param base_dir: OS path to base directory to anchor NorFab at
-        :param log_level: one or supported logging levels - `CRITICAL`, `ERROR`, `WARNING`, `INFO`, `DEBUG`
+        Args:
+            inventory: OS path to NorFab inventory YAML file
+            inventory_data: dictionary with NorFab inventory
+            base_dir: OS path to base directory to anchor NorFab at
+            log_level: one or supported logging levels - `CRITICAL`, `ERROR`, `WARNING`, `INFO`, `DEBUG`
         """
         self.exiting = False  # flag to signal that Norfab is exiting
         self.inventory = NorFabInventory(
@@ -202,7 +138,69 @@ class NorFab:
         self.setup_logging()
         signal.signal(signal.SIGINT, self.handle_ctrl_c)
 
-    def handle_ctrl_c(self, signum, frame):
+        # find all workers plugins
+        self.register_plugins()
+
+    def register_plugins(self) -> None:
+        """
+        Registers worker plugins by iterating through the entry points in the
+        'norfab.workers' group and registering each worker plugin.
+
+        This method loads each entry point and registers it using the
+        `register_worker_plugin` method.
+
+        Raises:
+            Any exceptions raised by the entry point loading or registration process.
+        """
+        # register worker plugins
+        for entry_point in entry_points(group="norfab.workers"):
+            self.register_worker_plugin(entry_point.name, entry_point)
+
+    def register_worker_plugin(self, service_name: str, worker_plugin: object) -> None:
+        """
+        Registers a worker plugin for a given service.
+
+        This method registers a worker plugin under the specified service name.
+        If a plugin is already registered under the same service name and it is
+        different from the provided plugin, an exception is raised.
+
+        Args:
+            service_name (str): The name of the service to register the plugin for.
+            worker_plugin (object): The worker plugin to be registered.
+            
+        Raises:
+            norfab_exceptions.ServicePluginAlreadyRegistered: If a different plugin
+            is already registered under the same service name.
+        """
+        existing_plugin = self.worker_plugins.get(service_name)
+        if existing_plugin is None:
+            self.worker_plugins[service_name] = worker_plugin
+        # check if worker plugin for given service already registered
+        if not isinstance(worker_plugin, EntryPoint):
+            if existing_plugin != worker_plugin:
+                raise norfab_exceptions.ServicePluginAlreadyRegistered(
+                    f"Worker plugin {worker_plugin} can't be registered for "
+                    f"service {service_name} because plugin {existing_plugin} "
+                    f"was already registered under this service."
+                )
+
+    def handle_ctrl_c(self, signum, frame) -> None:
+        """
+        Handle the CTRL-C signal (SIGINT) to gracefully exit the application.
+
+        This method is called when the user interrupts the program with a CTRL-C
+        signal. It logs the interruption, performs necessary cleanup by calling
+        `self.destroy()`, and then signals termination to the main process.
+
+        Args:
+            signum (int): The signal number (should be SIGINT).
+            frame (FrameType): The current stack frame.
+
+        Note:
+            This method reassigns the SIGINT signal to the default handler and
+            sends the SIGINT signal to the current process to ensure proper
+            termination.
+        """
         if self.exiting is False:
             msg = "CTRL-C, NorFab exiting, interrupted by user..."
             print(f"\n{msg}")
@@ -212,7 +210,15 @@ class NorFab:
             signal.signal(signal.SIGINT, signal.default_int_handler)
             os.kill(os.getpid(), signal.SIGINT)
 
-    def setup_logging(self):
+    def setup_logging(self) -> None:
+        """
+        Sets up logging configuration and starts a log queue listener.
+
+        This method updates the logging levels for all handlers based on the
+        inventory, configures the logging system using the provided
+        inventory, and starts a log queue listener to process logs from child
+        processes.
+        """
         # update logging levels for all handlers
         if self.log_level is not None:
             self.inventory["logging"]["root"]["level"] = self.log_level
@@ -228,7 +234,21 @@ class NorFab:
         )
         self.log_listener.start()
 
-    def start_broker(self):
+    def start_broker(self) -> None:
+        """
+        Starts the broker process if a broker endpoint is defined.
+        This method initializes and starts a separate process for the broker using the
+        provided broker endpoint. It waits for the broker to signal that it has fully
+        initiated, with a timeout of 30 seconds. If the broker fails to start within
+        this time, the method logs an error message and raises a SystemExit exception.
+
+        Raises:
+            SystemExit: If the broker fails to start within 30 seconds.
+
+        Logs:
+            Info: When the broker starts successfully.
+            Error: If no broker endpoint is defined or if the broker fails to start.
+        """
         if self.broker_endpoint:
             init_done_event = Event()  # for worker to signal if its fully initiated
 
@@ -263,7 +283,21 @@ class NorFab:
         else:
             log.error("Failed to start broker, no broker endpoint defined")
 
-    def start_worker(self, worker_name, worker_data):
+    def start_worker(self, worker_name, worker_data) -> None:
+        """
+        Starts a worker process if it is not already running.
+
+        Args:
+            worker_name (str): The name of the worker to start.
+            worker_data (dict): A dictionary containing data about the worker, including any dependencies.
+
+        Raises:
+            RuntimeError: If a dependent process is not alive.
+            norfab_exceptions.ServicePluginNotRegistered: If no worker plugin is registered for the worker's service.
+
+        Returns:
+            None
+        """
         if not self.workers_processes.get(worker_name):
             worker_inventory = self.inventory[worker_name]
             init_done_event = Event()  # for worker to signal if its fully initiated
@@ -281,10 +315,22 @@ class NorFab:
                 ):
                     return
 
+            if self.worker_plugins.get(worker_inventory["service"]):
+                worker_plugin = self.worker_plugins[worker_inventory["service"]]
+                # load entry point on first call
+                if isinstance(worker_plugin, EntryPoint):
+                    worker_plugin = worker_plugin.load()
+                    self.worker_plugins[worker_inventory["service"]] = worker_plugin
+            else:
+                raise norfab_exceptions.ServicePluginNotRegistered(
+                    f"No worker plugin registered for service '{worker_inventory['service']}'"
+                )
+
             self.workers_processes[worker_name] = {
                 "process": Process(
                     target=start_worker_process,
                     args=(
+                        worker_plugin,
                         self.inventory,
                         self.broker_endpoint,
                         worker_inventory["service"],
@@ -306,14 +352,27 @@ class NorFab:
         workers: Union[bool, list] = True,
     ) -> None:
         """
-        Main entry method to start NorFab components.
+        Starts the broker and specified workers.
 
-        :param start_broker: if True, starts broker process as defined in inventory
-            ``topology`` section
-        :param workers: list of worker names to start processes for or boolean, if True
-            starts all workers defined in inventory ``topology`` sections
-        :param client: If true return and instance of NorFab client
+        Args:
+            start_broker (bool): If True, starts the broker if it is defined in the inventory topology.
+            workers (Union[bool, list]): Determines which workers to start. If True, starts all workers defined in the inventory topology.
+                                         If False or None, no workers are started. If a list, starts the specified workers.
+
+        Returns:
+            None
+            
+        Raises:
+            KeyError: If a worker fails to start due to missing inventory data.
+            FileNotFoundError: If a worker fails to start because the inventory file is not found.
+            Exception: If a worker fails to start due to any other error.
+
+        Notes:
+            - The method waits for all workers to initialize within a specified timeout period.
+            - If the initialization timeout expires, an error is logged and the system is destroyed.
+            - After starting the workers, any startup hooks defined in the inventory are executed.
         """
+
         workers_to_start = set()
 
         # start the broker
@@ -396,7 +455,10 @@ class NorFab:
 
     def run(self):
         """
-        Helper method to run the loop before CTRL+C called
+        Runs the main loop until a termination signal (CTRL+C) is received.
+        This method checks if there are any broker or worker processes running.
+        If none are detected, it logs a critical message and exits.
+        Otherwise, it enters a loop that continues to run until the `exiting` flag is set to True.
         """
         if not self.broker and not self.workers_processes:
             log.critical(
@@ -409,7 +471,19 @@ class NorFab:
 
     def destroy(self) -> None:
         """
-        Stop NORFAB processes.
+        Gracefully stop all NORFAB processes and clean up resources.
+
+        This method performs the following steps:
+
+        1. Executes any registered exit hooks.
+        2. Sets the `exiting` flag to indicate that NORFAB is shutting down.
+        3. Stops all client processes.
+        4. Stops all worker processes and waits for them to terminate.
+        5. Stops the broker process and waits for it to terminate.
+        6. Stops the logging queue listener.
+        
+        Returns:
+            None
         """
         # run exit hooks
         for f in self.inventory.hooks.get("exit", []):
@@ -440,11 +514,23 @@ class NorFab:
 
     def make_client(self, broker_endpoint: str = None) -> NFPClient:
         """
-        Make an instance of NorFab client
+        Creates and returns an NFPClient instance.
 
-        :param broker_endpoint: (str), Broker URL to connect with
+        Args:
+            broker_endpoint (str, optional): The broker endpoint to connect to.
+                If not provided, the instance's broker_endpoint attribute will be used.
+
+        Returns:
+            NFPClient: The created client instance if a broker endpoint is defined.
+            None: If no broker endpoint is defined.
+
+        Raises:
+            None
+
+        Notes:
+            If this is the first client being created, it will be assigned to the
+            instance's client attribute.
         """
-
         if broker_endpoint or self.broker_endpoint:
             client = NFPClient(
                 self.inventory,

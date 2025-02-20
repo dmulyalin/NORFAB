@@ -31,7 +31,7 @@ plugins:
             options:
               show_root_toc_entry: false
               docstring_section_style: table
-              docstring_style: sphinx
+              docstring_style: sphinx # google
               members_order: source
               merge_init_into_class: true
 repo_name: dmulyalin/norfab
