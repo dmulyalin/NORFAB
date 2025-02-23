@@ -3,7 +3,7 @@ name = "norfab"
 
 [tool.poetry]
 name = "norfab"
-version = "0.5.0"
+version = "0.6.0"
 description = "Network Automations Fabric [NorFab] - communication networks automations"
 authors = ["Denis Mulyalin <d.mulyalin@gmail.com>"]
 maintainers = ["Denis Mulyalin <d.mulyalin@gmail.com>"]
@@ -80,7 +80,7 @@ fastapi = { version = ">=0.115.0,<1.0.0", optional = true, extras = ["standard"]
 uvicorn = { version = "*", optional = true }
 python-multipart = { version = "*", optional = true }
 
-[tool.poetry.dev-dependencies]
+[poetry.group.dev.dependencies]
 black = "22.3.*"
 pytest = { version = ">=7.1" }
 fakenos = { version = ">=1.0.0" }

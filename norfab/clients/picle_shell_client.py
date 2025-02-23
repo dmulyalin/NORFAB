@@ -313,6 +313,30 @@ class NorFabShell(BaseModel):
 # ---------------------------------------------------------------------------------------------
 
 
+def mount_shell_plugins(shell: App, inventory: object) -> None:
+    """
+    Mounts shell plugins to the given shell application.
+
+    This function iterates over the plugins in the inventory and mounts
+    those that have an "nfcli" configuration to the shell application.
+
+    Args:
+        shell (App): The shell application to which the plugins will be mounted.
+        inventory (object): An object containing the plugins to be mounted.
+                            It should have an attribute `plugins` which is a dictionary
+                            where keys are service names and values are service data dictionaries.
+
+    Returns:
+        None
+    """
+    for service_name, service_data in inventory.plugins.items():
+        if service_data.get("nfcli"):
+            shell.model_mount(
+                path=service_data["nfcli"]["mount_path"],
+                model=service_data["nfcli"]["shell_model"],
+            )
+
+
 def start_picle_shell(
     inventory="./inventory.yaml",
     workers=None,
@@ -331,6 +355,7 @@ def start_picle_shell(
 
         # start PICLE interactive shell
         shell = App(NorFabShell)
+        mount_shell_plugins(shell, nf.inventory)
         shell.start()
 
         print("Exiting...")

@@ -1,0 +1,8 @@
+service: DummyService
+
+data:
+  any: data
+  goes: here
+
+more:
+  service: data

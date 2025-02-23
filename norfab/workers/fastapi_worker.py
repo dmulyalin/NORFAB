@@ -14,6 +14,8 @@ from diskcache import FanoutCache
 from pydantic import BaseModel
 from datetime import datetime, timedelta
 
+SERVICE = "fastapi"
+
 log = logging.getLogger(__name__)
 
 try:
@@ -31,7 +33,6 @@ except ImportError:
 class FastAPIWorker(NFPWorker):
     """
     :param broker: broker URL to connect to
-    :param service: name of the service with worker belongs to
     :param worker_name: name of this worker
     :param exit_event: if set, worker need to stop/exit
     :param init_done_event: event to set when worker done initializing
@@ -43,14 +44,13 @@ class FastAPIWorker(NFPWorker):
         inventory: str,
         broker: str,
         worker_name: str,
-        service: str = b"fastapi",
         exit_event=None,
         init_done_event=None,
         log_level: str = None,
         log_queue: object = None,
     ):
         super().__init__(
-            inventory, broker, service, worker_name, exit_event, log_level, log_queue
+            inventory, broker, SERVICE, worker_name, exit_event, log_level, log_queue
         )
         self.init_done_event = init_done_event
         self.exit_event = exit_event

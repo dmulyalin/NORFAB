@@ -126,8 +126,18 @@ logging_config_listener = {
 
 def make_logging_config(base_dir: str, inventory: dict) -> dict:
     """
-    Helper function to combine inventory logging section and
-    logging_config_listener dictionary.
+    Combines the inventory logging section with a predefined logging configuration.
+    This function updates the predefined logging configuration with the settings
+    provided in the inventory dictionary. It ensures that the log file is stored
+    in the specified base directory and merges handlers, formatters, and root logger
+    settings from the inventory into the predefined configuration.
+
+    Args:
+        base_dir (str): The base directory where the log file will be stored.
+        inventory (dict): A dictionary containing logging configuration settings.
+
+    Returns:
+        dict: The combined logging configuration.
     """
     logging_config_listener["handlers"]["file"]["filename"] = os.path.join(
         base_dir, "__norfab__", "logs", "norfab.log"
@@ -163,10 +173,21 @@ def make_logging_config(base_dir: str, inventory: dict) -> dict:
 
 def merge_recursively(data: dict, merge: dict) -> None:
     """
-    Function to merge two dictionaries data recursively.
+    Function to merge two dictionaries recursively.
 
-    :param data: primary dictionary
-    :param merge: dictionary to merge into primary overriding the content
+    This function takes two dictionaries and merges the second dictionary into the first one.
+    If both dictionaries have a key with a dictionary as its value, the function will merge
+    those dictionaries recursively. If both dictionaries have a key with a list as its value,
+    the function will append the elements of the second list to the first list, avoiding duplicates.
+    For other types of values, the function will override the value in the first dictionary
+    with the value from the second dictionary.
+
+    Args:
+        data: The primary dictionary to be merged into.
+        merge: The dictionary to merge into the primary dictionary.
+
+    Raises:
+        AssertionError: If either of the inputs is not a dictionary.
     """
     assert isinstance(data, dict) and isinstance(
         merge, dict
@@ -188,9 +209,21 @@ def merge_recursively(data: dict, merge: dict) -> None:
             data[k] = v
 
 
-def make_hooks(base_dir, hooks):
+def make_hooks(base_dir: str, hooks: List) -> Dict[str, List]:
     """
-    Function to load hook functions
+    Load and organize hook functions from specified modules.
+
+    Args:
+        base_dir (str): The base directory to include in the search path for modules.
+        hooks (list): A list of dictionaries, each containing:
+            - "function" (str): The full path to the hook function in the format 'module.submodule.function'.
+            - "attachpoint" (str): The key to which the hook function should be attached.
+
+    Returns:
+        dict: A dictionary where keys are attach points and values are lists of hook function dictionaries.
+
+    Raises:
+        Exception: If there is an error importing or loading a hook function.
     """
     ret = {}
 
@@ -201,32 +234,128 @@ def make_hooks(base_dir, hooks):
         sys.path.append(base_dir)
 
     # load hook functions one by one
-    for item in hooks:
-        try:
-            *imp_str, hook_function_name = item["function"].split(".")
-            imp_str = ".".join(imp_str)
-            log.info(f"Importing hook '{imp_str}' function '{hook_function_name}'")
-            hook_module = __import__(imp_str, fromlist=[""])
-            item["function"] = getattr(hook_module, hook_function_name)
-            ret.setdefault(item["attachpoint"], [])
-            ret[item.pop("attachpoint")].append(item)
-            log.info(f"Successfully loaded hook function {item['function']}")
-        except Exception as e:
-            log.exception(f"Failed loading hook {item}")
+    for attachpoint, hooks in hooks.items():
+        ret[attachpoint] = []
+        for hook in hooks:
+            try:
+                imp_str, hook_function_name = hook["function"].split(":")
+                log.info(f"Importing hook '{imp_str}' function '{hook_function_name}'")
+                hook_module = __import__(imp_str, fromlist=[""])
+                hook["function"] = getattr(hook_module, hook_function_name)
+                ret[attachpoint].append(hook)
+                log.info(f"Successfully loaded hook function {hook['function']}")
+            except Exception as e:
+                log.exception(f"Failed loading hook {hook}")
+
+    return ret
+
+
+def make_plugins(base_dir: str, plugins: Dict) -> Dict[str, Dict]:
+    """
+    Loads and initializes plugin functions for the given services.
+
+    This function ensures that the current working directory and the specified
+    base directory are included in the Python search path. It then iterates
+    through the list of worker plugins provided in the `plugins` dictionary,
+    dynamically imports the specified plugin classes, and adds them to the
+    returned dictionary.
+
+    Args:
+        base_dir (str): The base directory to include in the search path.
+        plugins (dict): A dictionary containing plugin configurations. The
+                        dictionary should have a key "workers" which maps to a
+                        list of plugin configurations. Each configuration should
+                        include a "service" key and a "plugin" key in the format
+                        "module:ClassName".
+
+    Returns:
+        dict: A dictionary with a key "workers" mapping to another dictionary
+              where each key is a service name and each value is the corresponding
+              plugin configuration with the plugin class loaded.
+
+    Raises:
+        Exception: If there is an error loading any of the plugin classes, an
+                   exception is logged and the function continues with the next
+                   plugin.
+
+    Example:
+        plugins = {
+            "workers": [
+                {
+                    "service": "example_service",
+                    "plugin": "my.path.to.example_module:ExamplePluginClass"
+                }
+            ]
+        }
+        result = make_plugins("/path/to/base_dir", plugins)
+    """
+    ret = {}
+
+    # make sure to include current and base_dir directories in search path
+    if os.getcwd() not in sys.path:
+        sys.path.append(os.getcwd())
+    if base_dir not in sys.path:
+        sys.path.append(base_dir)
+
+    # load service plugins
+    for service_name, service_data in plugins.items():
+        ret[service_name] = service_data
+        # import worker plugin
+        if service_data.get("worker"):
+            try:
+                imp_str, plugin_class_name = service_data["worker"].split(":")
+                log.info(
+                    f"Importing '{plugin_class_name}' worker plugin class from '{imp_str}' module"
+                )
+                plugin_module = __import__(imp_str, fromlist=[""])
+                service_data["worker"] = getattr(plugin_module, plugin_class_name)
+                log.info(
+                    f"Successfully loaded worker plugin {plugin_class_name} for service {service_name}"
+                )
+            except Exception as e:
+                log.exception(
+                    f"Failed loading worker plugin '{service_data['worker']}'"
+                )
+        # impot nfcli pydantic model
+        if service_data.get("nfcli"):
+            try:
+                imp_str, plugin_class_name = service_data["nfcli"]["shell_model"].split(
+                    ":"
+                )
+                log.info(
+                    f"Importing '{plugin_class_name}' nfcli pydantic model plugin class from '{imp_str}' module"
+                )
+                plugin_module = __import__(imp_str, fromlist=[""])
+                service_data["nfcli"]["shell_model"] = getattr(
+                    plugin_module, plugin_class_name
+                )
+                log.info(
+                    f"Successfully loaded nfcli pydantic model plugin class {plugin_class_name} for service {service_name}"
+                )
+            except Exception as e:
+                log.exception(
+                    f"Failed loading nfcli pydantic model plugin class '{service_data['nfcli']}'"
+                )
 
     return ret
 
 
 def render_jinja2_template(
     template: str, context: dict = None, filters: dict = None
-) -> str:
+) -> List[str]:
     """
-    Helper function to render a list of Jinja2 template.
+    Renders a Jinja2 template with the given context and custom filters.
 
-    :param templates: list of template strings to render
-    :param context: Jinja2 context dictionary
-    :param filter: custom Jinja2 filters
-    :returns: list of rendered strings
+    Args:
+        template (str): The Jinja2 template as a string.
+        context (dict, optional): A dictionary containing the context variables for the template. Defaults to None.
+        filters (dict, optional): A dictionary containing custom Jinja2 filters. Defaults to None.
+
+    Returns:
+        List[str]: The rendered template as a string.
+
+    Raises:
+        TemplateError: If there is an error in rendering the template.
     """
     rendered = ""
     filters = filters or {}
@@ -299,23 +428,36 @@ class WorkersInventory:
 
 
 class NorFabInventory:
-    __slots__ = ("broker", "workers", "topology", "logging", "base_dir", "hooks")
+    __slots__ = (
+        "broker",
+        "workers",
+        "topology",
+        "logging",
+        "base_dir",
+        "hooks",
+        "plugins",
+    )
 
     def __init__(
         self, path: str = None, data: dict = None, base_dir: str = None
     ) -> None:
         """
-        NorFabInventory class to instantiate simple inventory either
-        from file or from dictionary.
+        Initialize NorFab Simple Inventory object.
 
-        :param path: OS path to YAML file with inventory data
-        :param data: NorFab inventory dictionary
+        Args:
+            path (str, optional): The file path to the inventory YAML file. Defaults to None.
+            data (dict, optional): The inventory data dictionary. Defaults to None.
+            base_dir (str, optional): The base directory for the inventory. Defaults to None.
+
+        Raises:
+            RuntimeError: If neither path nor data is provided.
         """
         self.broker = {}
         self.workers = {}
         self.topology = {}
         self.logging = {}
         self.hooks = {}
+        self.plugins = {}
 
         if data:
             self.base_dir = base_dir or os.path.split(os.getcwd())[0]
@@ -330,13 +472,34 @@ class NorFabInventory:
             )
 
     def load_data(self, data) -> None:
+        """
+        Load and initialize various components from the provided data dictionary.
+
+        Args:
+            data (dict): A dictionary containing configuration data for initializing
+                         the broker, workers, topology, logging, hooks, and plugins.
+
+        Returns:
+            None
+        """
         self.broker = data.pop("broker", {})
         self.workers = WorkersInventory(self.base_dir, data.pop("workers", {}))
         self.topology = data.pop("topology", {})
         self.logging = make_logging_config(self.base_dir, data.pop("logging", {}))
         self.hooks = make_hooks(self.base_dir, data.pop("hooks", {}))
+        self.plugins = make_plugins(self.base_dir, data.pop("plugins", {}))
 
     def load_path(self, path: str) -> None:
+        """
+        Loads inventory data from a specified file path.
+
+        Args:
+            path (str): The file path to the inventory.yaml file.
+
+        Raises:
+            FileNotFoundError: If the file does not exist at the specified path.
+            AssertionError: If the path does not point to a file.
+        """
         if not os.path.exists(path):
             msg = f"inventory.yaml file not found under provided path `{path}`"
             log.critical(msg)
@@ -351,12 +514,34 @@ class NorFabInventory:
         self.load_data(data)
 
     def __getitem__(self, key: str) -> Any:
+        """
+        Retrieve an item from the inventory.
+
+        Args:
+            key (str): The key of the item to retrieve.
+
+        Returns:
+            Any: The value associated with the given key.
+
+        Raises:
+            KeyError: If the key is not found in the inventory.
+        """
         if key in self.__slots__:
             return getattr(self, key)
         else:
             return self.workers[key]
 
     def get(self, item: str, default: Any = None) -> Any:
+        """
+        Retrieve the value of the specified item from the inventory.
+
+        Args:
+            item (str): The name of the item to retrieve.
+            default (Any, optional): The value to return if the item is not found. Defaults to None.
+
+        Returns:
+            Any: The value of the specified item if it exists, otherwise the default value.
+        """
         if item in self.__slots__:
             return getattr(self, item)
         else:
@@ -364,21 +549,42 @@ class NorFabInventory:
 
     def dict(self) -> Dict[str, Any]:
         """
-        Return serialized dictionary of inventory
+        Convert the inventory object to a dictionary representation.
+
+        Returns:
+            Dict[str, Any]: A dictionary containing the inventory details:
+                - broker (str): The broker information.
+                - workers (Any): The data related to workers.
+                - topology (Any): The topology information.
+                - logging (Any): The logging configuration.
+                - hooks (dict): A dictionary containing startup and exit hooks, where each
+                    hook's function is represented by its name.
         """
-        return {
+        ret = {
             "broker": self.broker,
             "workers": self.workers.data,
             "topology": self.topology,
             "logging": self.logging,
-            "hooks": {
-                "startup": [
-                    {**i, "function": i["function"].__name__}
-                    for i in self.hooks["startup"]
-                ],
-                "exit": [
-                    {**i, "function": i["function"].__name__}
-                    for i in self.hooks["exit"]
-                ],
-            },
+            "hooks": {},
+            "plugins": {},
         }
+
+        # add hooks replacing hook function with its name
+        for attachpoint, hooks in self.hooks.items():
+            ret["hooks"][attachpoint] = []
+            for hook in hooks:
+                ret["hooks"][attachpoint].append(
+                    {**hook, "function": hook["function"].__name__}
+                )
+
+        # add plugins replacing plugin classes with their name
+        for service_name, service_data in self.plugins.items():
+            ret["plugins"][service_name] = {**service_data}
+            if service_data.get("worker"):
+                ret["plugins"][service_name]["worker"] = service_data["worker"].__name__
+            if service_data.get("nfcli"):
+                ret["plugins"][service_name]["nfcli"]["shell_model"] = service_data[
+                    "nfcli"
+                ]["shell_model"].__name__
+
+        return ret

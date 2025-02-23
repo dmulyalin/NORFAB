@@ -4,6 +4,8 @@ import sys
 import importlib.metadata
 from norfab.core.worker import NFPWorker, Result
 
+SERVICE = "agent"
+
 log = logging.getLogger(__name__)
 
 try:
@@ -21,7 +23,6 @@ class AgentWorker(NFPWorker):
     NORFAB AI Agent Worker
 
     :param broker: broker URL to connect to
-    :param service: name of the service with worker belongs to
     :param worker_name: name of this worker
     :param exit_event: if set, worker need to stop/exit
     :param init_done_event: event to set when worker done initializing
@@ -33,14 +34,13 @@ class AgentWorker(NFPWorker):
         inventory,
         broker: str,
         worker_name: str,
-        service: str = b"agent",
         exit_event=None,
         init_done_event=None,
         log_level: str = "WARNING",
         log_queue: object = None,
     ):
         super().__init__(
-            inventory, broker, service, worker_name, exit_event, log_level, log_queue
+            inventory, broker, SERVICE, worker_name, exit_event, log_level, log_queue
         )
         self.init_done_event = init_done_event
 

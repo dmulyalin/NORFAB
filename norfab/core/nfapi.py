@@ -43,7 +43,6 @@ def start_worker_process(
     worker_plugin: object,
     inventory: str,
     broker_endpoint: str,
-    service: str,
     worker_name: str,
     exit_event=None,
     log_level=None,
@@ -53,7 +52,6 @@ def start_worker_process(
     worker = worker_plugin(
         inventory=inventory,
         broker=broker_endpoint,
-        service=service.encode(encoding="utf-8"),
         worker_name=worker_name,
         exit_event=exit_event,
         init_done_event=init_done_event,
@@ -92,7 +90,7 @@ class NorFab:
         NFCLIENT = nf.make_client()
         ```
 
-        or using dictionary data
+        or using dictionary inventory data
 
         ```
         from norfab.core.nfapi import NorFab
@@ -152,11 +150,18 @@ class NorFab:
         Raises:
             Any exceptions raised by the entry point loading or registration process.
         """
-        # register worker plugins
+        # register worker plugins from entrypoints
         for entry_point in entry_points(group="norfab.workers"):
             self.register_worker_plugin(entry_point.name, entry_point)
 
-    def register_worker_plugin(self, service_name: str, worker_plugin: object) -> None:
+        # register worker plugins from inventory
+        for service_name, service_data in self.inventory.plugins.items():
+            if service_data.get("worker"):
+                self.register_worker_plugin(service_name, service_data["worker"])
+
+    def register_worker_plugin(
+        self, service_name: str, worker_plugin: Union[EntryPoint, object]
+    ) -> None:
         """
         Registers a worker plugin for a given service.
 
@@ -167,7 +172,7 @@ class NorFab:
         Args:
             service_name (str): The name of the service to register the plugin for.
             worker_plugin (object): The worker plugin to be registered.
-            
+
         Raises:
             norfab_exceptions.ServicePluginAlreadyRegistered: If a different plugin
             is already registered under the same service name.
@@ -175,14 +180,12 @@ class NorFab:
         existing_plugin = self.worker_plugins.get(service_name)
         if existing_plugin is None:
             self.worker_plugins[service_name] = worker_plugin
-        # check if worker plugin for given service already registered
-        if not isinstance(worker_plugin, EntryPoint):
-            if existing_plugin != worker_plugin:
-                raise norfab_exceptions.ServicePluginAlreadyRegistered(
-                    f"Worker plugin {worker_plugin} can't be registered for "
-                    f"service {service_name} because plugin {existing_plugin} "
-                    f"was already registered under this service."
-                )
+        else:
+            log.debug(
+                f"Worker plugin {worker_plugin} can't be registered for "
+                f"service '{service_name}' because plugin '{existing_plugin}' "
+                f"was already registered under this service."
+            )
 
     def handle_ctrl_c(self, signum, frame) -> None:
         """
@@ -333,7 +336,6 @@ class NorFab:
                         worker_plugin,
                         self.inventory,
                         self.broker_endpoint,
-                        worker_inventory["service"],
                         worker_name,
                         self.workers_exit_event,
                         self.log_level,
@@ -361,7 +363,7 @@ class NorFab:
 
         Returns:
             None
-            
+
         Raises:
             KeyError: If a worker fails to start due to missing inventory data.
             FileNotFoundError: If a worker fails to start because the inventory file is not found.
@@ -481,7 +483,7 @@ class NorFab:
         4. Stops all worker processes and waits for them to terminate.
         5. Stops the broker process and waits for it to terminate.
         6. Stops the logging queue listener.
-        
+
         Returns:
             None
         """
@@ -510,7 +512,6 @@ class NorFab:
                 self.broker.join()
             # stop logging thread
             log.info("NorFab is exiting, stopping logging queue listener")
-            self.log_listener.stop()
 
     def make_client(self, broker_endpoint: str = None) -> NFPClient:
         """

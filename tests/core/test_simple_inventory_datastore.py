@@ -5,6 +5,7 @@ import os
 import yaml
 
 from norfab.core.inventory import NorFabInventory
+from norfab.core.worker import NFPWorker
 
 os.environ["TERMINAL_LOGGING_LEVEL"] = "INFO"
 os.environ["NORNIR_USERNAME"] = "foo"
@@ -167,3 +168,30 @@ class TestInventoryLoadFromDictionary:
         assert (
             "ceos-spine-2" in wkr["hosts"] and "ceos-spine-1" in wkr["hosts"]
         ), "Hosts inventory not correct"
+
+
+class TestHooksInventory:
+    inventory = NorFabInventory("./nf_tests_inventory/inventory.yaml")
+
+    def test_hooks_load(self):
+        assert self.inventory.hooks, "no hooks loaded"
+
+        for attachpoint, hook_data in self.inventory.hooks.items():
+            for hook in hook_data:
+                assert all(
+                    k in hook for k in ["function", "args", "kwargs"]
+                ), f"Hook definition missing some params: {attachpoint} - {hook}"
+                assert callable(hook["function"])
+
+
+class TestPluginsInventory:
+    inventory = NorFabInventory("./nf_tests_inventory/inventory.yaml")
+
+    def test_plugins_load(self):
+        assert self.inventory.plugins, "No plugins loaded"
+
+        for service_name, service_data in self.inventory.plugins.items():
+            assert all(
+                k in service_data for k in ["worker", "nfcli"]
+            ), f"{service_name} plugin definition missing some params"
+            assert issubclass(service_data["worker"], NFPWorker)

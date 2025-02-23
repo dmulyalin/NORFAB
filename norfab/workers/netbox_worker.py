@@ -22,6 +22,8 @@ try:
 except ImportError:
     HAS_PYNETBOX = False
 
+SERVICE = "netbox"
+
 log = logging.getLogger(__name__)
 
 # ----------------------------------------------------------------------
@@ -87,7 +89,6 @@ def _form_query_v3(obj, filters, fields, alias=None):
 class NetboxWorker(NFPWorker):
     """
     :param broker: broker URL to connect to
-    :param service: name of the service with worker belongs to
     :param worker_name: name of this worker
     :param exit_event: if set, worker need to stop/exit
     :param init_done_event: event to set when worker done initializing
@@ -113,14 +114,13 @@ class NetboxWorker(NFPWorker):
         inventory,
         broker,
         worker_name,
-        service: str = b"netbox",
         exit_event=None,
         init_done_event=None,
         log_level=None,
         log_queue: object = None,
     ):
         super().__init__(
-            inventory, broker, service, worker_name, exit_event, log_level, log_queue
+            inventory, broker, SERVICE, worker_name, exit_event, log_level, log_queue
         )
         self.init_done_event = init_done_event
         self.cache = None

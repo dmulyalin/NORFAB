@@ -431,7 +431,7 @@ class NFPWorker:
         self.setup_logging(log_queue, log_level)
         self.inventory = inventory
         self.broker = broker
-        self.service = service
+        self.service = service.encode("utf-8") if isinstance(service, str) else service
         self.name = name
         self.exit_event = exit_event
         self.broker_socket = None

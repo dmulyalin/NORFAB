@@ -71,4 +71,4 @@ via *Broker*.
 
 ![Network Automations Fabric Architecture](images/Overview_Architecture.jpg)
 
-For more information or to schedule a demo, contact [NorFab Support](mailto:dmulyalin@gmail.com).
+For more information or to schedule a demo, [send us an email](mailto:dmulyalin@gmail.com).

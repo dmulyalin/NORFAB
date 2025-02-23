@@ -112,3 +112,43 @@ class TestNornirDiagram:
     @pytest.mark.skip(reason="TBD")
     def test_nornir_diagram(self):
         pass
+
+
+class TestDummyPluginShell:
+    def test_dummy_show_version(self, picle_shell, capsys):
+        shell, mock_stdout = picle_shell
+        shell.onecmd("top")  # go to top
+        shell.onecmd("dummy show version")
+
+        captured = capsys.readouterr()
+        pprint.pprint(captured.out)
+
+        assert all(
+            k in captured.out
+            for k in [
+                "dummy-worker-1:get_version",
+                "result",
+                "norfab",
+                "platform",
+                "python",
+            ]
+        )
+
+    def test_dummy_show_inventory(self, picle_shell, capsys):
+        shell, mock_stdout = picle_shell
+        shell.onecmd("top")  # go to top
+        shell.onecmd("dummy show inventory")
+
+        captured = capsys.readouterr()
+        pprint.pprint(captured.out)
+
+        assert all(
+            k in captured.out
+            for k in [
+                "dummy-worker-1:get_inventory",
+                "result",
+                "service",
+                "data",
+                "more",
+            ]
+        )

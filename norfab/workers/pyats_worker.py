@@ -10,6 +10,8 @@ import logging
 import sys
 from norfab.core.worker import NFPWorker
 
+SERVICE = "pyats"
+
 log = logging.getLogger(__name__)
 
 try:
@@ -24,7 +26,6 @@ except ImportError:
 class PyAtsWorker(NFPWorker):
     """
     :param broker: broker URL to connect to
-    :param service: name of the service with worker belongs to
     :param worker_name: name of this worker
     :param exit_event: if set, worker need to stop/exit
     :param init_done_event: event to set when worker done initializing
@@ -35,13 +36,12 @@ class PyAtsWorker(NFPWorker):
         self,
         inventory: str,
         broker: str,
-        service: str,
         worker_name: str,
         exit_event=None,
         init_done_event=None,
         log_level: str = "WARNING",
     ):
-        super().__init__(inventory, broker, service, worker_name, exit_event, log_level)
+        super().__init__(inventory, broker, SERVICE, worker_name, exit_event, log_level)
         self.init_done_event = init_done_event
 
         # get inventory from broker

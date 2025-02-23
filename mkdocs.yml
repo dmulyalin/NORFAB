@@ -137,6 +137,10 @@ nav:
         - ROBOT API: clients_robot_client_overview.md
     - Customization:
         - NORFAB Hooks System: customization/norfab_hooks.md
+        - Service Plugins: 
+          - Service Plugins Overview: customization/service_plugin_overview.md
+          - Local Plugin: customization/service_plugin_local.md
+          - Python Module Plugin: customization/service_plugin_module.md
 - References:
     - NORFAB Inventory: reference_norfab_inventory.md
     - API Reference:

@@ -44,6 +44,8 @@ from nornir_salt.utils.pydantic_models import modelTestsProcessorSuite
 from typing import Union
 from threading import Thread, Lock
 
+SERVICE = "nornir"
+
 log = logging.getLogger(__name__)
 
 
@@ -201,7 +203,6 @@ class NornirWorker(NFPWorker):
     Nornir service worker
 
     :param broker: broker URL to connect to
-    :param service: name of the service with worker belongs to
     :param worker_name: name of this worker
     :param exit_event: if set, worker need to stop/exit
     :param init_done_event: event to set when worker done initializing
@@ -213,14 +214,13 @@ class NornirWorker(NFPWorker):
         inventory: str,
         broker: str,
         worker_name: str,
-        service: str = b"nornir",
         exit_event=None,
         init_done_event=None,
         log_level: str = None,
         log_queue: object = None,
     ):
         super().__init__(
-            inventory, broker, service, worker_name, exit_event, log_level, log_queue
+            inventory, broker, SERVICE, worker_name, exit_event, log_level, log_queue
         )
         self.init_done_event = init_done_event
         self.tf_base_path = os.path.join(self.base_dir, "tf")

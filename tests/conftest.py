@@ -1,8 +1,13 @@
 import pytest
 import time
 import yaml
-
+import builtins
+import unittest
+import unittest.mock
+import sys
 from norfab.core.nfapi import NorFab
+from norfab.clients.picle_shell_client import mount_shell_plugins, NorFabShell
+from picle import App
 
 
 @pytest.fixture(scope="class")
@@ -58,3 +63,19 @@ def nfclient_dict_inventory():
     time.sleep(3)  # wait for workers to start
     yield nf.make_client()  # return nf client
     nf.destroy()  # teardown
+
+
+@pytest.fixture(scope="class")
+def picle_shell():
+    mock_stdin = unittest.mock.create_autospec(sys.stdin)
+    mock_stdout = unittest.mock.create_autospec(sys.stdout)
+    nf = NorFab(inventory="./nf_tests_inventory/inventory.yaml")
+    nf.start()
+    time.sleep(3)  # wait for workers to start
+    NFCLIENT = nf.make_client()
+    builtins.NFCLIENT = NFCLIENT
+    # make PICLE  shell
+    shell = App(NorFabShell, stdin=mock_stdin, stdout=mock_stdout)
+    mount_shell_plugins(shell, nf.inventory)
+    yield shell, mock_stdout
+    nf.destroy()

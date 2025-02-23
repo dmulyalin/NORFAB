@@ -4,12 +4,12 @@ Hooks is a set of functions to run during NorFab execution lifespan.
 
 NorFab supports definition of hooks inside `inventory.yaml` file within `hooks` section.
 
-Each hook defined as a dictionary that can contain these keys:
+Hooks defined as a dictionary keyed by attachpoint name and value being a list of hook function definitions with these keys:
 
-- `function` - Python import path for hook function
-- `attachpoint` - one of the attach points indicating when to run hook function e.g. `startup`
+- `function` - Python import path for hook function import
 - `args` - optional list of function positional arguments
 - `kwargs` - optional dictionary of function key-word arguments
+- any other keys - will be ignored by NorFab but will loaded into inventory
 
 Supported attach points:
 
@@ -22,16 +22,16 @@ Sample hooks definition:
 
 ``` yaml title="inventory.yaml"
 hooks:
-  - attachpoint: startup
-    function: "hooks.functions.do_on_startup"
-    args: []
-    kwargs: {}
-    description: "Function to run on startup"
-  - attachpoint: exit
-    function: "hooks.functions.do_on_exit"
-    args: []
-    kwargs: {}
-    description: "Function to run on startup"
+  startup:
+    - function: "hooks.functions:do_on_startup"
+      args: []
+      kwargs: {}
+      description: "Function to run on startup"
+  exit:
+    - function: "hooks.functions:do_on_exit"
+      args: []
+      kwargs: {}
+      description: "Function to run on startup"
 ```
 
 Where hook functions are:
@@ -44,4 +44,4 @@ def do_on_exit(norfab):
     print("Exit hook executed")
 ```
 
-Function import path is a dot separated path used to import module file that contains hook functions, where individual function name is a last item in dot separated path definition. For example `hooks.functions.do_on_startup` path is equivalent of running Python import `from hooks.functions import do_on_startup`.
+Function import path is a dot separated path used to import module file that contains hook functions, where individual function name is a last item in dot separated path definition. For example `hooks.functions:do_on_startup` path is equivalent of running Python import `from hooks.functions import do_on_startup`.

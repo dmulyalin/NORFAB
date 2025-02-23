@@ -75,7 +75,7 @@ hosts:
 
 This is how files structure will look like:
 
-``` yaml
+``` shell
 └───norfab
     │   inventory.yaml
     │

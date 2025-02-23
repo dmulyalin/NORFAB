@@ -47,6 +47,8 @@ import threading
 from norfab.core.worker import NFPWorker
 from fakenos import FakeNOS
 
+SERVICE = "fakenos"
+
 log = logging.getLogger(__name__)
 
 
@@ -66,12 +68,11 @@ class FakenosWorker(NFPWorker):
         self,
         inventory,
         broker,
-        service,
         worker_name,
         exit_event=None,
         log_level="WARNING",
     ):
-        super().__init__(inventory, broker, service, worker_name, exit_event, log_level)
+        super().__init__(inventory, broker, SERVICE, worker_name, exit_event, log_level)
 
         # get inventory from broker
         self.fakenos_inventory = self.load_inventory()
