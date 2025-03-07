@@ -138,7 +138,7 @@
     
     
     
-    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="orange" data-md-color-accent="deep-orange]"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="orange" data-md-color-accent="deep-orange"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
     
       <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_0" hidden>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
@@ -1385,6 +1385,28 @@
   
   <span class="md-ellipsis">
     UPDATE Device Interfaces
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../services_netbox_service_tasks_update_device_ip/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    UPDATE Device IP
     
   </span>
   
@@ -2656,6 +2678,28 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../agent/api_reference_workers_agent_worker/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Ollama Agent Worker
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3003,8 +3047,7 @@
 
     <div class="doc doc-contents first">
 
-        <p>Function to update device facts in Netbox using information
-provided by NAPALM get_facts getter:</p>
+        <p>Updates the device facts in NetBox:</p>
 <ul>
 <li>serial number</li>
 </ul>
@@ -3030,7 +3073,7 @@ provided by NAPALM get_facts getter:</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Netbox instance name</p>
+                <p>The NetBox instance to use.</p>
               </div>
             </td>
             <td>
@@ -3046,7 +3089,7 @@ provided by NAPALM get_facts getter:</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>return information that would be pushed to Netbox but do not push it</p>
+                <p>If True, no changes will be made to NetBox.</p>
               </div>
             </td>
             <td>
@@ -3062,7 +3105,11 @@ provided by NAPALM get_facts getter:</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>service name to use to retrieve devices' data, default is nornir parse task</p>
+                <p>The data source to use. Supported datasources:</p>
+<ul>
+<li><strong>nornir</strong> - uses Nornir Service parse task to retrieve devices' data
+    using NAPALM get_facts getter</li>
+</ul>
               </div>
             </td>
             <td>
@@ -3078,11 +3125,27 @@ provided by NAPALM get_facts getter:</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>seconds to wait before timeout data retrieval job</p>
+                <p>The timeout for the job execution. Defaults to 60.</p>
               </div>
             </td>
             <td>
                   <code>60</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>devices</code>
+            </td>
+            <td>
+                  <code>list</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The list of devices to update.</p>
+              </div>
+            </td>
+            <td>
+                  <code>None</code>
             </td>
           </tr>
           <tr class="doc-section-item">
@@ -3094,7 +3157,7 @@ provided by NAPALM get_facts getter:</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>number of devices to process at a time</p>
+                <p>The number of devices to process in each batch.</p>
               </div>
             </td>
             <td>
@@ -3103,13 +3166,13 @@ provided by NAPALM get_facts getter:</p>
           </tr>
           <tr class="doc-section-item">
             <td>
-                <code>kwargs</code>
+                <code>**kwargs</code>
             </td>
             <td>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>any additional arguments to send to service for device data retrieval</p>
+                <p>Additional keyword arguments to pass to the job.</p>
               </div>
             </td>
             <td>
@@ -3124,6 +3187,29 @@ provided by NAPALM get_facts getter:</p>
     <table>
       <thead>
         <tr>
+<th>Name</th>          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+<td><code>dict</code></td>            <td>
+                  <code>dict</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>A dictionary containing the results of the update operation.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+<p><span class="doc-section-title">Raises:</span></p>
+    <table>
+      <thead>
+        <tr>
           <th>Type</th>
           <th>Description</th>
         </tr>
@@ -3131,11 +3217,21 @@ provided by NAPALM get_facts getter:</p>
       <tbody>
           <tr class="doc-section-item">
             <td>
-                  <code>dict</code>
+                  <code>Exception</code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>dictionary keyed by device name with updated details</p>
+                <p>If a device does not exist in NetBox.</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="norfab.core.exceptions.UnsupportedServiceError" href="../../../api_reference_core_norfab_exceptions/#norfab.core.exceptions.UnsupportedServiceError">UnsupportedServiceError</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>If the specified datasource is not supported.</p>
               </div>
             </td>
           </tr>
@@ -3144,92 +3240,103 @@ provided by NAPALM get_facts getter:</p>
 
             <details class="quote">
               <summary>Source code in <code>norfab\workers\netbox_worker.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1410</span>
-<span class="normal">1411</span>
-<span class="normal">1412</span>
-<span class="normal">1413</span>
-<span class="normal">1414</span>
-<span class="normal">1415</span>
-<span class="normal">1416</span>
-<span class="normal">1417</span>
-<span class="normal">1418</span>
-<span class="normal">1419</span>
-<span class="normal">1420</span>
-<span class="normal">1421</span>
-<span class="normal">1422</span>
-<span class="normal">1423</span>
-<span class="normal">1424</span>
-<span class="normal">1425</span>
-<span class="normal">1426</span>
-<span class="normal">1427</span>
-<span class="normal">1428</span>
-<span class="normal">1429</span>
-<span class="normal">1430</span>
-<span class="normal">1431</span>
-<span class="normal">1432</span>
-<span class="normal">1433</span>
-<span class="normal">1434</span>
-<span class="normal">1435</span>
-<span class="normal">1436</span>
-<span class="normal">1437</span>
-<span class="normal">1438</span>
-<span class="normal">1439</span>
-<span class="normal">1440</span>
-<span class="normal">1441</span>
-<span class="normal">1442</span>
-<span class="normal">1443</span>
-<span class="normal">1444</span>
-<span class="normal">1445</span>
-<span class="normal">1446</span>
-<span class="normal">1447</span>
-<span class="normal">1448</span>
-<span class="normal">1449</span>
-<span class="normal">1450</span>
-<span class="normal">1451</span>
-<span class="normal">1452</span>
-<span class="normal">1453</span>
-<span class="normal">1454</span>
-<span class="normal">1455</span>
-<span class="normal">1456</span>
-<span class="normal">1457</span>
-<span class="normal">1458</span>
-<span class="normal">1459</span>
-<span class="normal">1460</span>
-<span class="normal">1461</span>
-<span class="normal">1462</span>
-<span class="normal">1463</span>
-<span class="normal">1464</span>
-<span class="normal">1465</span>
-<span class="normal">1466</span>
-<span class="normal">1467</span>
-<span class="normal">1468</span>
-<span class="normal">1469</span>
-<span class="normal">1470</span>
-<span class="normal">1471</span>
-<span class="normal">1472</span>
-<span class="normal">1473</span>
-<span class="normal">1474</span>
-<span class="normal">1475</span>
-<span class="normal">1476</span>
-<span class="normal">1477</span>
-<span class="normal">1478</span>
-<span class="normal">1479</span>
-<span class="normal">1480</span>
-<span class="normal">1481</span>
-<span class="normal">1482</span>
-<span class="normal">1483</span>
-<span class="normal">1484</span>
-<span class="normal">1485</span>
-<span class="normal">1486</span>
-<span class="normal">1487</span>
-<span class="normal">1488</span>
-<span class="normal">1489</span>
-<span class="normal">1490</span>
-<span class="normal">1491</span>
-<span class="normal">1492</span>
-<span class="normal">1493</span>
-<span class="normal">1494</span>
-<span class="normal">1495</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">update_device_facts</span><span class="p">(</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1607</span>
+<span class="normal">1608</span>
+<span class="normal">1609</span>
+<span class="normal">1610</span>
+<span class="normal">1611</span>
+<span class="normal">1612</span>
+<span class="normal">1613</span>
+<span class="normal">1614</span>
+<span class="normal">1615</span>
+<span class="normal">1616</span>
+<span class="normal">1617</span>
+<span class="normal">1618</span>
+<span class="normal">1619</span>
+<span class="normal">1620</span>
+<span class="normal">1621</span>
+<span class="normal">1622</span>
+<span class="normal">1623</span>
+<span class="normal">1624</span>
+<span class="normal">1625</span>
+<span class="normal">1626</span>
+<span class="normal">1627</span>
+<span class="normal">1628</span>
+<span class="normal">1629</span>
+<span class="normal">1630</span>
+<span class="normal">1631</span>
+<span class="normal">1632</span>
+<span class="normal">1633</span>
+<span class="normal">1634</span>
+<span class="normal">1635</span>
+<span class="normal">1636</span>
+<span class="normal">1637</span>
+<span class="normal">1638</span>
+<span class="normal">1639</span>
+<span class="normal">1640</span>
+<span class="normal">1641</span>
+<span class="normal">1642</span>
+<span class="normal">1643</span>
+<span class="normal">1644</span>
+<span class="normal">1645</span>
+<span class="normal">1646</span>
+<span class="normal">1647</span>
+<span class="normal">1648</span>
+<span class="normal">1649</span>
+<span class="normal">1650</span>
+<span class="normal">1651</span>
+<span class="normal">1652</span>
+<span class="normal">1653</span>
+<span class="normal">1654</span>
+<span class="normal">1655</span>
+<span class="normal">1656</span>
+<span class="normal">1657</span>
+<span class="normal">1658</span>
+<span class="normal">1659</span>
+<span class="normal">1660</span>
+<span class="normal">1661</span>
+<span class="normal">1662</span>
+<span class="normal">1663</span>
+<span class="normal">1664</span>
+<span class="normal">1665</span>
+<span class="normal">1666</span>
+<span class="normal">1667</span>
+<span class="normal">1668</span>
+<span class="normal">1669</span>
+<span class="normal">1670</span>
+<span class="normal">1671</span>
+<span class="normal">1672</span>
+<span class="normal">1673</span>
+<span class="normal">1674</span>
+<span class="normal">1675</span>
+<span class="normal">1676</span>
+<span class="normal">1677</span>
+<span class="normal">1678</span>
+<span class="normal">1679</span>
+<span class="normal">1680</span>
+<span class="normal">1681</span>
+<span class="normal">1682</span>
+<span class="normal">1683</span>
+<span class="normal">1684</span>
+<span class="normal">1685</span>
+<span class="normal">1686</span>
+<span class="normal">1687</span>
+<span class="normal">1688</span>
+<span class="normal">1689</span>
+<span class="normal">1690</span>
+<span class="normal">1691</span>
+<span class="normal">1692</span>
+<span class="normal">1693</span>
+<span class="normal">1694</span>
+<span class="normal">1695</span>
+<span class="normal">1696</span>
+<span class="normal">1697</span>
+<span class="normal">1698</span>
+<span class="normal">1699</span>
+<span class="normal">1700</span>
+<span class="normal">1701</span>
+<span class="normal">1702</span>
+<span class="normal">1703</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">update_device_facts</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">instance</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">dry_run</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -3240,18 +3347,29 @@ provided by NAPALM get_facts getter:</p>
     <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Function to update device facts in Netbox using information</span>
-<span class="sd">    provided by NAPALM get_facts getter:</span>
+<span class="sd">    Updates the device facts in NetBox:</span>
 
 <span class="sd">    - serial number</span>
 
-<span class="sd">    :param instance: Netbox instance name</span>
-<span class="sd">    :param dry_run: return information that would be pushed to Netbox but do not push it</span>
-<span class="sd">    :param datasource: service name to use to retrieve devices&#39; data, default is nornir parse task</span>
-<span class="sd">    :param timeout: seconds to wait before timeout data retrieval job</span>
-<span class="sd">    :param batch_size: number of devices to process at a time</span>
-<span class="sd">    :param kwargs: any additional arguments to send to service for device data retrieval</span>
-<span class="sd">    :returns: dictionary keyed by device name with updated details</span>
+<span class="sd">    Args:</span>
+<span class="sd">        instance (str, optional): The NetBox instance to use.</span>
+<span class="sd">        dry_run (bool, optional): If True, no changes will be made to NetBox.</span>
+<span class="sd">        datasource (str, optional): The data source to use. Supported datasources:</span>
+
+<span class="sd">            - **nornir** - uses Nornir Service parse task to retrieve devices&#39; data</span>
+<span class="sd">                using NAPALM get_facts getter</span>
+
+<span class="sd">        timeout (int, optional): The timeout for the job execution. Defaults to 60.</span>
+<span class="sd">        devices (list, optional): The list of devices to update.</span>
+<span class="sd">        batch_size (int, optional): The number of devices to process in each batch.</span>
+<span class="sd">        **kwargs: Additional keyword arguments to pass to the job.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        dict: A dictionary containing the results of the update operation.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        Exception: If a device does not exist in NetBox.</span>
+<span class="sd">        UnsupportedServiceError: If the specified datasource is not supported.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">result</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="n">devices</span> <span class="o">=</span> <span class="n">devices</span> <span class="ow">or</span> <span class="p">[]</span>

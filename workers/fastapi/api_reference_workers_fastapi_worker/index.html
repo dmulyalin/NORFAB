@@ -18,7 +18,7 @@
         <link rel="prev" href="../../netbox/api_reference_workers_netbox_worker/">
       
       
-        <link rel="next" href="../../../api_reference_clients_nfcli_client/">
+        <link rel="next" href="../../agent/api_reference_workers_agent_worker/">
       
       
       <link rel="icon" href="../../../images/logo.jpg">
@@ -138,7 +138,7 @@
     
     
     
-    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="orange" data-md-color-accent="deep-orange]"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="orange" data-md-color-accent="deep-orange"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
     
       <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_0" hidden>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
@@ -1294,6 +1294,28 @@
   
   <span class="md-ellipsis">
     UPDATE Device Interfaces
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../netbox/services_netbox_service_tasks_update_device_ip/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    UPDATE Device IP
     
   </span>
   
@@ -2610,9 +2632,27 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#norfab.workers.fastapi_worker.FastAPIWorker._get_diskcache" class="md-nav__link">
+    <span class="md-ellipsis">
+      _get_diskcache
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#norfab.workers.fastapi_worker.FastAPIWorker.fastapi_start" class="md-nav__link">
     <span class="md-ellipsis">
       fastapi_start
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#norfab.workers.fastapi_worker.FastAPIWorker.worker_exit" class="md-nav__link">
+    <span class="md-ellipsis">
+      worker_exit
     </span>
   </a>
   
@@ -2690,6 +2730,28 @@
   
 </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../agent/api_reference_workers_agent_worker/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Ollama Agent Worker
+    
+  </span>
+  
+
+      </a>
     </li>
   
 
@@ -2963,9 +3025,27 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#norfab.workers.fastapi_worker.FastAPIWorker._get_diskcache" class="md-nav__link">
+    <span class="md-ellipsis">
+      _get_diskcache
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#norfab.workers.fastapi_worker.FastAPIWorker.fastapi_start" class="md-nav__link">
     <span class="md-ellipsis">
       fastapi_start
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#norfab.workers.fastapi_worker.FastAPIWorker.worker_exit" class="md-nav__link">
+    <span class="md-ellipsis">
+      worker_exit
     </span>
   </a>
   
@@ -3088,7 +3168,7 @@
 
 
 <h2 id="norfab.workers.fastapi_worker.FastAPIWorker" class="doc doc-heading">
-              <code class="highlight language-python"><span class="n">FastAPIWorker</span><span class="p">(</span><span class="n">inventory</span><span class="p">,</span> <span class="n">broker</span><span class="p">,</span> <span class="n">worker_name</span><span class="p">,</span> <span class="n">exit_event</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">init_done_event</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">log_level</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">log_queue</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+              <code class="highlight language-python"><span class="n">FastAPIWorker</span><span class="p">(</span><span class="n">inventory</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">broker</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">worker_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">exit_event</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">init_done_event</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">log_level</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">log_queue</span><span class="p">:</span> <span class="nb">object</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span></code>
 
 <a href="#norfab.workers.fastapi_worker.FastAPIWorker" class="headerlink" title="Permanent link">¤</a></h2>
 
@@ -3098,7 +3178,8 @@
               Bases: <code><a class="autorefs autorefs-internal" title="norfab.core.worker.NFPWorker" href="../../../api_reference_core_norfab_worker/#norfab.core.worker.NFPWorker">NFPWorker</a></code></p>
 
 
-        
+        <p>FastAPIWorker is a worker class that integrates with FastAPI and Uvicorn to serve a FastAPI application.
+It handles initialization, starting the server, and managing bearer tokens.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -3114,6 +3195,22 @@
       <tbody>
           <tr class="doc-section-item">
             <td>
+                <code>inventory</code>
+            </td>
+            <td>
+                  <code>str</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Inventory configuration for the worker.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
                 <code>broker</code>
             </td>
             <td>
@@ -3121,7 +3218,7 @@
             </td>
             <td>
               <div class="doc-md-description">
-                <p>broker URL to connect to</p>
+                <p>Broker URL to connect to.</p>
               </div>
             </td>
             <td>
@@ -3137,7 +3234,7 @@
             </td>
             <td>
               <div class="doc-md-description">
-                <p>name of this worker</p>
+                <p>Name of this worker.</p>
               </div>
             </td>
             <td>
@@ -3149,10 +3246,11 @@
                 <code>exit_event</code>
             </td>
             <td>
+                  <code><span title="threading.Event">Event</span></code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>if set, worker need to stop/exit</p>
+                <p>Event to signal worker to stop/exit.</p>
               </div>
             </td>
             <td>
@@ -3164,10 +3262,11 @@
                 <code>init_done_event</code>
             </td>
             <td>
+                  <code><span title="threading.Event">Event</span></code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>event to set when worker done initializing</p>
+                <p>Event to signal when worker is done initializing.</p>
               </div>
             </td>
             <td>
@@ -3183,7 +3282,23 @@
             </td>
             <td>
               <div class="doc-md-description">
-                <p>logging level of this worker</p>
+                <p>Logging level for this worker.</p>
+              </div>
+            </td>
+            <td>
+                  <code>None</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>log_queue</code>
+            </td>
+            <td>
+                  <code>object</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Queue for logging.</p>
               </div>
             </td>
             <td>
@@ -3194,46 +3309,135 @@
     </table>
 
 
+<p><span class="doc-section-title">Methods:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+            <tr class="doc-section-item">
+              <td><code><a class="autorefs autorefs-internal" title="norfab.workers.fastapi_worker.FastAPIWorker._get_diskcache" href="#norfab.workers.fastapi_worker.FastAPIWorker._get_diskcache">_get_diskcache</a></code></td>
+              <td>
+                <div class="doc-md-description">
+                  <p>Initializes and returns a FanoutCache instance.</p>
+                </div>
+              </td>
+            </tr>
+            <tr class="doc-section-item">
+              <td><code><a class="autorefs autorefs-internal" title="norfab.workers.fastapi_worker.FastAPIWorker.fastapi_start" href="#norfab.workers.fastapi_worker.FastAPIWorker.fastapi_start">fastapi_start</a></code></td>
+              <td>
+                <div class="doc-md-description">
+                  <p>Starts the FastAPI server using Uvicorn in a separate thread.</p>
+                </div>
+              </td>
+            </tr>
+            <tr class="doc-section-item">
+              <td><code><a class="autorefs autorefs-internal" title="norfab.workers.fastapi_worker.FastAPIWorker.worker_exit" href="#norfab.workers.fastapi_worker.FastAPIWorker.worker_exit">worker_exit</a></code></td>
+              <td>
+                <div class="doc-md-description">
+                  <p>Signals the worker to exit by sending a SIGTERM signal.</p>
+                </div>
+              </td>
+            </tr>
+            <tr class="doc-section-item">
+              <td><code><a class="autorefs autorefs-internal" title="norfab.workers.fastapi_worker.FastAPIWorker.get_version" href="#norfab.workers.fastapi_worker.FastAPIWorker.get_version">get_version</a></code></td>
+              <td>
+                <div class="doc-md-description">
+                  <p>Produces a report of the versions of Python packages used.</p>
+                </div>
+              </td>
+            </tr>
+            <tr class="doc-section-item">
+              <td><code><a class="autorefs autorefs-internal" title="norfab.workers.fastapi_worker.FastAPIWorker.get_inventory" href="#norfab.workers.fastapi_worker.FastAPIWorker.get_inventory">get_inventory</a></code></td>
+              <td>
+                <div class="doc-md-description">
+                  <p>Returns the inventory configuration of the FastAPI worker.</p>
+                </div>
+              </td>
+            </tr>
+            <tr class="doc-section-item">
+              <td><code><a class="autorefs autorefs-internal" title="norfab.workers.fastapi_worker.FastAPIWorker.bearer_token_store" href="#norfab.workers.fastapi_worker.FastAPIWorker.bearer_token_store">bearer_token_store</a></code></td>
+              <td>
+                <div class="doc-md-description">
+                  <p>str, token: str, expire: int = None) -&gt; bool:
+Stores a bearer token in the cache with an optional expiration time.</p>
+                </div>
+              </td>
+            </tr>
+            <tr class="doc-section-item">
+              <td><code><a class="autorefs autorefs-internal" title="norfab.workers.fastapi_worker.FastAPIWorker.bearer_token_delete" href="#norfab.workers.fastapi_worker.FastAPIWorker.bearer_token_delete">bearer_token_delete</a></code></td>
+              <td>
+                <div class="doc-md-description">
+                  <p>str = None, token: str = None) -&gt; bool:
+Deletes a bearer token from the cache based on the username or token.</p>
+                </div>
+              </td>
+            </tr>
+            <tr class="doc-section-item">
+              <td><code><a class="autorefs autorefs-internal" title="norfab.workers.fastapi_worker.FastAPIWorker.bearer_token_list" href="#norfab.workers.fastapi_worker.FastAPIWorker.bearer_token_list">bearer_token_list</a></code></td>
+              <td>
+                <div class="doc-md-description">
+                  <p>str = None) -&gt; list:
+Lists all bearer tokens stored in the cache, optionally filtered by username.</p>
+                </div>
+              </td>
+            </tr>
+            <tr class="doc-section-item">
+              <td><code><a class="autorefs autorefs-internal" title="norfab.workers.fastapi_worker.FastAPIWorker.bearer_token_check" href="#norfab.workers.fastapi_worker.FastAPIWorker.bearer_token_check">bearer_token_check</a></code></td>
+              <td>
+                <div class="doc-md-description">
+                  <p>str) -&gt; bool:
+Checks if a given bearer token exists in the cache.</p>
+                </div>
+              </td>
+            </tr>
+      </tbody>
+    </table>
+
+
 
 
 
 
                   <details class="quote">
                     <summary>Source code in <code>norfab\workers\fastapi_worker.py</code></summary>
-                    <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">42</span>
-<span class="normal">43</span>
-<span class="normal">44</span>
-<span class="normal">45</span>
-<span class="normal">46</span>
-<span class="normal">47</span>
-<span class="normal">48</span>
-<span class="normal">49</span>
-<span class="normal">50</span>
-<span class="normal">51</span>
-<span class="normal">52</span>
-<span class="normal">53</span>
-<span class="normal">54</span>
-<span class="normal">55</span>
-<span class="normal">56</span>
-<span class="normal">57</span>
-<span class="normal">58</span>
-<span class="normal">59</span>
-<span class="normal">60</span>
-<span class="normal">61</span>
-<span class="normal">62</span>
-<span class="normal">63</span>
-<span class="normal">64</span>
-<span class="normal">65</span>
-<span class="normal">66</span>
-<span class="normal">67</span>
-<span class="normal">68</span>
-<span class="normal">69</span>
-<span class="normal">70</span>
-<span class="normal">71</span>
-<span class="normal">72</span>
-<span class="normal">73</span>
-<span class="normal">74</span>
-<span class="normal">75</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+                    <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 68</span>
+<span class="normal"> 69</span>
+<span class="normal"> 70</span>
+<span class="normal"> 71</span>
+<span class="normal"> 72</span>
+<span class="normal"> 73</span>
+<span class="normal"> 74</span>
+<span class="normal"> 75</span>
+<span class="normal"> 76</span>
+<span class="normal"> 77</span>
+<span class="normal"> 78</span>
+<span class="normal"> 79</span>
+<span class="normal"> 80</span>
+<span class="normal"> 81</span>
+<span class="normal"> 82</span>
+<span class="normal"> 83</span>
+<span class="normal"> 84</span>
+<span class="normal"> 85</span>
+<span class="normal"> 86</span>
+<span class="normal"> 87</span>
+<span class="normal"> 88</span>
+<span class="normal"> 89</span>
+<span class="normal"> 90</span>
+<span class="normal"> 91</span>
+<span class="normal"> 92</span>
+<span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">inventory</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">broker</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -3285,6 +3489,96 @@
 <div class="doc doc-object doc-function">
 
 
+<h3 id="norfab.workers.fastapi_worker.FastAPIWorker._get_diskcache" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">_get_diskcache</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">FanoutCache</span></code>
+
+<a href="#norfab.workers.fastapi_worker.FastAPIWorker._get_diskcache" class="headerlink" title="Permanent link">¤</a></h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Initializes and returns a FanoutCache object.</p>
+<p>The FanoutCache is configured with the following parameters:</p>
+<ul>
+<li>directory: The directory where the cache will be stored.</li>
+<li>shards: Number of shards to use for the cache.</li>
+<li>timeout: Timeout for cache operations in seconds.</li>
+<li>size_limit: Maximum size of the cache in bytes.</li>
+</ul>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+<th>Name</th>          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+<td><code>FanoutCache</code></td>            <td>
+                  <code><span title="diskcache.FanoutCache">FanoutCache</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>An instance of FanoutCache configured with the specified parameters.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+            <details class="quote">
+              <summary>Source code in <code>norfab\workers\fastapi_worker.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">103</span>
+<span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span>
+<span class="normal">107</span>
+<span class="normal">108</span>
+<span class="normal">109</span>
+<span class="normal">110</span>
+<span class="normal">111</span>
+<span class="normal">112</span>
+<span class="normal">113</span>
+<span class="normal">114</span>
+<span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">_get_diskcache</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FanoutCache</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Initializes and returns a FanoutCache object.</span>
+
+<span class="sd">    The FanoutCache is configured with the following parameters:</span>
+
+<span class="sd">    - directory: The directory where the cache will be stored.</span>
+<span class="sd">    - shards: Number of shards to use for the cache.</span>
+<span class="sd">    - timeout: Timeout for cache operations in seconds.</span>
+<span class="sd">    - size_limit: Maximum size of the cache in bytes.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        FanoutCache: An instance of FanoutCache configured with the specified parameters.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">FanoutCache</span><span class="p">(</span>
+        <span class="n">directory</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cache_dir</span><span class="p">,</span>
+        <span class="n">shards</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+        <span class="n">timeout</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>  <span class="c1"># 1 second</span>
+        <span class="n">size_limit</span><span class="o">=</span><span class="mi">1073741824</span><span class="p">,</span>  <span class="c1">#  1 GigaByte</span>
+    <span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
 <h3 id="norfab.workers.fastapi_worker.FastAPIWorker.fastapi_start" class="doc doc-heading">
             <code class="highlight language-python"><span class="n">fastapi_start</span><span class="p">()</span></code>
 
@@ -3293,35 +3587,156 @@
 
     <div class="doc doc-contents ">
 
-        <p>Method to start FatAPI server</p>
+        <p>Starts the FastAPI server.</p>
+<p>This method initializes the FastAPI application using the provided
+configuration, starts the Uvicorn server in a separate thread, and waits
+for the server to be fully started before logging the server's URL.</p>
+<p>Steps:</p>
+<ol>
+<li>Create the FastAPI application using <code>make_fast_api_app</code>.</li>
+<li>Configure the Uvicorn server with the application and settings.</li>
+<li>Start the Uvicorn server in a new thread.</li>
+<li>Wait for the server to start.</li>
+<li>Log the server's URL.'</li>
+</ol>
+
+
+<p><span class="doc-section-title">Attributes:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td><code><span title="norfab.workers.fastapi_worker.FastAPIWorker.fastapi_start.self.app">self.app</span></code></td>
+            <td>
+                  <code><span title="fastapi.FastAPI">FastAPI</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The FastAPI application instance.</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code><span title="norfab.workers.fastapi_worker.FastAPIWorker.fastapi_start.self.uvicorn_server">self.uvicorn_server</span></code></td>
+            <td>
+                  <code><span title="uvicorn.Server">Server</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The Uvicorn server instance.</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code><span title="norfab.workers.fastapi_worker.FastAPIWorker.fastapi_start.self.uvicorn_server_thread">self.uvicorn_server_thread</span></code></td>
+            <td>
+                  <code><span title="threading.Thread">Thread</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The thread running the Uvicorn server.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+<p><span class="doc-section-title">Raises:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code>Exception</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>If the server fails to start.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
 
             <details class="quote">
               <summary>Source code in <code>norfab\workers\fastapi_worker.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 85</span>
-<span class="normal"> 86</span>
-<span class="normal"> 87</span>
-<span class="normal"> 88</span>
-<span class="normal"> 89</span>
-<span class="normal"> 90</span>
-<span class="normal"> 91</span>
-<span class="normal"> 92</span>
-<span class="normal"> 93</span>
-<span class="normal"> 94</span>
-<span class="normal"> 95</span>
-<span class="normal"> 96</span>
-<span class="normal"> 97</span>
-<span class="normal"> 98</span>
-<span class="normal"> 99</span>
-<span class="normal">100</span>
-<span class="normal">101</span>
-<span class="normal">102</span>
-<span class="normal">103</span>
-<span class="normal">104</span>
-<span class="normal">105</span>
-<span class="normal">106</span>
-<span class="normal">107</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">fastapi_start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">124</span>
+<span class="normal">125</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span>
+<span class="normal">131</span>
+<span class="normal">132</span>
+<span class="normal">133</span>
+<span class="normal">134</span>
+<span class="normal">135</span>
+<span class="normal">136</span>
+<span class="normal">137</span>
+<span class="normal">138</span>
+<span class="normal">139</span>
+<span class="normal">140</span>
+<span class="normal">141</span>
+<span class="normal">142</span>
+<span class="normal">143</span>
+<span class="normal">144</span>
+<span class="normal">145</span>
+<span class="normal">146</span>
+<span class="normal">147</span>
+<span class="normal">148</span>
+<span class="normal">149</span>
+<span class="normal">150</span>
+<span class="normal">151</span>
+<span class="normal">152</span>
+<span class="normal">153</span>
+<span class="normal">154</span>
+<span class="normal">155</span>
+<span class="normal">156</span>
+<span class="normal">157</span>
+<span class="normal">158</span>
+<span class="normal">159</span>
+<span class="normal">160</span>
+<span class="normal">161</span>
+<span class="normal">162</span>
+<span class="normal">163</span>
+<span class="normal">164</span>
+<span class="normal">165</span>
+<span class="normal">166</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">fastapi_start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Method to start FatAPI server</span>
+<span class="sd">    Starts the FastAPI server.</span>
+
+<span class="sd">    This method initializes the FastAPI application using the provided</span>
+<span class="sd">    configuration, starts the Uvicorn server in a separate thread, and waits</span>
+<span class="sd">    for the server to be fully started before logging the server&#39;s URL.</span>
+
+<span class="sd">    Steps:</span>
+
+<span class="sd">    1. Create the FastAPI application using `make_fast_api_app`.</span>
+<span class="sd">    2. Configure the Uvicorn server with the application and settings.</span>
+<span class="sd">    3. Start the Uvicorn server in a new thread.</span>
+<span class="sd">    4. Wait for the server to start.</span>
+<span class="sd">    5. Log the server&#39;s URL.&#39;</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        self.app (FastAPI): The FastAPI application instance.</span>
+<span class="sd">        self.uvicorn_server (uvicorn.Server): The Uvicorn server instance.</span>
+<span class="sd">        self.uvicorn_server_thread (threading.Thread): The thread running the Uvicorn server.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        Exception: If the server fails to start.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">app</span> <span class="o">=</span> <span class="n">make_fast_api_app</span><span class="p">(</span>
         <span class="n">worker</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">fastapi_inventory</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;fastapi&quot;</span><span class="p">,</span> <span class="p">{})</span>
@@ -3351,6 +3766,44 @@
 <div class="doc doc-object doc-function">
 
 
+<h3 id="norfab.workers.fastapi_worker.FastAPIWorker.worker_exit" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">worker_exit</span><span class="p">()</span></code>
+
+<a href="#norfab.workers.fastapi_worker.FastAPIWorker.worker_exit" class="headerlink" title="Permanent link">¤</a></h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Terminates the current process by sending a SIGTERM signal to itself.</p>
+<p>This method retrieves the current process ID using <code>os.getpid()</code> and then
+sends a SIGTERM signal to terminate the process using <code>os.kill()</code>.</p>
+
+            <details class="quote">
+              <summary>Source code in <code>norfab\workers\fastapi_worker.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">168</span>
+<span class="normal">169</span>
+<span class="normal">170</span>
+<span class="normal">171</span>
+<span class="normal">172</span>
+<span class="normal">173</span>
+<span class="normal">174</span>
+<span class="normal">175</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">worker_exit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Terminates the current process by sending a SIGTERM signal to itself.</span>
+
+<span class="sd">    This method retrieves the current process ID using `os.getpid()` and then</span>
+<span class="sd">    sends a SIGTERM signal to terminate the process using `os.kill()`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">kill</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">(),</span> <span class="n">signal</span><span class="o">.</span><span class="n">SIGTERM</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
 <h3 id="norfab.workers.fastapi_worker.FastAPIWorker.get_version" class="doc doc-heading">
             <code class="highlight language-python"><span class="n">get_version</span><span class="p">()</span></code>
 
@@ -3359,33 +3812,72 @@
 
     <div class="doc doc-contents ">
 
-        <p>Produce Python packages version report</p>
+        <p>Produce a report of the versions of various Python packages.</p>
+<p>This method collects the versions of several specified Python packages
+and returns them in a dictionary.</p>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+<th>Name</th>          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+<td><code>Result</code></td>            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>An object containing the task name and a dictionary with
+    the package names as keys and their respective versions as values.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
 
             <details class="quote">
               <summary>Source code in <code>norfab\workers\fastapi_worker.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">112</span>
-<span class="normal">113</span>
-<span class="normal">114</span>
-<span class="normal">115</span>
-<span class="normal">116</span>
-<span class="normal">117</span>
-<span class="normal">118</span>
-<span class="normal">119</span>
-<span class="normal">120</span>
-<span class="normal">121</span>
-<span class="normal">122</span>
-<span class="normal">123</span>
-<span class="normal">124</span>
-<span class="normal">125</span>
-<span class="normal">126</span>
-<span class="normal">127</span>
-<span class="normal">128</span>
-<span class="normal">129</span>
-<span class="normal">130</span>
-<span class="normal">131</span>
-<span class="normal">132</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_version</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">177</span>
+<span class="normal">178</span>
+<span class="normal">179</span>
+<span class="normal">180</span>
+<span class="normal">181</span>
+<span class="normal">182</span>
+<span class="normal">183</span>
+<span class="normal">184</span>
+<span class="normal">185</span>
+<span class="normal">186</span>
+<span class="normal">187</span>
+<span class="normal">188</span>
+<span class="normal">189</span>
+<span class="normal">190</span>
+<span class="normal">191</span>
+<span class="normal">192</span>
+<span class="normal">193</span>
+<span class="normal">194</span>
+<span class="normal">195</span>
+<span class="normal">196</span>
+<span class="normal">197</span>
+<span class="normal">198</span>
+<span class="normal">199</span>
+<span class="normal">200</span>
+<span class="normal">201</span>
+<span class="normal">202</span>
+<span class="normal">203</span>
+<span class="normal">204</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_version</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Produce Python packages version report</span>
+<span class="sd">    Produce a report of the versions of various Python packages.</span>
+
+<span class="sd">    This method collects the versions of several specified Python packages</span>
+<span class="sd">    and returns them in a dictionary.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Result: An object containing the task name and a dictionary with</span>
+<span class="sd">                the package names as keys and their respective versions as values.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">libs</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s2">&quot;norfab&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
@@ -3414,27 +3906,56 @@
 
 
 <h3 id="norfab.workers.fastapi_worker.FastAPIWorker.get_inventory" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">get_inventory</span><span class="p">()</span></code>
+            <code class="highlight language-python"><span class="n">get_inventory</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Dict</span></code>
 
 <a href="#norfab.workers.fastapi_worker.FastAPIWorker.get_inventory" class="headerlink" title="Permanent link">¤</a></h3>
 
 
     <div class="doc doc-contents ">
 
-        <p>Method to return FastAPI worker inventory</p>
+        <p>Retrieve the inventory of the FastAPI worker.</p>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+<th>Name</th>          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+<td><code>Dict</code></td>            <td>
+                  <code><span title="typing.Dict">Dict</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>A dictionary containing the combined inventory of FastAPI and Uvicorn.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
 
             <details class="quote">
               <summary>Source code in <code>norfab\workers\fastapi_worker.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">134</span>
-<span class="normal">135</span>
-<span class="normal">136</span>
-<span class="normal">137</span>
-<span class="normal">138</span>
-<span class="normal">139</span>
-<span class="normal">140</span>
-<span class="normal">141</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_inventory</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">206</span>
+<span class="normal">207</span>
+<span class="normal">208</span>
+<span class="normal">209</span>
+<span class="normal">210</span>
+<span class="normal">211</span>
+<span class="normal">212</span>
+<span class="normal">213</span>
+<span class="normal">214</span>
+<span class="normal">215</span>
+<span class="normal">216</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_inventory</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Method to return FastAPI worker inventory</span>
+<span class="sd">    Retrieve the inventory of the FastAPI worker.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Dict: A dictionary containing the combined inventory of FastAPI and Uvicorn.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">Result</span><span class="p">(</span>
         <span class="n">result</span><span class="o">=</span><span class="p">{</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">fastapi_inventory</span><span class="p">,</span> <span class="s2">&quot;uvicorn&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">uvicorn_inventory</span><span class="p">},</span>
@@ -3450,14 +3971,17 @@
 
 
 <h3 id="norfab.workers.fastapi_worker.FastAPIWorker.bearer_token_store" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">bearer_token_store</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">token</span><span class="p">,</span> <span class="n">expire</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+            <code class="highlight language-python"><span class="n">bearer_token_store</span><span class="p">(</span><span class="n">username</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">expire</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span></code>
 
 <a href="#norfab.workers.fastapi_worker.FastAPIWorker.bearer_token_store" class="headerlink" title="Permanent link">¤</a></h3>
 
 
     <div class="doc doc-contents ">
 
-        <p>Method to store bearer token in the database</p>
+        <p>Method to store a bearer token in the database.</p>
+<p>This method stores a bearer token associated with a username in the cache.</p>
+<p>If an expiration time is not provided, it retrieves the default token TTL
+from the FastAPI inventory configuration.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -3480,7 +4004,7 @@
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Name of the user to store token for</p>
+                <p>str - The name of the user to store the token for.</p>
               </div>
             </td>
             <td>
@@ -3496,7 +4020,7 @@
             </td>
             <td>
               <div class="doc-md-description">
-                <p>token string to store</p>
+                <p>str - The token string to store.</p>
               </div>
             </td>
             <td>
@@ -3512,7 +4036,7 @@
             </td>
             <td>
               <div class="doc-md-description">
-                <p>seconds before token expires</p>
+                <p>int, optional - The number of seconds before the token expires.</p>
               </div>
             </td>
             <td>
@@ -3522,38 +4046,79 @@
       </tbody>
     </table>
 
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code>bool</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>bool - Returns True if the token is successfully stored.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
             <details class="quote">
               <summary>Source code in <code>norfab\workers\fastapi_worker.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">143</span>
-<span class="normal">144</span>
-<span class="normal">145</span>
-<span class="normal">146</span>
-<span class="normal">147</span>
-<span class="normal">148</span>
-<span class="normal">149</span>
-<span class="normal">150</span>
-<span class="normal">151</span>
-<span class="normal">152</span>
-<span class="normal">153</span>
-<span class="normal">154</span>
-<span class="normal">155</span>
-<span class="normal">156</span>
-<span class="normal">157</span>
-<span class="normal">158</span>
-<span class="normal">159</span>
-<span class="normal">160</span>
-<span class="normal">161</span>
-<span class="normal">162</span>
-<span class="normal">163</span>
-<span class="normal">164</span>
-<span class="normal">165</span>
-<span class="normal">166</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">bearer_token_store</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">username</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">expire</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">218</span>
+<span class="normal">219</span>
+<span class="normal">220</span>
+<span class="normal">221</span>
+<span class="normal">222</span>
+<span class="normal">223</span>
+<span class="normal">224</span>
+<span class="normal">225</span>
+<span class="normal">226</span>
+<span class="normal">227</span>
+<span class="normal">228</span>
+<span class="normal">229</span>
+<span class="normal">230</span>
+<span class="normal">231</span>
+<span class="normal">232</span>
+<span class="normal">233</span>
+<span class="normal">234</span>
+<span class="normal">235</span>
+<span class="normal">236</span>
+<span class="normal">237</span>
+<span class="normal">238</span>
+<span class="normal">239</span>
+<span class="normal">240</span>
+<span class="normal">241</span>
+<span class="normal">242</span>
+<span class="normal">243</span>
+<span class="normal">244</span>
+<span class="normal">245</span>
+<span class="normal">246</span>
+<span class="normal">247</span>
+<span class="normal">248</span>
+<span class="normal">249</span>
+<span class="normal">250</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">bearer_token_store</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">username</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">expire</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Method to store bearer token in the database</span>
+<span class="sd">    Method to store a bearer token in the database.</span>
 
-<span class="sd">    :param username: Name of the user to store token for</span>
-<span class="sd">    :param token: token string to store</span>
-<span class="sd">    :param expire: seconds before token expires</span>
+<span class="sd">    This method stores a bearer token associated with a username in the cache.</span>
+
+<span class="sd">    If an expiration time is not provided, it retrieves the default token TTL</span>
+<span class="sd">    from the FastAPI inventory configuration.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        username: str - The name of the user to store the token for.</span>
+<span class="sd">        token: str - The token string to store.</span>
+<span class="sd">        expire: int, optional - The number of seconds before the token expires.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        bool - Returns True if the token is successfully stored.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">expire</span> <span class="o">=</span> <span class="n">expire</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">fastapi_inventory</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;auth_bearer&quot;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
         <span class="s2">&quot;token_ttl&quot;</span><span class="p">,</span> <span class="n">expire</span>
@@ -3581,14 +4146,19 @@
 
 
 <h3 id="norfab.workers.fastapi_worker.FastAPIWorker.bearer_token_delete" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">bearer_token_delete</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">token</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+            <code class="highlight language-python"><span class="n">bearer_token_delete</span><span class="p">(</span><span class="n">username</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">token</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span></code>
 
 <a href="#norfab.workers.fastapi_worker.FastAPIWorker.bearer_token_delete" class="headerlink" title="Permanent link">¤</a></h3>
 
 
     <div class="doc doc-contents ">
 
-        <p>Method to delete bearer token from the database</p>
+        <p>Deletes a bearer token from the cache.
+This method removes a bearer token from the cache based on either
+the token itself or the associated username.</p>
+<p>If a token is provided, it will be removed directly. If a username
+is provided, all tokens associated with that username will be evicted
+from the cache.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -3611,7 +4181,7 @@
             </td>
             <td>
               <div class="doc-md-description">
-                <p>name of the user to delete tokens for</p>
+                <p>The username associated with the token(s) to be removed. Defaults to None.</p>
               </div>
             </td>
             <td>
@@ -3627,7 +4197,7 @@
             </td>
             <td>
               <div class="doc-md-description">
-                <p>token string to delete, if None, deletes all tokens for the the user</p>
+                <p>The bearer token to be removed. Defaults to None.</p>
               </div>
             </td>
             <td>
@@ -3637,39 +4207,123 @@
       </tbody>
     </table>
 
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+<th>Name</th>          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+<td><code>bool</code></td>            <td>
+                  <code>bool</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>True if the operation was successful, otherwise raises an exception.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+<p><span class="doc-section-title">Raises:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code>RuntimeError</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>If the token removal from the cache fails.</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                  <code>Exception</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>If neither username nor token is provided.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
             <details class="quote">
               <summary>Source code in <code>norfab\workers\fastapi_worker.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">168</span>
-<span class="normal">169</span>
-<span class="normal">170</span>
-<span class="normal">171</span>
-<span class="normal">172</span>
-<span class="normal">173</span>
-<span class="normal">174</span>
-<span class="normal">175</span>
-<span class="normal">176</span>
-<span class="normal">177</span>
-<span class="normal">178</span>
-<span class="normal">179</span>
-<span class="normal">180</span>
-<span class="normal">181</span>
-<span class="normal">182</span>
-<span class="normal">183</span>
-<span class="normal">184</span>
-<span class="normal">185</span>
-<span class="normal">186</span>
-<span class="normal">187</span>
-<span class="normal">188</span>
-<span class="normal">189</span>
-<span class="normal">190</span>
-<span class="normal">191</span>
-<span class="normal">192</span>
-<span class="normal">193</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">bearer_token_delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">username</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">token</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">252</span>
+<span class="normal">253</span>
+<span class="normal">254</span>
+<span class="normal">255</span>
+<span class="normal">256</span>
+<span class="normal">257</span>
+<span class="normal">258</span>
+<span class="normal">259</span>
+<span class="normal">260</span>
+<span class="normal">261</span>
+<span class="normal">262</span>
+<span class="normal">263</span>
+<span class="normal">264</span>
+<span class="normal">265</span>
+<span class="normal">266</span>
+<span class="normal">267</span>
+<span class="normal">268</span>
+<span class="normal">269</span>
+<span class="normal">270</span>
+<span class="normal">271</span>
+<span class="normal">272</span>
+<span class="normal">273</span>
+<span class="normal">274</span>
+<span class="normal">275</span>
+<span class="normal">276</span>
+<span class="normal">277</span>
+<span class="normal">278</span>
+<span class="normal">279</span>
+<span class="normal">280</span>
+<span class="normal">281</span>
+<span class="normal">282</span>
+<span class="normal">283</span>
+<span class="normal">284</span>
+<span class="normal">285</span>
+<span class="normal">286</span>
+<span class="normal">287</span>
+<span class="normal">288</span>
+<span class="normal">289</span>
+<span class="normal">290</span>
+<span class="normal">291</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">bearer_token_delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">username</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">token</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Method to delete bearer token from the database</span>
+<span class="sd">    Deletes a bearer token from the cache.</span>
+<span class="sd">    This method removes a bearer token from the cache based on either</span>
+<span class="sd">    the token itself or the associated username.</span>
 
-<span class="sd">    :param username: name of the user to delete tokens for</span>
-<span class="sd">    :param token: token string to delete, if None, deletes all tokens for the the user</span>
+<span class="sd">    If a token is provided, it will be removed directly. If a username</span>
+<span class="sd">    is provided, all tokens associated with that username will be evicted</span>
+<span class="sd">    from the cache.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        username (str, optional): The username associated with the token(s) to be removed. Defaults to None.</span>
+<span class="sd">        token (str, optional): The bearer token to be removed. Defaults to None.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        bool: True if the operation was successful, otherwise raises an exception.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        RuntimeError: If the token removal from the cache fails.</span>
+<span class="sd">        Exception: If neither username nor token is provided.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">cache</span><span class="o">.</span><span class="n">expire</span><span class="p">()</span>
     <span class="n">token_removed_count</span> <span class="o">=</span> <span class="mi">0</span>
@@ -3700,14 +4354,14 @@
 
 
 <h3 id="norfab.workers.fastapi_worker.FastAPIWorker.bearer_token_list" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">bearer_token_list</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+            <code class="highlight language-python"><span class="n">bearer_token_list</span><span class="p">(</span><span class="n">username</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span></code>
 
 <a href="#norfab.workers.fastapi_worker.FastAPIWorker.bearer_token_list" class="headerlink" title="Permanent link">¤</a></h3>
 
 
     <div class="doc doc-contents ">
 
-        <p>List tokens stored in the database</p>
+        <p>Retrieves a list of bearer tokens from the cache, optionally filtered by username.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -3730,7 +4384,7 @@
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Name of the user to list tokens for, returns all tokens if username not provided</p>
+                <p>The username to filter tokens by. Defaults to None.</p>
               </div>
             </td>
             <td>
@@ -3740,276 +4394,41 @@
       </tbody>
     </table>
 
-            <details class="quote">
-              <summary>Source code in <code>norfab\workers\fastapi_worker.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">195</span>
-<span class="normal">196</span>
-<span class="normal">197</span>
-<span class="normal">198</span>
-<span class="normal">199</span>
-<span class="normal">200</span>
-<span class="normal">201</span>
-<span class="normal">202</span>
-<span class="normal">203</span>
-<span class="normal">204</span>
-<span class="normal">205</span>
-<span class="normal">206</span>
-<span class="normal">207</span>
-<span class="normal">208</span>
-<span class="normal">209</span>
-<span class="normal">210</span>
-<span class="normal">211</span>
-<span class="normal">212</span>
-<span class="normal">213</span>
-<span class="normal">214</span>
-<span class="normal">215</span>
-<span class="normal">216</span>
-<span class="normal">217</span>
-<span class="normal">218</span>
-<span class="normal">219</span>
-<span class="normal">220</span>
-<span class="normal">221</span>
-<span class="normal">222</span>
-<span class="normal">223</span>
-<span class="normal">224</span>
-<span class="normal">225</span>
-<span class="normal">226</span>
-<span class="normal">227</span>
-<span class="normal">228</span>
-<span class="normal">229</span>
-<span class="normal">230</span>
-<span class="normal">231</span>
-<span class="normal">232</span>
-<span class="normal">233</span>
-<span class="normal">234</span>
-<span class="normal">235</span>
-<span class="normal">236</span>
-<span class="normal">237</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">bearer_token_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">username</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    List tokens stored in the database</span>
 
-<span class="sd">    :param username: Name of the user to list tokens for, returns</span>
-<span class="sd">        all tokens if username not provided</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">cache</span><span class="o">.</span><span class="n">expire</span><span class="p">()</span>
-    <span class="n">ret</span> <span class="o">=</span> <span class="n">Result</span><span class="p">(</span><span class="n">task</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">:bearer_token_list&quot;</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="p">[])</span>
-
-    <span class="k">for</span> <span class="n">cache_key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cache</span><span class="p">:</span>
-        <span class="n">token_data</span><span class="p">,</span> <span class="n">expires</span><span class="p">,</span> <span class="n">tag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cache</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
-            <span class="n">cache_key</span><span class="p">,</span> <span class="n">expire_time</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">tag</span><span class="o">=</span><span class="kc">True</span>
-        <span class="p">)</span>
-        <span class="k">if</span> <span class="n">username</span> <span class="ow">and</span> <span class="n">tag</span> <span class="o">!=</span> <span class="n">username</span><span class="p">:</span>
-            <span class="k">continue</span>
-        <span class="k">if</span> <span class="n">expires</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">expires</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="n">expires</span><span class="p">)</span>
-        <span class="n">creation</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">fromisoformat</span><span class="p">(</span><span class="n">token_data</span><span class="p">[</span><span class="s2">&quot;created&quot;</span><span class="p">])</span>
-        <span class="n">age</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">-</span> <span class="n">creation</span>
-        <span class="n">ret</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-            <span class="p">{</span>
-                <span class="s2">&quot;username&quot;</span><span class="p">:</span> <span class="n">token_data</span><span class="p">[</span><span class="s2">&quot;username&quot;</span><span class="p">],</span>
-                <span class="s2">&quot;token&quot;</span><span class="p">:</span> <span class="n">token_data</span><span class="p">[</span><span class="s2">&quot;token&quot;</span><span class="p">],</span>
-                <span class="s2">&quot;age&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">age</span><span class="p">),</span>
-                <span class="s2">&quot;creation&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">creation</span><span class="p">),</span>
-                <span class="s2">&quot;expires&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">expires</span><span class="p">),</span>
-            <span class="p">}</span>
-        <span class="p">)</span>
-
-    <span class="c1"># return empty result if no tokens found</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">ret</span><span class="o">.</span><span class="n">result</span><span class="p">:</span>
-        <span class="n">ret</span><span class="o">.</span><span class="n">result</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="p">{</span>
-                <span class="s2">&quot;username&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;token&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;age&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;creation&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;expires&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
-            <span class="p">}</span>
-        <span class="p">]</span>
-
-    <span class="k">return</span> <span class="n">ret</span>
-</code></pre></div></td></tr></table></div>
-            </details>
-    </div>
-
-</div>
-
-<div class="doc doc-object doc-function">
-
-
-<h3 id="norfab.workers.fastapi_worker.FastAPIWorker.bearer_token_check" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">bearer_token_check</span><span class="p">(</span><span class="n">token</span><span class="p">)</span></code>
-
-<a href="#norfab.workers.fastapi_worker.FastAPIWorker.bearer_token_check" class="headerlink" title="Permanent link">¤</a></h3>
-
-
-    <div class="doc doc-contents ">
-
-        <p>Method to check if given token exists in the database</p>
-
-
-<p><span class="doc-section-title">Parameters:</span></p>
+    <p><span class="doc-section-title">Returns:</span></p>
     <table>
       <thead>
         <tr>
-          <th>Name</th>
-          <th>Type</th>
+<th>Name</th>          <th>Type</th>
           <th>Description</th>
-          <th>Default</th>
         </tr>
       </thead>
       <tbody>
           <tr class="doc-section-item">
-            <td>
-                <code>token</code>
-            </td>
-            <td>
-                  <code>str</code>
+<td><code>list</code></td>            <td>
+                  <code>list</code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>token string to check</p>
+                <p>A list of dictionaries containing token information. Each dictionary contains:</p>
+<ul>
+<li>"username" (str): The username associated with the token.</li>
+<li>"token" (str): The bearer token.</li>
+<li>"age" (str): The age of the token.</li>
+<li>"creation" (str): The creation time of the token.</li>
+<li>"expires" (str): The expiration time of the token, if available.</li>
+</ul>
               </div>
-            </td>
-            <td>
-                <em>required</em>
             </td>
           </tr>
       </tbody>
     </table>
+        <p>If no tokens are found, a list with a single dictionary containing
+empty strings for all fields is returned.</p>
 
             <details class="quote">
               <summary>Source code in <code>norfab\workers\fastapi_worker.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">239</span>
-<span class="normal">240</span>
-<span class="normal">241</span>
-<span class="normal">242</span>
-<span class="normal">243</span>
-<span class="normal">244</span>
-<span class="normal">245</span>
-<span class="normal">246</span>
-<span class="normal">247</span>
-<span class="normal">248</span>
-<span class="normal">249</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">bearer_token_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">token</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Method to check if given token exists in the database</span>
-
-<span class="sd">    :param token: token string to check</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">cache</span><span class="o">.</span><span class="n">expire</span><span class="p">()</span>
-    <span class="n">cache_key</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;bearer_token::</span><span class="si">{</span><span class="n">token</span><span class="si">}</span><span class="s2">&quot;</span>
-    <span class="k">return</span> <span class="n">Result</span><span class="p">(</span>
-        <span class="n">task</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">:bearer_token_check&quot;</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="n">cache_key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cache</span>
-    <span class="p">)</span>
-</code></pre></div></td></tr></table></div>
-            </details>
-    </div>
-
-</div>
-
-
-
-  </div>
-
-    </div>
-
-</div>
-
-
-<div class="doc doc-object doc-function">
-
-
-<h2 id="norfab.workers.fastapi_worker.make_fast_api_app" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">make_fast_api_app</span><span class="p">(</span><span class="n">worker</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span></code>
-
-<a href="#norfab.workers.fastapi_worker.make_fast_api_app" class="headerlink" title="Permanent link">¤</a></h2>
-
-
-    <div class="doc doc-contents ">
-
-        <p>Function to construct FastAPI application.</p>
-
-
-<p><span class="doc-section-title">Parameters:</span></p>
-    <table>
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Type</th>
-          <th>Description</th>
-          <th>Default</th>
-        </tr>
-      </thead>
-      <tbody>
-          <tr class="doc-section-item">
-            <td>
-                <code>worker</code>
-            </td>
-            <td>
-                  <code>object</code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>NorFab worker object</p>
-              </div>
-            </td>
-            <td>
-                <em>required</em>
-            </td>
-          </tr>
-          <tr class="doc-section-item">
-            <td>
-                <code>config</code>
-            </td>
-            <td>
-                  <code>dict</code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>dictionary with FastAPI configuration</p>
-              </div>
-            </td>
-            <td>
-                <em>required</em>
-            </td>
-          </tr>
-      </tbody>
-    </table>
-
-            <details class="quote">
-              <summary>Source code in <code>norfab\workers\fastapi_worker.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">261</span>
-<span class="normal">262</span>
-<span class="normal">263</span>
-<span class="normal">264</span>
-<span class="normal">265</span>
-<span class="normal">266</span>
-<span class="normal">267</span>
-<span class="normal">268</span>
-<span class="normal">269</span>
-<span class="normal">270</span>
-<span class="normal">271</span>
-<span class="normal">272</span>
-<span class="normal">273</span>
-<span class="normal">274</span>
-<span class="normal">275</span>
-<span class="normal">276</span>
-<span class="normal">277</span>
-<span class="normal">278</span>
-<span class="normal">279</span>
-<span class="normal">280</span>
-<span class="normal">281</span>
-<span class="normal">282</span>
-<span class="normal">283</span>
-<span class="normal">284</span>
-<span class="normal">285</span>
-<span class="normal">286</span>
-<span class="normal">287</span>
-<span class="normal">288</span>
-<span class="normal">289</span>
-<span class="normal">290</span>
-<span class="normal">291</span>
-<span class="normal">292</span>
-<span class="normal">293</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">293</span>
 <span class="normal">294</span>
 <span class="normal">295</span>
 <span class="normal">296</span>
@@ -4064,9 +4483,138 @@
 <span class="normal">345</span>
 <span class="normal">346</span>
 <span class="normal">347</span>
-<span class="normal">348</span>
-<span class="normal">349</span>
-<span class="normal">350</span>
+<span class="normal">348</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">bearer_token_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">username</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Retrieves a list of bearer tokens from the cache, optionally filtered by username.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        username (str, optional): The username to filter tokens by. Defaults to None.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        list: A list of dictionaries containing token information. Each dictionary contains:</span>
+
+<span class="sd">            - &quot;username&quot; (str): The username associated with the token.</span>
+<span class="sd">            - &quot;token&quot; (str): The bearer token.</span>
+<span class="sd">            - &quot;age&quot; (str): The age of the token.</span>
+<span class="sd">            - &quot;creation&quot; (str): The creation time of the token.</span>
+<span class="sd">            - &quot;expires&quot; (str): The expiration time of the token, if available.</span>
+
+<span class="sd">    If no tokens are found, a list with a single dictionary containing</span>
+<span class="sd">    empty strings for all fields is returned.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">cache</span><span class="o">.</span><span class="n">expire</span><span class="p">()</span>
+    <span class="n">ret</span> <span class="o">=</span> <span class="n">Result</span><span class="p">(</span><span class="n">task</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">:bearer_token_list&quot;</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="p">[])</span>
+
+    <span class="k">for</span> <span class="n">cache_key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cache</span><span class="p">:</span>
+        <span class="n">token_data</span><span class="p">,</span> <span class="n">expires</span><span class="p">,</span> <span class="n">tag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cache</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+            <span class="n">cache_key</span><span class="p">,</span> <span class="n">expire_time</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">tag</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">username</span> <span class="ow">and</span> <span class="n">tag</span> <span class="o">!=</span> <span class="n">username</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="n">expires</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">expires</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="n">expires</span><span class="p">)</span>
+        <span class="n">creation</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">fromisoformat</span><span class="p">(</span><span class="n">token_data</span><span class="p">[</span><span class="s2">&quot;created&quot;</span><span class="p">])</span>
+        <span class="n">age</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">-</span> <span class="n">creation</span>
+        <span class="n">ret</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;username&quot;</span><span class="p">:</span> <span class="n">token_data</span><span class="p">[</span><span class="s2">&quot;username&quot;</span><span class="p">],</span>
+                <span class="s2">&quot;token&quot;</span><span class="p">:</span> <span class="n">token_data</span><span class="p">[</span><span class="s2">&quot;token&quot;</span><span class="p">],</span>
+                <span class="s2">&quot;age&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">age</span><span class="p">),</span>
+                <span class="s2">&quot;creation&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">creation</span><span class="p">),</span>
+                <span class="s2">&quot;expires&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">expires</span><span class="p">),</span>
+            <span class="p">}</span>
+        <span class="p">)</span>
+
+    <span class="c1"># return empty result if no tokens found</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">ret</span><span class="o">.</span><span class="n">result</span><span class="p">:</span>
+        <span class="n">ret</span><span class="o">.</span><span class="n">result</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;username&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;token&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;age&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;creation&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;expires&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+            <span class="p">}</span>
+        <span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">ret</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="norfab.workers.fastapi_worker.FastAPIWorker.bearer_token_check" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">bearer_token_check</span><span class="p">(</span><span class="n">token</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span></code>
+
+<a href="#norfab.workers.fastapi_worker.FastAPIWorker.bearer_token_check" class="headerlink" title="Permanent link">¤</a></h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Checks if the provided bearer token is present in the cache and still active.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>token</code>
+            </td>
+            <td>
+                  <code>str</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The bearer token to check.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+<th>Name</th>          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+<td><code>bool</code></td>            <td>
+                  <code>bool</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>True if the token is found in the cache, False otherwise.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+            <details class="quote">
+              <summary>Source code in <code>norfab\workers\fastapi_worker.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">350</span>
 <span class="normal">351</span>
 <span class="normal">352</span>
 <span class="normal">353</span>
@@ -4080,19 +4628,130 @@
 <span class="normal">361</span>
 <span class="normal">362</span>
 <span class="normal">363</span>
-<span class="normal">364</span>
-<span class="normal">365</span>
-<span class="normal">366</span>
-<span class="normal">367</span>
-<span class="normal">368</span>
-<span class="normal">369</span>
-<span class="normal">370</span>
-<span class="normal">371</span>
-<span class="normal">372</span>
-<span class="normal">373</span>
-<span class="normal">374</span>
-<span class="normal">375</span>
-<span class="normal">376</span>
+<span class="normal">364</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">bearer_token_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">token</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Checks if the provided bearer token is present in the cache and still active.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        token (str): The bearer token to check.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        bool: True if the token is found in the cache, False otherwise.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">cache</span><span class="o">.</span><span class="n">expire</span><span class="p">()</span>
+    <span class="n">cache_key</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;bearer_token::</span><span class="si">{</span><span class="n">token</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="k">return</span> <span class="n">Result</span><span class="p">(</span>
+        <span class="n">task</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">:bearer_token_check&quot;</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="n">cache_key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cache</span>
+    <span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="norfab.workers.fastapi_worker.make_fast_api_app" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">make_fast_api_app</span><span class="p">(</span><span class="n">worker</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FastAPI</span></code>
+
+<a href="#norfab.workers.fastapi_worker.make_fast_api_app" class="headerlink" title="Permanent link">¤</a></h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Create a FastAPI application with endpoints for posting, getting, and running jobs.</p>
+<p>This function sets up a FastAPI application with three endpoints:</p>
+<ul>
+<li>POST /job: To post a job to the NorFab service.</li>
+<li>GET /job: To get job results from the NorFab service.</li>
+<li>POST /job/run: To run a job and return job results synchronously.</li>
+</ul>
+<p>Each endpoint requires a bearer token for authentication, which is validated
+against the worker's token database.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>worker</code>
+            </td>
+            <td>
+                  <code>object</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>An object representing the worker that will handle the job requests.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>config</code>
+            </td>
+            <td>
+                  <code>dict</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>A dictionary of configuration options for the FastAPI application.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+<th>Name</th>          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+<td><code>FastAPI</code></td>            <td>
+                  <code><span title="fastapi.FastAPI">FastAPI</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>A FastAPI application instance.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+            <details class="quote">
+              <summary>Source code in <code>norfab\workers\fastapi_worker.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">376</span>
 <span class="normal">377</span>
 <span class="normal">378</span>
 <span class="normal">379</span>
@@ -4158,12 +4817,162 @@
 <span class="normal">439</span>
 <span class="normal">440</span>
 <span class="normal">441</span>
-<span class="normal">442</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">make_fast_api_app</span><span class="p">(</span><span class="n">worker</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FastAPI</span><span class="p">:</span>
+<span class="normal">442</span>
+<span class="normal">443</span>
+<span class="normal">444</span>
+<span class="normal">445</span>
+<span class="normal">446</span>
+<span class="normal">447</span>
+<span class="normal">448</span>
+<span class="normal">449</span>
+<span class="normal">450</span>
+<span class="normal">451</span>
+<span class="normal">452</span>
+<span class="normal">453</span>
+<span class="normal">454</span>
+<span class="normal">455</span>
+<span class="normal">456</span>
+<span class="normal">457</span>
+<span class="normal">458</span>
+<span class="normal">459</span>
+<span class="normal">460</span>
+<span class="normal">461</span>
+<span class="normal">462</span>
+<span class="normal">463</span>
+<span class="normal">464</span>
+<span class="normal">465</span>
+<span class="normal">466</span>
+<span class="normal">467</span>
+<span class="normal">468</span>
+<span class="normal">469</span>
+<span class="normal">470</span>
+<span class="normal">471</span>
+<span class="normal">472</span>
+<span class="normal">473</span>
+<span class="normal">474</span>
+<span class="normal">475</span>
+<span class="normal">476</span>
+<span class="normal">477</span>
+<span class="normal">478</span>
+<span class="normal">479</span>
+<span class="normal">480</span>
+<span class="normal">481</span>
+<span class="normal">482</span>
+<span class="normal">483</span>
+<span class="normal">484</span>
+<span class="normal">485</span>
+<span class="normal">486</span>
+<span class="normal">487</span>
+<span class="normal">488</span>
+<span class="normal">489</span>
+<span class="normal">490</span>
+<span class="normal">491</span>
+<span class="normal">492</span>
+<span class="normal">493</span>
+<span class="normal">494</span>
+<span class="normal">495</span>
+<span class="normal">496</span>
+<span class="normal">497</span>
+<span class="normal">498</span>
+<span class="normal">499</span>
+<span class="normal">500</span>
+<span class="normal">501</span>
+<span class="normal">502</span>
+<span class="normal">503</span>
+<span class="normal">504</span>
+<span class="normal">505</span>
+<span class="normal">506</span>
+<span class="normal">507</span>
+<span class="normal">508</span>
+<span class="normal">509</span>
+<span class="normal">510</span>
+<span class="normal">511</span>
+<span class="normal">512</span>
+<span class="normal">513</span>
+<span class="normal">514</span>
+<span class="normal">515</span>
+<span class="normal">516</span>
+<span class="normal">517</span>
+<span class="normal">518</span>
+<span class="normal">519</span>
+<span class="normal">520</span>
+<span class="normal">521</span>
+<span class="normal">522</span>
+<span class="normal">523</span>
+<span class="normal">524</span>
+<span class="normal">525</span>
+<span class="normal">526</span>
+<span class="normal">527</span>
+<span class="normal">528</span>
+<span class="normal">529</span>
+<span class="normal">530</span>
+<span class="normal">531</span>
+<span class="normal">532</span>
+<span class="normal">533</span>
+<span class="normal">534</span>
+<span class="normal">535</span>
+<span class="normal">536</span>
+<span class="normal">537</span>
+<span class="normal">538</span>
+<span class="normal">539</span>
+<span class="normal">540</span>
+<span class="normal">541</span>
+<span class="normal">542</span>
+<span class="normal">543</span>
+<span class="normal">544</span>
+<span class="normal">545</span>
+<span class="normal">546</span>
+<span class="normal">547</span>
+<span class="normal">548</span>
+<span class="normal">549</span>
+<span class="normal">550</span>
+<span class="normal">551</span>
+<span class="normal">552</span>
+<span class="normal">553</span>
+<span class="normal">554</span>
+<span class="normal">555</span>
+<span class="normal">556</span>
+<span class="normal">557</span>
+<span class="normal">558</span>
+<span class="normal">559</span>
+<span class="normal">560</span>
+<span class="normal">561</span>
+<span class="normal">562</span>
+<span class="normal">563</span>
+<span class="normal">564</span>
+<span class="normal">565</span>
+<span class="normal">566</span>
+<span class="normal">567</span>
+<span class="normal">568</span>
+<span class="normal">569</span>
+<span class="normal">570</span>
+<span class="normal">571</span>
+<span class="normal">572</span>
+<span class="normal">573</span>
+<span class="normal">574</span>
+<span class="normal">575</span>
+<span class="normal">576</span>
+<span class="normal">577</span>
+<span class="normal">578</span>
+<span class="normal">579</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">make_fast_api_app</span><span class="p">(</span><span class="n">worker</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FastAPI</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Function to construct FastAPI application.</span>
+<span class="sd">    Create a FastAPI application with endpoints for posting, getting, and running jobs.</span>
 
-<span class="sd">    :param worker: NorFab worker object</span>
-<span class="sd">    :param config: dictionary with FastAPI configuration</span>
+<span class="sd">    This function sets up a FastAPI application with three endpoints:</span>
+
+<span class="sd">    - POST /job: To post a job to the NorFab service.</span>
+<span class="sd">    - GET /job: To get job results from the NorFab service.</span>
+<span class="sd">    - POST /job/run: To run a job and return job results synchronously.</span>
+
+<span class="sd">    Each endpoint requires a bearer token for authentication, which is validated</span>
+<span class="sd">    against the worker&#39;s token database.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        worker (object): An object representing the worker that will handle the job requests.</span>
+<span class="sd">        config (dict): A dictionary of configuration options for the FastAPI application.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        FastAPI: A FastAPI application instance.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">app</span> <span class="o">=</span> <span class="n">FastAPI</span><span class="p">(</span><span class="o">**</span><span class="n">config</span><span class="p">)</span>
@@ -4214,14 +5023,17 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Method to post the job to NorFab.</span>
 
-<span class="sd">        :param service: The name of the service to post the job to.</span>
-<span class="sd">        :param task: The task to be executed by the service.</span>
-<span class="sd">        :param args: A list of positional arguments for the task. Defaults to None.</span>
-<span class="sd">        :param kwargs: A dictionary of keyword arguments for the task. Defaults to None.</span>
-<span class="sd">        :param workers: The workers to dispatch the task. Defaults to &quot;all&quot;.</span>
-<span class="sd">        :param uuid: Optional a unique identifier to use for the job. Defaults to None.</span>
-<span class="sd">        :param timeout: The timeout for the job in seconds. Defaults to 600.</span>
-<span class="sd">        :returns: The response from the NorFab service.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            service: The name of the service to post the job to.</span>
+<span class="sd">            task: The task to be executed by the service.</span>
+<span class="sd">            args: A list of positional arguments for the task. Defaults to None.</span>
+<span class="sd">            kwargs: A dictionary of keyword arguments for the task. Defaults to None.</span>
+<span class="sd">            workers: The workers to dispatch the task. Defaults to &quot;all&quot;.</span>
+<span class="sd">            uuid: Optional a unique identifier to use for the job. Defaults to None.</span>
+<span class="sd">            timeout: The timeout for the job in seconds. Defaults to 600.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The response from the NorFab service.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">worker</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> - received job post request, service </span><span class="si">{</span><span class="n">service</span><span class="si">}</span><span class="s2">, task </span><span class="si">{</span><span class="n">task</span><span class="si">}</span><span class="s2">, args </span><span class="si">{</span><span class="n">args</span><span class="si">}</span><span class="s2">, kwargs </span><span class="si">{</span><span class="n">kwargs</span><span class="si">}</span><span class="s2">&quot;</span>
@@ -4258,11 +5070,14 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Method to get job results from NorFab.</span>
 
-<span class="sd">        :param service: The name of the service to get the job from.</span>
-<span class="sd">        :param workers: The workers to dispatch the get request to. Defaults to &quot;all&quot;.</span>
-<span class="sd">        :param uuid: A unique identifier for the job.</span>
-<span class="sd">        :param timeout: The timeout for the job get requests in seconds. Defaults to 600.</span>
-<span class="sd">        :returns: The response from the NorFab service.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            service: The name of the service to get the job from.</span>
+<span class="sd">            workers: The workers to dispatch the get request to. Defaults to &quot;all&quot;.</span>
+<span class="sd">            uuid: A unique identifier for the job.</span>
+<span class="sd">            timeout: The timeout for the job get requests in seconds. Defaults to 600.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The response from the NorFab service.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">worker</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> - received job get request, service </span><span class="si">{</span><span class="n">service</span><span class="si">}</span><span class="s2">, uuid </span><span class="si">{</span><span class="n">uuid</span><span class="si">}</span><span class="s2">&quot;</span>
@@ -4314,15 +5129,18 @@
 <span class="sd">        dispatched to, exiting either once timeout expires or after all workers</span>
 <span class="sd">        reported job result back to the client.</span>
 
-<span class="sd">        :param service: The name of the service to post the job to.</span>
-<span class="sd">        :param task: The task to be executed by the service.</span>
-<span class="sd">        :param args: A list of positional arguments for the task. Defaults to None.</span>
-<span class="sd">        :param kwargs: A dictionary of keyword arguments for the task. Defaults to None.</span>
-<span class="sd">        :param workers: The workers to dispatch the task. Defaults to &quot;all&quot;.</span>
-<span class="sd">        :param uuid: A unique identifier for the job. Defaults to None.</span>
-<span class="sd">        :param timeout: The timeout for the job in seconds. Defaults to 600.</span>
-<span class="sd">        :param retry: The number of times to try and GET job results. Defaults to 10.</span>
-<span class="sd">        :returns: The response from the NorFab service.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            service: The name of the service to post the job to.</span>
+<span class="sd">            task: The task to be executed by the service.</span>
+<span class="sd">            args: A list of positional arguments for the task. Defaults to None.</span>
+<span class="sd">            kwargs: A dictionary of keyword arguments for the task. Defaults to None.</span>
+<span class="sd">            workers: The workers to dispatch the task. Defaults to &quot;all&quot;.</span>
+<span class="sd">            uuid: A unique identifier for the job. Defaults to None.</span>
+<span class="sd">            timeout: The timeout for the job in seconds. Defaults to 600.</span>
+<span class="sd">            retry: The number of times to try and GET job results. Defaults to 10.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The response from the NorFab service.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">worker</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> - received run job request, service </span><span class="si">{</span><span class="n">service</span><span class="si">}</span><span class="s2">, task </span><span class="si">{</span><span class="n">task</span><span class="si">}</span><span class="s2">, args </span><span class="si">{</span><span class="n">args</span><span class="si">}</span><span class="s2">, kwargs </span><span class="si">{</span><span class="n">kwargs</span><span class="si">}</span><span class="s2">&quot;</span>

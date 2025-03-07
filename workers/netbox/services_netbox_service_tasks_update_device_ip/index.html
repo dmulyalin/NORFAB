@@ -12,28 +12,28 @@
         <meta name="author" content="Denis Mulyalin">
       
       
-        <link rel="canonical" href="https://dmulyalin.github.io/NORFAB/customization/service_plugin_local/">
+        <link rel="canonical" href="https://dmulyalin.github.io/NORFAB/workers/netbox/services_netbox_service_tasks_update_device_ip/">
       
       
-        <link rel="prev" href="../service_plugin_overview/">
+        <link rel="prev" href="../services_netbox_service_tasks_update_device_interfaces/">
       
       
-        <link rel="next" href="../service_plugin_module/">
+        <link rel="next" href="../../agent/services_agent_service/">
       
       
-      <link rel="icon" href="../../images/logo.jpg">
+      <link rel="icon" href="../../../images/logo.jpg">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.5">
     
     
       
-        <title>Local Plugin - Network Automations Fabric [NORFAB]</title>
+        <title>UPDATE Device IP - Network Automations Fabric [NORFAB]</title>
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.8608ea7d.min.css">
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.8608ea7d.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.06af60db.min.css">
       
       
 
@@ -52,9 +52,9 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+      <link rel="stylesheet" href="../../../assets/_mkdocstrings.css">
     
-    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -80,7 +80,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#norfab-custom-service-plugin-tutorial" class="md-skip">
+        <a href="#netbox-update-device-ip-task" class="md-skip">
           Skip to content
         </a>
       
@@ -96,9 +96,9 @@
 
 <header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../.." title="Network Automations Fabric [NORFAB]" class="md-header__button md-logo" aria-label="Network Automations Fabric [NORFAB]" data-md-component="logo">
+    <a href="../../.." title="Network Automations Fabric [NORFAB]" class="md-header__button md-logo" aria-label="Network Automations Fabric [NORFAB]" data-md-component="logo">
       
-  <img src="../../images/logo.jpg" alt="logo">
+  <img src="../../../images/logo.jpg" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -115,7 +115,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Local Plugin
+              UPDATE Device IP
             
           </span>
         </div>
@@ -220,7 +220,7 @@
     
     
       <li class="md-tabs__item md-tabs__item--active">
-        <a href="../.." class="md-tabs__link">
+        <a href="../../.." class="md-tabs__link">
           
   
   NORFAB
@@ -238,7 +238,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../reference_norfab_inventory/" class="md-tabs__link">
+        <a href="../../../reference_norfab_inventory/" class="md-tabs__link">
           
   
   References
@@ -254,7 +254,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../tags/" class="md-tabs__link">
+      <a href="../../../tags/" class="md-tabs__link">
         
   
     
@@ -294,9 +294,9 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../.." title="Network Automations Fabric [NORFAB]" class="md-nav__button md-logo" aria-label="Network Automations Fabric [NORFAB]" data-md-component="logo">
+    <a href="../../.." title="Network Automations Fabric [NORFAB]" class="md-nav__button md-logo" aria-label="Network Automations Fabric [NORFAB]" data-md-component="logo">
       
-  <img src="../../images/logo.jpg" alt="logo">
+  <img src="../../../images/logo.jpg" alt="logo">
 
     </a>
     Network Automations Fabric [NORFAB]
@@ -369,7 +369,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../.." class="md-nav__link">
+      <a href="../../.." class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -391,7 +391,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../norfab_installation/" class="md-nav__link">
+      <a href="../../../norfab_installation/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -413,7 +413,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../norfab_getting_started/" class="md-nav__link">
+      <a href="../../../norfab_getting_started/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -435,7 +435,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../norfab_why_use_norfab/" class="md-nav__link">
+      <a href="../../../norfab_why_use_norfab/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -457,7 +457,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../norfab_distributed_deployment/" class="md-nav__link">
+      <a href="../../../norfab_distributed_deployment/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -479,7 +479,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../norfab_docker_deployment/" class="md-nav__link">
+      <a href="../../../norfab_docker_deployment/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -501,7 +501,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../norfab_help_with_norfab/" class="md-nav__link">
+      <a href="../../../norfab_help_with_norfab/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -523,7 +523,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../norfab_changelog/" class="md-nav__link">
+      <a href="../../../norfab_changelog/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -542,6 +542,8 @@
                 
   
   
+    
+  
   
   
     
@@ -556,11 +558,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_9" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_9" checked>
         
           
           <label class="md-nav__link" for="__nav_1_9" id="__nav_1_9_label" tabindex="">
@@ -575,7 +577,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_9_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_9_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_1_9">
             <span class="md-nav__icon md-icon"></span>
             Services
@@ -589,7 +591,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../services_overview/" class="md-nav__link">
+      <a href="../../../services_overview/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -652,7 +654,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../workers/nornir/services_nornir_service/" class="md-nav__link">
+      <a href="../../nornir/services_nornir_service/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -674,7 +676,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../workers/nornir/services_nornir_service_inventory/" class="md-nav__link">
+      <a href="../../nornir/services_nornir_service_inventory/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -737,7 +739,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../workers/nornir/services_nornir_service_tasks_task/" class="md-nav__link">
+      <a href="../../nornir/services_nornir_service_tasks_task/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -759,7 +761,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../workers/nornir/services_nornir_service_tasks_cli/" class="md-nav__link">
+      <a href="../../nornir/services_nornir_service_tasks_cli/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -781,7 +783,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../workers/nornir/services_nornir_service_tasks_cfg/" class="md-nav__link">
+      <a href="../../nornir/services_nornir_service_tasks_cfg/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -803,7 +805,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../workers/nornir/services_nornir_service_tasks_test/" class="md-nav__link">
+      <a href="../../nornir/services_nornir_service_tasks_test/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -825,7 +827,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../workers/nornir/services_nornir_service_tasks_network/" class="md-nav__link">
+      <a href="../../nornir/services_nornir_service_tasks_network/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -847,7 +849,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../workers/nornir/services_nornir_service_tasks_parse/" class="md-nav__link">
+      <a href="../../nornir/services_nornir_service_tasks_parse/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -869,7 +871,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../workers/nornir/services_nornir_service_tasks_diagram/" class="md-nav__link">
+      <a href="../../nornir/services_nornir_service_tasks_diagram/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -891,7 +893,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../workers/nornir/services_nornir_service_tasks_file_copy/" class="md-nav__link">
+      <a href="../../nornir/services_nornir_service_tasks_file_copy/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -913,7 +915,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../workers/nornir/services_nornir_service_tasks_runtime_inventory/" class="md-nav__link">
+      <a href="../../nornir/services_nornir_service_tasks_runtime_inventory/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -943,7 +945,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../workers/nornir/services_nornir_service_jinja2_filters/" class="md-nav__link">
+      <a href="../../nornir/services_nornir_service_jinja2_filters/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -970,8 +972,10 @@
                 
   
   
+    
   
   
+  
     
     
     
@@ -981,11 +985,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_9_3" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_9_3" checked>
         
           
           <label class="md-nav__link" for="__nav_1_9_3" id="__nav_1_9_3_label" tabindex="0">
@@ -1000,7 +1004,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_9_3_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_9_3_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_1_9_3">
             <span class="md-nav__icon md-icon"></span>
             Netbox Service
@@ -1014,7 +1018,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../workers/netbox/services_netbox_service/" class="md-nav__link">
+      <a href="../services_netbox_service/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1036,7 +1040,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../workers/netbox/services_netbox_service_inventory/" class="md-nav__link">
+      <a href="../services_netbox_service_inventory/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1055,8 +1059,10 @@
                 
   
   
+    
   
   
+  
     
     
     
@@ -1066,11 +1072,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_9_3_3" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_9_3_3" checked>
         
           
           <label class="md-nav__link" for="__nav_1_9_3_3" id="__nav_1_9_3_3_label" tabindex="0">
@@ -1085,7 +1091,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_1_9_3_3_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_1_9_3_3_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_1_9_3_3">
             <span class="md-nav__icon md-icon"></span>
             Tasks
@@ -1099,7 +1105,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../workers/netbox/services_netbox_service_tasks_graphql/" class="md-nav__link">
+      <a href="../services_netbox_service_tasks_graphql/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1121,7 +1127,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../workers/netbox/services_netbox_service_tasks_rest/" class="md-nav__link">
+      <a href="../services_netbox_service_tasks_rest/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1143,7 +1149,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../workers/netbox/services_netbox_service_tasks_get_devices/" class="md-nav__link">
+      <a href="../services_netbox_service_tasks_get_devices/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1165,7 +1171,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../workers/netbox/services_netbox_service_tasks_get_interfaces/" class="md-nav__link">
+      <a href="../services_netbox_service_tasks_get_interfaces/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1187,7 +1193,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../workers/netbox/services_netbox_service_tasks_get_connections/" class="md-nav__link">
+      <a href="../services_netbox_service_tasks_get_connections/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1209,7 +1215,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../workers/netbox/services_netbox_service_tasks_get_circuits/" class="md-nav__link">
+      <a href="../services_netbox_service_tasks_get_circuits/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1231,7 +1237,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../workers/netbox/services_netbox_service_tasks_get_nornir_inventory/" class="md-nav__link">
+      <a href="../services_netbox_service_tasks_get_nornir_inventory/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1253,7 +1259,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../workers/netbox/services_netbox_service_tasks_get_next_ip/" class="md-nav__link">
+      <a href="../services_netbox_service_tasks_get_next_ip/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1275,7 +1281,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../workers/netbox/services_netbox_service_tasks_update_device_facts/" class="md-nav__link">
+      <a href="../services_netbox_service_tasks_update_device_facts/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1297,7 +1303,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../workers/netbox/services_netbox_service_tasks_update_device_interfaces/" class="md-nav__link">
+      <a href="../services_netbox_service_tasks_update_device_interfaces/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1316,10 +1322,31 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../../workers/netbox/services_netbox_service_tasks_update_device_ip/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    UPDATE Device IP
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -1329,6 +1356,62 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#limitations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Limitations
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#update-device-ip-sample-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      Update Device IP Sample Usage
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#norfab-netbox-update-device-ip-command-shell-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      NORFAB Netbox Update Device IP Command Shell Reference
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#python-api-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      Python API Reference
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1398,7 +1481,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../workers/agent/services_agent_service/" class="md-nav__link">
+      <a href="../../agent/services_agent_service/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1420,7 +1503,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../workers/agent/services_agent_service_inventory/" class="md-nav__link">
+      <a href="../../agent/services_agent_service_inventory/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1483,7 +1566,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../workers/agent/services_agent_service_tasks_chat/" class="md-nav__link">
+      <a href="../../agent/services_agent_service_tasks_chat/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1562,7 +1645,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../workers/fastapi/services_fastapi_service/" class="md-nav__link">
+      <a href="../../fastapi/services_fastapi_service/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1584,7 +1667,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../workers/fastapi/services_fastapi_service_inventory/" class="md-nav__link">
+      <a href="../../fastapi/services_fastapi_service_inventory/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1647,7 +1730,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../workers/fastapi/services_fastapi_service_task_auth/" class="md-nav__link">
+      <a href="../../fastapi/services_fastapi_service_task_auth/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1726,7 +1809,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../services_norfab_mmi.md" class="md-nav__link">
+      <a href="../../../services_norfab_mmi.md" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1748,7 +1831,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../services_norfab_inventory_service.md" class="md-nav__link">
+      <a href="../../../services_norfab_inventory_service.md" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1770,7 +1853,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../services_norfab_file_service.md" class="md-nav__link">
+      <a href="../../../services_norfab_file_service.md" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1792,7 +1875,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../services_norfab_jobs_service.md" class="md-nav__link">
+      <a href="../../../services_norfab_jobs_service.md" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1814,7 +1897,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../services_norfab_events_service.md" class="md-nav__link">
+      <a href="../../../services_norfab_events_service.md" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1896,7 +1979,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../clients_overview/" class="md-nav__link">
+      <a href="../../../clients_overview/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1918,7 +2001,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../clients_nfcli_overview/" class="md-nav__link">
+      <a href="../../../clients_nfcli_overview/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1940,7 +2023,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../clients_python_api_overview/" class="md-nav__link">
+      <a href="../../../clients_python_api_overview/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1962,7 +2045,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../clients_rest_api_overview/" class="md-nav__link">
+      <a href="../../../clients_rest_api_overview/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1984,7 +2067,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../clients_robot_client_overview/" class="md-nav__link">
+      <a href="../../../clients_robot_client_overview/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2011,8 +2094,6 @@
                 
   
   
-    
-  
   
   
     
@@ -2027,11 +2108,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_11" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_11" >
         
           
           <label class="md-nav__link" for="__nav_1_11" id="__nav_1_11_label" tabindex="">
@@ -2046,7 +2127,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_11_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_11_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_1_11">
             <span class="md-nav__icon md-icon"></span>
             Customization
@@ -2060,7 +2141,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../norfab_hooks/" class="md-nav__link">
+      <a href="../../../customization/norfab_hooks/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2079,8 +2160,6 @@
                 
   
   
-    
-  
   
   
     
@@ -2092,11 +2171,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_11_2" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_11_2" >
         
           
           <label class="md-nav__link" for="__nav_1_11_2" id="__nav_1_11_2_label" tabindex="0">
@@ -2111,7 +2190,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_11_2_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_11_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_1_11_2">
             <span class="md-nav__icon md-icon"></span>
             Service Plugins
@@ -2125,7 +2204,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../service_plugin_overview/" class="md-nav__link">
+      <a href="../../../customization/service_plugin_overview/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2144,29 +2223,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  <span class="md-ellipsis">
-    Local Plugin
-    
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../../customization/service_plugin_local/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2176,75 +2236,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#norfab-custom-service-plugin-tutorial" class="md-nav__link">
-    <span class="md-ellipsis">
-      NorFab Custom Service Plugin Tutorial
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="NorFab Custom Service Plugin Tutorial">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#dummy-service-custom-worker" class="md-nav__link">
-    <span class="md-ellipsis">
-      Dummy Service Custom Worker
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#configure-norfab-inventory" class="md-nav__link">
-    <span class="md-ellipsis">
-      Configure NorFab Inventory
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#use-dummy-service-from-nfcli-shell" class="md-nav__link">
-    <span class="md-ellipsis">
-      Use Dummy Service from Nfcli Shell
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#use-dummy-service-from-python-api" class="md-nav__link">
-    <span class="md-ellipsis">
-      Use Dummy Service from Python API
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -2257,7 +2248,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../service_plugin_module/" class="md-nav__link">
+      <a href="../../../customization/service_plugin_module/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2343,7 +2334,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference_norfab_inventory/" class="md-nav__link">
+      <a href="../../../reference_norfab_inventory/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2447,7 +2438,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../api_reference_core_norfab_nfapi/" class="md-nav__link">
+      <a href="../../../api_reference_core_norfab_nfapi/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2469,7 +2460,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../api_reference_core_norfab_broker/" class="md-nav__link">
+      <a href="../../../api_reference_core_norfab_broker/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2491,7 +2482,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../api_reference_core_norfab_worker/" class="md-nav__link">
+      <a href="../../../api_reference_core_norfab_worker/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2513,7 +2504,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../api_reference_core_norfab_client/" class="md-nav__link">
+      <a href="../../../api_reference_core_norfab_client/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2535,7 +2526,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../api_reference_core_norfab_simple_inventory/" class="md-nav__link">
+      <a href="../../../api_reference_core_norfab_simple_inventory/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2557,7 +2548,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../api_reference_core_norfab_exceptions/" class="md-nav__link">
+      <a href="../../../api_reference_core_norfab_exceptions/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2628,7 +2619,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../workers/nornir/api_reference_workers_nornir_worker/" class="md-nav__link">
+      <a href="../../nornir/api_reference_workers_nornir_worker/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2650,7 +2641,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../workers/netbox/api_reference_workers_netbox_worker/" class="md-nav__link">
+      <a href="../api_reference_workers_netbox_worker/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2672,7 +2663,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../workers/fastapi/api_reference_workers_fastapi_worker/" class="md-nav__link">
+      <a href="../../fastapi/api_reference_workers_fastapi_worker/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2694,7 +2685,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../workers/agent/api_reference_workers_agent_worker/" class="md-nav__link">
+      <a href="../../agent/api_reference_workers_agent_worker/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2765,7 +2756,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../api_reference_clients_nfcli_client/" class="md-nav__link">
+      <a href="../../../api_reference_clients_nfcli_client/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2787,7 +2778,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../api_reference_clients_robot_client/" class="md-nav__link">
+      <a href="../../../api_reference_clients_robot_client/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2866,7 +2857,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference_architecture_norfab/" class="md-nav__link">
+      <a href="../../../reference_architecture_norfab/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2888,7 +2879,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference_architecture_nfp/" class="md-nav__link">
+      <a href="../../../reference_architecture_nfp/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2925,7 +2916,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../tags/" class="md-nav__link">
+      <a href="../../../tags/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2956,6 +2947,8 @@
   
   
   
+    
+  
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
@@ -2964,53 +2957,38 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#norfab-custom-service-plugin-tutorial" class="md-nav__link">
+  <a href="#limitations" class="md-nav__link">
     <span class="md-ellipsis">
-      NorFab Custom Service Plugin Tutorial
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="NorFab Custom Service Plugin Tutorial">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#dummy-service-custom-worker" class="md-nav__link">
-    <span class="md-ellipsis">
-      Dummy Service Custom Worker
+      Limitations
     </span>
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#configure-norfab-inventory" class="md-nav__link">
+      
+        <li class="md-nav__item">
+  <a href="#update-device-ip-sample-usage" class="md-nav__link">
     <span class="md-ellipsis">
-      Configure NorFab Inventory
+      Update Device IP Sample Usage
     </span>
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#use-dummy-service-from-nfcli-shell" class="md-nav__link">
+      
+        <li class="md-nav__item">
+  <a href="#norfab-netbox-update-device-ip-command-shell-reference" class="md-nav__link">
     <span class="md-ellipsis">
-      Use Dummy Service from Nfcli Shell
+      NORFAB Netbox Update Device IP Command Shell Reference
     </span>
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#use-dummy-service-from-python-api" class="md-nav__link">
+      
+        <li class="md-nav__item">
+  <a href="#python-api-reference" class="md-nav__link">
     <span class="md-ellipsis">
-      Use Dummy Service from Python API
+      Python API Reference
     </span>
   </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -3033,7 +3011,7 @@
       
       
       
-        <a href="../../tags/#tag:plugins" class="md-tag">plugins</a>
+        <a href="../../../tags/#tag:netbox" class="md-tag">netbox</a>
       
     
   </nav>
@@ -3043,192 +3021,543 @@
   
 
 
-  <h1>Local Plugin</h1>
-
-<h2 id="norfab-custom-service-plugin-tutorial">NorFab Custom Service Plugin Tutorial<a class="headerlink" href="#norfab-custom-service-plugin-tutorial" title="Permanent link">¤</a></h2>
-<p>The simplest way to start with NorFab plugins is to use create plugin within NorFab base directory, directory where <code>inventory.yaml</code> file resides.</p>
-<p>In this tutorial we going to create <code>DummyService</code> and its worker. We going to define two tasks that worker can execute - <code>get_version</code> and <code>get_inventory</code> to retrieve worker's version and inventory details. In addition we going to define a set of custom nfcli shell commands to interact with custom <code>DummyService</code> from interactive command line shell.</p>
-<p>To start with, define these folders structure and create all the files:</p>
-<div class="highlight"><pre><span></span><code>└───norfab
-<span class="w">    </span>│<span class="w">   </span>inventory.yaml
-<span class="w">    </span>│
-<span class="w">    </span>└───plugins
-<span class="w">            </span>dummy_worker_inventory.yaml
-<span class="w">            </span>dummy_service.py
-</code></pre></div>
-<p>Above are all the files we need, <code>plugins</code> directory name is arbitrary and can be anything, NorFab is not hardcoded to search for any of the directories, all plugins mapping defined withing <code>inventory.yaml</code> file.</p>
-<h3 id="dummy-service-custom-worker">Dummy Service Custom Worker<a class="headerlink" href="#dummy-service-custom-worker" title="Permanent link">¤</a></h3>
-<p>Below is the source code of custom worker plugin for dummy service.</p>
-<div class="highlight"><span class="filename">plugins/dummy_service.py</span><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">importlib.metadata</span>
-
-<span class="kn">from</span><span class="w"> </span><span class="nn">norfab.core.worker</span><span class="w"> </span><span class="kn">import</span> <span class="n">NFPWorker</span><span class="p">,</span> <span class="n">Result</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">Field</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Callable</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">picle.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">Outputters</span>
-
-<span class="n">SERVICE</span> <span class="o">=</span> <span class="s2">&quot;DummyService&quot;</span>
-
-<span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
-
-<span class="c1"># ---------------------------------------------------------------------------------------------</span>
-<span class="c1"># DUMMY SERVICE WORKER CLASS</span>
-<span class="c1"># ---------------------------------------------------------------------------------------------</span>
-
-<span class="k">class</span><span class="w"> </span><span class="nc">DummyServiceWorker</span><span class="p">(</span><span class="n">NFPWorker</span><span class="p">):</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">inventory</span><span class="p">,</span>
-        <span class="n">broker</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">worker_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">exit_event</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">init_done_event</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">log_level</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;WARNING&quot;</span><span class="p">,</span>
-        <span class="n">log_queue</span><span class="p">:</span> <span class="nb">object</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Initialize the DummyService.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            inventory: The inventory object.</span>
-<span class="sd">            broker (str): The broker address.</span>
-<span class="sd">            worker_name (str): The name of the worker.</span>
-<span class="sd">            exit_event (threading.Event, optional): Event to signal service exit. </span>
-<span class="sd">            init_done_event (threading.Event, optional): Event to signal initialization completion. </span>
-<span class="sd">            log_level (str, optional): The logging level. </span>
-<span class="sd">            log_queue (object, optional): The logging queue. </span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
-            <span class="n">inventory</span><span class="p">,</span> <span class="n">broker</span><span class="p">,</span> <span class="n">SERVICE</span><span class="p">,</span> <span class="n">worker_name</span><span class="p">,</span> <span class="n">exit_event</span><span class="p">,</span> <span class="n">log_level</span><span class="p">,</span> <span class="n">log_queue</span>
-        <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">init_done_event</span> <span class="o">=</span> <span class="n">init_done_event</span>
-
-        <span class="c1"># get inventory from broker</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">dummy_inventory</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_inventory</span><span class="p">()</span>
-
-        <span class="c1"># signal to NFAPI that finished initializing</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">init_done_event</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
-        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> - Started&quot;</span><span class="p">)</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_version</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Retrieves the version information for specified libraries and the current Python environment.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            Dict: A dictionary containing the version information for the following keys:</span>
-<span class="sd">                - &quot;norfab&quot;: The version of the &#39;norfab&#39; package, if installed.</span>
-<span class="sd">                - &quot;python&quot;: The version of the Python interpreter.</span>
-<span class="sd">                - &quot;platform&quot;: The platform on which the Python interpreter is running.</span>
-
-<span class="sd">        Note:</span>
-<span class="sd">            If the &#39;norfab&#39; package is not installed, its version will be an empty string.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">libs</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;norfab&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;python&quot;</span><span class="p">:</span> <span class="n">sys</span><span class="o">.</span><span class="n">version</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span>
-            <span class="s2">&quot;platform&quot;</span><span class="p">:</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span><span class="p">,</span>
-        <span class="p">}</span>
-        <span class="c1"># get version of packages installed</span>
-        <span class="k">for</span> <span class="n">pkg</span> <span class="ow">in</span> <span class="n">libs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">libs</span><span class="p">[</span><span class="n">pkg</span><span class="p">]</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">version</span><span class="p">(</span><span class="n">pkg</span><span class="p">)</span>
-            <span class="k">except</span> <span class="n">importlib</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">PackageNotFoundError</span><span class="p">:</span>
-                <span class="k">pass</span>
-
-        <span class="k">return</span> <span class="n">Result</span><span class="p">(</span><span class="n">result</span><span class="o">=</span><span class="n">libs</span><span class="p">)</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_inventory</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Retrieves the dummy service inventory.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            Dict: A dictionary containing the dummy inventory data.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">Result</span><span class="p">(</span><span class="n">result</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dummy_inventory</span><span class="p">)</span>
-
-<span class="c1"># ---------------------------------------------------------------------------------------------</span>
-<span class="c1"># DUMMY SERVICE SHELL SHOW COMMANDS MODELS</span>
-<span class="c1"># ---------------------------------------------------------------------------------------------</span>
-
-<span class="k">class</span><span class="w"> </span><span class="nc">DummyServiceShowCommandsModel</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-    <span class="n">inventory</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="s2">&quot;get_inventory&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;show Dummy service inventory data&quot;</span><span class="p">,</span>
-    <span class="p">)</span>
-    <span class="n">version</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="s2">&quot;get_version&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;show Dummy service version report&quot;</span><span class="p">,</span>
-    <span class="p">)</span>
-
-    <span class="k">class</span><span class="w"> </span><span class="nc">PicleConfig</span><span class="p">:</span>
-        <span class="n">outputter</span> <span class="o">=</span> <span class="n">Outputters</span><span class="o">.</span><span class="n">outputter_rich_json</span>
-
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_inventory</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="n">workers</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;workers&quot;</span><span class="p">,</span> <span class="s2">&quot;all&quot;</span><span class="p">)</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="n">NFCLIENT</span><span class="o">.</span><span class="n">run_job</span><span class="p">(</span><span class="s2">&quot;DummyService&quot;</span><span class="p">,</span> <span class="s2">&quot;get_inventory&quot;</span><span class="p">,</span> <span class="n">workers</span><span class="o">=</span><span class="n">workers</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">result</span>
-
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_version</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="n">workers</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;workers&quot;</span><span class="p">,</span> <span class="s2">&quot;all&quot;</span><span class="p">)</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="n">NFCLIENT</span><span class="o">.</span><span class="n">run_job</span><span class="p">(</span><span class="s2">&quot;DummyService&quot;</span><span class="p">,</span> <span class="s2">&quot;get_version&quot;</span><span class="p">,</span> <span class="n">workers</span><span class="o">=</span><span class="n">workers</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">result</span>
-
-<span class="k">class</span><span class="w"> </span><span class="nc">DummyServiceNfcliShell</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-    <span class="n">show</span><span class="p">:</span> <span class="n">DummyServiceShowCommandsModel</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Show Dummy service parameters&quot;</span>
-    <span class="p">)</span>
-
-    <span class="k">class</span><span class="w"> </span><span class="nc">PicleConfig</span><span class="p">:</span>
-        <span class="n">subshell</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="n">prompt</span> <span class="o">=</span> <span class="s2">&quot;nf[dummy]#&quot;</span>
-</code></pre></div>
-<p>NorFab shell creates two commands:</p>
+<h1 id="netbox-update-device-ip-task">Netbox Update Device IP Task<a class="headerlink" href="#netbox-update-device-ip-task" title="Permanent link">¤</a></h1>
+<blockquote>
+<p>task api name: <code>update_device_ip</code></p>
+</blockquote>
+<p>The Netbox Update Device IP Task is a feature of the NorFab Netbox Service that allows you to synchronize and update the IP addresses data of your network devices in Netbox. This task ensures that the IP address records in Netbox are accurate and up-to-date, reflecting the current state of your network infrastructure.</p>
+<p><strong>How it works</strong> - Netbox worker on a call to update IP addresses task fetches live data from network devices using nominated datasource, by default it is Nornir service <a href="../../nornir/services_nornir_service_tasks_parse/">parse</a> task using NAPALM <code>get_interfaces_ip</code> getter. Once data retrieved from network, Netbox worker updates records in Netbox database for device interfaces.</p>
+<p><img alt="Netbox Update Device Interfaces" src="../../../images/Netbox_Service_Update_Interfaces.jpg" /></p>
+<ol>
+<li>
+<p>Client submits and on-demand request to NorFab Netbox worker to update device IP addresses</p>
+</li>
+<li>
+<p>Netbox worker sends job request to nominated datasource service to fetch live data from network devices</p>
+</li>
+<li>
+<p>Datasource service fetches data from the network</p>
+</li>
+<li>
+<p>Datasource returns devices IP addresses data back to Netbox Service worker</p>
+</li>
+<li>
+<p>Netbox worker processes device data and updates or creates IP address records in Netbox for requested devices</p>
+</li>
+</ol>
+<h2 id="limitations">Limitations<a class="headerlink" href="#limitations" title="Permanent link">¤</a></h2>
+<p>Datasource <code>nornir</code> uses NAPALM <code>get_interfaces_ip</code> getter and as such only supports these device platforms:</p>
 <ul>
-<li><code>dummy show version</code></li>
-<li><code>dummy show inventory</code></li>
+<li>Arista EOS</li>
+<li>Cisco IOS</li>
+<li>Cisco IOSXR</li>
+<li>Cisco NXOS</li>
+<li>Juniper JUNOS</li>
 </ul>
-<h3 id="configure-norfab-inventory">Configure NorFab Inventory<a class="headerlink" href="#configure-norfab-inventory" title="Permanent link">¤</a></h3>
-<p>Populate <code>inventory.yaml</code> file with this content to run single <code>DummyService</code> worker:</p>
-<div class="highlight"><span class="filename">inventory.yaml</span><pre><span></span><code><span class="nt">broker</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">endpoint</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;tcp://127.0.0.1:5555&quot;</span>
-
-<span class="nt">workers</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">dummy-worker-1</span><span class="p">:</span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">plugins/dummy_worker_inventory.yaml</span>
-
-<span class="nt">topology</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">broker</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span>
-<span class="w">  </span><span class="nt">workers</span><span class="p">:</span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dummy-worker-1</span>
-
-<span class="nt">plugins</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">DummyService</span><span class="p">:</span><span class="w"> </span>
-<span class="w">    </span><span class="nt">worker</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;plugins.dummy_service:DummyServiceWorker&quot;</span>
-<span class="w">    </span><span class="nt">nfcli</span><span class="p">:</span><span class="w"> </span>
-<span class="w">      </span><span class="nt">mount_path</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;dummy&quot;</span>
-<span class="w">      </span><span class="nt">shell_model</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;plugins.dummy_service:DummyServiceNfcliShell&quot;</span>
+<h2 id="update-device-ip-sample-usage">Update Device IP Sample Usage<a class="headerlink" href="#update-device-ip-sample-usage" title="Permanent link">¤</a></h2>
+<h2 id="norfab-netbox-update-device-ip-command-shell-reference">NORFAB Netbox Update Device IP Command Shell Reference<a class="headerlink" href="#norfab-netbox-update-device-ip-command-shell-reference" title="Permanent link">¤</a></h2>
+<p>NorFab shell supports these command options for Netbox <code>update_device_ip</code> task:</p>
+<div class="highlight"><pre><span></span><code>nf#man tree netbox.update.device.ip-addresses
+root
+└── netbox:    Netbox service
+    └── update:    Update Netbox data
+        └── device:    Update device data
+            └── ip-addresses:    Update device interface IP addresses
+                ├── timeout:    Job timeout
+                ├── workers:    Filter workers to target, default &#39;any&#39;
+                ├── instance:    Netbox instance name to target
+                ├── dry-run:    Return information that would be pushed to Netbox but do not push it
+                ├── devices:    List of Netbox devices to update
+                │   └── nornir:    Use Nornir service to retrieve data from devices
+                │       ├── add_details:    Add task details to results, default &#39;False&#39;
+                │       ├── run_num_workers:    RetryRunner number of threads for tasks execution
+                │       ├── run_num_connectors:    RetryRunner number of threads for device connections
+                │       ├── run_connect_retry:    RetryRunner number of connection attempts
+                │       ├── run_task_retry:    RetryRunner number of attempts to run task
+                │       ├── run_reconnect_on_fail:    RetryRunner perform reconnect to host on task failure
+                │       ├── run_connect_check:    RetryRunner test TCP connection before opening actual connection
+                │       ├── run_connect_timeout:    RetryRunner timeout in seconds to wait for test TCP connection to establish
+                │       ├── run_creds_retry:    RetryRunner list of connection credentials and parameters to retry
+                │       ├── tf:    File group name to save task results to on worker file system
+                │       ├── tf_skip_failed:    Save results to file for failed tasks
+                │       ├── diff:    File group name to run the diff for
+                │       ├── diff_last:    File version number to diff, default is 1 (last)
+                │       └── progress:    Display progress events, default &#39;True&#39;
+                └── batch-size:    Number of devices to process at a time, default &#39;10&#39;
+nf#
 </code></pre></div>
-<p>We also need to define inventoy for dummy service itself:</p>
-<div class="highlight"><span class="filename">plugins/dummy_worker_inventory.yaml</span><pre><span></span><code><span class="nt">service</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">DummyService</span>
+<h2 id="python-api-reference">Python API Reference<a class="headerlink" href="#python-api-reference" title="Permanent link">¤</a></h2>
 
-<span class="nt">data</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">any</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">data</span>
-<span class="w">  </span><span class="nt">goes</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">here</span>
 
-<span class="nt">more</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">service</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">data</span>
-</code></pre></div>
-<h3 id="use-dummy-service-from-nfcli-shell">Use Dummy Service from Nfcli Shell<a class="headerlink" href="#use-dummy-service-from-nfcli-shell" title="Permanent link">¤</a></h3>
-<p>Run nfcli command to start NorFab. NorFab should detect custom worker plugin and start <code>DummyService</code> worker process. After startup completes, can run dummy service commands.</p>
-<div class="highlight"><pre><span></span><code>
-</code></pre></div>
-<h3 id="use-dummy-service-from-python-api">Use Dummy Service from Python API<a class="headerlink" href="#use-dummy-service-from-python-api" title="Permanent link">¤</a></h3>
-<div class="highlight"><pre><span></span><code>
-</code></pre></div>
+<div class="doc doc-object doc-function">
+
+
+
+
+    <div class="doc doc-contents first">
+
+        <p>Update the IP addresses of devices in Netbox.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>instance</code>
+            </td>
+            <td>
+                  <code>str</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The instance name to use.</p>
+              </div>
+            </td>
+            <td>
+                  <code>None</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>dry_run</code>
+            </td>
+            <td>
+                  <code>bool</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>If True, no changes will be made.</p>
+              </div>
+            </td>
+            <td>
+                  <code>False</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>datasource</code>
+            </td>
+            <td>
+                  <code>str</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The data source to use. Supported datasources:</p>
+<ul>
+<li><strong>nornir</strong> - uses Nornir Service parse task to retrieve devices' data
+    using NAPALM get_interfaces_ip getter</li>
+</ul>
+              </div>
+            </td>
+            <td>
+                  <code>&#39;nornir&#39;</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>timeout</code>
+            </td>
+            <td>
+                  <code>int</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The timeout for the operation.</p>
+              </div>
+            </td>
+            <td>
+                  <code>60</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>devices</code>
+            </td>
+            <td>
+                  <code>list</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The list of devices to update.</p>
+              </div>
+            </td>
+            <td>
+                  <code>None</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>create</code>
+            </td>
+            <td>
+                  <code>bool</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>If True, new IP addresses will be created if they do not exist.</p>
+              </div>
+            </td>
+            <td>
+                  <code>True</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>batch_size</code>
+            </td>
+            <td>
+                  <code>int</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The number of devices to process in each batch.</p>
+              </div>
+            </td>
+            <td>
+                  <code>10</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>**kwargs</code>
+            </td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Additional keyword arguments.</p>
+              </div>
+            </td>
+            <td>
+                  <code>{}</code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+<th>Name</th>          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+<td><code>dict</code></td>            <td>
+                  <code>dict</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>A dictionary containing the results of the update operation.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+<p><span class="doc-section-title">Raises:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code>Exception</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>If a device does not exist in Netbox.</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="norfab.core.exceptions.UnsupportedServiceError" href="../../../api_reference_core_norfab_exceptions/#norfab.core.exceptions.UnsupportedServiceError">UnsupportedServiceError</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>If the specified datasource is not supported.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+            <details class="quote">
+              <summary>Source code in <code>norfab\workers\netbox_worker.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1832</span>
+<span class="normal">1833</span>
+<span class="normal">1834</span>
+<span class="normal">1835</span>
+<span class="normal">1836</span>
+<span class="normal">1837</span>
+<span class="normal">1838</span>
+<span class="normal">1839</span>
+<span class="normal">1840</span>
+<span class="normal">1841</span>
+<span class="normal">1842</span>
+<span class="normal">1843</span>
+<span class="normal">1844</span>
+<span class="normal">1845</span>
+<span class="normal">1846</span>
+<span class="normal">1847</span>
+<span class="normal">1848</span>
+<span class="normal">1849</span>
+<span class="normal">1850</span>
+<span class="normal">1851</span>
+<span class="normal">1852</span>
+<span class="normal">1853</span>
+<span class="normal">1854</span>
+<span class="normal">1855</span>
+<span class="normal">1856</span>
+<span class="normal">1857</span>
+<span class="normal">1858</span>
+<span class="normal">1859</span>
+<span class="normal">1860</span>
+<span class="normal">1861</span>
+<span class="normal">1862</span>
+<span class="normal">1863</span>
+<span class="normal">1864</span>
+<span class="normal">1865</span>
+<span class="normal">1866</span>
+<span class="normal">1867</span>
+<span class="normal">1868</span>
+<span class="normal">1869</span>
+<span class="normal">1870</span>
+<span class="normal">1871</span>
+<span class="normal">1872</span>
+<span class="normal">1873</span>
+<span class="normal">1874</span>
+<span class="normal">1875</span>
+<span class="normal">1876</span>
+<span class="normal">1877</span>
+<span class="normal">1878</span>
+<span class="normal">1879</span>
+<span class="normal">1880</span>
+<span class="normal">1881</span>
+<span class="normal">1882</span>
+<span class="normal">1883</span>
+<span class="normal">1884</span>
+<span class="normal">1885</span>
+<span class="normal">1886</span>
+<span class="normal">1887</span>
+<span class="normal">1888</span>
+<span class="normal">1889</span>
+<span class="normal">1890</span>
+<span class="normal">1891</span>
+<span class="normal">1892</span>
+<span class="normal">1893</span>
+<span class="normal">1894</span>
+<span class="normal">1895</span>
+<span class="normal">1896</span>
+<span class="normal">1897</span>
+<span class="normal">1898</span>
+<span class="normal">1899</span>
+<span class="normal">1900</span>
+<span class="normal">1901</span>
+<span class="normal">1902</span>
+<span class="normal">1903</span>
+<span class="normal">1904</span>
+<span class="normal">1905</span>
+<span class="normal">1906</span>
+<span class="normal">1907</span>
+<span class="normal">1908</span>
+<span class="normal">1909</span>
+<span class="normal">1910</span>
+<span class="normal">1911</span>
+<span class="normal">1912</span>
+<span class="normal">1913</span>
+<span class="normal">1914</span>
+<span class="normal">1915</span>
+<span class="normal">1916</span>
+<span class="normal">1917</span>
+<span class="normal">1918</span>
+<span class="normal">1919</span>
+<span class="normal">1920</span>
+<span class="normal">1921</span>
+<span class="normal">1922</span>
+<span class="normal">1923</span>
+<span class="normal">1924</span>
+<span class="normal">1925</span>
+<span class="normal">1926</span>
+<span class="normal">1927</span>
+<span class="normal">1928</span>
+<span class="normal">1929</span>
+<span class="normal">1930</span>
+<span class="normal">1931</span>
+<span class="normal">1932</span>
+<span class="normal">1933</span>
+<span class="normal">1934</span>
+<span class="normal">1935</span>
+<span class="normal">1936</span>
+<span class="normal">1937</span>
+<span class="normal">1938</span>
+<span class="normal">1939</span>
+<span class="normal">1940</span>
+<span class="normal">1941</span>
+<span class="normal">1942</span>
+<span class="normal">1943</span>
+<span class="normal">1944</span>
+<span class="normal">1945</span>
+<span class="normal">1946</span>
+<span class="normal">1947</span>
+<span class="normal">1948</span>
+<span class="normal">1949</span>
+<span class="normal">1950</span>
+<span class="normal">1951</span>
+<span class="normal">1952</span>
+<span class="normal">1953</span>
+<span class="normal">1954</span>
+<span class="normal">1955</span>
+<span class="normal">1956</span>
+<span class="normal">1957</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">update_device_ip</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">instance</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">dry_run</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">datasource</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;nornir&quot;</span><span class="p">,</span>
+    <span class="n">timeout</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">60</span><span class="p">,</span>
+    <span class="n">devices</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">create</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Update the IP addresses of devices in Netbox.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        instance (str, optional): The instance name to use.</span>
+<span class="sd">        dry_run (bool, optional): If True, no changes will be made.</span>
+<span class="sd">        datasource (str, optional): The data source to use. Supported datasources:</span>
+
+<span class="sd">            - **nornir** - uses Nornir Service parse task to retrieve devices&#39; data</span>
+<span class="sd">                using NAPALM get_interfaces_ip getter</span>
+
+<span class="sd">        timeout (int, optional): The timeout for the operation.</span>
+<span class="sd">        devices (list, optional): The list of devices to update.</span>
+<span class="sd">        create (bool, optional): If True, new IP addresses will be created if they do not exist.</span>
+<span class="sd">        batch_size (int, optional): The number of devices to process in each batch.</span>
+<span class="sd">        **kwargs: Additional keyword arguments.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        dict: A dictionary containing the results of the update operation.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        Exception: If a device does not exist in Netbox.</span>
+<span class="sd">        UnsupportedServiceError: If the specified datasource is not supported.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">instance</span> <span class="o">=</span> <span class="n">instance</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_instance</span>
+    <span class="n">ret</span> <span class="o">=</span> <span class="n">Result</span><span class="p">(</span><span class="n">task</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">:update_device_ip&quot;</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="n">result</span><span class="p">)</span>
+    <span class="n">nb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_pynetbox</span><span class="p">(</span><span class="n">instance</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">datasource</span> <span class="o">==</span> <span class="s2">&quot;nornir&quot;</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">devices</span><span class="p">),</span> <span class="n">batch_size</span><span class="p">):</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;FL&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">devices</span><span class="p">[</span><span class="n">i</span> <span class="p">:</span> <span class="n">i</span> <span class="o">+</span> <span class="n">batch_size</span><span class="p">]</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;getters&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;get_interfaces_ip&quot;</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">run_job</span><span class="p">(</span>
+                <span class="s2">&quot;nornir&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;parse&quot;</span><span class="p">,</span>
+                <span class="n">kwargs</span><span class="o">=</span><span class="n">kwargs</span><span class="p">,</span>
+                <span class="n">workers</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">,</span>
+                <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="k">for</span> <span class="n">worker</span><span class="p">,</span> <span class="n">results</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">results</span><span class="p">[</span><span class="s2">&quot;failed&quot;</span><span class="p">]:</span>
+                    <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">worker</span><span class="si">}</span><span class="s2"> get_interfaces_ip failed, errors: </span><span class="si">{</span><span class="s1">&#39;; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;errors&#39;</span><span class="p">])</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="p">)</span>
+                    <span class="k">continue</span>
+                <span class="k">for</span> <span class="n">host</span><span class="p">,</span> <span class="n">host_data</span> <span class="ow">in</span> <span class="n">results</span><span class="p">[</span><span class="s2">&quot;result&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="n">updated</span><span class="p">,</span> <span class="n">created</span> <span class="o">=</span> <span class="p">{},</span> <span class="p">{}</span>
+                    <span class="n">result</span><span class="p">[</span><span class="n">host</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+                        <span class="s2">&quot;updated_ip_dry_run&quot;</span> <span class="k">if</span> <span class="n">dry_run</span> <span class="k">else</span> <span class="s2">&quot;updated_ip&quot;</span><span class="p">:</span> <span class="n">updated</span><span class="p">,</span>
+                        <span class="s2">&quot;created_ip_dry_run&quot;</span> <span class="k">if</span> <span class="n">dry_run</span> <span class="k">else</span> <span class="s2">&quot;created_ip&quot;</span><span class="p">:</span> <span class="n">created</span><span class="p">,</span>
+                    <span class="p">}</span>
+                    <span class="n">interfaces</span> <span class="o">=</span> <span class="n">host_data</span><span class="p">[</span><span class="s2">&quot;napalm_get&quot;</span><span class="p">][</span><span class="s2">&quot;get_interfaces_ip&quot;</span><span class="p">]</span>
+                    <span class="n">nb_device</span> <span class="o">=</span> <span class="n">nb</span><span class="o">.</span><span class="n">dcim</span><span class="o">.</span><span class="n">devices</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">host</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">nb_device</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">host</span><span class="si">}</span><span class="s2">&#39; does not exist in Netbox&quot;</span><span class="p">)</span>
+                    <span class="n">nb_interfaces</span> <span class="o">=</span> <span class="n">nb</span><span class="o">.</span><span class="n">dcim</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span>
+                        <span class="n">device_id</span><span class="o">=</span><span class="n">nb_device</span><span class="o">.</span><span class="n">id</span>
+                    <span class="p">)</span>
+                    <span class="c1"># update interface IP addresses</span>
+                    <span class="k">for</span> <span class="n">nb_interface</span> <span class="ow">in</span> <span class="n">nb_interfaces</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">nb_interface</span><span class="o">.</span><span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">interfaces</span><span class="p">:</span>
+                            <span class="k">continue</span>
+                        <span class="n">interface</span> <span class="o">=</span> <span class="n">interfaces</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">nb_interface</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+                        <span class="c1"># merge v6 into v4 addresses to save code repetition</span>
+                        <span class="n">interface</span><span class="p">[</span><span class="s2">&quot;ipv4&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">interface</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;ipv6&quot;</span><span class="p">,</span> <span class="p">{}))</span>
+                        <span class="c1"># update/create IP addresses</span>
+                        <span class="k">for</span> <span class="n">ip</span><span class="p">,</span> <span class="n">ip_data</span> <span class="ow">in</span> <span class="n">interface</span><span class="p">[</span><span class="s2">&quot;ipv4&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                            <span class="n">prefix_length</span> <span class="o">=</span> <span class="n">ip_data</span><span class="p">[</span><span class="s2">&quot;prefix_length&quot;</span><span class="p">]</span>
+                            <span class="c1"># get IP address info from Netbox</span>
+                            <span class="n">nb_ip</span> <span class="o">=</span> <span class="n">nb</span><span class="o">.</span><span class="n">ipam</span><span class="o">.</span><span class="n">ip_addresses</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span>
+                                <span class="n">address</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">ip</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">prefix_length</span><span class="si">}</span><span class="s2">&quot;</span>
+                            <span class="p">)</span>
+                            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">nb_ip</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                                <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">host</span><span class="si">}</span><span class="s2"> got multiple </span><span class="si">{</span><span class="n">ip</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">prefix_length</span><span class="si">}</span><span class="s2"> IP addresses from Netbox, &quot;</span>
+                                    <span class="sa">f</span><span class="s2">&quot;NorFab Netbox Service only supports handling of non-duplicate IPs.&quot;</span>
+                                <span class="p">)</span>
+                                <span class="k">continue</span>
+                            <span class="c1"># decide what to do</span>
+                            <span class="k">if</span> <span class="ow">not</span> <span class="n">nb_ip</span> <span class="ow">and</span> <span class="n">create</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+                                <span class="k">continue</span>
+                            <span class="k">elif</span> <span class="ow">not</span> <span class="n">nb_ip</span> <span class="ow">and</span> <span class="n">create</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                                <span class="k">if</span> <span class="n">dry_run</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">True</span><span class="p">:</span>
+                                    <span class="n">nb_ip</span> <span class="o">=</span> <span class="n">nb</span><span class="o">.</span><span class="n">ipam</span><span class="o">.</span><span class="n">ip_addresses</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+                                        <span class="n">address</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">ip</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">prefix_length</span><span class="si">}</span><span class="s2">&quot;</span>
+                                    <span class="p">)</span>
+                                    <span class="n">nb_ip</span><span class="o">.</span><span class="n">assigned_object_type</span> <span class="o">=</span> <span class="s2">&quot;dcim.interface&quot;</span>
+                                    <span class="n">nb_ip</span><span class="o">.</span><span class="n">assigned_object_id</span> <span class="o">=</span> <span class="n">nb_interface</span><span class="o">.</span><span class="n">id</span>
+                                    <span class="n">nb_ip</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s2">&quot;active&quot;</span>
+                                    <span class="n">nb_ip</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+                                <span class="n">created</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">ip</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">prefix_length</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">nb_interface</span><span class="o">.</span><span class="n">name</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">event</span><span class="p">(</span>
+                                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">host</span><span class="si">}</span><span class="s2"> created IP address </span><span class="si">{</span><span class="n">ip</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">prefix_length</span><span class="si">}</span><span class="s2"> for </span><span class="si">{</span><span class="n">nb_interface</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> interface&quot;</span><span class="p">,</span>
+                                    <span class="n">resource</span><span class="o">=</span><span class="n">instance</span><span class="p">,</span>
+                                <span class="p">)</span>
+                            <span class="k">elif</span> <span class="n">nb_ip</span><span class="p">:</span>
+                                <span class="n">nb_ip</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">nb_ip</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                                <span class="n">nb_ip</span><span class="o">.</span><span class="n">assigned_object_type</span> <span class="o">=</span> <span class="s2">&quot;dcim.interface&quot;</span>
+                                <span class="n">nb_ip</span><span class="o">.</span><span class="n">assigned_object_id</span> <span class="o">=</span> <span class="n">nb_interface</span><span class="o">.</span><span class="n">id</span>
+                                <span class="n">nb_ip</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s2">&quot;active&quot;</span>
+                                <span class="k">if</span> <span class="n">dry_run</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">True</span><span class="p">:</span>
+                                    <span class="n">nb_ip</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+                                <span class="n">updated</span><span class="p">[</span><span class="n">nb_ip</span><span class="o">.</span><span class="n">address</span><span class="p">]</span> <span class="o">=</span> <span class="n">nb_interface</span><span class="o">.</span><span class="n">name</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">event</span><span class="p">(</span>
+                                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">host</span><span class="si">}</span><span class="s2"> updated IP address </span><span class="si">{</span><span class="n">ip</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">prefix_length</span><span class="si">}</span><span class="s2"> for </span><span class="si">{</span><span class="n">nb_interface</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> interface&quot;</span><span class="p">,</span>
+                                    <span class="n">resource</span><span class="o">=</span><span class="n">instance</span><span class="p">,</span>
+                                <span class="p">)</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">UnsupportedServiceError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">datasource</span><span class="si">}</span><span class="s2">&#39; datasource service not supported&quot;</span>
+        <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">ret</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
 
 
 
@@ -3312,10 +3641,10 @@
       <div class="md-progress" data-md-component="progress" role="progressbar"></div>
     
     
-    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.top", "toc.follow", "navigation.instant", "navigation.instant.progress", "content.footnote.tooltips", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.f8cc74c7.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.top", "toc.follow", "navigation.instant", "navigation.instant.progress", "content.footnote.tooltips", "content.code.copy", "content.code.annotate"], "search": "../../../assets/javascripts/workers/search.f8cc74c7.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.f1b6f286.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.f1b6f286.min.js"></script>
       
     
   </body>

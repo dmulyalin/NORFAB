@@ -18,7 +18,7 @@
         <link rel="prev" href="../services_netbox_service_tasks_update_device_facts/">
       
       
-        <link rel="next" href="../../agent/services_agent_service/">
+        <link rel="next" href="../services_netbox_service_tasks_update_device_ip/">
       
       
       <link rel="icon" href="../../../images/logo.jpg">
@@ -138,7 +138,7 @@
     
     
     
-    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="orange" data-md-color-accent="deep-orange]"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="orange" data-md-color-accent="deep-orange"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
     
       <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_0" hidden>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
@@ -1390,6 +1390,28 @@
   
 </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../services_netbox_service_tasks_update_device_ip/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    UPDATE Device IP
+    
+  </span>
+  
+
+      </a>
     </li>
   
 
@@ -2656,6 +2678,28 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../agent/api_reference_workers_agent_worker/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Ollama Agent Worker
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3053,8 +3097,7 @@ nf#
 
     <div class="doc doc-contents first">
 
-        <p>Function to update device interfaces in Netbox using information
-provided by NAPALM <code>get_interfaces</code> getter:</p>
+        <p>Update or create device interfaces in Netbox. Interface parameters updated:</p>
 <ul>
 <li>interface name</li>
 <li>interface description</li>
@@ -3085,7 +3128,7 @@ provided by NAPALM <code>get_interfaces</code> getter:</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Netbox instance name</p>
+                <p>The instance name to use.</p>
               </div>
             </td>
             <td>
@@ -3101,7 +3144,7 @@ provided by NAPALM <code>get_interfaces</code> getter:</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>return information that would be pushed to Netbox but do not push it</p>
+                <p>If True, no changes will be made to Netbox.</p>
               </div>
             </td>
             <td>
@@ -3117,7 +3160,11 @@ provided by NAPALM <code>get_interfaces</code> getter:</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>service name to use to retrieve devices' data, default is nornir parse task</p>
+                <p>The data source to use. Supported datasources:</p>
+<ul>
+<li><strong>nornir</strong> - uses Nornir Service parse task to retrieve devices' data
+    using NAPALM get_interfaces getter</li>
+</ul>
               </div>
             </td>
             <td>
@@ -3133,11 +3180,27 @@ provided by NAPALM <code>get_interfaces</code> getter:</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>seconds to wait before timeout data retrieval job</p>
+                <p>The timeout for the job.</p>
               </div>
             </td>
             <td>
                   <code>60</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>devices</code>
+            </td>
+            <td>
+                  <code>list</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>List of devices to update.</p>
+              </div>
+            </td>
+            <td>
+                  <code>None</code>
             </td>
           </tr>
           <tr class="doc-section-item">
@@ -3149,7 +3212,7 @@ provided by NAPALM <code>get_interfaces</code> getter:</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>create missing interfaces</p>
+                <p>If True, new interfaces will be created if they do not exist.</p>
               </div>
             </td>
             <td>
@@ -3165,7 +3228,7 @@ provided by NAPALM <code>get_interfaces</code> getter:</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>number of devices to process at a time</p>
+                <p>The number of devices to process in each batch.</p>
               </div>
             </td>
             <td>
@@ -3174,13 +3237,13 @@ provided by NAPALM <code>get_interfaces</code> getter:</p>
           </tr>
           <tr class="doc-section-item">
             <td>
-                <code>kwargs</code>
+                <code>**kwargs</code>
             </td>
             <td>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>any additional arguments to send to service for device data retrieval</p>
+                <p>Additional keyword arguments to pass to the job.</p>
               </div>
             </td>
             <td>
@@ -3195,6 +3258,29 @@ provided by NAPALM <code>get_interfaces</code> getter:</p>
     <table>
       <thead>
         <tr>
+<th>Name</th>          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+<td><code>dict</code></td>            <td>
+                  <code>dict</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>A dictionary containing the results of the update operation.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+<p><span class="doc-section-title">Raises:</span></p>
+    <table>
+      <thead>
+        <tr>
           <th>Type</th>
           <th>Description</th>
         </tr>
@@ -3202,11 +3288,21 @@ provided by NAPALM <code>get_interfaces</code> getter:</p>
       <tbody>
           <tr class="doc-section-item">
             <td>
-                  <code>dict</code>
+                  <code>Exception</code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>dictionary keyed by device name with update details</p>
+                <p>If a device does not exist in Netbox.</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="norfab.core.exceptions.UnsupportedServiceError" href="../../../api_reference_core_norfab_exceptions/#norfab.core.exceptions.UnsupportedServiceError">UnsupportedServiceError</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>If the specified datasource is not supported.</p>
               </div>
             </td>
           </tr>
@@ -3215,121 +3311,132 @@ provided by NAPALM <code>get_interfaces</code> getter:</p>
 
             <details class="quote">
               <summary>Source code in <code>norfab\workers\netbox_worker.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1497</span>
-<span class="normal">1498</span>
-<span class="normal">1499</span>
-<span class="normal">1500</span>
-<span class="normal">1501</span>
-<span class="normal">1502</span>
-<span class="normal">1503</span>
-<span class="normal">1504</span>
-<span class="normal">1505</span>
-<span class="normal">1506</span>
-<span class="normal">1507</span>
-<span class="normal">1508</span>
-<span class="normal">1509</span>
-<span class="normal">1510</span>
-<span class="normal">1511</span>
-<span class="normal">1512</span>
-<span class="normal">1513</span>
-<span class="normal">1514</span>
-<span class="normal">1515</span>
-<span class="normal">1516</span>
-<span class="normal">1517</span>
-<span class="normal">1518</span>
-<span class="normal">1519</span>
-<span class="normal">1520</span>
-<span class="normal">1521</span>
-<span class="normal">1522</span>
-<span class="normal">1523</span>
-<span class="normal">1524</span>
-<span class="normal">1525</span>
-<span class="normal">1526</span>
-<span class="normal">1527</span>
-<span class="normal">1528</span>
-<span class="normal">1529</span>
-<span class="normal">1530</span>
-<span class="normal">1531</span>
-<span class="normal">1532</span>
-<span class="normal">1533</span>
-<span class="normal">1534</span>
-<span class="normal">1535</span>
-<span class="normal">1536</span>
-<span class="normal">1537</span>
-<span class="normal">1538</span>
-<span class="normal">1539</span>
-<span class="normal">1540</span>
-<span class="normal">1541</span>
-<span class="normal">1542</span>
-<span class="normal">1543</span>
-<span class="normal">1544</span>
-<span class="normal">1545</span>
-<span class="normal">1546</span>
-<span class="normal">1547</span>
-<span class="normal">1548</span>
-<span class="normal">1549</span>
-<span class="normal">1550</span>
-<span class="normal">1551</span>
-<span class="normal">1552</span>
-<span class="normal">1553</span>
-<span class="normal">1554</span>
-<span class="normal">1555</span>
-<span class="normal">1556</span>
-<span class="normal">1557</span>
-<span class="normal">1558</span>
-<span class="normal">1559</span>
-<span class="normal">1560</span>
-<span class="normal">1561</span>
-<span class="normal">1562</span>
-<span class="normal">1563</span>
-<span class="normal">1564</span>
-<span class="normal">1565</span>
-<span class="normal">1566</span>
-<span class="normal">1567</span>
-<span class="normal">1568</span>
-<span class="normal">1569</span>
-<span class="normal">1570</span>
-<span class="normal">1571</span>
-<span class="normal">1572</span>
-<span class="normal">1573</span>
-<span class="normal">1574</span>
-<span class="normal">1575</span>
-<span class="normal">1576</span>
-<span class="normal">1577</span>
-<span class="normal">1578</span>
-<span class="normal">1579</span>
-<span class="normal">1580</span>
-<span class="normal">1581</span>
-<span class="normal">1582</span>
-<span class="normal">1583</span>
-<span class="normal">1584</span>
-<span class="normal">1585</span>
-<span class="normal">1586</span>
-<span class="normal">1587</span>
-<span class="normal">1588</span>
-<span class="normal">1589</span>
-<span class="normal">1590</span>
-<span class="normal">1591</span>
-<span class="normal">1592</span>
-<span class="normal">1593</span>
-<span class="normal">1594</span>
-<span class="normal">1595</span>
-<span class="normal">1596</span>
-<span class="normal">1597</span>
-<span class="normal">1598</span>
-<span class="normal">1599</span>
-<span class="normal">1600</span>
-<span class="normal">1601</span>
-<span class="normal">1602</span>
-<span class="normal">1603</span>
-<span class="normal">1604</span>
-<span class="normal">1605</span>
-<span class="normal">1606</span>
-<span class="normal">1607</span>
-<span class="normal">1608</span>
-<span class="normal">1609</span>
-<span class="normal">1610</span>
-<span class="normal">1611</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">update_device_interfaces</span><span class="p">(</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1705</span>
+<span class="normal">1706</span>
+<span class="normal">1707</span>
+<span class="normal">1708</span>
+<span class="normal">1709</span>
+<span class="normal">1710</span>
+<span class="normal">1711</span>
+<span class="normal">1712</span>
+<span class="normal">1713</span>
+<span class="normal">1714</span>
+<span class="normal">1715</span>
+<span class="normal">1716</span>
+<span class="normal">1717</span>
+<span class="normal">1718</span>
+<span class="normal">1719</span>
+<span class="normal">1720</span>
+<span class="normal">1721</span>
+<span class="normal">1722</span>
+<span class="normal">1723</span>
+<span class="normal">1724</span>
+<span class="normal">1725</span>
+<span class="normal">1726</span>
+<span class="normal">1727</span>
+<span class="normal">1728</span>
+<span class="normal">1729</span>
+<span class="normal">1730</span>
+<span class="normal">1731</span>
+<span class="normal">1732</span>
+<span class="normal">1733</span>
+<span class="normal">1734</span>
+<span class="normal">1735</span>
+<span class="normal">1736</span>
+<span class="normal">1737</span>
+<span class="normal">1738</span>
+<span class="normal">1739</span>
+<span class="normal">1740</span>
+<span class="normal">1741</span>
+<span class="normal">1742</span>
+<span class="normal">1743</span>
+<span class="normal">1744</span>
+<span class="normal">1745</span>
+<span class="normal">1746</span>
+<span class="normal">1747</span>
+<span class="normal">1748</span>
+<span class="normal">1749</span>
+<span class="normal">1750</span>
+<span class="normal">1751</span>
+<span class="normal">1752</span>
+<span class="normal">1753</span>
+<span class="normal">1754</span>
+<span class="normal">1755</span>
+<span class="normal">1756</span>
+<span class="normal">1757</span>
+<span class="normal">1758</span>
+<span class="normal">1759</span>
+<span class="normal">1760</span>
+<span class="normal">1761</span>
+<span class="normal">1762</span>
+<span class="normal">1763</span>
+<span class="normal">1764</span>
+<span class="normal">1765</span>
+<span class="normal">1766</span>
+<span class="normal">1767</span>
+<span class="normal">1768</span>
+<span class="normal">1769</span>
+<span class="normal">1770</span>
+<span class="normal">1771</span>
+<span class="normal">1772</span>
+<span class="normal">1773</span>
+<span class="normal">1774</span>
+<span class="normal">1775</span>
+<span class="normal">1776</span>
+<span class="normal">1777</span>
+<span class="normal">1778</span>
+<span class="normal">1779</span>
+<span class="normal">1780</span>
+<span class="normal">1781</span>
+<span class="normal">1782</span>
+<span class="normal">1783</span>
+<span class="normal">1784</span>
+<span class="normal">1785</span>
+<span class="normal">1786</span>
+<span class="normal">1787</span>
+<span class="normal">1788</span>
+<span class="normal">1789</span>
+<span class="normal">1790</span>
+<span class="normal">1791</span>
+<span class="normal">1792</span>
+<span class="normal">1793</span>
+<span class="normal">1794</span>
+<span class="normal">1795</span>
+<span class="normal">1796</span>
+<span class="normal">1797</span>
+<span class="normal">1798</span>
+<span class="normal">1799</span>
+<span class="normal">1800</span>
+<span class="normal">1801</span>
+<span class="normal">1802</span>
+<span class="normal">1803</span>
+<span class="normal">1804</span>
+<span class="normal">1805</span>
+<span class="normal">1806</span>
+<span class="normal">1807</span>
+<span class="normal">1808</span>
+<span class="normal">1809</span>
+<span class="normal">1810</span>
+<span class="normal">1811</span>
+<span class="normal">1812</span>
+<span class="normal">1813</span>
+<span class="normal">1814</span>
+<span class="normal">1815</span>
+<span class="normal">1816</span>
+<span class="normal">1817</span>
+<span class="normal">1818</span>
+<span class="normal">1819</span>
+<span class="normal">1820</span>
+<span class="normal">1821</span>
+<span class="normal">1822</span>
+<span class="normal">1823</span>
+<span class="normal">1824</span>
+<span class="normal">1825</span>
+<span class="normal">1826</span>
+<span class="normal">1827</span>
+<span class="normal">1828</span>
+<span class="normal">1829</span>
+<span class="normal">1830</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">update_device_interfaces</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">instance</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">dry_run</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -3341,8 +3448,7 @@ provided by NAPALM <code>get_interfaces</code> getter:</p>
     <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Function to update device interfaces in Netbox using information</span>
-<span class="sd">    provided by NAPALM `get_interfaces` getter:</span>
+<span class="sd">    Update or create device interfaces in Netbox. Interface parameters updated:</span>
 
 <span class="sd">    - interface name</span>
 <span class="sd">    - interface description</span>
@@ -3351,14 +3457,26 @@ provided by NAPALM <code>get_interfaces</code> getter:</p>
 <span class="sd">    - admin status</span>
 <span class="sd">    - speed</span>
 
-<span class="sd">    :param instance: Netbox instance name</span>
-<span class="sd">    :param dry_run: return information that would be pushed to Netbox but do not push it</span>
-<span class="sd">    :param datasource: service name to use to retrieve devices&#39; data, default is nornir parse task</span>
-<span class="sd">    :param timeout: seconds to wait before timeout data retrieval job</span>
-<span class="sd">    :param create: create missing interfaces</span>
-<span class="sd">    :param batch_size: number of devices to process at a time</span>
-<span class="sd">    :param kwargs: any additional arguments to send to service for device data retrieval</span>
-<span class="sd">    :returns: dictionary keyed by device name with update details</span>
+<span class="sd">    Args:</span>
+<span class="sd">        instance (str, optional): The instance name to use.</span>
+<span class="sd">        dry_run (bool, optional): If True, no changes will be made to Netbox.</span>
+<span class="sd">        datasource (str, optional): The data source to use. Supported datasources:</span>
+
+<span class="sd">            - **nornir** - uses Nornir Service parse task to retrieve devices&#39; data</span>
+<span class="sd">                using NAPALM get_interfaces getter</span>
+
+<span class="sd">        timeout (int, optional): The timeout for the job.</span>
+<span class="sd">        devices (list, optional): List of devices to update.</span>
+<span class="sd">        create (bool, optional): If True, new interfaces will be created if they do not exist.</span>
+<span class="sd">        batch_size (int, optional): The number of devices to process in each batch.</span>
+<span class="sd">        **kwargs: Additional keyword arguments to pass to the job.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        dict: A dictionary containing the results of the update operation.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        Exception: If a device does not exist in Netbox.</span>
+<span class="sd">        UnsupportedServiceError: If the specified datasource is not supported.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">result</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="n">instance</span> <span class="o">=</span> <span class="n">instance</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_instance</span>
