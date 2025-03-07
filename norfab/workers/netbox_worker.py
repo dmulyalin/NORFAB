@@ -33,12 +33,16 @@ log = logging.getLogger(__name__)
 
 def _form_query_v4(obj, filters, fields, alias=None):
     """
-    Helper function to form graphql query
+    Helper function to form graphql query for Netbox version 4.
 
-    :param obj: string, object to return data for e.g. device, interface, ip_address
-    :param filters: dictionary of key-value pairs to filter by
-    :param fields: list of data fields to return
-    :param alias: string, alias value for requested object
+    Args:
+        obj (str): The object to return data for, e.g., 'device', 'interface', 'ip_address'.
+        filters (dict): A dictionary of key-value pairs to filter by.
+        fields (list): A list of data fields to return.
+        alias (str, optional): An alias value for the requested object.
+
+    Returns:
+        str: A formatted GraphQL query string.
     """
     filters_list = []
     for k, v in filters.items():
@@ -62,12 +66,16 @@ def _form_query_v4(obj, filters, fields, alias=None):
 
 def _form_query_v3(obj, filters, fields, alias=None):
     """
-    Helper function to form graphql query
+    Helper function to form graphql query for Netbox version 3.
 
-    :param obj: string, obj to return data for e.g. device, interface, ip_address
-    :param filters: dictionary of key-value pairs to filter by
-    :param fields: list of data fields to return
-    :param alias: string, alias value for requested obj
+    Args:
+        obj (str): The object to return data for, e.g., 'device', 'interface', 'ip_address'.
+        filters (dict): A dictionary of key-value pairs to filter by.
+        fields (list): A list of data fields to return.
+        alias (str, optional): An alias value for the requested object.
+
+    Returns:
+        str: A formatted GraphQL query string.
     """
     filters_list = []
     for k, v in filters.items():
@@ -88,11 +96,26 @@ def _form_query_v3(obj, filters, fields, alias=None):
 
 class NetboxWorker(NFPWorker):
     """
-    :param broker: broker URL to connect to
-    :param worker_name: name of this worker
-    :param exit_event: if set, worker need to stop/exit
-    :param init_done_event: event to set when worker done initializing
-    :param log_keve: logging level of this worker
+    NetboxWorker class for interacting with Netbox API and managing inventory.
+
+    Args:
+        inventory (dict): The inventory data.
+        broker (object): The broker instance.
+        worker_name (str): The name of the worker.
+        exit_event (threading.Event, optional): Event to signal exit.
+        init_done_event (threading.Event, optional): Event to signal initialization completion.
+        log_level (int, optional): Logging level.
+        log_queue (object, optional): Queue for logging.
+
+    Raises:
+        AssertionError: If the inventory has no Netbox instances.
+
+    Attributes:
+        default_instance (str): Default Netbox instance name.
+        inventory (dict): Inventory data.
+        nb_version (tuple): Netbox version.
+        compatible_ge_v3 (tuple): Minimum supported Netbox v3 version.
+        compatible_ge_v4 (tuple): Minimum supported Netbox v4 version.
     """
 
     default_instance = None
@@ -165,6 +188,13 @@ class NetboxWorker(NFPWorker):
         log.info(f"{self.name} - Started")
 
     def worker_exit(self) -> None:
+        """
+        Worker exist sanity checks. Closes the cache if it exists.
+
+        This method checks if the cache attribute is present and not None.
+        If the cache exists, it closes the cache to release any resources
+        associated with it.
+        """
         if self.cache:
             self.cache.close()
 
@@ -173,11 +203,24 @@ class NetboxWorker(NFPWorker):
     # ----------------------------------------------------------------------
 
     def get_inventory(self) -> dict:
+        """
+        NorFab Task to return running inventory for NetBox worker.
+
+        Returns:
+            dict: A dictionary containing the NetBox inventory.
+        """
         return Result(
             task=f"{self.name}:get_inventory", result=dict(self.netbox_inventory)
         )
 
     def get_version(self, **kwargs) -> dict:
+        """
+        Retrieves the version information of specified libraries and system details.
+
+        Returns:
+            dict: A dictionary containing the version information of the
+                specified libraries and system details.
+        """
         libs = {
             "norfab": "",
             "pynetbox": "",
@@ -195,6 +238,21 @@ class NetboxWorker(NFPWorker):
         return Result(task=f"{self.name}:get_version", result=libs)
 
     def get_netbox_status(self, instance=None) -> dict:
+        """
+        Retrieve the status of NetBox instances.
+
+        This method queries the status of a specific NetBox instance if the
+        `instance` parameter is provided. If no instance is specified, it
+        queries the status of all instances in the NetBox inventory.
+
+        Args:
+            instance (str, optional): The name of the specific NetBox instance
+                                      to query.
+
+        Returns:
+            dict: A dictionary containing the status of the requested NetBox
+                  instance(s).
+        """
         ret = Result(result={}, task=f"{self.name}:get_netbox_status")
         if instance:
             ret.result[instance] = self._query_netbox_status(instance)
@@ -204,6 +262,18 @@ class NetboxWorker(NFPWorker):
         return ret
 
     def get_compatibility(self) -> dict:
+        """
+        Checks the compatibility of Netbox instances based on their version.
+
+        This method retrieves the status and version of Netbox instances and determines
+        if they are compatible with the required versions. It logs a warning if any
+        instance is not reachable.
+
+        Returns:
+            dict: A dictionary where the keys are the instance names and the values are
+                  booleans indicating compatibility (True/False) or None if the instance
+                  is not reachable.
+        """
         ret = Result(task=f"{self.name}:get_compatibility", result={})
         netbox_status = self.get_netbox_status()
         for instance, params in netbox_status.result.items():
@@ -222,6 +292,17 @@ class NetboxWorker(NFPWorker):
         return ret
 
     def _verify_compatibility(self):
+        """
+        Verifies the compatibility of Netbox instances.
+
+        This method checks the compatibility of Netbox instances by calling the
+        `get_compatibility` method. If any of the instances are not compatible,
+        it raises a RuntimeError with a message indicating which instances are
+        not compatible.
+
+        Raises:
+            RuntimeError: If any of the Netbox instances are not compatible.
+        """
         compatibility = self.get_compatibility()
         if not all(i is not False for i in compatibility.result.values()):
             raise RuntimeError(
@@ -229,6 +310,22 @@ class NetboxWorker(NFPWorker):
             )
 
     def _query_netbox_status(self, name):
+        """
+        Queries the Netbox API for the status of a given instance.
+
+        Args:
+            name (str): The name of the Netbox instance to query.
+
+        Returns:
+            dict: A dictionary containing the status and any error message. The dictionary has the following keys:
+
+                - "error" (str or None): Error message if the query failed, otherwise None.
+                - "status" (bool): True if the query was successful, False otherwise.
+                - Additional keys from the Netbox API response if the query was successful.
+
+        Raises:
+            None: All exceptions are caught and handled within the method.
+        """
         params = self.netbox_inventory["instances"][name]
         ret = {
             "error": None,
@@ -261,10 +358,21 @@ class NetboxWorker(NFPWorker):
 
     def _get_instance_params(self, name: str) -> dict:
         """
-        Helper function to get inventory params for Netbox instance.
+        Retrieve instance parameters from the NetBox inventory.
 
-        :param name: Netbox instance name
+        Args:
+            name (str): The name of the instance to retrieve parameters for.
+
+        Returns:
+            dict: A dictionary containing the parameters of the specified instance.
+
+        Raises:
+            KeyError: If the specified instance name is not found in the inventory.
+
+        If the `ssl_verify` parameter is set to False, SSL warnings will be disabled.
+        Otherwise, SSL warnings will be enabled.
         """
+
         if name:
             ret = self.netbox_inventory["instances"][name]
         else:
@@ -279,7 +387,21 @@ class NetboxWorker(NFPWorker):
         return ret
 
     def _get_pynetbox(self, instance):
-        """Helper function to instantiate pynetbox api object"""
+        """
+        Helper function to instantiate a pynetbox API object.
+
+        Args:
+            instance (str): The instance name for which to get the pynetbox API object.
+
+        Returns:
+            pynetbox.core.api.Api: An instantiated pynetbox API object.
+
+        Raises:
+            Exception: If the pynetbox library is not installed.
+
+        If SSL verification is disabled in the instance parameters,
+        this function will disable warnings for insecure requests.
+        """
         if not HAS_PYNETBOX:
             msg = f"{self.name} - failed to import pynetbox library, is it installed?"
             log.error(msg)
@@ -297,6 +419,15 @@ class NetboxWorker(NFPWorker):
         return nb
 
     def _get_diskcache(self) -> FanoutCache:
+        """
+        Creates and returns a FanoutCache object.
+
+        The FanoutCache is configured with the specified directory, number of shards,
+        timeout, and size limit.
+
+        Returns:
+            FanoutCache: A configured FanoutCache instance.
+        """
         return FanoutCache(
             directory=self.cache_dir,
             shards=4,
@@ -306,12 +437,14 @@ class NetboxWorker(NFPWorker):
 
     def cache_list(self, keys="*", details=False) -> list:
         """
-        List cache keys.
+        Retrieve a list of cache keys, optionally with details about each key.
 
-        :param keys: Pattern to match keys to list
-        :param details: if True add key details, returns just key name otherwise
-        :returns: List of cache keys names if details False, else return list of
-            key dictionaries with extra information like age and expire time.
+        Args:
+            keys (str): A pattern to match cache keys against. Defaults to "*".
+            details (bool): If True, include detailed information about each cache key. Defaults to False.
+
+        Returns:
+            list: A list of cache keys or a list of dictionaries with detailed information if `details` is True.
         """
         self.cache.expire()
         ret = Result(task=f"{self.name}:cache_list", result=[])
@@ -336,11 +469,23 @@ class NetboxWorker(NFPWorker):
 
     def cache_clear(self, key=None, keys=None) -> list:
         """
-        Clears specified cache entries.
+        Clears specified keys from the cache.
 
-        :param key: Specific key to clear from the cache
-        :param keys: Pattern to match multiple keys to clear from the cache
-        :returns: List of cleared keys.
+        Args:
+            key (str, optional): A specific key to remove from the cache.
+            keys (str, optional): A glob pattern to match multiple keys to remove from the cache.
+
+        Returns:
+            list: A list of keys that were successfully removed from the cache.
+
+        Raises:
+            RuntimeError: If a specified key or a key matching the glob pattern could not be removed from the cache.
+
+        Notes:
+
+        - If neither `key` nor `keys` is provided, the function will return a message indicating that there is nothing to clear.
+        - If `key` is provided, it will attempt to remove that specific key from the cache.
+        - If `keys` is provided, it will attempt to remove all keys matching the glob pattern from the cache.
         """
         ret = Result(task=f"{self.name}:cache_clear", result=[])
         # check if has keys to clear
@@ -368,12 +513,20 @@ class NetboxWorker(NFPWorker):
 
     def cache_get(self, key=None, keys=None, raise_missing=False) -> dict:
         """
-        Return data stored in specified cache entries.
+        Retrieve values from the cache based on a specific key or a pattern of keys.
 
-        :param key: Specific key to get cached data for
-        :param keys: Pattern to match multiple keys to return cached data
-        :param raise_missing: if True raises KeyError for missing key
-        :returns: Requested keys cached data.
+        Args:
+            key (str, optional): A specific key to retrieve from the cache.
+            keys (str, optional): A glob pattern to match multiple keys in the cache.
+            raise_missing (bool, optional): If True, raises a KeyError if the specific
+                key is not found in the cache. Defaults to False.
+
+        Returns:
+            dict: A dictionary containing the results of the cache retrieval. The keys are
+                the cache keys and the values are the corresponding cache values.
+
+        Raises:
+            KeyError: If raise_missing is True and the specific key is not found in the cache.
         """
         ret = Result(task=f"{self.name}:cache_clear", result={})
         # get specific key from cache
@@ -400,18 +553,23 @@ class NetboxWorker(NFPWorker):
         query_string: str = None,
     ) -> Union[dict, list]:
         """
-        Function to query Netbox v4 GraphQL API
+        Function to query Netbox v3 or Netbox v4 GraphQL API.
 
-        :param instance: Netbox instance name
-        :param dry_run: only return query content, do not run it
-        :param obj: Object to query
-        :param filters: Filters to apply to the query
-        :param fields: Fields to retrieve in the query
-        :param queries: Dictionary of queries to execute
-        :param query_string: Raw query string to execute
-        :return: GraphQL request data returned by Netbox
-        :raises RuntimeError: If required arguments are not provided
-        :raises Exception: If GraphQL query fails
+        Args:
+            instance: Netbox instance name
+            dry_run: only return query content, do not run it
+            obj: Object to query
+            filters: Filters to apply to the query
+            fields: Fields to retrieve in the query
+            queries: Dictionary of queries to execute
+            query_string: Raw query string to execute
+
+        Returns:
+            dict: GraphQL request data returned by Netbox
+
+        Raises:
+            RuntimeError: If required arguments are not provided
+            Exception: If GraphQL query fails
         """
         nb_params = self._get_instance_params(instance)
         ret = Result(task=f"{self.name}:graphql")
@@ -499,14 +657,19 @@ class NetboxWorker(NFPWorker):
         self, instance: str = None, method: str = "get", api: str = "", **kwargs
     ) -> Union[dict, list]:
         """
-        Method to query Netbox REST API.
+        Sends a request to the Netbox REST API.
 
-        :param instance: Netbox instance name
-        :param method: requests method name e.g. get, post, put etc.
-        :param api: api url to query e.g. "extras" or "dcim/interfaces" etc.
-        :param kwargs: any additional requests method's arguments
-        :return: REST API Query result
-        :raises Exception: If REST API query fails
+        Args:
+            instance (str, optional): The instance name to get parameters for.
+            method (str, optional): The HTTP method to use for the request (e.g., 'get', 'post'). Defaults to "get".
+            api (str, optional): The API endpoint to send the request to. Defaults to "".
+            **kwargs: Additional arguments to pass to the request (e.g., params, data, json).
+
+        Returns:
+            Union[dict, list]: The JSON response from the API, parsed into a dictionary or list.
+
+        Raises:
+            requests.exceptions.HTTPError: If the HTTP request returned an unsuccessful status code.
         """
         params = self._get_instance_params(instance)
 
@@ -535,18 +698,25 @@ class NetboxWorker(NFPWorker):
         cache: Union[bool, str] = None,
     ) -> dict:
         """
-        Function to retrieve devices data from Netbox using GraphQL API.
+        Retrieves device data from Netbox using the GraphQL API.
 
-        :param filters: list of filters dictionaries to filter devices
-        :param instance: Netbox instance name
-        :param dry_run: only return query content, do not run it
-        :param devices: list of device names to query data for
-        :param cache: if `True` use data stored in cache if it is up to date
-            refresh it otherwise, `False` do not use cache do not update cache,
-            `refresh` ignore data in cache and replace it with data fetched
-            from Netbox, `force` use data in cache without checking if it is up
-            to date
-        :return: dictionary keyed by device name with device data
+        Args:
+            filters (list, optional): A list of filter dictionaries to filter devices.
+            instance (str, optional): The Netbox instance name.
+            dry_run (bool, optional): If True, only returns the query content without executing it. Defaults to False.
+            devices (list, optional): A list of device names to query data for.
+            cache (Union[bool, str], optional): Cache usage options:
+
+                - True: Use data stored in cache if it is up to date, refresh it otherwise.
+                - False: Do not use cache and do not update cache.
+                - "refresh": Ignore data in cache and replace it with data fetched from Netbox.
+                - "force": Use data in cache without checking if it is up to date.
+
+        Returns:
+            dict: A dictionary keyed by device name with device data.
+
+        Raises:
+            Exception: If the GraphQL query fails or if there are errors in the query result.
         """
         ret = Result(task=f"{self.name}:get_devices", result={})
         cache = self.cache_use if cache is None else cache
@@ -697,14 +867,20 @@ class NetboxWorker(NFPWorker):
         dry_run: bool = False,
     ) -> dict:
         """
-        Function to retrieve device interfaces from Netbox using GraphQL API.
+        Retrieve device interfaces from Netbox using GraphQL API.
 
-        :param instance: Netbox instance name
-        :param devices: list of devices to retrieve interfaces for
-        :param ip_addresses: if True, retrieves interface IPs
-        :param inventory_items: if True, retrieves interface inventory items
-        :param dry_run: only return query content, do not run it
-        :return: dictionary keyed by device name with interface details
+        Args:
+            instance (str, optional): Netbox instance name.
+            devices (list, optional): List of devices to retrieve interfaces for.
+            ip_addresses (bool, optional): If True, retrieves interface IPs. Defaults to False.
+            inventory_items (bool, optional): If True, retrieves interface inventory items. Defaults to False.
+            dry_run (bool, optional): If True, only return query content, do not run it. Defaults to False.
+
+        Returns:
+            dict: Dictionary keyed by device name with interface details.
+
+        Raises:
+            Exception: If no interfaces data is returned for the specified devices.
         """
         # form final result object
         ret = Result(
@@ -826,13 +1002,19 @@ class NetboxWorker(NFPWorker):
         cables: bool = False,
     ) -> dict:
         """
-        Function to retrieve device connections data from Netbox using GraphQL API.
+        Retrieve interface connection details for specified devices from Netbox.
 
-        :param instance: Netbox instance name
-        :param devices: list of devices to retrieve interface for
-        :param dry_run: only return query content, do not run it
-        :param cables: if True includes interfaces' directly attached cables details
-        :return: dictionary keyed by device name with connections data
+        Args:
+            devices (list): List of device names to retrieve connections for.
+            instance (str, optional): Instance name for the GraphQL query.
+            dry_run (bool, optional): If True, perform a dry run without making actual changes.
+            cables (bool, optional): if True includes interfaces' directly attached cables details
+
+        Returns:
+            dict: A dictionary containing connection details for each device.
+
+        Raises:
+            Exception: If there is an error in the GraphQL query or data retrieval process.
         """
         # form final result dictionary
         ret = Result(
@@ -1000,11 +1182,15 @@ class NetboxWorker(NFPWorker):
         """
         ThreadPoolExecutor target function to retrieve circuit details from Netbox
 
-        :param circuit: Dictionary with circuit data
-        :param ret: Result object to save results into
-        :param instance: Netbox instance name
-        :param devices: list of devices to map circuits for
-        :param cache: if `True` or 'refresh' update cache, `False` do not update cache
+        Args:
+            circuit (dict): The circuit data to be mapped.
+            ret (Result): The result object to store the mapped data.
+            instance (str): The instance of the Netbox API to use.
+            devices (list): List of devices to check against the circuit endpoints.
+            cache (bool): Flag to determine if the data should be cached.
+
+        Returns:
+            bool: True if the mapping is successful, False otherwise.
         """
         cid = circuit.pop("cid")
         ckt_cache_data = {}  # ckt data dictionary to save in cache
@@ -1116,18 +1302,25 @@ class NetboxWorker(NFPWorker):
         cache: Union[bool, str] = True,
     ) -> dict:
         """
-        Task to retrieve device's circuits data from Netbox.
 
-        :param devices: list of devices to retrieve interface for
-        :param instance: Netbox instance name
-        :param dry_run: only return query content, do not run it
-        :param cid: list of circuit identifiers to retrieve data for
-        :param cache: if `True` use data stored in cache if it is up to date
-            refresh it otherwise, `False` do not use cache do not update cache,
-            `refresh` ignore data in cache and replace it with data fetched
-            from Netbox, `force` use data in cache without checking if it is up
-            to date
-        :return: dictionary keyed by device names with circuits data values
+        Retrieve circuit information for specified devices from Netbox.
+
+        Args:
+            devices (list): List of device names to retrieve circuits for.
+            cid (list, optional): List of circuit IDs to filter by.
+            instance (str, optional): Netbox instance to query.
+            dry_run (bool, optional): If True, perform a dry run without making changes. Defaults to False.
+            cache (Union[bool, str], optional): Cache usage options:
+
+                - True: Use data stored in cache if it is up to date, refresh it otherwise.
+                - False: Do not use cache and do not update cache.
+                - "refresh": Ignore data in cache and replace it with data fetched from Netbox.
+                - "force": Use data in cache without checking if it is up to date.
+
+        Returns:
+            dict: dictionary keyed by device names with circuits data.
+
+        Task to retrieve device's circuits data from Netbox.
         """
         log.info(
             f"{self.name}:get_circuits - {instance or self.default_instance} Netbox, "
@@ -1299,20 +1492,24 @@ class NetboxWorker(NFPWorker):
         primary_ip: str = "ip4",
     ) -> dict:
         """
-        Method to query Netbox devices data and construct Nornir inventory.
+        Retrieve and construct Nornir inventory from NetBox data.
 
-        :param filters: List of filters to apply when querying devices.
-        :param devices: List of specific devices to query.
-        :param instance: Netbox instance name to query.
-        :param interfaces: Whether to include interfaces data. If a dict is provided,
-            it will be used as arguments for the query.
-        :param connections: Whether to include connections data. If a dict is provided,
-            it will be used as arguments for the query.
-        :param circuits: Whether to include circuits data. If a dict is provided,
-            it will be used as arguments for the query.
-        :param nbdata: Whether to include Netbox devices data in the host's data
-        :param primary_ip: Primary IP version to use for the hostname.
-        :returns: Nornir Inventory compatible dictionary
+        Args:
+            filters (list, optional): List of filters to apply when retrieving devices from NetBox.
+            devices (list, optional): List of specific devices to retrieve from NetBox.
+            instance (str, optional): NetBox instance to use.
+            interfaces (Union[dict, bool], optional): If True, include interfaces data
+                    in the inventory. If a dict, use it as arguments for the get_interfaces method.
+            connections (Union[dict, bool], optional): If True, include connections data
+                    in the inventory. If a dict, use it as arguments for the get_connections method.
+            circuits (Union[dict, bool], optional): If True, include circuits data in the
+                    inventory. If a dict, use it as arguments for the get_circuits method.
+            nbdata (bool, optional): If True, include a copy of NetBox device's data in the host's data.
+            primary_ip (str, optional): Specify whether to use 'ip4' or 'ip6' for the primary
+                    IP address. Defaults to 'ip4'.
+
+        Returns:
+            dict: Nornir inventory dictionary containing hosts and their respective data.
         """
         hosts = {}
         inventory = {"hosts": hosts}
@@ -1418,18 +1615,29 @@ class NetboxWorker(NFPWorker):
         **kwargs,
     ) -> dict:
         """
-        Function to update device facts in Netbox using information
-        provided by NAPALM get_facts getter:
+        Updates the device facts in NetBox:
 
         - serial number
 
-        :param instance: Netbox instance name
-        :param dry_run: return information that would be pushed to Netbox but do not push it
-        :param datasource: service name to use to retrieve devices' data, default is nornir parse task
-        :param timeout: seconds to wait before timeout data retrieval job
-        :param batch_size: number of devices to process at a time
-        :param kwargs: any additional arguments to send to service for device data retrieval
-        :returns: dictionary keyed by device name with updated details
+        Args:
+            instance (str, optional): The NetBox instance to use.
+            dry_run (bool, optional): If True, no changes will be made to NetBox.
+            datasource (str, optional): The data source to use. Supported datasources:
+
+                - **nornir** - uses Nornir Service parse task to retrieve devices' data
+                    using NAPALM get_facts getter
+
+            timeout (int, optional): The timeout for the job execution. Defaults to 60.
+            devices (list, optional): The list of devices to update.
+            batch_size (int, optional): The number of devices to process in each batch.
+            **kwargs: Additional keyword arguments to pass to the job.
+
+        Returns:
+            dict: A dictionary containing the results of the update operation.
+
+        Raises:
+            Exception: If a device does not exist in NetBox.
+            UnsupportedServiceError: If the specified datasource is not supported.
         """
         result = {}
         devices = devices or []
@@ -1506,8 +1714,7 @@ class NetboxWorker(NFPWorker):
         **kwargs,
     ) -> dict:
         """
-        Function to update device interfaces in Netbox using information
-        provided by NAPALM `get_interfaces` getter:
+        Update or create device interfaces in Netbox. Interface parameters updated:
 
         - interface name
         - interface description
@@ -1516,14 +1723,26 @@ class NetboxWorker(NFPWorker):
         - admin status
         - speed
 
-        :param instance: Netbox instance name
-        :param dry_run: return information that would be pushed to Netbox but do not push it
-        :param datasource: service name to use to retrieve devices' data, default is nornir parse task
-        :param timeout: seconds to wait before timeout data retrieval job
-        :param create: create missing interfaces
-        :param batch_size: number of devices to process at a time
-        :param kwargs: any additional arguments to send to service for device data retrieval
-        :returns: dictionary keyed by device name with update details
+        Args:
+            instance (str, optional): The instance name to use.
+            dry_run (bool, optional): If True, no changes will be made to Netbox.
+            datasource (str, optional): The data source to use. Supported datasources:
+
+                - **nornir** - uses Nornir Service parse task to retrieve devices' data
+                    using NAPALM get_interfaces getter
+
+            timeout (int, optional): The timeout for the job.
+            devices (list, optional): List of devices to update.
+            create (bool, optional): If True, new interfaces will be created if they do not exist.
+            batch_size (int, optional): The number of devices to process in each batch.
+            **kwargs: Additional keyword arguments to pass to the job.
+
+        Returns:
+            dict: A dictionary containing the results of the update operation.
+
+        Raises:
+            Exception: If a device does not exist in Netbox.
+            UnsupportedServiceError: If the specified datasource is not supported.
         """
         result = {}
         instance = instance or self.default_instance
@@ -1622,17 +1841,28 @@ class NetboxWorker(NFPWorker):
         **kwargs,
     ) -> dict:
         """
-        Function to update device IP addresses in Netbox using information
-        provided by NAPALM `get_interfaces_ip` getter.
+        Update the IP addresses of devices in Netbox.
 
-        :param instance: Netbox instance name
-        :param dry_run: return information that would be pushed to Netbox but do not push it
-        :param datasource: service name to use to retrieve devices' data, default is nornir parse task
-        :param timeout: seconds to wait before timeout data retrieval job
-        :param create: create missing IP addresses
-        :param batch_size: number of devices to process at a time
-        :param kwargs: any additional arguments to send to service for device data retrieval
-        :returns: dictionary keyed by device name with update details
+        Args:
+            instance (str, optional): The instance name to use.
+            dry_run (bool, optional): If True, no changes will be made.
+            datasource (str, optional): The data source to use. Supported datasources:
+
+                - **nornir** - uses Nornir Service parse task to retrieve devices' data
+                    using NAPALM get_interfaces_ip getter
+
+            timeout (int, optional): The timeout for the operation.
+            devices (list, optional): The list of devices to update.
+            create (bool, optional): If True, new IP addresses will be created if they do not exist.
+            batch_size (int, optional): The number of devices to process in each batch.
+            **kwargs: Additional keyword arguments.
+
+        Returns:
+            dict: A dictionary containing the results of the update operation.
+
+        Raises:
+            Exception: If a device does not exist in Netbox.
+            UnsupportedServiceError: If the specified datasource is not supported.
         """
         result = {}
         instance = instance or self.default_instance
@@ -1741,14 +1971,23 @@ class NetboxWorker(NFPWorker):
         dry_run: bool = False,
     ) -> dict:
         """
-        Method to retrieve existing or allocate new IP address in Netbox.
+        Allocate the next available IP address from a given subnet.
 
-        :param subnet: IPv4 or IPv6 subnet e.g. ``10.0.0.0/24`` to allocate next
-            available IP Address from
-        :param description: IP address description to record in Netbox database
-        :param device: device name to find interface for and link IP address with
-        :param interface: interface name to link IP address with, ``device`` attribute
-            also must be provided
+        Args:
+            subnet (str): The subnet from which to allocate the IP address.
+            description (str, optional): A description for the allocated IP address.
+            device (str, optional): The device associated with the IP address.
+            interface (str, optional): The interface associated with the IP address.
+            vrf (str, optional): The VRF (Virtual Routing and Forwarding) instance.
+            tags (list, optional): A list of tags to associate with the IP address.
+            dns_name (str, optional): The DNS name for the IP address.
+            tenant (str, optional): The tenant associated with the IP address.
+            comments (str, optional): Additional comments for the IP address.
+            instance (str, optional): The NetBox instance to use.
+            dry_run (bool, optional): If True, do not actually allocate the IP address. Defaults to False.
+
+        Returns:
+            dict: A dictionary containing the result of the IP allocation.
         """
         nb = self._get_pynetbox(instance)
         nb_prefix = nb.ipam.prefixes.get(prefix=subnet, vrf=vrf)

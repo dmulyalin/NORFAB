@@ -32,11 +32,37 @@ except ImportError:
 
 class FastAPIWorker(NFPWorker):
     """
-    :param broker: broker URL to connect to
-    :param worker_name: name of this worker
-    :param exit_event: if set, worker need to stop/exit
-    :param init_done_event: event to set when worker done initializing
-    :param log_level: logging level of this worker
+    FastAPIWorker is a worker class that integrates with FastAPI and Uvicorn to serve a FastAPI application.
+    It handles initialization, starting the server, and managing bearer tokens.
+
+    Args:
+        inventory (str): Inventory configuration for the worker.
+        broker (str): Broker URL to connect to.
+        worker_name (str): Name of this worker.
+        exit_event (threading.Event, optional): Event to signal worker to stop/exit.
+        init_done_event (threading.Event, optional): Event to signal when worker is done initializing.
+        log_level (str, optional): Logging level for this worker.
+        log_queue (object, optional): Queue for logging.
+
+    Methods:
+        _get_diskcache() -> FanoutCache:
+            Initializes and returns a FanoutCache instance.
+        fastapi_start():
+            Starts the FastAPI server using Uvicorn in a separate thread.
+        worker_exit():
+            Signals the worker to exit by sending a SIGTERM signal.
+        get_version() -> Result:
+            Produces a report of the versions of Python packages used.
+        get_inventory() -> Dict:
+            Returns the inventory configuration of the FastAPI worker.
+        bearer_token_store(username: str, token: str, expire: int = None) -> bool:
+            Stores a bearer token in the cache with an optional expiration time.
+        bearer_token_delete(username: str = None, token: str = None) -> bool:
+            Deletes a bearer token from the cache based on the username or token.
+        bearer_token_list(username: str = None) -> list:
+            Lists all bearer tokens stored in the cache, optionally filtered by username.
+        bearer_token_check(token: str) -> bool:
+            Checks if a given bearer token exists in the cache.
     """
 
     def __init__(
@@ -75,6 +101,19 @@ class FastAPIWorker(NFPWorker):
         self.init_done_event.set()
 
     def _get_diskcache(self) -> FanoutCache:
+        """
+        Initializes and returns a FanoutCache object.
+
+        The FanoutCache is configured with the following parameters:
+
+        - directory: The directory where the cache will be stored.
+        - shards: Number of shards to use for the cache.
+        - timeout: Timeout for cache operations in seconds.
+        - size_limit: Maximum size of the cache in bytes.
+
+        Returns:
+            FanoutCache: An instance of FanoutCache configured with the specified parameters.
+        """
         return FanoutCache(
             directory=self.cache_dir,
             shards=4,
@@ -84,7 +123,27 @@ class FastAPIWorker(NFPWorker):
 
     def fastapi_start(self):
         """
-        Method to start FatAPI server
+        Starts the FastAPI server.
+
+        This method initializes the FastAPI application using the provided
+        configuration, starts the Uvicorn server in a separate thread, and waits
+        for the server to be fully started before logging the server's URL.
+
+        Steps:
+
+        1. Create the FastAPI application using `make_fast_api_app`.
+        2. Configure the Uvicorn server with the application and settings.
+        3. Start the Uvicorn server in a new thread.
+        4. Wait for the server to start.
+        5. Log the server's URL.'
+
+        Attributes:
+            self.app (FastAPI): The FastAPI application instance.
+            self.uvicorn_server (uvicorn.Server): The Uvicorn server instance.
+            self.uvicorn_server_thread (threading.Thread): The thread running the Uvicorn server.
+
+        Raises:
+            Exception: If the server fails to start.
         """
         self.app = make_fast_api_app(
             worker=self, config=self.fastapi_inventory.get("fastapi", {})
@@ -107,11 +166,24 @@ class FastAPIWorker(NFPWorker):
         )
 
     def worker_exit(self):
+        """
+        Terminates the current process by sending a SIGTERM signal to itself.
+
+        This method retrieves the current process ID using `os.getpid()` and then
+        sends a SIGTERM signal to terminate the process using `os.kill()`.
+        """
         os.kill(os.getpid(), signal.SIGTERM)
 
     def get_version(self):
         """
-        Produce Python packages version report
+        Produce a report of the versions of various Python packages.
+
+        This method collects the versions of several specified Python packages
+        and returns them in a dictionary.
+
+        Returns:
+            Result: An object containing the task name and a dictionary with
+                    the package names as keys and their respective versions as values.
         """
         libs = {
             "norfab": "",
@@ -133,7 +205,10 @@ class FastAPIWorker(NFPWorker):
 
     def get_inventory(self) -> Dict:
         """
-        Method to return FastAPI worker inventory
+        Retrieve the inventory of the FastAPI worker.
+
+        Returns:
+            Dict: A dictionary containing the combined inventory of FastAPI and Uvicorn.
         """
         return Result(
             result={**self.fastapi_inventory, "uvicorn": self.uvicorn_inventory},
@@ -142,11 +217,20 @@ class FastAPIWorker(NFPWorker):
 
     def bearer_token_store(self, username: str, token: str, expire: int = None) -> bool:
         """
-        Method to store bearer token in the database
+        Method to store a bearer token in the database.
 
-        :param username: Name of the user to store token for
-        :param token: token string to store
-        :param expire: seconds before token expires
+        This method stores a bearer token associated with a username in the cache.
+
+        If an expiration time is not provided, it retrieves the default token TTL
+        from the FastAPI inventory configuration.
+
+        Args:
+            username: str - The name of the user to store the token for.
+            token: str - The token string to store.
+            expire: int, optional - The number of seconds before the token expires.
+
+        Returns:
+            bool - Returns True if the token is successfully stored.
         """
         expire = expire or self.fastapi_inventory.get("auth_bearer", {}).get(
             "token_ttl", expire
@@ -167,10 +251,24 @@ class FastAPIWorker(NFPWorker):
 
     def bearer_token_delete(self, username: str = None, token: str = None) -> bool:
         """
-        Method to delete bearer token from the database
+        Deletes a bearer token from the cache.
+        This method removes a bearer token from the cache based on either
+        the token itself or the associated username.
 
-        :param username: name of the user to delete tokens for
-        :param token: token string to delete, if None, deletes all tokens for the the user
+        If a token is provided, it will be removed directly. If a username
+        is provided, all tokens associated with that username will be evicted
+        from the cache.
+
+        Args:
+            username (str, optional): The username associated with the token(s) to be removed. Defaults to None.
+            token (str, optional): The bearer token to be removed. Defaults to None.
+
+        Returns:
+            bool: True if the operation was successful, otherwise raises an exception.
+
+        Raises:
+            RuntimeError: If the token removal from the cache fails.
+            Exception: If neither username nor token is provided.
         """
         self.cache.expire()
         token_removed_count = 0
@@ -194,11 +292,24 @@ class FastAPIWorker(NFPWorker):
 
     def bearer_token_list(self, username: str = None) -> list:
         """
-        List tokens stored in the database
+        Retrieves a list of bearer tokens from the cache, optionally filtered by username.
 
-        :param username: Name of the user to list tokens for, returns
-            all tokens if username not provided
+        Args:
+            username (str, optional): The username to filter tokens by. Defaults to None.
+
+        Returns:
+            list: A list of dictionaries containing token information. Each dictionary contains:
+
+                - "username" (str): The username associated with the token.
+                - "token" (str): The bearer token.
+                - "age" (str): The age of the token.
+                - "creation" (str): The creation time of the token.
+                - "expires" (str): The expiration time of the token, if available.
+
+        If no tokens are found, a list with a single dictionary containing
+        empty strings for all fields is returned.
         """
+
         self.cache.expire()
         ret = Result(task=f"{self.name}:bearer_token_list", result=[])
 
@@ -238,9 +349,13 @@ class FastAPIWorker(NFPWorker):
 
     def bearer_token_check(self, token: str) -> bool:
         """
-        Method to check if given token exists in the database
+        Checks if the provided bearer token is present in the cache and still active.
 
-        :param token: token string to check
+        Args:
+            token (str): The bearer token to check.
+
+        Returns:
+            bool: True if the token is found in the cache, False otherwise.
         """
         self.cache.expire()
         cache_key = f"bearer_token::{token}"
@@ -260,10 +375,23 @@ class UnauthorizedMessage(BaseModel):
 
 def make_fast_api_app(worker: object, config: dict) -> FastAPI:
     """
-    Function to construct FastAPI application.
+    Create a FastAPI application with endpoints for posting, getting, and running jobs.
 
-    :param worker: NorFab worker object
-    :param config: dictionary with FastAPI configuration
+    This function sets up a FastAPI application with three endpoints:
+
+    - POST /job: To post a job to the NorFab service.
+    - GET /job: To get job results from the NorFab service.
+    - POST /job/run: To run a job and return job results synchronously.
+
+    Each endpoint requires a bearer token for authentication, which is validated
+    against the worker's token database.
+
+    Args:
+        worker (object): An object representing the worker that will handle the job requests.
+        config (dict): A dictionary of configuration options for the FastAPI application.
+
+    Returns:
+        FastAPI: A FastAPI application instance.
     """
 
     app = FastAPI(**config)
@@ -314,14 +442,17 @@ def make_fast_api_app(worker: object, config: dict) -> FastAPI:
         """
         Method to post the job to NorFab.
 
-        :param service: The name of the service to post the job to.
-        :param task: The task to be executed by the service.
-        :param args: A list of positional arguments for the task. Defaults to None.
-        :param kwargs: A dictionary of keyword arguments for the task. Defaults to None.
-        :param workers: The workers to dispatch the task. Defaults to "all".
-        :param uuid: Optional a unique identifier to use for the job. Defaults to None.
-        :param timeout: The timeout for the job in seconds. Defaults to 600.
-        :returns: The response from the NorFab service.
+        Args:
+            service: The name of the service to post the job to.
+            task: The task to be executed by the service.
+            args: A list of positional arguments for the task. Defaults to None.
+            kwargs: A dictionary of keyword arguments for the task. Defaults to None.
+            workers: The workers to dispatch the task. Defaults to "all".
+            uuid: Optional a unique identifier to use for the job. Defaults to None.
+            timeout: The timeout for the job in seconds. Defaults to 600.
+
+        Returns:
+            The response from the NorFab service.
         """
         log.debug(
             f"{worker.name} - received job post request, service {service}, task {task}, args {args}, kwargs {kwargs}"
@@ -358,11 +489,14 @@ def make_fast_api_app(worker: object, config: dict) -> FastAPI:
         """
         Method to get job results from NorFab.
 
-        :param service: The name of the service to get the job from.
-        :param workers: The workers to dispatch the get request to. Defaults to "all".
-        :param uuid: A unique identifier for the job.
-        :param timeout: The timeout for the job get requests in seconds. Defaults to 600.
-        :returns: The response from the NorFab service.
+        Args:
+            service: The name of the service to get the job from.
+            workers: The workers to dispatch the get request to. Defaults to "all".
+            uuid: A unique identifier for the job.
+            timeout: The timeout for the job get requests in seconds. Defaults to 600.
+
+        Returns:
+            The response from the NorFab service.
         """
         log.debug(
             f"{worker.name} - received job get request, service {service}, uuid {uuid}"
@@ -414,15 +548,18 @@ def make_fast_api_app(worker: object, config: dict) -> FastAPI:
         dispatched to, exiting either once timeout expires or after all workers
         reported job result back to the client.
 
-        :param service: The name of the service to post the job to.
-        :param task: The task to be executed by the service.
-        :param args: A list of positional arguments for the task. Defaults to None.
-        :param kwargs: A dictionary of keyword arguments for the task. Defaults to None.
-        :param workers: The workers to dispatch the task. Defaults to "all".
-        :param uuid: A unique identifier for the job. Defaults to None.
-        :param timeout: The timeout for the job in seconds. Defaults to 600.
-        :param retry: The number of times to try and GET job results. Defaults to 10.
-        :returns: The response from the NorFab service.
+        Args:
+            service: The name of the service to post the job to.
+            task: The task to be executed by the service.
+            args: A list of positional arguments for the task. Defaults to None.
+            kwargs: A dictionary of keyword arguments for the task. Defaults to None.
+            workers: The workers to dispatch the task. Defaults to "all".
+            uuid: A unique identifier for the job. Defaults to None.
+            timeout: The timeout for the job in seconds. Defaults to 600.
+            retry: The number of times to try and GET job results. Defaults to 10.
+
+        Returns:
+            The response from the NorFab service.
         """
         log.debug(
             f"{worker.name} - received run job request, service {service}, task {task}, args {args}, kwargs {kwargs}"

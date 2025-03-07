@@ -1,16 +1,3 @@
-"""
-## CUDOS
-
-Inspired by Majordomo Protocol Worker API, ZeroMQ, Python version.
-
-Original MDP/Worker spec 
-
-Location: http://rfc.zeromq.org/spec:7.
-
-Author: Min RK <benjaminrk@gmail.com>
-
-Based on Java example by Arkadiusz Orzechowski
-"""
 import logging
 import time
 import zmq
@@ -47,7 +34,24 @@ signal.signal(signal.SIGINT, signal.SIG_IGN)
 
 class WorkerWatchDog(threading.Thread):
     """
-    Class to monitor worker performance
+    Class to monitor worker performance.
+
+    Attributes:
+        worker (object): The worker instance being monitored.
+        worker_process (psutil.Process): The process of the worker.
+        watchdog_interval (int): Interval in seconds for the watchdog to check the worker's status.
+        memory_threshold_mbyte (int): Memory usage threshold in megabytes.
+        memory_threshold_action (str): Action to take when memory threshold is exceeded ("log" or "shutdown").
+        runs (int): Counter for the number of times the watchdog has run.
+        watchdog_tasks (list): List of additional tasks to run during each watchdog interval.
+
+    Methods:
+        check_ram(): Checks the worker's RAM usage and takes action if it exceeds the threshold.
+        get_ram_usage(): Returns the worker's RAM usage in megabytes.
+        run(): Main loop of the watchdog thread, periodically checks the worker's status and runs tasks.
+
+    Args:
+        worker (object): The worker object containing inventory attributes.
     """
 
     def __init__(self, worker):
@@ -69,8 +73,20 @@ class WorkerWatchDog(threading.Thread):
         self.watchdog_tasks = []
 
     def check_ram(self):
+        """
+        Checks the current RAM usage and performs an action if it exceeds the threshold.
+
+        This method retrieves the current RAM usage and compares it to the predefined
+        memory threshold. If the RAM usage exceeds the threshold, it performs an action
+        based on the `memory_threshold_action` attribute. The possible actions are:
+
+        - "log": Logs a warning message.
+        - "shutdown": Raises a SystemExit exception to terminate the program.
+
+        Raises:
+            SystemExit: If the memory usage exceeds the threshold and the action is "shutdown".
+        """
         mem_usage = self.get_ram_usage()
-        """Return RAM usage in Mbyte"""
         if mem_usage > self.memory_threshold_mbyte:
             if self.memory_threshold_action == "log":
                 log.warning(
@@ -86,10 +102,28 @@ class WorkerWatchDog(threading.Thread):
                 )
 
     def get_ram_usage(self):
-        """Return RAM usage in Mbyte"""
+        """
+        Get the RAM usage of the worker process.
+
+        Returns:
+            float: The RAM usage in megabytes.
+        """
         return self.worker_process.memory_info().rss / 1024000
 
     def run(self):
+        """
+        Executes the worker's watchdog main loop, periodically running tasks and checking conditions.
+        The method performs the following steps in a loop until the worker's exit event is set:
+
+        1. Sleeps in increments of 0.1 seconds until the total sleep time reaches the watchdog interval.
+        2. Runs built-in tasks such as checking RAM usage.
+        3. Executes additional tasks provided by child classes.
+        4. Updates the run counter.
+        5. Resets the sleep counter to start the cycle again.
+
+        Attributes:
+            slept (float): The total time slept in the current cycle.
+        """
         slept = 0
         while not self.worker.exit_event.is_set():
             # continue sleeping for watchdog_interval
@@ -118,19 +152,21 @@ class WorkerWatchDog(threading.Thread):
 
 class Result:
     """
-    Result of running individual tasks.
+    NorFab Task Result class.
 
+    Args:
+        result (Any): Result of the task execution, see task's documentation for details.
+        failed (bool): Whether the execution failed or not.
+        errors (Optional[List[str]]): Exception thrown during the execution of the task (if any).
+        task (str): Task function name that produced the results.
+        messages (Optional[List[str]]): List of messages produced by the task.
+        juuid (Optional[str]): Job UUID associated with the task.
 
-    Attributes/Arguments:
-
-    :param changed: ``True`` if the task is changing the system
-    :param result: Result of the task execution, see task's documentation for details
-    :param failed: Whether the execution failed or not
-    :param severity_level (logging.LEVEL): Severity level associated to the result of the execution
-    :param errors: exception thrown during the execution of the task (if any)
-    :param task: Task function name that produced the results
-    :param messages: List of messages produced by the task
-    :param juuid: Job UUID associated with the task
+    Methods:
+        __repr__(): Returns a string representation of the Result object.
+        __str__(): Returns a string representation of the result or errors.
+        raise_for_status(message=""): Raises an error if the job failed.
+        dictionary(): Serializes the result to a dictionary.
     """
 
     def __init__(
@@ -150,16 +186,41 @@ class Result:
         self.juuid = juuid
 
     def __repr__(self) -> str:
+        """
+        Return a string representation of the object.
+
+        The string representation includes the class name and the task attribute.
+
+        Returns:
+            str: A string in the format 'ClassName: "task"'.
+        """
         return '{}: "{}"'.format(self.__class__.__name__, self.task)
 
     def __str__(self) -> str:
+        """
+        Returns a string representation of the object.
+
+        If there are errors, it joins them with two newline characters and returns the result.
+        Otherwise, it returns the string representation of the result.
+
+        Returns:
+            str: The string representation of the errors or the result.
+        """
         if self.errors:
             return str("\n\n".join(self.errors))
 
         return str(self.result)
 
     def raise_for_status(self, message=""):
-        """Method to raise error if job failed"""
+        """
+        Raises a NorfabJobFailedError if the job has failed.
+
+        Parameters:
+            message (str): Optional. Additional message to include in the error. Default is an empty string.
+
+        Raises:
+            NorfabJobFailedError: If the job has failed, this error is raised with the provided message and the list of errors.
+        """
         if self.failed:
             if message:
                 raise NorfabJobFailedError(
@@ -169,7 +230,22 @@ class Result:
                 raise NorfabJobFailedError(f"Errors: {'; '.join(self.errors)}")
 
     def dictionary(self):
-        """Method to serialize result to a dictionary"""
+        """
+        Serialize the result to a dictionary.
+
+        This method converts the instance attributes to a dictionary format.
+        It ensures that the `errors` and `messages` attributes are lists.
+
+        Returns:
+            dict: A dictionary containing the following keys:
+
+                - task: The task associated with the worker.
+                - failed: A boolean indicating if the task failed.
+                - errors: A list of errors encountered during the task.
+                - result: The result of the task.
+                - messages: A list of messages related to the task.
+                - juuid: The unique identifier for the job.
+        """
         if not isinstance(self.errors, list):
             self.errors = [self.errors]
         if not isinstance(self.messages, list):
@@ -194,37 +270,101 @@ queue_file_lock = threading.Lock()
 
 
 def dumper(data, filename):
+    """
+    Serializes and saves data to a file using pickle.
+
+    Args:
+        data (any): The data to be serialized and saved.
+        filename (str): The name of the file where the data will be saved.
+    """
     with file_write_lock:
         with open(filename, "wb") as f:
             pickle.dump(data, f)
 
 
 def loader(filename):
+    """
+    Load and deserialize a Python object from a file.
+
+    This function opens a file in binary read mode, reads its content, and
+    deserializes it using the pickle module. The file access is synchronized
+    using a file write lock to ensure thread safety.
+
+    Args:
+        filename (str): The path to the file to be loaded.
+
+    Returns:
+        object: The deserialized Python object from the file.
+    """
     with file_write_lock:
         with open(filename, "rb") as f:
             return pickle.load(f)
 
 
 def request_filename(suuid: Union[str, bytes], base_dir_jobs: str):
-    """Returns freshly allocated request filename for given UUID str"""
+    """
+    Returns a freshly allocated request filename for the given UUID string.
+
+    Args:
+        suuid (Union[str, bytes]): The UUID string or bytes.
+        base_dir_jobs (str): The base directory where job files are stored.
+
+    Returns:
+        str: The full path to the request file with the given UUID.
+    """
     suuid = suuid.decode("utf-8") if isinstance(suuid, bytes) else suuid
     return os.path.join(base_dir_jobs, f"{suuid}.req")
 
 
 def reply_filename(suuid: Union[str, bytes], base_dir_jobs: str):
-    """Returns freshly allocated reply filename for given UUID str"""
+    """
+    Returns a freshly allocated reply filename for the given UUID string.
+
+    Args:
+        suuid (Union[str, bytes]): The UUID string or bytes.
+        base_dir_jobs (str): The base directory where job files are stored.
+
+    Returns:
+        str: The full path to the reply file with the given UUID.
+    """
     suuid = suuid.decode("utf-8") if isinstance(suuid, bytes) else suuid
     return os.path.join(base_dir_jobs, f"{suuid}.rep")
 
 
 def event_filename(suuid: Union[str, bytes], base_dir_jobs: str):
-    """Returns freshly allocated event filename for given UUID str"""
+    """
+    Returns a freshly allocated event filename for the given UUID string.
+
+    Args:
+        suuid (Union[str, bytes]): The UUID string or bytes.
+        base_dir_jobs (str): The base directory where job files are stored.
+
+    Returns:
+        str: The full path to the event file with the given UUID.
+    """
     suuid = suuid.decode("utf-8") if isinstance(suuid, bytes) else suuid
     return os.path.join(base_dir_jobs, f"{suuid}.event")
 
 
 def _post(worker, post_queue, queue_filename, destroy_event, base_dir_jobs):
-    """Thread to receive POST requests and save them to hard disk"""
+    """
+    Thread to receive POST requests and save them to hard disk.
+
+    Args:
+        worker (Worker): The worker instance handling the request.
+        post_queue (queue.Queue): The queue from which POST requests are received.
+        queue_filename (str): The filename where the job queue is stored.
+        destroy_event (threading.Event): Event to signal the thread to stop.
+        base_dir_jobs (str): The base directory where job files are stored.
+
+    Functionality:
+        - Ensures the message directory exists.
+        - Continuously processes POST requests from the queue until the destroy event is set.
+        - Saves the request to the hard disk.
+        - Writes a reply indicating the job is pending.
+        - Adds the job request to the queue file.
+        - Sends an acknowledgment back to the client.
+    """
     # Ensure message directory exists
     if not os.path.exists(base_dir_jobs):
         os.mkdir(base_dir_jobs)
@@ -293,7 +433,15 @@ def _post(worker, post_queue, queue_filename, destroy_event, base_dir_jobs):
 
 
 def _get(worker, get_queue, destroy_event, base_dir_jobs):
-    """Thread to receive GET requests and retrieve results from the hard disk"""
+    """
+    Thread to receive GET requests and retrieve results from the hard disk.
+
+    Args:
+        worker (Worker): The worker instance handling the request.
+        get_queue (queue.Queue): The queue from which GET requests are received.
+        destroy_event (threading.Event): Event to signal the thread to stop.
+        base_dir_jobs (str): The base directory where job results are stored.
+    """
     while not destroy_event.is_set():
         try:
             work = get_queue.get(block=True, timeout=0.1)
@@ -328,7 +476,17 @@ def _get(worker, get_queue, destroy_event, base_dir_jobs):
 
 
 def _event(worker, event_queue, destroy_event):
-    """Thread function to emit events to Clients"""
+    """
+    Thread function to emit events to Clients.
+
+    Args:
+        worker (Worker): The worker instance that is emitting events.
+        event_queue (queue.Queue): The queue from which events are retrieved.
+        destroy_event (threading.Event): An event to signal the thread to stop.
+
+    The function continuously retrieves events from the event_queue, processes them,
+    and sends them to the broker until the destroy_event is set.
+    """
     while not destroy_event.is_set():
         try:
             work = event_queue.get(block=True, timeout=0.1)
@@ -368,7 +526,26 @@ def close(delete_queue, queue_filename, destroy_event, base_dir_jobs):
 
 
 def recv(worker, destroy_event):
-    """Thread to process receive messages from broker."""
+    """
+    Thread to process receive messages from broker.
+
+    This function runs in a loop, polling the worker's broker socket for messages every second.
+    When a message is received, it processes the message based on the command type and places
+    it into the appropriate queue or handles it accordingly. If the keepaliver thread is not
+    alive, it logs a warning and attempts to reconnect to the broker.
+
+    Args:
+        worker (Worker): The worker instance that contains the broker socket and queues.
+        destroy_event (threading.Event): An event to signal the thread to stop.
+
+    Commands:
+        - NFP.POST: Places the message into the post_queue.
+        - NFP.DELETE: Places the message into the delete_queue.
+        - NFP.GET: Places the message into the get_queue.
+        - NFP.KEEPALIVE: Processes a keepalive heartbeat.
+        - NFP.DISCONNECT: Attempts to reconnect to the broker.
+        - Other: Logs an invalid input message.
+    """
     while not destroy_event.is_set():
         # Poll socket for messages every second
         try:
@@ -403,14 +580,86 @@ def recv(worker, destroy_event):
 
 
 class NFPWorker:
-
     """
-    :param broker: str, broker endpoint e.g. tcp://127.0.0.1:5555
-    :param service: str, service name
-    :param name: str, worker name
-    :param exist_event: obj, threading event, if set signal worker to stop
-    :param multiplier: int, number of keepalives lost before consider other party dead
-    :param keepalive: int, keepalive interval in milliseconds
+    NFPWorker class is responsible for managing worker operations,
+    including connecting to a broker, handling jobs,  and maintaining
+    keepalive connections. It interacts with the broker using ZeroMQ
+    and manages job queues and events.
+
+    Args:
+        inventory (NorFabInventory): The inventory object containing base directory information.
+        broker (str): The broker address.
+        service (str): The service name.
+        name (str): The name of the worker.
+        exit_event: The event used to signal the worker to exit.
+        log_level (str, optional): The logging level. Defaults to None.
+        log_queue (object, optional): The logging queue. Defaults to None.
+        multiplier (int, optional): The multiplier value. Defaults to 6.
+        keepalive (int, optional): The keepalive interval in milliseconds. Defaults to 2500.
+
+    Attributes:
+        inventory (NorFabInventory): The inventory object.
+        broker (str): The broker address.
+        service (bytes): The service name encoded in UTF-8.
+        name (str): The name of the worker.
+        exit_event: The event used to signal the worker to exit.
+        broker_socket: The broker socket, initialized to None.
+        multiplier (int): The multiplier value.
+        keepalive (int): The keepalive interval in milliseconds.
+        socket_lock (threading.Lock): The lock used to protect the socket object.
+        base_dir (str): The base directory for the worker.
+        base_dir_jobs (str): The base directory for job files.
+        destroy_event (threading.Event): The event used to signal the destruction of the worker.
+        request_thread: The request thread, initialized to None.
+        reply_thread: The reply thread, initialized to None.
+        close_thread: The close thread, initialized to None.
+        recv_thread: The receive thread, initialized to None.
+        event_thread: The event thread, initialized to None.
+        post_queue (queue.Queue): The queue for POST requests.
+        get_queue (queue.Queue): The queue for GET requests.
+        delete_queue (queue.Queue): The queue for DELETE requests.
+        event_queue (queue.Queue): The queue for events.
+        public_keys_dir (str): The directory for public keys.
+        secret_keys_dir (str): The directory for private keys.
+        ctx (zmq.Context): The ZeroMQ context.
+        poller (zmq.Poller): The ZeroMQ poller.
+        queue_filename (str): The filename for the job queue.
+        queue_done_filename (str): The filename for the completed job queue.
+        client (NFPClient): The NFP client instance.
+
+    Methods:
+        __init__(self, inventory, broker, service, name, exit_event, log_level=None, log_queue=None, multiplier=6, keepalive=2500):
+            Initializes the NFPWorker instance with the provided parameters.
+        setup_logging(self, log_queue, log_level):
+            Configures logging for the worker.
+        reconnect_to_broker(self):
+            Connects or reconnects the worker to the broker.
+        send_to_broker(self, command, msg=None):
+            Sends a message to the broker with the specified command and optional message content.
+        load_inventory(self):
+            Loads the inventory from the broker for this worker name.
+        worker_exit(self):
+            Method to override in child classes with a set of actions to perform on exit call.
+        get_inventory(self):
+            Method to override in child classes to retrieve worker inventory.
+        get_version(self):
+            Method to override in child classes to retrieve worker version report.
+        destroy(self, message=None):
+            Cleans up and destroys the worker, stopping all threads and connections.
+        is_url(self, url):
+            Checks if the provided URL is in the expected format.
+        fetch_file(self, url, raise_on_fail=False, read=True):
+            Downloads a file from the broker File Sharing Service.
+        fetch_jinja2(self, url):
+            Recursively downloads a Jinja2 template and its included templates.
+        event(self, data, **kwargs):
+            Emits an event to the broker and saves it locally.
+        job_details(self, uuid, data=True, result=True, events=True):
+            Retrieves job details by UUID for completed jobs.
+        job_list(self, pending=True, completed=True, task=None, last=None, client=None, uuid=None):
+            Lists worker jobs, both completed and pending.
+        work(self):
+            Starts the worker's main loop, processing jobs from the queue.
     """
 
     keepaliver = None
@@ -422,7 +671,7 @@ class NFPWorker:
         broker: str,
         service: str,
         name: str,
-        exit_event,
+        exit_event: object,
         log_level: str = None,
         log_queue: object = None,
         multiplier: int = 6,
@@ -498,14 +747,41 @@ class NFPWorker:
         )
 
     def setup_logging(self, log_queue, log_level: str) -> None:
-        """Method to apply logging configuration"""
+        """
+        Configures logging for the worker.
+
+        This method sets up the logging configuration using a provided log queue and log level.
+        It updates the logging configuration dictionary with the given log queue and log level,
+        and then applies the configuration using `logging.config.dictConfig`.
+
+        Args:
+            log_queue (queue.Queue): The queue to be used for logging.
+            log_level (str): The logging level to be set. If None, the default level is used.
+        """
         logging_config_producer["handlers"]["queue"]["queue"] = log_queue
         if log_level is not None:
             logging_config_producer["root"]["level"] = log_level
         logging.config.dictConfig(logging_config_producer)
 
     def reconnect_to_broker(self):
-        """Connect or reconnect to broker"""
+        """
+        Connect or reconnect to the broker.
+
+        This method handles the connection or reconnection process to the broker.
+        It performs the following steps:
+
+        1. If there is an existing broker socket, it sends a disconnect message,
+           unregisters the socket from the poller, and closes the socket.
+        2. Creates a new DEALER socket and sets its identity.
+        3. Loads the client's secret and public keys for CURVE authentication.
+        4. Loads the server's public key for CURVE authentication.
+        5. Connects the socket to the broker.
+        6. Registers the socket with the poller for incoming messages.
+        7. Sends a READY message to the broker to register the service.
+        8. Starts or restarts the keepalive mechanism to maintain the connection.
+        9. Increments the reconnect statistics counter.
+        10. Logs the successful registration to the broker.
+        """
         if self.broker_socket:
             self.send_to_broker(NFP.DISCONNECT)
             self.poller.unregister(self.broker_socket)
@@ -560,9 +836,19 @@ class NFPWorker:
         )
 
     def send_to_broker(self, command, msg: list = None):
-        """Send message to broker.
+        """
+        Send a message to the broker.
 
-        If no msg is provided, creates one internally
+        Parameters:
+            command (str): The command to send to the broker. Must be one of NFP.READY, NFP.DISCONNECT, NFP.RESPONSE, or NFP.EVENT.
+            msg (list, optional): The message to send. If not provided, a default message will be created based on the command.
+
+        Logs:
+            Logs an error if the command is unsupported.
+            Logs a debug message with the message being sent.
+
+        Thread Safety:
+            This method is thread-safe and uses a lock to ensure that the broker socket is accessed by only one thread at a time.
         """
         if command == NFP.READY:
             msg = [b"", NFP.WORKER, NFP.READY, self.service]
@@ -585,7 +871,13 @@ class NFPWorker:
 
     def load_inventory(self):
         """
-        Function to load inventory from broker for this worker name.
+        Load inventory data from the broker for this worker.
+
+        This function retrieves inventory data from the broker service using the worker's name.
+        It logs the received inventory data and returns the results if available.
+
+        Returns:
+            dict: The inventory data results if available, otherwise an empty dictionary.
         """
         inventory_data = self.client.get(
             "sid.service.broker", "get_inventory", kwargs={"name": self.name}
@@ -599,18 +891,59 @@ class NFPWorker:
             return {}
 
     def worker_exit(self) -> None:
-        """Method to override in child classes with a set of actions to perform on exit call"""
+        """
+        Method to override in child classes with a set of actions to perform on exit call.
+
+        This method should be implemented by subclasses to define any cleanup or finalization
+        tasks that need to be performed when the worker is exiting.
+        """
         return None
 
     def get_inventory(self) -> Dict:
-        """Method to override in child classes to retrieve worker inventory"""
+        """
+        Retrieve the worker's inventory.
+
+        This method should be overridden in child classes to provide the specific
+        implementation for retrieving the inventory of a worker.
+
+        Returns:
+            Dict: A dictionary representing the worker's inventory.
+
+        Raises:
+            NotImplementedError: If the method is not overridden in a child class.
+        """
         raise NotImplementedError
 
     def get_version(self) -> Dict:
-        """Method to override in child classes to retrieve worker version report"""
+        """
+        Retrieve the version report of the worker.
+
+        This method should be overridden in child classes to provide the specific
+        version report of the worker.
+
+        Returns:
+            Dict: A dictionary containing the version information of the worker.
+
+        Raises:
+            NotImplementedError: If the method is not overridden in a child class.
+        """
         raise NotImplementedError
 
     def destroy(self, message=None):
+        """
+        Cleanly shuts down the worker by performing the following steps:
+
+        1. Calls the worker_exit method to handle any worker-specific exit procedures.
+        2. Sets the destroy_event to signal that the worker is being destroyed.
+        3. Calls the destroy method on the client to clean up client resources.
+        4. Joins all the threads (request_thread, reply_thread, close_thread, event_thread, recv_thread) if they are not None, ensuring they have finished execution.
+        5. Destroys the context with a linger period of 0 to immediately close all sockets.
+        6. Stops the keepaliver to cease any keepalive signals.
+        7. Logs an informational message indicating that the worker has been destroyed, including an optional message.
+
+        Args:
+            message (str, optional): An optional message to include in the log when the worker is destroyed.
+        """
         self.worker_exit()
         self.destroy_event.set()
         self.client.destroy()
@@ -635,6 +968,15 @@ class NFPWorker:
         log.info(f"{self.name} - worker destroyed, message: '{message}'")
 
     def is_url(self, url: str) -> bool:
+        """
+        Check if the given string is a URL supported by NorFab File Service.
+
+        Args:
+            url (str): The URL to check.
+
+        Returns:
+            bool: True if the URL supported by NorFab File Service, False otherwise.
+        """
         return any(str(url).startswith(k) for k in ["nf://"])
 
     def fetch_file(
@@ -643,9 +985,16 @@ class NFPWorker:
         """
         Function to download file from broker File Sharing Service
 
-        :param url: file location string in ``nf://<filepath>`` format
-        :param raise_on_fail: raise FIleNotFoundError if download fails
-        :param read: if True returns file content, return OS path to saved file otherwise
+        Args:
+            url: file location string in ``nf://<filepath>`` format
+            raise_on_fail: raise FIleNotFoundError if download fails
+            read: if True returns file content, return OS path to saved file otherwise
+
+        Returns:
+            str: File content if read is True, otherwise OS path to the saved file.
+
+        Raises:
+            FileNotFoundError: If raise_on_fail is True and the download fails.
         """
         status, file_content = self.client.fetch_file(url=url, read=read)
         msg = f"{self.name} - worker '{url}' fetch file failed with status '{status}'"
@@ -660,10 +1009,18 @@ class NFPWorker:
 
     def fetch_jinja2(self, url: str) -> str:
         """
-        Helper function to recursively download Jinja2 template together with
-        other templates referenced using "include" statements
+        Helper function to recursively download a Jinja2 template along with
+        other templates referenced using "include" statements.
 
-        :param url: ``nf://file/path`` like URL to download file
+        Args:
+            url (str): A URL in the format ``nf://file/path`` to download the file.
+
+        Returns:
+            str: The file path of the downloaded Jinja2 template.
+
+        Raises:
+            FileNotFoundError: If the file download fails.
+            Exception: If Jinja2 template parsing fails.
         """
         filepath = self.fetch_file(url, read=False)
         if filepath is None:
@@ -688,6 +1045,19 @@ class NFPWorker:
         return filepath
 
     def event(self, data: Union[NorFabEvent, str], **kwargs) -> None:
+        """
+        Handles the creation and emission of an event.
+
+        This method takes event data, processes it, and sends it to the event queue.
+        It also saves the event data locally for future reference.
+
+        Args:
+            data (Union[NorFabEvent, str]): The event data, which can be either an instance of NorFabEvent or a string.
+            **kwargs: Additional keyword arguments to be passed when creating a NorFabEvent instance if `data` is a string.
+
+        Logs:
+            Error: Logs an error message if the event data cannot be formed.
+        """
         try:
             if not isinstance(data, NorFabEvent):
                 data = NorFabEvent(message=data, **kwargs)
@@ -717,11 +1087,14 @@ class NFPWorker:
         """
         Method to get job details by UUID for completed jobs.
 
-        :param uuid: str, job UUID to return details for
-        :param data: bool, if True return job data
-        :param result: bool, if True return job result
-        :param events: bool, if True return job events
-        :return: Result object with job details
+        Args:
+            uuid (str): The job UUID to return details for.
+            data (bool): If True, return job data.
+            result (bool): If True, return job result.
+            events (bool): If True, return job events.
+
+        Returns:
+            Result: A Result object with the job details.
         """
         job = None
         with queue_file_lock:
@@ -783,16 +1156,16 @@ class NFPWorker:
         """
         Method to list worker jobs completed and pending.
 
-        :param pending: bool, if True or None return pending jobs, if
-            False skip pending jobs
-        :param completed: bool, if True or None return completed jobs,
-            if False skip completed jobs
-        :param task: str, if provided return only jobs with this task name
-        :param last: int, if provided return only last N completed and
-            last N pending jobs
-        :param client: str, if provided return only jobs submitted by this client
-        :param uuid: str, if provided return only job with this UUID
-        :return: Result object with list of jobs
+        Args:
+            pending (bool): If True or None, return pending jobs. If False, skip pending jobs.
+            completed (bool): If True or None, return completed jobs. If False, skip completed jobs.
+            task (str, optional): If provided, return only jobs with this task name.
+            last (int, optional): If provided, return only the last N completed and last N pending jobs.
+            client (str, optional): If provided, return only jobs submitted by this client.
+            uuid (str, optional): If provided, return only the job with this UUID.
+
+        Returns:
+            Result: Result object with a list of jobs.
         """
         job_pending = []
         # load pending jobs
@@ -869,6 +1242,27 @@ class NFPWorker:
             )
 
     def work(self):
+        """
+        Starts multiple threads to handle different tasks and processes jobs in a
+        loop until an exit or destroy event is set.
+
+        Threads started:
+
+        - request_thread: Handles posting requests.
+        - reply_thread: Handles getting replies.
+        - close_thread: Handles closing operations.
+        - event_thread: Handles event processing.
+        - recv_thread: Handles receiving data.
+
+        Main work loop:
+
+        - Continuously checks for jobs to process from a queue file.
+        - Loads job data and executes the corresponding task.
+        - Saves the result of the job to a reply file.
+        - Marks the job as processed by moving it from the queue file to a queue done file.
+
+        Ensures proper cleanup by calling the destroy method when exit or destroy events are set.
+        """
         # Start threads
         self.request_thread = threading.Thread(
             target=_post,

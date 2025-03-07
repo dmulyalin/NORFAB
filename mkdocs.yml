@@ -31,8 +31,9 @@ plugins:
             options:
               show_root_toc_entry: false
               docstring_section_style: table
-              docstring_style: sphinx # google
+              docstring_style: google
               members_order: source
+              show_signature_annotations: true
               merge_init_into_class: true
 repo_name: dmulyalin/norfab
 repo_url: https://github.com/dmulyalin/norfab
@@ -67,7 +68,7 @@ theme:
         icon: material/weather-sunny
         name: Switch to dark mode
       primary: orange
-      accent: deep orange]
+      accent: deep orange
       
 # -------------------------------------------------------------------
 # NAVIGATION sections
@@ -113,6 +114,7 @@ nav:
               - GETNext IP: workers/netbox/services_netbox_service_tasks_get_next_ip.md
               - UPDATE Device Facts: workers/netbox/services_netbox_service_tasks_update_device_facts.md
               - UPDATE Device Interfaces: workers/netbox/services_netbox_service_tasks_update_device_interfaces.md
+              - UPDATE Device IP: workers/netbox/services_netbox_service_tasks_update_device_ip.md
         - Ollama Agent Service:
             - Overview: workers/agent/services_agent_service.md
             - Inventory: workers/agent/services_agent_service_inventory.md
@@ -154,7 +156,8 @@ nav:
         - Built-in Workers:
           - Nornir Worker: workers/nornir/api_reference_workers_nornir_worker.md
           - Netbox Worker: workers/netbox/api_reference_workers_netbox_worker.md
-          - FastAPI Worker: workers/fastapi/api_reference_workers_fastapi_worker
+          - FastAPI Worker: workers/fastapi/api_reference_workers_fastapi_worker.md
+          - Ollama Agent Worker: workers/agent/api_reference_workers_agent_worker.md
         - Built-in Clients:
           - NFCLI Client API: api_reference_clients_nfcli_client.md
           - ROBOT Client API: api_reference_clients_robot_client.md

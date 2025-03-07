@@ -1,9 +1,24 @@
+## 0.6.0
+
+### FEATURES
+
+1. Added support for worker plugins
+2. Added support for nfcli custom shells
+
+### CHANGES
+
+1. All workers loaded into NorFab using entrypoints implementing lazy loading - workers classes only imported when they being used, in some cases allowing to save on startup time.
+
+---
+
 ## 0.5.0
 
 ### FEATURES
 
 1. FastAPI service added bearer authentication support
 2. Added hooks attachpoints `nornir-startup` and `nornir-exit` to influence Nornir service workers startup and exit
+
+---
 
 ## 0.4.0
 
@@ -16,6 +31,8 @@
 
 1. Added `runtime_inventory` task to Nornir service, #6
 2. Added support to configure `startup` and `exit` hook functions in inventory to be executed by nfapi on start and on exit.
+
+---
 
 ## 0.3.1
 
@@ -32,6 +49,8 @@
 2. Added support to NorFab simple inventory and nfapi to load inventory from dictionary data as well as to explicitly provide `base_dir` information where to anchor NorFab environment
 3. Added support for NorFab inventory workers section items to be dictionaries in addition to OS path to YAML files allowing to construct workers inventory out of dictionaries and/or YAML files.
 
+---
+
 ## 0.3.0
 
 ### FEATURES
@@ -43,6 +62,8 @@
 5. Broker added "show_broker_inventory" and "show_broker_version" MMI endpoints
 6. Added support for simple inventory service to render inventory using Jinja2, renderer passed on `env` variable that contains operating system environment variables, allowing to source any env data into NorFab inventory for both broker and workers. #5
 7. Created `fastapi` service to host REST API for NorFab
+
+---
 
 ## 0.2.4
 

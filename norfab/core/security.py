@@ -48,11 +48,12 @@ def generate_certificates(
     """
     Generate private and public zmq certificates
 
-    :param base_dir: OS path to directory where create public_keys and
-        private_keys sub-directories to store generate keys
-    :param override: if True, removes existing private and public keys
-        and creates new private and public keys
-    :param cert_name: name of the key filename
+    Args:
+        base_dir: OS path to directory where create public_keys and
+                private_keys sub-directories to store generate keys
+        override: if True, removes existing private and public keys
+                and creates new private and public keys
+        cert_name: name of the key filename
     """
     if zmq.zmq_version_info() < (4, 0):
         raise RuntimeError(

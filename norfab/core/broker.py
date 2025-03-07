@@ -1,11 +1,3 @@
-"""
-Majordomo Protocol broker
-A minimal implementation of http:#rfc.zeromq.org/spec:7 and spec:8
-
-Author: Min RK <benjaminrk@gmail.com>
-Based on Java example by Arkadiusz Orzechowski
-"""
-
 import logging
 import sys
 import json
@@ -21,7 +13,7 @@ import importlib.metadata
 from zmq.auth.thread import ThreadAuthenticator
 from binascii import hexlify
 from multiprocessing import Event
-from typing import Union
+from typing import Union, Any, List
 from . import NFP
 from .zhelpers import dump
 from .inventory import NorFabInventory, logging_config_producer
@@ -46,7 +38,32 @@ class NFPService(object):
 
 
 class NFPWorker(object):
-    """An NFP Worker convenience class"""
+    """
+    An NFP Worker convenience class.
+
+    Attributes:
+        service (NFPService): The service instance.
+        ready (bool): Indicates if the worker is ready.
+        exit_event (threading.Event): Event to signal exit.
+        keepalive (int): Keepalive interval in milliseconds.
+        multiplier (int): Multiplier value.
+
+    Methods:
+        start_keepalives():
+            Starts the keepalive process for the worker.
+        is_ready() -> bool:
+            Checks if the worker has signaled W.READY.
+        destroy(disconnect=False):
+            Cleans up the worker, optionally disconnecting it.
+
+    Args:
+        address (str): Address to route to.
+        socket: The socket object used for communication.
+        socket_lock: The lock object to synchronize socket access.
+        multiplier (int): Multiplier value, e.g., 6 times.
+        keepalive (int): Keepalive interval in milliseconds, e.g., 5000 ms.
+        service (NFPService, optional): The service instance. Defaults to None.
+    """
 
     def __init__(
         self,
@@ -81,11 +98,28 @@ class NFPWorker(object):
         self.keepaliver.start()
 
     def is_ready(self):
-        """True if worker signaled W.READY"""
+        """
+        Check if the worker is ready.
+
+        Returns:
+            bool: True if the worker has signaled readiness (W.READY) and the service is not None, otherwise False.
+        """
         return self.service is not None and self.ready is True
 
     def destroy(self, disconnect=False):
-        """Clean up routine"""
+        """
+        Clean up routine for the broker.
+
+        This method performs the following actions:
+
+        1. Sets the exit event to signal termination.
+        2. Stops the keepaliver if it exists.
+        3. Removes the current worker from the service's worker list.
+        4. Optionally sends a disconnect message to the broker if `disconnect` is True.
+
+        Args:
+            disconnect (bool): If True, sends a disconnect message to the broker.
+        """
         self.exit_event.set()
         if hasattr(self, "keepaliver"):
             self.keepaliver.stop()
@@ -98,11 +132,69 @@ class NFPWorker(object):
 
 
 class NFPBroker:
-
     """
-    NORFAB Protocol broker
+    Attributes:
+        private_keys_dir (str): Directory for private keys.
+        public_keys_dir (str): Directory for public keys.
+        broker_private_key_file (str): File path for broker's private key.
+        broker_public_key_file (str): File path for broker's public key.
+        keepalive (int): The keepalive interval.
+        multiplier (int): The multiplier value.
+        services (dict): A dictionary to store services.
+        workers (dict): A dictionary to store workers.
+        exit_event (Event): The event to signal the broker to exit.
+        inventory (NorFabInventory): The inventory object.
+        base_dir (str): The base directory path from the inventory.
+        broker_base_dir (str): The broker's base directory path.
+        ctx (zmq.Context): The ZeroMQ context.
+        auth (ThreadAuthenticator): The authenticator for the ZeroMQ context.
+        socket (zmq.Socket): The ZeroMQ socket.
+        poller (zmq.Poller): The ZeroMQ poller.
+        socket_lock (threading.Lock): The lock to protect the socket object.
 
-    :param log_level: override default log levels
+    Methods:
+        setup_logging(self, log_queue, log_level: str) -> None:
+            Method to apply logging configuration.
+        mediate(self):
+            Main broker work happens here.
+        destroy(self):
+            Disconnect all workers, destroy context.
+        delete_worker(self, worker, disconnect):
+            Deletes worker from all data structures, and deletes worker.
+        purge_workers(self):
+            Look for & delete expired workers.
+        send_to_worker(self, worker: NFPWorker, command: bytes, sender: bytes, uuid: bytes, data: bytes):
+            Send message to worker. If message is provided, sends that message.
+        send_to_client(self, client: str, command: str, service: str, message: list):
+            Send message to client.
+        process_worker(self, sender, msg):
+            Process message received from worker.
+        require_worker(self, address):
+            Finds the worker, creates if necessary.
+        require_service(self, name):
+            Locates the service (creates if necessary).
+        process_client(self, sender, msg):
+            Process a request coming from a client.
+        filter_workers(self, target: bytes, service: NFPService) -> list:
+            Helper function to filter workers.
+        dispatch(self, sender, command, service, target, uuid, data):
+            Dispatch requests to waiting workers as possible.
+        mmi_service(self, sender, command, target, uuid, data):
+            Handle internal service according to 8/MMI specification.
+        inventory_service(self, sender, command, target, uuid, data):
+            Handle inventory service requests.
+        file_sharing_service(self, sender, command, target, uuid, data):
+            Handle file sharing service requests.
+
+    Args:
+        endpoint (str): The endpoint address for the broker to bind to.
+        exit_event (Event): An event to signal the broker to exit.
+        inventory (NorFabInventory): The inventory object containing configuration and state.
+        log_level (str, optional): The logging level. Defaults to None.
+        log_queue (object, optional): The logging queue. Defaults to None.
+        multiplier (int, optional): A multiplier value for internal use. Defaults to 6.
+        keepalive (int, optional): The keepalive interval in milliseconds. Defaults to 2500.
+        init_done_event (Event, optional): An event to signal that initialization is done. Defaults to None.
     """
 
     private_keys_dir = None
@@ -121,7 +213,6 @@ class NFPBroker:
         keepalive: int = 2500,
         init_done_event: Event = None,
     ):
-        """Initialize broker state."""
         self.setup_logging(log_queue, log_level)
         self.keepalive = keepalive
         self.multiplier = multiplier
@@ -179,7 +270,20 @@ class NFPBroker:
         log.debug(f"NFPBroker - is ready and listening on {endpoint}")
 
     def setup_logging(self, log_queue, log_level: str) -> None:
-        """Method to apply logging configuration"""
+        """
+        Configures logging for the application.
+
+        This method sets up the logging configuration using a provided log queue and log level.
+        It updates the logging configuration dictionary with the given log queue and log level,
+        and then applies the configuration using `logging.config.dictConfig`.
+
+        Args:
+            log_queue (queue.Queue): The queue to be used for logging.
+            log_level (str): The logging level to be set. If None, the default level is used.
+
+        Returns:
+            None
+        """
         logging_config_producer["handlers"]["queue"]["queue"] = log_queue
         if log_level is not None:
             logging_config_producer["root"]["level"] = log_level
@@ -187,11 +291,15 @@ class NFPBroker:
 
     def mediate(self):
         """
-        Main broker work happens here
+        Main broker work happens here.
 
-        Client send messages of this frame format:
+        This method continuously polls for incoming messages and processes them
+        based on their headers. It handles messages from clients and workers,
+        and purges inactive workers periodically. The method also checks for an
+        exit event to gracefully shut down the broker.
 
-
+        Raises:
+            KeyboardInterrupt: If the process is interrupted by a keyboard signal.
         """
         while True:
             try:
@@ -220,7 +328,14 @@ class NFPBroker:
                 break
 
     def destroy(self):
-        """Disconnect all workers, destroy context."""
+        """
+        Disconnect all workers and destroy the context.
+
+        This method performs the following actions:
+
+        1. Logs an interrupt message indicating that the broker is being killed.
+        2. Iterates through all
+        """
         log.info(f"NFPBroker - interrupt received, killing broker")
         for name in list(self.workers.keys()):
             # in case worker self destroyed while we iterating
@@ -230,12 +345,37 @@ class NFPBroker:
         self.ctx.destroy(0)
 
     def delete_worker(self, worker, disconnect):
-        """Deletes worker from all data structures, and deletes worker."""
+        """
+        Deletes a worker from all data structures and destroys the worker.
+
+        Args:
+            worker (Worker): The worker instance to be deleted.
+            disconnect (bool): A flag indicating whether to disconnect the worker before deletion.
+
+        Returns:
+            None
+        """
         worker.destroy(disconnect)
         self.workers.pop(worker.address, None)
 
     def purge_workers(self):
-        """Look for & delete expired workers."""
+        """
+        Look for and delete expired workers.
+
+        This method iterates through the list of workers and checks if each worker's
+        keepalive thread is still alive. If a worker's keepalive thread is not alive,
+        the worker is considered expired and is deleted from the list of workers.
+        Additionally, a log message is generated indicating that the worker's keepalive
+        has expired.
+
+        Note:
+            The method handles the case where a worker might be destroyed while
+            iterating through the list of workers.
+
+        Logging:
+            Logs an info message when a worker's keepalive has expired, including the
+            worker's address.
+        """
         for name in list(self.workers.keys()):
             # in case worker self destroyed while we iterating
             if self.workers.get(name):
@@ -248,8 +388,21 @@ class NFPBroker:
 
     def send_to_worker(
         self, worker: NFPWorker, command: bytes, sender: bytes, uuid: bytes, data: bytes
-    ):
-        """Send message to worker. If message is provided, sends that message."""
+    ) -> None:
+        """
+        Send a message to a worker. If a message is provided, sends that message.
+
+        Args:
+            worker (NFPWorker): The worker to send the message to.
+            command (bytes): The command to send (e.g., NFP.POST or NFP.GET).
+            sender (bytes): The sender's identifier.
+            uuid (bytes): The unique identifier for the message.
+            data (bytes): The data to be sent with the message.
+
+        Logs:
+            Logs an error if the command is invalid.
+            Logs a debug message when sending the message to the worker.
+        """
         # Stack routing and protocol envelopes to start of message
         if command == NFP.POST:
             msg = [worker.address, b"", NFP.WORKER, NFP.POST, sender, b"", uuid, data]
@@ -262,8 +415,19 @@ class NFPBroker:
             log.debug(f"NFPBroker - sending to worker '{msg}'")
             self.socket.send_multipart(msg)
 
-    def send_to_client(self, client: str, command: str, service: str, message: list):
-        """Send message to client."""
+    def send_to_client(
+        self, client: str, command: str, service: str, message: list
+    ) -> None:
+        """
+        Send a message to a specified client.
+
+        Args:
+            client (str): The identifier of the client to send the message to.
+            command (str): The command type, either 'RESPONSE' or 'EVENT'.
+            service (str): The service associated with the message.
+            message (list): The message content to be sent.
+        """
+
         # Stack routing and protocol envelopes to start of message
         if command == NFP.RESPONSE:
             msg = [client, b"", NFP.CLIENT, NFP.RESPONSE, service] + message
@@ -276,8 +440,28 @@ class NFPBroker:
             log.debug(f"NFPBroker - sending to client '{msg}'")
             self.socket.send_multipart(msg)
 
-    def process_worker(self, sender, msg):
-        """Process message received from worker."""
+    def process_worker(self, sender: str, msg: list):
+        """
+        Process message received from worker.
+
+        Parameters:
+            sender (str): The identifier of the sender (worker).
+            msg (list): The message received from the worker, where the first element is the command.
+
+        Commands:
+
+        - NFP.READY: Marks the worker as ready and assigns a service to it.
+        - NFP.RESPONSE: Sends a response to a client.
+        - NFP.KEEPALIVE: Processes a keepalive message from the worker.
+        - NFP.DISCONNECT: Handles worker disconnection.
+        - NFP.EVENT: Sends an event to a client.
+
+        If the worker is not ready and an invalid command is received, the worker is deleted.
+
+        Raises:
+            AttributeError: If the worker does not have the required attributes for certain commands.
+            IndexError: If the message list does not contain the expected number of elements for certain commands.
+        """
         command = msg.pop(0)
         worker = self.require_worker(sender)
 
@@ -305,7 +489,15 @@ class NFPBroker:
             log.error(f"NFPBroker - invalid message: {msg}")
 
     def require_worker(self, address):
-        """Finds the worker, creates if necessary."""
+        """
+        Finds the worker associated with the given address, creating a new worker if necessary.
+
+        Args:
+            address (str): The address of the worker to find or create.
+
+        Returns:
+            NFPWorker: The worker associated with the given address.
+        """
         if not self.workers.get(address):
             self.workers[address] = NFPWorker(
                 address=address,
@@ -321,7 +513,15 @@ class NFPBroker:
         return self.workers[address]
 
     def require_service(self, name):
-        """Locates the service (creates if necessary)."""
+        """
+        Locates the service by name, creating it if necessary.
+
+        Args:
+            name (str): The name of the service to locate or create.
+
+        Returns:
+            NFPService: The located or newly created service instance.
+        """
         if not self.services.get(name):
             service = NFPService(name)
             self.services[name] = service
@@ -331,8 +531,27 @@ class NFPBroker:
 
         return self.services[name]
 
-    def process_client(self, sender, msg):
-        """Process a request coming from a client."""
+    def process_client(self, sender: str, msg: list) -> None:
+        """
+        Process a request coming from a client.
+
+        Args:
+            sender (str): The identifier of the client sending the request.
+            msg (list): The message received from the client, expected to be a list where the first five elements are:
+                - command (str): The command issued by the client.
+                - service (str): The service to which the command is directed.
+                - target (str): The target of the command.
+                - uuid (str): The unique identifier for the request.
+                - data (any): The data associated with the request.
+
+        Raises:
+            ValueError: If the command is not recognized as a valid client command.
+
+        The method processes the command by:
+            - Checking if the command is valid.
+            - Routing the request to the appropriate service handler based on the service specified.
+            - Sending an error message back to the client if the command is unsupported.
+        """
         command = msg.pop(0)
         service = msg.pop(0)
         target = msg.pop(0)
@@ -392,13 +611,25 @@ class NFPBroker:
                 )
         return ret
 
-    def dispatch(self, sender, command, service, target, uuid, data):
+    def dispatch(
+        self,
+        sender: str,
+        command: bytes,
+        service: object,
+        target: Union[str, List[str]],
+        uuid: str,
+        data: Any,
+    ) -> None:
         """
         Dispatch requests to waiting workers as possible
 
-        :param service: service object
-        :param target: string indicating workers addresses to dispatch to
-        :param msg: string with work request content
+        Args:
+            sender (str): The sender of the request.
+            command (bytes): The command to be executed by the workers.
+            service (Service): The service object associated with the request.
+            target (str): A string indicating the addresses of the workers to dispatch to.
+            uuid (str): A unique identifier for the request.
+            data (Any): The data to be sent to the workers.
         """
         log.debug(
             f"NFPBroker - dispatching request to workers: sender '{sender}', "
@@ -444,7 +675,25 @@ class NFPBroker:
                 self.send_to_worker(worker, command, sender, uuid, data)
 
     def mmi_service(self, sender, command, target, uuid, data):
-        """Handle internal service according to 8/MMI specification"""
+        """
+        Handle internal broker Management Interface (MMI) service tasks.
+
+        Parameters:
+            sender (str): The sender of the request.
+            command (str): The command to be executed.
+            target (str): The target of the command.
+            uuid (str): The unique identifier for the request.
+            data (str): The data payload in JSON format.
+
+        Supported MMI Tasks:
+
+        - "show_workers": Returns a list of workers with their details.
+        - "show_broker": Returns broker details including endpoint, status, keepalives, workers count, services count, directories, and security.
+        - "show_broker_version": Returns the version of various packages and the platform.
+        - "show_broker_inventory": Returns the broker's inventory.
+
+        The response is sent back to the client in a format of JSON formatted string.
+        """
         log.debug(
             f"mmi.service.broker - processing request: sender '{sender}', "
             f"command '{command}', target '{target}'"

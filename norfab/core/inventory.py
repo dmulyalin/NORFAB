@@ -374,22 +374,31 @@ def render_jinja2_template(
 
 
 class WorkersInventory:
+    """
+    Class to collect and server NorFab workers inventory data,
+    forming it by recursively merging all data files that associated
+    with the name of worker requesting inventory data.
+
+    Attributes:
+        path (str): OS path to the top folder with workers inventory data.
+        data (dict): Dictionary keyed by glob patterns matching workers' names
+            and values being a list of OS paths to files or dictionaries with workers'
+            inventory data.
+
+    Methods:
+        __init__(path: str, data: dict) -> None:
+            Initializes the WorkersInventory with the given path and data.
+        __getitem__(name: str) -> Any:
+            Retrieves and merges inventory data for the specified worker name.
+            Raises a KeyError if no inventory data is found for the given name.
+    """
+
     __slots__ = (
         "path",
         "data",
     )
 
     def __init__(self, path: str, data: dict) -> None:
-        """
-        Class to collect and server NorFab workers inventory data,
-        forming it by recursively merging all data files that associated
-        with the name of worker requesting inventory data.
-
-        :param path: OS path to top folder with workers inventory data
-        :param data: dictionary keyed by glob patterns matching workers names
-            and values being a list of OS paths to files or dictionaries with workers
-            inventory data
-        """
         self.path = path
         self.data = data
 

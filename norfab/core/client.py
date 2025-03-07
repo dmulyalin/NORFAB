@@ -1,17 +1,3 @@
-"""
-## CUDOS
-
-Inspired by Majordomo Protocol Client API, ZeroMQ, Python version.
-
-Original MDP/Client spec
-
-Location: http://rfc.zeromq.org/spec:7.
-
-Author: Min RK <benjaminrk@gmail.com>
-
-Based on Java example by Arkadiusz Orzechowski
-"""
-
 import logging
 import zmq
 import sys
@@ -37,13 +23,36 @@ log = logging.getLogger(__name__)
 
 
 def event_filename(suuid: str, events_dir: str):
-    """Returns freshly allocated event filename for given UUID str"""
+    """
+    Returns a freshly allocated event filename for the given UUID string.
+
+    Args:
+        suuid (str): The UUID string for which to generate the event filename.
+                     If the input is a bytes object, it will be decoded to a string.
+        events_dir (str): The directory where the event file will be stored.
+
+    Returns:
+        str: The full path to the event file, with the filename in the format '{suuid}.json'.
+    """
     suuid = suuid.decode("utf-8") if isinstance(suuid, bytes) else suuid
     return os.path.join(events_dir, f"{suuid}.json")
 
 
 def recv(client):
-    """Thread to process receive messages from broker."""
+    """
+    Thread to process and handle received messages from a broker.
+
+    This function continuously polls the client's broker socket for messages
+    until the client's exit event is set. It processes the received messages
+    and places them into the appropriate queues based on the message type.
+
+    Args:
+        client (object): The client instance containing the broker socket,
+                         poller, and queues for handling messages.
+
+    Raises:
+        KeyboardInterrupt: If the polling is interrupted by a keyboard interrupt.
+    """
     while not client.exit_event.is_set():
         # Poll socket for messages every timeout interval
         try:
@@ -64,11 +73,55 @@ def recv(client):
 
 
 class NFPClient(object):
-    """NORFAB Protocol Client API.
+    """
+    NFPClient is a client class for interacting with a broker using ZeroMQ for messaging.
+    It handles sending and receiving messages, managing connections, and performing tasks.
 
-    :param broker: str, broker endpoint e.g. tcp://127.0.0.1:5555
-    :param name: str, client name, default is ``NFPClient``
-    :param exit_event: global exit event signalled by NFAPI
+    Attributes:
+        broker (str): The broker address.
+        ctx (zmq.Context): The ZeroMQ context.
+        broker_socket (zmq.Socket): The ZeroMQ socket for communication with the broker.
+        poller (zmq.Poller): The ZeroMQ poller for managing socket events.
+        name (str): The name of the client.
+        stats_send_to_broker (int): Counter for messages sent to the broker.
+        stats_recv_from_broker (int): Counter for messages received from the broker.
+        stats_reconnect_to_broker (int): Counter for reconnections to the broker.
+        stats_recv_event_from_broker (int): Counter for events received from the broker.
+        client_private_key_file (str): Path to the client's private key file.
+        broker_public_key_file (str): Path to the broker's public key file.
+
+    Methods:
+        __init__(inventory, broker, name, exit_event=None, event_queue=None):
+            Initializes the NFPClient instance with the given parameters.
+        _make_workers(workers) -> bytes:
+            Helper function to convert workers target to bytes.
+        reconnect_to_broker():
+            Connects or reconnects to the broker.
+        send_to_broker(command, service, workers, uuid, request):
+            Sends a message to the broker.
+        rcv_from_broker(command, service, uuid):
+            Waits for a response from the broker.
+        post(service, task, args=None, kwargs=None, workers="all", uuid=None, timeout=600):
+            Sends a job request to the broker and returns the result.
+        get(service, task=None, args=None, kwargs=None, workers="all", uuid=None, timeout=600):
+            Sends a job reply message to the broker requesting job results.
+        get_iter(service, task, args=None, kwargs=None, workers="all", uuid=None, timeout=600):
+            Sends a job reply message to the broker requesting job results and yields results iteratively.
+        fetch_file(url, destination=None, chunk_size=250000, pipiline=10, timeout=600, read=False):
+            Downloads a file from the Broker File Sharing Service.
+        run_job(service, task, uuid=None, args=None, kwargs=None, workers="all", timeout=600, retry=10):
+            Runs a job and returns results produced by workers.
+        run_job_iter(service, task, uuid=None, args=None, kwargs=None, workers="all", timeout=600):
+            Runs a job and yields results produced by workers iteratively.
+        destroy():
+            Cleans up and destroys the client instance.
+
+    Args:
+        inventory (NorFabInventory): The inventory object containing base directory information.
+        broker: The broker object for communication.
+        name (str): The name of the client.
+        exit_event (threading.Event, optional): An event to signal client exit. Defaults to None.
+        event_queue (queue.Queue, optional): A queue for handling events. Defaults to None.
     """
 
     broker = None
@@ -142,8 +195,21 @@ class NFPClient(object):
         )
         self.recv_thread.start()
 
-    def _make_workers(self, workers) -> bytes:
-        """Helper function to convert workers target to bytes"""
+    def _make_workers(self, workers: Union[str, list]) -> bytes:
+        """
+        Helper function to convert workers target to bytes.
+
+        This function takes a workers target, which can be either a string or a list,
+        and converts it to a bytes object. If the input is a string, it is encoded
+        using UTF-8. If the input is a list, it is first converted to a JSON string
+        and then encoded using UTF-8.
+
+        Args:
+            workers (Union[str, list]): The workers target to be converted to bytes.
+
+        Returns:
+            bytes: The workers target converted to bytes.
+        """
         # transform workers string to bytes
         if isinstance(workers, str):
             workers = workers.encode("utf-8")
@@ -154,7 +220,21 @@ class NFPClient(object):
         return workers
 
     def reconnect_to_broker(self):
-        """Connect or reconnect to broker"""
+        """
+        Connect or reconnect to the broker.
+
+        This method handles the connection or reconnection to the broker by:
+
+        - Closing the existing broker socket if it exists.
+        - Creating a new DEALER socket.
+        - Setting the socket options including the identity and linger.
+        - Loading the client's private and public keys for CURVE encryption.
+        - Loading the broker's public key for CURVE encryption.
+        - Connecting the socket to the broker.
+        - Registering the socket with the poller for incoming messages.
+        - Logging the connection status.
+        - Incrementing the reconnect statistics counter.
+        """
         if self.broker_socket:
             self.poller.unregister(self.broker_socket)
             self.broker_socket.close()
@@ -186,7 +266,16 @@ class NFPClient(object):
         self.stats_reconnect_to_broker += 1
 
     def send_to_broker(self, command, service, workers, uuid, request):
-        """Send message to broker."""
+        """
+        Sends a command to the broker.
+
+        Args:
+            command (str): The command to send (e.g., NFP.POST, NFP.GET).
+            service (str): The service to which the command is related.
+            workers (str): The workers involved in the command.
+            uuid (str): The unique identifier for the request.
+            request (str): The request payload to be sent.
+        """
         if command == NFP.POST:
             msg = [b"", NFP.CLIENT, command, service, workers, uuid, request]
         elif command == NFP.GET:
@@ -203,7 +292,20 @@ class NFPClient(object):
         self.stats_send_to_broker += 1
 
     def rcv_from_broker(self, command, service, uuid):
-        """Wait for response from broker."""
+        """
+        Wait for a response from the broker for a given command, service, and uuid.
+
+        Args:
+            command (str): The command sent to the broker.
+            service (str): The service to which the command is sent.
+            uuid (str): The unique identifier for the request.
+
+        Returns:
+            tuple: A tuple containing the reply status and the reply task result.
+
+        Raises:
+            AssertionError: If the reply header, command, or service does not match the expected values.
+        """
         retries = 3
         while retries > 0:
             # check if need to stop
@@ -263,12 +365,26 @@ class NFPClient(object):
         workers: str = "all",
         uuid: hex = None,
         timeout: int = 600,
-    ):
+    ) -> dict:
         """
-        Send job request to broker.
+        Send a job POST request to the broker.
 
-        Return dictionary with ``status``, ``workers``, ``errors`` keys
-        containing list of workers acknowledged POST request.
+        Args:
+            service (str): The name of the service to send the request to.
+            task (str): The task to be executed by the service.
+            args (list, optional): A list of positional arguments to pass to the task. Defaults to None.
+            kwargs (dict, optional): A dictionary of keyword arguments to pass to the task. Defaults to None.
+            workers (str, optional): The workers to handle the task. Defaults to "all".
+            uuid (hex, optional): The unique identifier for the job. Defaults to None.
+            timeout (int, optional): The timeout for the request in seconds. Defaults to 600.
+
+        Returns:
+            A dictionary containing the ``status``, ``workers``, ``errors``, and ``uuid`` keys of the request:
+
+                - ``status``: Status of the request.
+                - ``uuid``: Unique identifier of the request.
+                - ``errors``: List of error strings.
+                - ``workers``: A list of worker names who acknowledged this POST request.
         """
         uuid = uuid or uuid4().hex
         args = args or []
@@ -369,23 +485,24 @@ class NFPClient(object):
         workers: str = "all",
         uuid: hex = None,
         timeout: int = 600,
-    ):
-        """S
-        end job reply message to broker requesting job results.
+    ) -> dict:
+        """
+        Send job GET request message to broker requesting job results.
 
-        :param service: mandatory, service name to target
-        :param task: mandatory, service task name to run
-        :param args: optional, list of position argument for the task
-        :param kwargs: optional, dictionary of key-word arguments for the task
-        :param workers: optional, workers to target - ``all``, ``any``, or
-            list of workers names
-        :param uuid: optional, unique job identifier
-        :param timeout: optional, job timeout in seconds, for how long client
-            waits for job result before giving up
+        Args:
+            task (str): service task name to run
+            args (list): list of positional arguments for the task
+            kwargs (dict): dictionary of keyword arguments for the task
+            workers (list): workers to target - ``all``, ``any``, or list of workers' names
+            timeout (int): job timeout in seconds, for how long client waits for job result before giving up
 
-        Returns dictionary of ``status``, ``results`` and ``errors`` keys,
-        where ``results`` key is a dictionary keyed by workers' names, and
-        ``errors`` is a list of error strings.
+        Returns:
+            Dictionary containing ``status``, ``results``, ``errors``, and ``workers`` keys:
+
+                - ``status``: Status of the request.
+                - ``results``: Dictionary keyed by workers' names containing the results.
+                - ``errors``: List of error strings.
+                - ``workers``: Dictionary containing worker states (requested, done, dispatched, pending).
         """
         uuid = uuid or uuid4().hex
         args = args or []
@@ -494,8 +611,30 @@ class NFPClient(object):
         workers: str = "all",
         uuid: hex = None,
         timeout: int = 600,
-    ):
-        """Send job reply message to broker requesting job results."""
+    ) -> dict:
+        """
+        Send job reply message to broker requesting job results.
+
+        Args:
+            service (str): The service name.
+            task (str): The task name.
+            args (list, optional): The list of arguments for the task. Defaults to None.
+            kwargs (dict, optional): The dictionary of keyword arguments for the task. Defaults to None.
+            workers (str, optional): The workers to dispatch the task to. Defaults to "all".
+            uuid (hex, optional): The unique identifier for the job. Defaults to None.
+            timeout (int, optional): The timeout duration in seconds. Defaults to 600.
+
+        Yields:
+            dict: The response from the worker containing the results of the task.
+
+        Raises:
+            Exception: If the job request is not accepted by the broker or if there is an unexpected response status.
+
+        Notes:
+            - The method sends a GET request to the broker and waits for responses from the workers.
+            - If the timeout is reached or an exit event is set, the method stops waiting for responses.
+            - The method logs errors and debug information during the process.
+        """
         uuid = uuid or uuid4().hex
         args = args or []
         kwargs = kwargs or {}
@@ -575,11 +714,21 @@ class NFPClient(object):
         read: bool = False,
     ):
         """
-        Function to download file from Broker File Sharing Service.
+        Fetches a file from a given URL and saves it to a specified destination.
 
-        :param url: (str), path to file relative to ``base_dir``
-        :param destination: (str), if provided destination to save file,
-            returns file content otherwise
+        Parameters:
+            url (str): The URL of the file to be fetched.
+            destination (str, optional): The local path where the file should be saved. If None, a default path is used.
+            chunk_size (int, optional): The size of each chunk to be fetched. Default is 250000 bytes.
+            pipiline (int, optional): The number of chunks to be fetched in parallel. Default is 10.
+            timeout (int, optional): The maximum time (in seconds) to wait for the file to be fetched. Default is 600 seconds.
+            read (bool, optional): If True, the file content is read and returned. If False, the file path is returned. Default is False.
+
+        Returns:
+            tuple: A tuple containing the status code (str) and the reply (str). The reply can be the file content, file path, or an error message.
+
+        Raises:
+            Exception: If there is an error in fetching the file or if the file's MD5 hash does not match the expected hash.
         """
         uuid = str(uuid4().hex).encode("utf-8")
         total = 0  # Total bytes received
@@ -697,16 +846,23 @@ class NFPClient(object):
         retry=10,
     ):
         """
-        Run job and return results produced by workers.
+        Run a job on the specified service and task, with optional arguments, timeout and retry settings.
 
-        :param service: str, service name to send request to
-        :param task: str, task name to run for given service
-        :param uuid: (str) Job ID to use
-        :param args: list, task arguments
-        :param kwargs: dict, task key-word arguments
-        :param workers: str or list, worker names to target
-        :param timeout: overall job timeout in seconds
-        :param retry: number of times to try and GET job results
+        Args:
+            service (str): The name of the service to run the job on.
+            task (str): The task to be executed.
+            uuid (str, optional): A unique identifier for the job. If not provided, a new UUID will be generated. Defaults to None.
+            args (list, optional): A list of positional arguments to pass to the task. Defaults to None.
+            kwargs (dict, optional): A dictionary of keyword arguments to pass to the task. Defaults to None.
+            workers (str, optional): The workers to run the job on. Defaults to "all".
+            timeout (int, optional): The maximum time in seconds to wait for the job to complete. Defaults to 600.
+            retry (int, optional): The number of times to retry getting the job results. Defaults to 10.
+
+        Returns:
+            Any: The result of the job if successful, or None if the job failed or timed out.
+
+        Raises:
+            Exception: If the POST request to start the job fails or if an unexpected status is returned during the GET request.
         """
         self.running_job = True
         uuid = uuid or uuid4().hex
@@ -775,17 +931,19 @@ class NFPClient(object):
         timeout: int = 600,
     ):
         """
-        Iter run_job allows to return job results from workers progressively
-        as they are responded, rather than waiting for workers to respond first.
-        This should allow to client an interactive experience for the user where
-        job results would be presented as soon as they are available.
+        Run a job on the specified service and task, yielding results as they are received.
 
-        :param service: str, service name to send request to
-        :param task: str, task name to run for given service
-        :param uuid: (str) Job ID to use
-        :param args: list, task arguments
-        :param kwargs: dict, task key-word arguments
-        :param workers: str or list, worker names to target
+        Args:
+            service (str): The name of the service to run the job on.
+            task (str): The name of the task to run.
+            uuid (str, optional): A unique identifier for the job. If not provided, a new UUID will be generated. Defaults to None.
+            args (list, optional): A list of positional arguments to pass to the task. Defaults to None.
+            kwargs (dict, optional): A dictionary of keyword arguments to pass to the task. Defaults to None.
+            workers (str, optional): The workers to run the job on. Defaults to "all".
+            timeout (int, optional): The timeout for the job in seconds. Defaults to 600.
+
+        Yields:
+            result: The result of the job as it is received from the workers.
         """
         self.running_job = True
         uuid = uuid or uuid4().hex
@@ -802,6 +960,12 @@ class NFPClient(object):
         self.running_job = False
 
     def destroy(self):
+        """
+        Gracefully shuts down the client.
+
+        This method logs an interrupt message, sets the destroy event, and
+        destroys the client context to ensure a clean shutdown.
+        """
         log.info(f"{self.name} - client interrupt received, killing client")
         self.destroy_event.set()
         self.ctx.destroy()

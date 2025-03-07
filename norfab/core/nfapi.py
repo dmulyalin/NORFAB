@@ -28,6 +28,17 @@ def start_broker_process(
     log_queue=None,
     init_done_event=None,
 ):
+    """
+    Thread target function too start a broker process with the given parameters.
+
+    Args:
+        endpoint (str): The endpoint for the broker to connect to.
+        exit_event (threading.Event, optional): An event to signal the broker to exit. Defaults to None.
+        inventory (object, optional): An inventory object to be used by the broker. Defaults to None.
+        log_level (int, optional): The logging level for the broker. Defaults to None.
+        log_queue (queue.Queue, optional): A queue for logging messages. Defaults to None.
+        init_done_event (threading.Event, optional): An event to signal that initialization is done. Defaults to None.
+    """
     broker = NFPBroker(
         endpoint=endpoint,
         exit_event=exit_event,
@@ -49,6 +60,19 @@ def start_worker_process(
     log_queue=None,
     init_done_event=None,
 ):
+    """
+    Thread target function to start a worker process using the provided worker plugin.
+
+    Args:
+        worker_plugin (object): The worker plugin class to instantiate and run.
+        inventory (str): The inventory data or path to be used by the worker.
+        broker_endpoint (str): The endpoint of the broker to connect to.
+        worker_name (str): The name of the worker.
+        exit_event (threading.Event, optional): An event to signal the worker to exit. Defaults to None.
+        log_level (int, optional): The logging level for the worker. Defaults to None.
+        log_queue (queue.Queue, optional): The queue to use for logging. Defaults to None.
+        init_done_event (threading.Event, optional): An event to signal when initialization is done. Defaults to None.
+    """
     worker = worker_plugin(
         inventory=inventory,
         broker=broker_endpoint,
@@ -63,7 +87,42 @@ def start_worker_process(
 
 class NorFab:
     """
-    Utility class to implement Python API for interfacing with NorFab.
+    NorFab is a class that provides an interface for interacting with the NorFab system.
+
+    Attributes:
+        client (NFPClient): The client instance for interfacing with the broker.
+        broker (Process): The process instance for the broker.
+        inventory (NorFabInventory): The inventory instance containing configuration data.
+        workers_processes (dict): A dictionary mapping worker names to their process instances and initialization events.
+        worker_plugins (dict): A dictionary mapping service names to their worker plugins.
+
+    Args:
+        inventory: OS path to NorFab inventory YAML file
+        inventory_data: dictionary with NorFab inventory
+        base_dir: OS path to base directory to anchor NorFab at
+        log_level: one or supported logging levels - `CRITICAL`, `ERROR`, `WARNING`, `INFO`, `DEBUG`
+
+    Example:
+
+        from norfab.core.nfapi import NorFab
+
+        nf = NorFab(inventory="./inventory.yaml")
+        nf.start(start_broker=True, workers=["my-worker-1"])
+        NFCLIENT = nf.make_client()
+
+
+    Example using dictionary inventory data:
+
+        from norfab.core.nfapi import NorFab
+
+        data = {
+            'broker': {'endpoint': 'tcp://127.0.0.1:5555'},
+            'workers': {'my-worker-1': ['workers/common.yaml'],
+        }
+
+        nf = NorFab(inventory_data=data, base_dir="./")
+        nf.start(start_broker=True, workers=["my-worker-1"])
+        NFCLIENT = nf.make_client()
     """
 
     client = None
@@ -79,38 +138,6 @@ class NorFab:
         base_dir: str = None,
         log_level: str = None,
     ) -> None:
-        """
-        NorFab Python API Client initialization class
-
-        ```
-        from norfab.core.nfapi import NorFab
-
-        nf = NorFab(inventory="./inventory.yaml")
-        nf.start(start_broker=True, workers=["my-worker-1"])
-        NFCLIENT = nf.make_client()
-        ```
-
-        or using dictionary inventory data
-
-        ```
-        from norfab.core.nfapi import NorFab
-
-        data = {
-            'broker': {'endpoint': 'tcp://127.0.0.1:5555'},
-            'workers': {'my-worker-1': ['workers/common.yaml'],
-        }
-
-        nf = NorFab(inventory_data=data, base_dir="./")
-        nf.start(start_broker=True, workers=["my-worker-1"])
-        NFCLIENT = nf.make_client()
-        ```
-
-        Args:
-            inventory: OS path to NorFab inventory YAML file
-            inventory_data: dictionary with NorFab inventory
-            base_dir: OS path to base directory to anchor NorFab at
-            log_level: one or supported logging levels - `CRITICAL`, `ERROR`, `WARNING`, `INFO`, `DEBUG`
-        """
         self.exiting = False  # flag to signal that Norfab is exiting
         self.inventory = NorFabInventory(
             path=inventory, data=inventory_data, base_dir=base_dir

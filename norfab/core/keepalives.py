@@ -9,16 +9,46 @@ log = logging.getLogger(__name__)
 
 class KeepAliver:
     """
-    Helper class to run keepalives between Broker and Workers in consistent way.
+    Helper class to run keepalives between Broker and Workers in a consistent way.
 
-    :param address: string, optional address to send keepalives to
-    :param socket: ZeroMQ socket to use to send keepalives to
-    :param multiplier: int, number of keepalives before dead
-    :param keepalive: int, interval between keepalives in milliseconds
-    :param exit_event: threading Event, global exit event signalled by NFAPI if set, stop sending keepalives
-    :param service: string, name of the service to include in keepalives
-    :param whoami: string, who am I e.g. NFP.WORKER or NFP.BROKER to use as keepalives header
-    :param name: descriptive name to include in logs
+    Args:
+        address (str): Optional address to send keepalives to.
+        socket: ZeroMQ socket to use to send keepalives to.
+        multiplier (int): Number of keepalives before considered dead.
+        keepalive (int): Interval between keepalives in milliseconds.
+        exit_event (threading.Event): Global exit event signaled by NFAPI if set, stop sending keepalives.
+        service (str): Name of the service to include in keepalives.
+        whoami (str): Identifier e.g. NFP.WORKER or NFP.BROKER to use as keepalives header.
+        name (str): Descriptive name to include in logs.
+        socket_lock: Lock to synchronize access to the socket.
+
+    Attributes:
+        address (str): Address to send keepalives to.
+        socket: ZeroMQ socket to use to send keepalives to.
+        exit_event (threading.Event): Global exit event.
+        destroy_event (threading.Event): Event used by worker to stop keepalives.
+        keepalive (int): Interval between keepalives in milliseconds.
+        multiplier (int): Number of keepalives before considered dead.
+        service (str): Name of the service to include in keepalives.
+        whoami (str): Identifier to use as keepalives header.
+        name (str): Descriptive name to include in logs.
+        socket_lock: Lock to synchronize access to the socket.
+        started_at (float): Timestamp when keepalives started.
+        keepalives_received (int): Number of keepalives received.
+        keepalives_send (int): Number of keepalives sent.
+        holdtime (float): Expiry time unless heartbeat is received.
+        keepalive_at (float): Time to send the next keepalive.
+        keepalive_thread (threading.Thread): Thread to run keepalives.
+
+    Methods:
+        start(): Start keepalives thread.
+        stop(): Stop keepalives thread.
+        run(): Send heartbeats at keepalive interval.
+        received_heartbeat(msg): Update holdtime when a heartbeat is received.
+        restart(socket): Restart keepalives with a new socket.
+        is_alive(): Check if the other party is seen before expiry.
+        show_holdtime(): Show remaining holdtime.
+        show_alive_for(): Show duration since keepalives started.
     """
 
     def __init__(
@@ -61,19 +91,51 @@ class KeepAliver:
         )
 
     def start(self):
-        """Start keepalives thread."""
+        """
+        Start the keepalives thread and record the start time.
+
+        This method initiates the keepalive thread and sets the `started_at`
+        attribute to the current time.
+
+        Returns:
+            bool: True if the keepalive thread was successfully started.
+        """
         self.keepalive_thread.start()
         self.started_at = time.time()
         return True
 
     def stop(self):
+        """
+        Stops the keepalive thread by setting the destroy event and joining the thread.
+
+        This method first checks if the destroy event is not already set. If it is not set,
+        it sets the destroy event to signal the keepalive thread to stop. Then, it waits
+        for the keepalive thread to finish execution by calling join() on it.
+
+        Returns:
+            bool: True if the keepalive thread was successfully stopped.
+        """
         if not self.destroy_event.is_set():
             self.destroy_event.set()
         self.keepalive_thread.join()
         return True
 
     def run(self):
-        """Send heartbeats at keepalive interval."""
+        """
+        Continuously send heartbeat messages at the specified keepalive interval.
+
+        This method runs in a loop until either the `exit_event` or `destroy_event` is set.
+        It sends a heartbeat message if the current time exceeds the `keepalive_at` timestamp.
+        The message format depends on whether the `address` is specified.
+
+        The method also handles exceptions that may occur during the sending of the message
+        and logs the error. After sending a heartbeat, it updates the `keepalive_at` timestamp
+        and increments the `keepalives_send` counter. The loop sleeps for 0.1 seconds between
+        iterations.
+
+        Raises:
+            Exception: If an error occurs while sending the heartbeat message.
+        """
         while not self.exit_event.is_set() and not self.destroy_event.is_set():
             if time.time() > self.keepalive_at:  # time to send heartbeat
                 if self.address:
@@ -93,13 +155,30 @@ class KeepAliver:
             time.sleep(0.1)
 
     def received_heartbeat(self, msg):
-        """Received heartbeat from other party, update holdtime time."""
+        """
+        Handles the reception of a heartbeat message from another party.
+
+        This method updates the holdtime and increments the count of received keepalives.
+
+        Args:
+            msg (str): The heartbeat message received.
+        """
         log.debug(f"{self.name} - received keepalive '{msg}'")
         self.keepalives_received += 1
         self.holdtime = time.time() + 0.001 * self.multiplier * self.keepalive
 
     def restart(self, socket):
-        """Restart keepalives with new socket."""
+        """
+        Restart keepalives with a new socket.
+
+        This method reinitializes the keepalive mechanism with a new socket. It resets
+        the counters for received and sent keepalives, sets the start time to the current
+        time, and calculates the holdtime and the next keepalive time based on the
+        provided keepalive interval and multiplier.
+
+        Args:
+            socket: The new socket to be used for keepalives.
+        """
         self.socket = socket
         self.keepalives_received = 0
         self.keepalives_send = 0
@@ -112,11 +191,31 @@ class KeepAliver:
         )  # when to send keepalive
 
     def is_alive(self):
-        """True if other party seen before expiry False otherwise."""
+        """
+        Check if the other party is still alive based on the hold time.
+
+        Returns:
+            bool: True if the other party has been seen before the hold time expires, False otherwise.
+        """
         return self.holdtime > time.time()
 
     def show_holdtime(self):
+        """
+        Calculate and return the remaining hold time.
+
+        This method subtracts the current time from the holdtime attribute
+        and rounds the result to one decimal place.
+
+        Returns:
+            float: The remaining hold time in seconds, rounded to one decimal place.
+        """
         return round(self.holdtime - time.time(), 1)
 
     def show_alive_for(self):
+        """
+        Calculate the duration for which the instance has been alive.
+
+        Returns:
+            int: The number of seconds since the instance was started.
+        """
         return int(time.time() - self.started_at)
