@@ -6,6 +6,7 @@ import time
 import os
 import signal
 import importlib.metadata
+import uvicorn
 
 from norfab.core.worker import NFPWorker, Result
 from norfab.core.models import WorkerResult, ClientPostJobResponse, ClientGetJobResponse
@@ -13,21 +14,13 @@ from typing import Union, List, Dict, Any, Annotated, Optional
 from diskcache import FanoutCache
 from pydantic import BaseModel
 from datetime import datetime, timedelta
+from fastapi import Depends, FastAPI, Header, HTTPException, Body
+from fastapi.security.http import HTTPAuthorizationCredentials, HTTPBearer
+from starlette import status
 
 SERVICE = "fastapi"
 
 log = logging.getLogger(__name__)
-
-try:
-    import uvicorn
-    from fastapi import Depends, FastAPI, Header, HTTPException, Body
-    from fastapi.security.http import HTTPAuthorizationCredentials, HTTPBearer
-    from starlette import status
-
-    HAS_FASTAPI = True
-except ImportError:
-    HAS_FASTAPI = False
-    log.debug("FastAPI worker - failed to import FastAPI library.")
 
 
 class FastAPIWorker(NFPWorker):
@@ -43,26 +36,6 @@ class FastAPIWorker(NFPWorker):
         init_done_event (threading.Event, optional): Event to signal when worker is done initializing.
         log_level (str, optional): Logging level for this worker.
         log_queue (object, optional): Queue for logging.
-
-    Methods:
-        _get_diskcache() -> FanoutCache:
-            Initializes and returns a FanoutCache instance.
-        fastapi_start():
-            Starts the FastAPI server using Uvicorn in a separate thread.
-        worker_exit():
-            Signals the worker to exit by sending a SIGTERM signal.
-        get_version() -> Result:
-            Produces a report of the versions of Python packages used.
-        get_inventory() -> Dict:
-            Returns the inventory configuration of the FastAPI worker.
-        bearer_token_store(username: str, token: str, expire: int = None) -> bool:
-            Stores a bearer token in the cache with an optional expiration time.
-        bearer_token_delete(username: str = None, token: str = None) -> bool:
-            Deletes a bearer token from the cache based on the username or token.
-        bearer_token_list(username: str = None) -> list:
-            Lists all bearer tokens stored in the cache, optionally filtered by username.
-        bearer_token_check(token: str) -> bool:
-            Checks if a given bearer token exists in the cache.
     """
 
     def __init__(

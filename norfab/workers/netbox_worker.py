@@ -6,6 +6,7 @@ import requests
 import copy
 import os
 import concurrent.futures
+import pynetbox
 
 from fnmatch import fnmatchcase
 from datetime import datetime, timedelta
@@ -14,13 +15,6 @@ from typing import Union
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 from norfab.core.exceptions import UnsupportedServiceError
 from diskcache import FanoutCache
-
-try:
-    import pynetbox
-
-    HAS_PYNETBOX = True
-except ImportError:
-    HAS_PYNETBOX = False
 
 SERVICE = "netbox"
 
@@ -402,11 +396,6 @@ class NetboxWorker(NFPWorker):
         If SSL verification is disabled in the instance parameters,
         this function will disable warnings for insecure requests.
         """
-        if not HAS_PYNETBOX:
-            msg = f"{self.name} - failed to import pynetbox library, is it installed?"
-            log.error(msg)
-            raise Exception(msg)
-
         params = self._get_instance_params(instance)
 
         if params.get("ssl_verify") == False:

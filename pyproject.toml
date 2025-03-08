@@ -80,12 +80,9 @@ fastapi = { version = ">=0.115.0,<1.0.0", optional = true, extras = ["standard"]
 uvicorn = { version = "*", optional = true }
 python-multipart = { version = "*", optional = true }
 
-[poetry.group.dev.dependencies]
+[tool.poetry.group.dev.dependencies]
 black = "22.3.*"
 pytest = { version = ">=7.1" }
-fakenos = { version = ">=1.0.0" }
-coverage = "*"
-invoke = "*"
 
 # docs dependencies for extras definition
 mkdocs = { version = "*" }
@@ -208,4 +205,7 @@ full = [
     "langchain-core",
     "langchain-ollama",
     "ollama",
+    "fastapi",
+    "uvicorn",
+    "python-multipart",
 ]

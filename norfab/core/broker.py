@@ -581,8 +581,9 @@ class NFPBroker:
         """
         Helper function to filter workers
 
-        :param target: bytest string, workers target
-        :param service: NFPService object
+        Args:
+            target: bytest string, workers target
+            service: NFPService object
         """
         ret = []
         if not service.workers:

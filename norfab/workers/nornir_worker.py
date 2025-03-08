@@ -41,7 +41,7 @@ from nornir_salt.plugins.processors import (
 from nornir_napalm.plugins.tasks import napalm_get
 from nornir_netmiko.tasks import netmiko_file_transfer
 from nornir_salt.utils.pydantic_models import modelTestsProcessorSuite
-from typing import Union
+from typing import Union, Dict, List
 from threading import Thread, Lock
 
 SERVICE = "nornir"
@@ -51,7 +51,19 @@ log = logging.getLogger(__name__)
 
 class WatchDog(WorkerWatchDog):
     """
-    Class to monitor Nornir worker performance
+    Class to monitor Nornir worker performance.
+
+    Args:
+        worker (Worker): The worker instance that this NornirWorker will manage.
+
+    Attributes:
+        worker (Worker): The worker instance being monitored.
+        connections_idle_timeout (int): Timeout value for idle connections.
+        connections_data (dict): Dictionary to store connection use timestamps.
+        started_at (float): Timestamp when the watchdog was started.
+        idle_connections_cleaned (int): Counter for idle connections cleaned.
+        dead_connections_cleaned (int): Counter for dead connections cleaned.
+        watchdog_tasks (list): List of tasks for the watchdog to run in a given order.
     """
 
     def __init__(self, worker):
@@ -73,7 +85,20 @@ class WatchDog(WorkerWatchDog):
             self.connections_keepalive,
         ]
 
-    def stats(self):
+    def stats(self) -> Dict:
+        """
+        Collects and returns statistics about the worker.
+
+        Returns:
+            dict: A dictionary containing the following keys:
+
+                - runs (int): The number of runs executed by the worker.
+                - timestamp (str): The current time in a human-readable format.
+                - alive (int): The time in seconds since the worker started.
+                - dead_connections_cleaned (int): The number of dead connections cleaned.
+                - idle_connections_cleaned (int): The number of idle connections cleaned.
+                - worker_ram_usage_mbyte (float): The current RAM usage of the worker in megabytes.
+        """
         return {
             "runs": self.runs,
             "timestamp": time.ctime(),
@@ -83,13 +108,28 @@ class WatchDog(WorkerWatchDog):
             "worker_ram_usage_mbyte": self.get_ram_usage(),
         }
 
-    def configuration(self):
+    def configuration(self) -> Dict:
+        """
+        Returns the configuration settings for the worker.
+
+        Returns:
+            Dict: A dictionary containing the configuration settings:
+
+                - "watchdog_interval" (int): The interval for the watchdog timer.
+                - "connections_idle_timeout" (int): The timeout for idle connections.
+        """
         return {
             "watchdog_interval": self.watchdog_interval,
             "connections_idle_timeout": self.connections_idle_timeout,
         }
 
-    def connections_get(self):
+    def connections_get(self) -> Dict:
+        """
+        Retrieve the current connections data.
+
+        Returns:
+            Dict: A dictionary containing the current connections data.
+        """
         return {
             "connections": self.connections_data,
         }
@@ -98,8 +138,9 @@ class WatchDog(WorkerWatchDog):
         """
         Function to update connection use timestamps for each host
 
-        :param nr: Nornir object
-        :param plugin: connection plugin name
+        Args:
+            nr: Nornir object
+            plugin: connection plugin name
         """
         conn_stats = {
             "last_use": None,
@@ -116,8 +157,24 @@ class WatchDog(WorkerWatchDog):
 
     def connections_clean(self):
         """
-        Check if need to tear down connections that are idle -
-        not being used over connections_idle_timeout
+        Cleans up idle connections based on the configured idle timeout.
+
+        This method checks for connections that have been idle for longer than the
+        specified `connections_idle_timeout` and disconnects them. The behavior
+        varies depending on the value of `connections_idle_timeout`:
+
+        - If `connections_idle_timeout` is None, no connections are disconnected.
+        - If `connections_idle_timeout` is 0, all connections are disconnected.
+        - If `connections_idle_timeout` is greater than 0, only connections that
+          have been idle for longer than the specified timeout are disconnected.
+
+        The method acquires a lock to ensure thread safety while modifying the
+        connections data. It logs the disconnection actions and updates the
+        `idle_connections_cleaned` counter.
+
+        Raises:
+            Exception: If an error occurs while attempting to disconnect idle
+            connections, an error message is logged.
         """
         # dictionary keyed by plugin name and value as a list of hosts
         disconnect = {}
@@ -166,7 +223,24 @@ class WatchDog(WorkerWatchDog):
             self.worker.connections_lock.release()
 
     def connections_keepalive(self):
-        """Keepalive connections and clean up dead connections if any"""
+        """
+        Keepalive connections and clean up dead connections if any.
+
+        This method performs the following tasks:
+
+        - If `connections_idle_timeout` is 0, it returns immediately without performing any actions.
+        - Attempts to acquire a lock on `worker.connections_lock` to ensure thread safety.
+        - Logs a debug message indicating that the keepalive process is running.
+        - Uses `HostsKeepalive` to check and clean up dead connections, updating the `dead_connections_cleaned` counter.
+        - Removes connections that are no longer present in the Nornir inventory.
+        - Removes hosts from `connections_data` if they have no remaining connections.
+        - Updates the keepalive statistics for each connection plugin, including the last keepalive time and keepalive count.
+        - Logs an error message if an exception occurs during the keepalive process.
+        - Releases the lock on `worker.connections_lock` in the `finally` block to ensure it is always released.
+
+        Raises:
+            Exception: If an error occurs during the keepalive process, it is logged as an error.
+        """
         if self.connections_idle_timeout == 0:  # do not keepalive if idle is 0
             return
         if not self.worker.connections_lock.acquire(blocking=False):
@@ -200,13 +274,23 @@ class WatchDog(WorkerWatchDog):
 
 class NornirWorker(NFPWorker):
     """
-    Nornir service worker
+    NornirWorker class for managing Nornir Service tasks.
 
-    :param broker: broker URL to connect to
-    :param worker_name: name of this worker
-    :param exit_event: if set, worker need to stop/exit
-    :param init_done_event: event to set when worker done initializing
-    :param log_level: logging level of this worker
+    Args:
+        inventory (str): Path to the inventory file.
+        broker (str): Broker address.
+        worker_name (str): Name of the worker.
+        exit_event (threading.Event, optional): Event to signal worker exit. Defaults to None.
+        init_done_event (threading.Event, optional): Event to signal initialization completion. Defaults to None.
+        log_level (str, optional): Logging level. Defaults to None.
+        log_queue (object, optional): Queue for logging. Defaults to None.
+
+    Attributes:
+        init_done_event (threading.Event): Event to signal initialization completion.
+        tf_base_path (str): Base path for files folder saved using `tf` processor.
+        connections_lock (threading.Lock): Lock for managing connections.
+        nornir_inventory (dict): Inventory data for Nornir.
+        watchdog (WatchDog): Watchdog instance for monitoring.
     """
 
     def __init__(
@@ -251,11 +335,41 @@ class NornirWorker(NFPWorker):
         log.info(f"{self.name} - Started")
 
     def worker_exit(self):
+        """
+        Executes all functions registered under the "nornir-exit" hook in the inventory.
+
+        This method iterates through the list of hooks associated with the "nornir-exit"
+        key in the inventory's hooks.
+
+        For each hook, it calls the function specified in the hook, passing the current
+        instance (`self`) as the first argument, followed by any additional positional
+        and keyword arguments specified in the hook.
+        """
         # run exit hooks
         for f in self.inventory.hooks.get("nornir-exit", []):
             f["function"](self, *f.get("args", []), **f.get("kwargs", {}))
 
     def _init_nornir(self):
+        """
+        Initialize the Nornir instance with the provided inventory configuration.
+
+        This method sets up the Nornir instance using the inventory details specified
+        in the `self.nornir_inventory` attribute. The inventory configuration includes
+        logging settings, runner options, and inventory details for hosts, groups, and
+        defaults.
+
+        The inventory configuration is expected to be a dictionary with the following keys:
+
+        - "logging": A dictionary specifying logging configuration (default: {"enabled": False}).
+        - "runner": A dictionary specifying runner options (default: {}).
+        - "hosts": A dictionary specifying host details (default: {}).
+        - "groups": A dictionary specifying group details (default: {}).
+        - "defaults": A dictionary specifying default values (default: {}).
+        - "user_defined": A dictionary specifying user-defined options (default: {}).
+
+        The method initializes the Nornir instance using the `InitNornir` function with
+        the provided configuration.
+        """
         # initiate Nornir
         self.nr = InitNornir(
             logging=self.nornir_inventory.get("logging", {"enabled": False}),
@@ -272,7 +386,19 @@ class NornirWorker(NFPWorker):
         )
 
     def _pull_netbox_inventory(self):
-        """Function to query inventory from Netbox"""
+        """
+        Queries inventory data from Netbox Service and merges it into the Nornir inventory.
+
+        This function checks if there is Netbox data in the inventory and retrieves
+        it if available. It handles retries and timeout configurations, and ensures
+        that necessary filters or devices are specified. The retrieved inventory
+        data is then merged into the existing Nornir inventory.
+
+        Logs:
+            - Critical: If the inventory has no hosts, filters, or devices defined.
+            - Error: If no inventory data is returned from Netbox.
+            - Warning: If the Netbox instance returns no hosts data.
+        """
         # exit if has no Netbox data in inventory
         if isinstance(self.nornir_inventory.get("netbox"), dict):
             kwargs = self.nornir_inventory["netbox"]
@@ -322,14 +448,38 @@ class NornirWorker(NFPWorker):
                 f"instance returned no hosts data, worker '{wname}'"
             )
 
-    def _add_processors(self, nr, kwargs: dict):
+    def _add_processors(self, nr, kwargs: Dict):
         """
-        Helper function to extract processors arguments and add processors
-        to Nornir.
+        Add various processors to the Nornir object based on the provided keyword arguments.
 
-        :param kwargs: (dict) dictionary with kwargs
-        :param nr: (obj) Nornir object to add processors to
-        :return: (obj) Nornir object with added processors
+        Args:
+            nr (Nornir): The Nornir object to which processors will be added.
+            kwargs (dict): A dictionary of keyword arguments specifying which
+                processors to add and their configurations.
+
+        Keyword Args:
+            tf (str, optional): Path to the file for ToFileProcessor.
+            tf_skip_failed (bool, optional): Whether to skip failed tasks in ToFileProcessor.
+            diff (str, optional): Configuration for DiffProcessor.
+            diff_last (int, optional): Number of last diffs to keep for DiffProcessor.
+            dp (list, optional): Configuration for DataProcessor.
+            xml_flake (str, optional): Pattern for xml_flake function in DataProcessor.
+            match (str, optional): Pattern for match function in DataProcessor.
+            before (int, optional): Number of lines before match in DataProcessor.
+            run_ttp (str, optional): Template for run_ttp function in DataProcessor.
+            ttp_structure (str, optional): Structure for run_ttp results in DataProcessor.
+            remove_tasks (bool, optional): Whether to remove tasks in DataProcessor and TestsProcessor.
+            tests (list, optional): Configuration for TestsProcessor.
+            subset (list, optional): Subset of tests for TestsProcessor.
+            failed_only (bool, optional): Whether to include only failed tests in TestsProcessor.
+            xpath (str, optional): XPath expression for DataProcessor.
+            jmespath (str, optional): JMESPath expression for DataProcessor.
+            iplkp (str, optional): IP lookup configuration for DataProcessor.
+            ntfsm (bool, optional): Whether to use ntc-templates TextFSM parsing in DataProcessor.
+            progress (bool, optional): Whether to emit progress events using NorFabEventProcessor.
+
+        Returns:
+            Nornir: The Nornir object with the added processors.
         """
         processors = []
 
@@ -449,13 +599,15 @@ class NornirWorker(NFPWorker):
         self, templates: list[str], context: dict, filters: dict = None
     ) -> str:
         """
-        Helper function to render a list of Jinja2 templates and
-        combine them in a single string.
+        Renders a list of Jinja2 templates with the given context and optional filters.
 
-        :param templates: list of template strings to render
-        :param context: Jinja2 context dictionary
-        :param filter: custom Jinja2 filters
-        :returns: list of rendered strings
+        Args:
+            templates (list[str]): A list of Jinja2 template strings or NorFab file paths.
+            context (dict): A dictionary containing the context variables for rendering the templates.
+            filters (dict, optional): A dictionary of custom Jinja2 filters to be used during rendering.
+
+        Returns:
+            str: The rendered templates concatenated into a single string.
         """
         rendered = []
         filters = filters or {}
@@ -476,9 +628,16 @@ class NornirWorker(NFPWorker):
 
     def load_job_data(self, job_data: str):
         """
-        Helper function to download job data and load it using YAML
+        Helper function to download job data YAML files and load it.
 
-        :param job_data: URL to job data
+        Args:
+            job_data (str): job data NorFab file path to download and load using YAML.
+
+        Returns:
+            data: The job data loaded from the YAML string.
+
+        Raises:
+            FileNotFoundError: If the job data is a URL and the file download fails.
         """
         if self.is_url(job_data):
             job_data = self.fetch_file(job_data)
@@ -494,7 +653,18 @@ class NornirWorker(NFPWorker):
     # ----------------------------------------------------------------------
 
     def _jinja2_network_hosts(self, network, pfxlen=False):
-        """Return a list of hosts for given network"""
+        """
+        Custom Jinja2 filter that return a list of hosts for a given IP network.
+
+        Args:
+            network (str): The network address in CIDR notation.
+            pfxlen (bool, optional): If True, include the prefix length
+                in the returned host addresses. Defaults to False.
+
+        Returns:
+            list: A list of host addresses as strings. If pfxlen is True,
+                each address will include the prefix length.
+        """
         ret = []
         ip_interface = ipaddress.ip_interface(network)
         prefixlen = ip_interface.network.prefixlen
@@ -502,7 +672,17 @@ class NornirWorker(NFPWorker):
             ret.append(f"{ip}/{prefixlen}" if pfxlen else str(ip))
         return ret
 
-    def add_jinja2_filters(self):
+    def add_jinja2_filters(self) -> Dict:
+        """
+        Adds custom filters for use in Jinja2 templates.
+
+        Returns:
+            dict (Dict): A dictionary where the keys are the names of the filters
+                and the values are the corresponding filter functions.
+
+                - "nb_get_next_ip": Method to get the next IP address.
+                - "network_hosts": Method to get IP network hosts.
+        """
         return {
             "nb_get_next_ip": self.nb_get_next_ip,
             "network_hosts": self._jinja2_network_hosts,
@@ -512,11 +692,18 @@ class NornirWorker(NFPWorker):
     # Nornir Service Functions that exposed for calling
     # ----------------------------------------------------------------------
 
-    def get_nornir_hosts(self, details: bool = False, **kwargs: dict) -> list:
+    def get_nornir_hosts(
+        self, details: bool = False, **kwargs: dict
+    ) -> List[Union[str, Dict]]:
         """
-        Produce a list of hosts managed by this worker
+        Retrieve a list of Nornir hosts managed by this worker.
 
-        :param kwargs: dictionary of nornir-salt Fx filters
+        Args:
+            details (bool): If True, returns detailed information about each host.
+            **kwargs (dict): Hosts filters to apply when retrieving hosts.
+
+        Returns:
+            List[Dict]: A list of hosts with optional detailed information.
         """
         filters = {k: kwargs.pop(k) for k in list(kwargs.keys()) if k in FFun_functions}
         filtered_nornir = FFun(self.nr, **filters)
@@ -536,19 +723,33 @@ class NornirWorker(NFPWorker):
         else:
             return Result(result=list(filtered_nornir.inventory.hosts))
 
-    def get_inventory(self, **kwargs: dict) -> dict:
+    def get_inventory(self, **kwargs: dict) -> Dict:
         """
         Retrieve running Nornir inventory for requested hosts
 
-        :param kwargs: dictionary of nornir-salt Fx filters
+        Args:
+            **kwargs (dict): Fx filters used to filter the inventory.
+
+        Returns:
+            Dict: A dictionary representation of the filtered inventory.
         """
         filters = {k: kwargs.pop(k) for k in list(kwargs.keys()) if k in FFun_functions}
         filtered_nornir = FFun(self.nr, **filters)
         return Result(result=filtered_nornir.inventory.dict(), task="get_inventory")
 
-    def get_version(self):
+    def get_version(self) -> Dict:
         """
-        Produce Python packages version report
+        Retrieve the versions of various libraries and system information.
+
+        This method collects the version information of a predefined set of libraries
+        and system details such as the Python version and platform. It attempts to
+        import each library and fetch its version. If a library is not found, it is
+        skipped.
+
+        Returns:
+            dict: a dictionary with the library names as keys and their respective
+                version numbers as values. If a library is not found, its value will be
+                an empty string.
         """
         libs = {
             "norfab": "",
@@ -596,23 +797,43 @@ class NornirWorker(NFPWorker):
         return Result(result=libs)
 
     def get_watchdog_stats(self):
+        """
+        Retrieve the statistics from the watchdog.
+
+        Returns:
+            Result: An object containing the statistics from the watchdog.
+        """
         return Result(result=self.watchdog.stats())
 
     def get_watchdog_configuration(self):
+        """
+        Retrieves the current configuration of the watchdog.
+
+        Returns:
+            Result: An object containing the watchdog configuration.
+        """
         return Result(result=self.watchdog.configuration())
 
     def get_watchdog_connections(self):
+        """
+        Retrieve the list of connections curently managed by watchdog.
+
+        Returns:
+            Result: An instance of the Result class containing the current
+                watchdog connections.
+        """
         return Result(result=self.watchdog.connections_get())
 
     def task(self, plugin: str, **kwargs) -> Result:
         """
-        Task to invoke any of supported Nornir task plugins. This function
-        performs dynamic import of requested plugin function and executes
-        ``nr.run`` using supplied args and kwargs
+        Execute a Nornir task plugin.
 
-        ``plugin`` attribute can refer to a file to fetch from file service. File must contain
-        function named ``task`` accepting Nornir task object as a first positional
-        argument, for example:
+        This method dynamically imports and executes a specified Nornir task plugin,
+        using the provided arguments and keyword arguments. The `plugin` attribute
+        can refer to a file to fetch from a file service, which must contain a function
+        named `task` that accepts a Nornir task object as the first positional argument.
+
+        Example of a custom task function file:
 
         ```python
         # define connection name for RetryRunner to properly detect it
@@ -623,15 +844,26 @@ class NornirWorker(NFPWorker):
             pass
         ```
 
-        !!! note "CONNECTION_NAME"
+        Note:
+            The `CONNECTION_NAME` must be defined within the custom task function file if
+            RetryRunner is in use. Otherwise, the connection retry logic is skipped, and
+            connections to all hosts are initiated simultaneously up to the number of `num_workers`.
 
-            ``CONNECTION_NAME`` must be defined within custom task function file if
-            RetryRunner in use, otherwise connection retry logic skipped and connections
-            to all hosts initiated simultaneously up to the number of ``num_workers``.
+        Args:
+            plugin (str): The path to the plugin function to import, or a NorFab
+                URL to download a custom task.
+            **kwargs: Additional arguments to pass to the specified task plugin.
 
-        :param plugin: (str) ``path.to.plugin.task_fun`` to import or ``nf://path/to/task.py``
-            to download custom task
-        :param kwargs: (dict) arguments to use with specified task plugin
+        Keyword Args:
+            add_details (bool): If True, adds task execution details to the results.
+            to_dict (bool): If True, returns results as a dictionary. Defaults to True.
+            Filters: Any additional keyword arguments that match FFun_functions will be used as filters.
+
+        Returns:
+            Result: An instance of the Result class containing the task execution results.
+
+        Raises:
+            FileNotFoundError: If the specified plugin file cannot be downloaded.
         """
         # extract attributes
         add_details = kwargs.pop("add_details", False)  # ResultSerializer
@@ -694,18 +926,29 @@ class NornirWorker(NFPWorker):
         **kwargs,
     ) -> dict:
         """
-        Task to collect show commands output from devices using
-        Command Line Interface (CLI)
+        Task to collect show commands output from devices using Command Line Interface (CLI).
 
-        :param commands: list of commands to send to devices
-        :param plugin: plugin name to use - valid options are ``netmiko``, ``scrapli``, ``napalm``
-        :param cli_dry_run: do not send commands to devices just return them
-        :param job_data: URL to YAML file with data or dictionary/list of data
-            to pass on to Jinja2 rendering context
-        :param add_details: if True will add task execution details to the results
-        :param to_dict: default is True - produces dictionary results, if False
-            will produce results list
-        :param run_ttp: TTP Template to run
+        Args:
+            commands (list, optional): List of commands to send to devices.
+            plugin (str, optional): Plugin name to use. Valid options are
+                ``netmiko``, ``scrapli``, ``napalm``.
+            cli_dry_run (bool, optional): If True, do not send commands to devices,
+                just return them.
+            run_ttp (str, optional): TTP Template to run.
+            job_data (str, optional): URL to YAML file with data or dictionary/list
+                of data to pass on to Jinja2 rendering context.
+            to_dict (bool, optional): If True, returns results as a dictionary.
+            add_details (bool, optional): If True, adds task execution details
+                to the results.
+            **kwargs: Additional arguments to pass to the specified task plugin.
+
+        Returns:
+            dict: A dictionary with the results of the CLI task.
+
+        Raises:
+            UnsupportedPluginError: If the specified plugin is not supported.
+            FileNotFoundError: If the specified TTP template or job data file
+                cannot be downloaded.
         """
         job_data = job_data or {}
         filters = {k: kwargs.pop(k) for k in list(kwargs.keys()) if k in FFun_functions}
@@ -794,21 +1037,6 @@ class NornirWorker(NFPWorker):
 
         return ret
 
-    def nb_get_next_ip(self, *args, **kwargs):
-        """Task to query next available IP address from Netbox service"""
-        reply = self.client.run_job(
-            "netbox",
-            "get_next_ip",
-            args=args,
-            kwargs=kwargs,
-            workers="any",
-            timeout=30,
-        )
-        # reply is a dict of {worker_name: results_dict}
-        result = list(reply.values())[0]
-
-        return result["result"]
-
     def cfg(
         self,
         config: list,
@@ -820,19 +1048,28 @@ class NornirWorker(NFPWorker):
         **kwargs,
     ) -> dict:
         """
-        Task to send configuration commands to devices using
-        Command Line Interface (CLI)
+        Task to send configuration commands to devices using Command Line Interface (CLI).
 
-        :param config: list of commands to send to devices
-        :param plugin: plugin name to use - ``netmiko``, ``scrapli``, ``napalm``
-        :param cfg_dry_run: if True, will not send commands to devices but just return them
-        :param job_data: URL to YAML file with data or dictionary/list of data
-            to pass on to Jinja2 rendering context
-        :param add_details: if True will add task execution details to the results
-        :param to_dict: default is True - produces dictionary results, if False
-            will produce results list
-        :param kwargs: additional arguments to pass to the task plugin
-        :return: dictionary with the results of the configuration task
+        Args:
+            config (list): List of commands to send to devices.
+            plugin (str, optional): Plugin name to use. Valid options are:
+
+                - netmiko - use Netmiko to confiugre devices
+                - scrapli - use Scrapli to confiugre devices
+                - napalm - use NAPALM to confiugre devices
+
+            cfg_dry_run (bool, optional): If True, will not send commands to devices but just return them.
+            to_dict (bool, optional): If True, returns results as a dictionary. Defaults to True.
+            add_details (bool, optional): If True, adds task execution details to the results.
+            job_data (str, optional): URL to YAML file with data or dictionary/list of data to pass on to Jinja2 rendering context.
+            **kwargs: Additional arguments to pass to the task plugin.
+
+        Returns:
+            dict: A dictionary with the results of the configuration task.
+
+        Raises:
+            UnsupportedPluginError: If the specified plugin is not supported.
+            FileNotFoundError: If the specified job data file cannot be downloaded.
         """
         downloaded_cfg = []
         config = config if isinstance(config, list) else [config]
@@ -916,20 +1153,27 @@ class NornirWorker(NFPWorker):
         **kwargs,
     ) -> dict:
         """
-        Function to tests data obtained from devices.
+        Function to test networks using a suite of tests.
 
-        :param suite: path to YAML file with tests
-        :param dry_run: if True, returns produced per-host tests suite content only
-        :param subset: list or string with comma separated non case sensitive glob
-            patterns to filter tests' by name, subset argument ignored by dry run
-        :param failed_only: if True returns test results for failed tests only
-        :param remove_tasks: if False results will include other tasks output
-        :param return_tests_suite: if True returns rendered per-host tests suite
-            content in addition to test results using dictionary with ``results``
-            and ``suite`` keys
-        :param job_data: URL to YAML file with data or dictionary/list of data
-            to pass on to Jinja2 rendering context
-        :param kwargs: any additional arguments to pass on to Nornir service task
+        Args:
+            suite (Union[list, str]): Path to YAML file with tests or a list of test definitions.
+            subset (str, optional): List or string with comma-separated non-case-sensitive glob
+                patterns to filter tests by name. Ignored if dry_run is True.
+            dry_run (bool, optional): If True, returns produced per-host tests suite content only.
+            remove_tasks (bool, optional): If False, results will include other tasks output.
+            failed_only (bool, optional): If True, returns test results for failed tests only.
+            return_tests_suite (bool, optional): If True, returns rendered per-host tests suite
+                content in addition to test results using a dictionary with ``results`` and ``suite`` keys.
+            job_data (str, optional): URL to YAML file with data or dictionary/list of data
+                to pass on to Jinja2 rendering context.
+            **kwargs: Any additional arguments to pass on to the Nornir service task.
+
+        Returns:
+            dict: A dictionary containing the test results. If `return_tests_suite` is True,
+                the dictionary will contain both the test results and the rendered test suite.
+
+        Raises:
+            RuntimeError: If there is an error in rendering the Jinja2 templates or loading the YAML.
         """
         tests = {}  # dictionary to hold per-host test suites
         add_details = kwargs.get("add_details", False)  # ResultSerializer
@@ -1064,34 +1308,34 @@ class NornirWorker(NFPWorker):
         return ret
 
     def netconf(self) -> dict:
-        pass
+        raise NotImplementedError("NETCONF task is not implemented yet")
 
     def gnmi(self) -> dict:
-        pass
+        raise NotImplementedError("GNMI task is not implemented yet")
 
     def snmp(self) -> dict:
-        pass
+        raise NotImplementedError("SNMP task is not implemented yet")
 
     def network(self, fun, **kwargs) -> dict:
         """
-        Task to call various network related utility functions.
+        Task to call various network-related utility functions.
 
-        :param fun: (str) utility function name to call
-        :param kwargs: (dict) function arguments
+        Args:
+            fun (str): The name of the utility function to call.
+            kwargs (dict): Arguments to pass to the utility function.
 
-        Available utility functions.
+        Available utility functions:
 
-        **resolve_dns** function
+        - **resolve_dns** Resolves hosts' hostname DNS, returning IP addresses using
+            `nornir_salt.plugins.tasks.network.resolve_dns` Nornir-Salt function.
+        - **ping** Executes ICMP ping to host using `nornir_salt.plugins.tasks.network.ping`
+            Nornir-Salt function.
 
-        resolves hosts' hostname DNS returning IP addresses using
-        ``nornir_salt.plugins.tasks.network.resolve_dns`` Nornir-Salt
-        function.
+        Returns:
+            dict: A dictionary containing the results of the network utility function.
 
-        **ping** function
-
-        Function to execute ICMP ping to host using
-        ``nornir_salt.plugins.tasks.network.ping`` Nornir-Salt
-        function.
+        Raises:
+            UnsupportedPluginError: If the specified utility function is not supported.
         """
         kwargs["call"] = fun
         return self.task(
@@ -1110,14 +1354,27 @@ class NornirWorker(NFPWorker):
         **kwargs,
     ):
         """
-        Function to parse network devices show commands output
+        Parse network device output using specified plugin and options.
 
-        :param plugin: plugin name to use - ``napalm``, ``textfsm``, ``ttp``
-        :param getters: NAPALM getters to use
-        :param commands: commands to send to devices for TextFSM or TTP template
-        :param template: TextFSM or TTP parsing template string or path to file
+        Args:
+            plugin (str): The plugin to use for parsing. Options are:
 
-        For NAPALM plugin ``method`` can refer to a list of getters names.
+                - napalm - parse devices output using NAPALM getters
+                - ttp - use TTP Templates to parse devices output
+                - textfsm - use TextFSM templates to parse devices output
+
+            getters (str): The getters to use with the "napalm" plugin.
+            template (str): The template to use with the "ttp" or "textfsm" plugin.
+            commands (list): The list of commands to run with the "ttp" or "textfsm" plugin.
+            to_dict (bool): Whether to convert the result to a dictionary.
+            add_details (bool): Whether to add details to the result.
+            **kwargs: Additional keyword arguments to pass to the plugin.
+
+        Returns:
+            Result: A Result object containing the parsed data.
+
+        Raises:
+            UnsupportedPluginError: If the specified plugin is not supported.
         """
         filters = {k: kwargs.pop(k) for k in list(kwargs.keys()) if k in FFun_functions}
         ret = Result(task=f"{self.name}:parse", result={} if to_dict else [])
@@ -1176,17 +1433,27 @@ class NornirWorker(NFPWorker):
         add_details: bool = False,
         dry_run: bool = False,
         **kwargs,
-    ) -> dict:
+    ) -> Dict:
         """
-        Task to transfer files to and from hosts using SCP
+        Task to transfer files to and from hosts using SCP.
 
-        :param source_file: path to file to copy, support ``nf://path/to/file`` URL to copy from broker
-        :param plugin: plugin name to use - ``netmiko``
-        :param to_dict: default is True - produces dictionary results, if False produces list
-        :param add_details: if True will add task execution details to the results
-        :param dry_run: if True will not copy files just return what would be copied
-        :param kwargs: additional arguments to pass to the plugin function
-        :return: dictionary with the results of the file copy task
+        Args:
+            source_file (str): The path or URL of the source file to be copied in
+                ``nf://path/to/file`` format
+            plugin (str, optional): The plugin to use for file transfer. Supported plugins:
+
+                - netmiko - uses `netmiko_file_transfer` task plugin.
+
+            to_dict (bool, optional): Whether to return the result as a dictionary. Defaults to True.
+            add_details (bool, optional): Whether to add detailed information to the result. Defaults to False.
+            dry_run (bool, optional): If True, performs a dry run without making any changes. Defaults to False.
+            **kwargs: Additional arguments to pass to the file transfer plugin.
+
+        Returns:
+            dict: The result of the file copy operation.
+
+        Raises:
+            UnsupportedPluginError: If the specified plugin is not supported.
         """
         filters = {k: kwargs.pop(k) for k in list(kwargs.keys()) if k in FFun_functions}
         timeout = self.current_job["timeout"] * 0.9
@@ -1240,7 +1507,7 @@ class NornirWorker(NFPWorker):
 
     def runtime_inventory(self, action, **kwargs) -> dict:
         """
-        Method to work with Nornir inventory in a runtime.
+        Task to work with Nornir runtime (in-memory) inventory.
 
         Supported actions:
 
@@ -1256,10 +1523,26 @@ class NornirWorker(NFPWorker):
         - `list_hosts_platforms` - return a dictionary of hosts' platforms
         - `update_defaults` - non recursively update defaults attributes
 
-        :param action: action to perform on inventory
-        :param kwargs: argument to use with the calling action
+        Args:
+            action: action to perform on inventory
+            kwargs: argument to use with the calling action
         """
         # clean up kwargs
         _ = kwargs.pop("progress", None)
         self.event(f"Performing '{action}' action")
         return Result(result=InventoryFun(self.nr, call=action, **kwargs))
+
+    def nb_get_next_ip(self, *args, **kwargs):
+        """Task to query next available IP address from Netbox service"""
+        reply = self.client.run_job(
+            "netbox",
+            "get_next_ip",
+            args=args,
+            kwargs=kwargs,
+            workers="any",
+            timeout=30,
+        )
+        # reply is a dict of {worker_name: results_dict}
+        result = list(reply.values())[0]
+
+        return result["result"]

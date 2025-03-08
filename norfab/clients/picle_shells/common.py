@@ -134,7 +134,8 @@ def log_error_or_result(data: dict) -> dict:
 
     Returns dictionary keyed by worker name with job results as a value.
 
-    :param data: result returned bu NFPCLIENT.run_job function
+    Args:
+        data: result returned bu NFPCLIENT.run_job function
     """
     ret = {}
 

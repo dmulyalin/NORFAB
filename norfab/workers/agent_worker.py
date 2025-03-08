@@ -3,19 +3,12 @@ import logging
 import sys
 import importlib.metadata
 from norfab.core.worker import NFPWorker, Result
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_ollama.llms import OllamaLLM
 
 SERVICE = "agent"
 
 log = logging.getLogger(__name__)
-
-try:
-    from langchain_core.prompts import ChatPromptTemplate
-    from langchain_ollama.llms import OllamaLLM
-
-    HAS_LIBS = True
-except ImportError:
-    HAS_LIBS = False
-    log.error("AI Agent Worker - failed to import needed libraries.")
 
 
 class AgentWorker(NFPWorker):

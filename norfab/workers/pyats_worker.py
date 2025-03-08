@@ -25,11 +25,12 @@ except ImportError:
 
 class PyAtsWorker(NFPWorker):
     """
-    :param broker: broker URL to connect to
-    :param worker_name: name of this worker
-    :param exit_event: if set, worker need to stop/exit
-    :param init_done_event: event to set when worker done initializing
-    :param log_level: logging level of this worker
+    Args:
+        broker: broker URL to connect to
+        worker_name: name of this worker
+        exit_event: if set, worker need to stop/exit
+        init_done_event: event to set when worker done initializing
+        log_level: logging level of this worker
     """
 
     def __init__(
