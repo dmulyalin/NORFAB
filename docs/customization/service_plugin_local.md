@@ -5,7 +5,7 @@ tags:
 
 ## NorFab Custom Service Plugin Tutorial
 
-The simplest way to start with NorFab plugins is to use create plugin within NorFab base directory, directory where `inventory.yaml` file resides.
+The simplest way to start with NorFab plugins is to create plugin within NorFab base directory, directory where `inventory.yaml` file resides.
 
 In this tutorial we going to create `DummyService` and its worker. We going to define two tasks that worker can execute - `get_version` and `get_inventory` to retrieve worker's version and inventory details. In addition we going to define a set of custom nfcli shell commands to interact with custom `DummyService` from interactive command line shell.
 

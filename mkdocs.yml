@@ -77,13 +77,12 @@ theme:
 nav:
 - NORFAB: 
     - Introduction: index.md
-    - Installation: norfab_installation.md
-    - Getting Started: norfab_getting_started.md
     - Why use NORFAB: norfab_why_use_norfab.md
-    - Distributed Deployment: norfab_distributed_deployment.md
+    - Getting Started: norfab_getting_started.md
     - Docker Deployment: norfab_docker_deployment.md
+    - Distributed Deployment: norfab_distributed_deployment.md
+    - Installation Extras: norfab_installation.md
     - Help with NORFAB: norfab_help_with_norfab.md
-    - Changelog: norfab_changelog.md
     - Services:
         - Services Overview: services_overview.md
         - Nornir Service: 
@@ -120,7 +119,7 @@ nav:
             - Inventory: workers/agent/services_agent_service_inventory.md
             - Tasks:
               - Chat: workers/agent/services_agent_service_tasks_chat.md
-        - FastAPI Service:
+        - FastAPI REST API Service:
             - Overview: workers/fastapi/services_fastapi_service.md
             - Inventory: workers/fastapi/services_fastapi_service_inventory.md
             - Tasks:
@@ -132,11 +131,10 @@ nav:
             - Jobs Service: services_norfab_jobs_service.md
             - Events Service: services_norfab_events_service.md
     - Clients:
-        - NORFAB Clients: clients_overview.md
-        - NFCLI Shell: clients_nfcli_overview.md
-        - Python API: clients_python_api_overview.md
-        - REST API: clients_rest_api_overview.md
-        - ROBOT API: clients_robot_client_overview.md
+        - Clients Overview: clients_overview.md
+        - NFCLI Shell Client: clients_nfcli_overview.md
+        - Python API Client: clients_python_api_overview.md
+        - ROBOT Client: clients_robot_client_overview.md
     - Customization:
         - NORFAB Hooks System: customization/norfab_hooks.md
         - Service Plugins: 
@@ -145,6 +143,7 @@ nav:
           - Python Module Plugin: customization/service_plugin_module.md
 - References:
     - NORFAB Inventory: reference_norfab_inventory.md
+    - Changelog: norfab_changelog.md
     - API Reference:
         - CORE:
           - NFAPI (Python API): api_reference_core_norfab_nfapi.md

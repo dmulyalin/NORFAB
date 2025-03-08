@@ -12,7 +12,7 @@ ROBOT domain specific language (DSL).
 Robot Framework needs to be installed on the client:
 
 ```
-pip install robotframework
+pip install norfab[robot]
 ```
 
 ## Supported ROBOT Keywords    

@@ -53,6 +53,22 @@ To install Netbox service dependencies
 pip install norfab[netboxservice]
 ```
 
+### FastAPI Service Dependencies
+
+To install FastAPI service dependencies
+
+```
+pip install norfab[fastapiservice]
+```
+
+### Ollama Agent Service Dependencies
+
+To install Ollama Agent service dependencies
+
+```
+pip install norfab[agentservice]
+```
+
 ## Operating Systems Support
 
 | Component      | Windows      | Linux        | MacOS        |
@@ -60,7 +76,3 @@ pip install norfab[netboxservice]
 | NorFab Core    | :check_mark: | :check_mark: | :check_mark: |
 | Nornir Service | :check_mark: | :check_mark: | :check_mark: |
 | Netbox Service | :check_mark: | :check_mark: | :check_mark: |
-
-## Dependencies Matrix
-
-TBD

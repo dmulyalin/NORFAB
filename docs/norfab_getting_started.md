@@ -9,6 +9,16 @@ The simplest way to start with NorFab is to do local deployment when broker, wor
 
 Client, broker and worker all should be able to run on same machine Windows, Linux or MAC.
 
+First, install NorFab using pip:
+
+```
+pip install norfab
+pip install norfab[nfcli]
+pip install norfab[nornir]
+```
+
+Above installs NorFab core components plus extas needed to run nfcli anf Nornir service worers. 
+
 Once NorFab installed, next step is to create a folder that will hold your environment. Run this command to create NorFab folders and files:
 
 ```
