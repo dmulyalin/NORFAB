@@ -15,10 +15,10 @@
         <link rel="canonical" href="https://docs.norfablabs.com/norfab_getting_started/">
       
       
-        <link rel="prev" href="../norfab_installation/">
+        <link rel="prev" href="../norfab_why_use_norfab/">
       
       
-        <link rel="next" href="../norfab_why_use_norfab/">
+        <link rel="next" href="../norfab_docker_deployment/">
       
       
       <link rel="icon" href="../images/logo.jpg">
@@ -386,11 +386,11 @@
   
   
     <li class="md-nav__item">
-      <a href="../norfab_installation/" class="md-nav__link">
+      <a href="../norfab_why_use_norfab/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Installation
+    Why use NORFAB
     
   </span>
   
@@ -438,11 +438,11 @@
   
   
     <li class="md-nav__item">
-      <a href="../norfab_why_use_norfab/" class="md-nav__link">
+      <a href="../norfab_docker_deployment/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Why use NORFAB
+    Docker Deployment
     
   </span>
   
@@ -482,11 +482,11 @@
   
   
     <li class="md-nav__item">
-      <a href="../norfab_docker_deployment/" class="md-nav__link">
+      <a href="../norfab_installation/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Docker Deployment
+    Installation Extras
     
   </span>
   
@@ -2900,6 +2900,12 @@
 <p>The simplest way to start with NorFab is to do local deployment when broker, workers and client processes all run locally, this is what we going to demonstrate in this guide.</p>
 <p><img alt="Network Automations Fabric Architecture" src="../images/local_run.jpg" /></p>
 <p>Client, broker and worker all should be able to run on same machine Windows, Linux or MAC.</p>
+<p>First, install NorFab using pip:</p>
+<div class="highlight"><pre><span></span><code>pip install norfab
+pip install norfab[nfcli]
+pip install norfab[nornir]
+</code></pre></div>
+<p>Above installs NorFab core components plus extas needed to run nfcli anf Nornir service worers. </p>
 <p>Once NorFab installed, next step is to create a folder that will hold your environment. Run this command to create NorFab folders and files:</p>
 <div class="highlight"><pre><span></span><code>nfcli --create-env norfab
 </code></pre></div>
