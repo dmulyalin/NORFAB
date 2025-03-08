@@ -8,7 +8,7 @@
 # ![logo](docs/images/logo_small.jpg) Network Automations Fabric - NORFAB
 
 ---
-**Documentation**: [NorFab Docs](https://dmulyalin.github.io/NORFAB/)
+**Documentation**: [NorFab Docs](https://docs.norfablabs.com)
 
 ---
 

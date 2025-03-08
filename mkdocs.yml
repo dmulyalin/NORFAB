@@ -1,6 +1,6 @@
 site_description: Network Automations Fabric documentation
 site_name: Network Automations Fabric [NORFAB]
-site_url: https://docs.norfablabs.com
+site_url: https://docs.norfablabs.com/
 extra:
   social:
   - icon: fontawesome/brands/github-alt
@@ -36,7 +36,7 @@ plugins:
               show_signature_annotations: true
               merge_init_into_class: true
 repo_name: dmulyalin/norfab
-repo_url: https://github.com/dmulyalin/norfab
+repo_url: https://github.com/dmulyalin/norfab/
 site_author: Denis Mulyalin
 theme:
   logo: images/logo.jpg
