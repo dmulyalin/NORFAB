@@ -22,7 +22,7 @@
       
       
       <link rel="icon" href="../../../images/logo.jpg">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.5">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.7">
     
     
       
@@ -3054,7 +3054,7 @@
                 <code>filters</code>
             </td>
             <td>
-                  <code>list</code>
+                  <code><span title="list">list</span></code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -3070,7 +3070,7 @@
                 <code>devices</code>
             </td>
             <td>
-                  <code>list</code>
+                  <code><span title="list">list</span></code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -3086,7 +3086,7 @@
                 <code>instance</code>
             </td>
             <td>
-                  <code>str</code>
+                  <code><span title="str">str</span></code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -3102,7 +3102,7 @@
                 <code>interfaces</code>
             </td>
             <td>
-                  <code><span title="typing.Union">Union</span>[dict, bool]</code>
+                  <code><span title="typing.Union">Union</span>[<span title="dict">dict</span>, <span title="bool">bool</span>]</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -3119,7 +3119,7 @@
                 <code>connections</code>
             </td>
             <td>
-                  <code><span title="typing.Union">Union</span>[dict, bool]</code>
+                  <code><span title="typing.Union">Union</span>[<span title="dict">dict</span>, <span title="bool">bool</span>]</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -3136,7 +3136,7 @@
                 <code>circuits</code>
             </td>
             <td>
-                  <code><span title="typing.Union">Union</span>[dict, bool]</code>
+                  <code><span title="typing.Union">Union</span>[<span title="dict">dict</span>, <span title="bool">bool</span>]</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -3153,7 +3153,7 @@
                 <code>nbdata</code>
             </td>
             <td>
-                  <code>bool</code>
+                  <code><span title="bool">bool</span></code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -3169,7 +3169,7 @@
                 <code>primary_ip</code>
             </td>
             <td>
-                  <code>str</code>
+                  <code><span title="str">str</span></code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -3196,7 +3196,7 @@
       <tbody>
           <tr class="doc-section-item">
 <td><code>dict</code></td>            <td>
-                  <code>dict</code>
+                  <code><span title="dict">dict</span></code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -3209,7 +3209,18 @@
 
             <details class="quote">
               <summary>Source code in <code>norfab\workers\netbox_worker.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1483</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1472</span>
+<span class="normal">1473</span>
+<span class="normal">1474</span>
+<span class="normal">1475</span>
+<span class="normal">1476</span>
+<span class="normal">1477</span>
+<span class="normal">1478</span>
+<span class="normal">1479</span>
+<span class="normal">1480</span>
+<span class="normal">1481</span>
+<span class="normal">1482</span>
+<span class="normal">1483</span>
 <span class="normal">1484</span>
 <span class="normal">1485</span>
 <span class="normal">1486</span>
@@ -3320,18 +3331,7 @@
 <span class="normal">1591</span>
 <span class="normal">1592</span>
 <span class="normal">1593</span>
-<span class="normal">1594</span>
-<span class="normal">1595</span>
-<span class="normal">1596</span>
-<span class="normal">1597</span>
-<span class="normal">1598</span>
-<span class="normal">1599</span>
-<span class="normal">1600</span>
-<span class="normal">1601</span>
-<span class="normal">1602</span>
-<span class="normal">1603</span>
-<span class="normal">1604</span>
-<span class="normal">1605</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_nornir_inventory</span><span class="p">(</span>
+<span class="normal">1594</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_nornir_inventory</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">filters</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">devices</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -3545,7 +3545,7 @@
     <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.top", "toc.follow", "navigation.instant", "navigation.instant.progress", "content.footnote.tooltips", "content.code.copy", "content.code.annotate"], "search": "../../../assets/javascripts/workers/search.f8cc74c7.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../../assets/javascripts/bundle.f1b6f286.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.c8b220af.min.js"></script>
       
     
   </body>

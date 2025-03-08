@@ -22,7 +22,7 @@
       
       
       <link rel="icon" href="../../../images/logo.jpg">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.5">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.7">
     
     
       
@@ -3142,66 +3142,155 @@ nf#
 
     <div class="doc doc-contents first">
 
-        <p>Task to call various network related utility functions.</p>
-<p>:param fun: (str) utility function name to call
-:param kwargs: (dict) function arguments</p>
-<p>Available utility functions.</p>
-<p><strong>resolve_dns</strong> function</p>
-<p>resolves hosts' hostname DNS returning IP addresses using
-<code>nornir_salt.plugins.tasks.network.resolve_dns</code> Nornir-Salt
-function.</p>
-<p><strong>ping</strong> function</p>
-<p>Function to execute ICMP ping to host using
-<code>nornir_salt.plugins.tasks.network.ping</code> Nornir-Salt
-function.</p>
+        <p>Task to call various network-related utility functions.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>fun</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The name of the utility function to call.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>kwargs</code>
+            </td>
+            <td>
+                  <code><span title="dict">dict</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Arguments to pass to the utility function.</p>
+              </div>
+            </td>
+            <td>
+                  <code>{}</code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+        <p>Available utility functions:</p>
+<ul>
+<li><strong>resolve_dns</strong> Resolves hosts' hostname DNS, returning IP addresses using
+    <code>nornir_salt.plugins.tasks.network.resolve_dns</code> Nornir-Salt function.</li>
+<li><strong>ping</strong> Executes ICMP ping to host using <code>nornir_salt.plugins.tasks.network.ping</code>
+    Nornir-Salt function.</li>
+</ul>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+<th>Name</th>          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+<td><code>dict</code></td>            <td>
+                  <code><span title="dict">dict</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>A dictionary containing the results of the network utility function.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+<p><span class="doc-section-title">Raises:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="norfab.core.exceptions.UnsupportedPluginError" href="../../../api_reference_core_norfab_exceptions/#norfab.core.exceptions.UnsupportedPluginError">UnsupportedPluginError</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>If the specified utility function is not supported.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
 
             <details class="quote">
               <summary>Source code in <code>norfab\workers\nornir_worker.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1075</span>
-<span class="normal">1076</span>
-<span class="normal">1077</span>
-<span class="normal">1078</span>
-<span class="normal">1079</span>
-<span class="normal">1080</span>
-<span class="normal">1081</span>
-<span class="normal">1082</span>
-<span class="normal">1083</span>
-<span class="normal">1084</span>
-<span class="normal">1085</span>
-<span class="normal">1086</span>
-<span class="normal">1087</span>
-<span class="normal">1088</span>
-<span class="normal">1089</span>
-<span class="normal">1090</span>
-<span class="normal">1091</span>
-<span class="normal">1092</span>
-<span class="normal">1093</span>
-<span class="normal">1094</span>
-<span class="normal">1095</span>
-<span class="normal">1096</span>
-<span class="normal">1097</span>
-<span class="normal">1098</span>
-<span class="normal">1099</span>
-<span class="normal">1100</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">network</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fun</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1319</span>
+<span class="normal">1320</span>
+<span class="normal">1321</span>
+<span class="normal">1322</span>
+<span class="normal">1323</span>
+<span class="normal">1324</span>
+<span class="normal">1325</span>
+<span class="normal">1326</span>
+<span class="normal">1327</span>
+<span class="normal">1328</span>
+<span class="normal">1329</span>
+<span class="normal">1330</span>
+<span class="normal">1331</span>
+<span class="normal">1332</span>
+<span class="normal">1333</span>
+<span class="normal">1334</span>
+<span class="normal">1335</span>
+<span class="normal">1336</span>
+<span class="normal">1337</span>
+<span class="normal">1338</span>
+<span class="normal">1339</span>
+<span class="normal">1340</span>
+<span class="normal">1341</span>
+<span class="normal">1342</span>
+<span class="normal">1343</span>
+<span class="normal">1344</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">network</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fun</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Task to call various network related utility functions.</span>
+<span class="sd">    Task to call various network-related utility functions.</span>
 
-<span class="sd">    :param fun: (str) utility function name to call</span>
-<span class="sd">    :param kwargs: (dict) function arguments</span>
+<span class="sd">    Args:</span>
+<span class="sd">        fun (str): The name of the utility function to call.</span>
+<span class="sd">        kwargs (dict): Arguments to pass to the utility function.</span>
 
-<span class="sd">    Available utility functions.</span>
+<span class="sd">    Available utility functions:</span>
 
-<span class="sd">    **resolve_dns** function</span>
+<span class="sd">    - **resolve_dns** Resolves hosts&#39; hostname DNS, returning IP addresses using</span>
+<span class="sd">        `nornir_salt.plugins.tasks.network.resolve_dns` Nornir-Salt function.</span>
+<span class="sd">    - **ping** Executes ICMP ping to host using `nornir_salt.plugins.tasks.network.ping`</span>
+<span class="sd">        Nornir-Salt function.</span>
 
-<span class="sd">    resolves hosts&#39; hostname DNS returning IP addresses using</span>
-<span class="sd">    ``nornir_salt.plugins.tasks.network.resolve_dns`` Nornir-Salt</span>
-<span class="sd">    function.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        dict: A dictionary containing the results of the network utility function.</span>
 
-<span class="sd">    **ping** function</span>
-
-<span class="sd">    Function to execute ICMP ping to host using</span>
-<span class="sd">    ``nornir_salt.plugins.tasks.network.ping`` Nornir-Salt</span>
-<span class="sd">    function.</span>
+<span class="sd">    Raises:</span>
+<span class="sd">        UnsupportedPluginError: If the specified utility function is not supported.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;call&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fun</span>
     <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">task</span><span class="p">(</span>
@@ -3299,7 +3388,7 @@ function.</p>
     <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.top", "toc.follow", "navigation.instant", "navigation.instant.progress", "content.footnote.tooltips", "content.code.copy", "content.code.annotate"], "search": "../../../assets/javascripts/workers/search.f8cc74c7.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../../assets/javascripts/bundle.f1b6f286.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.c8b220af.min.js"></script>
       
     
   </body>

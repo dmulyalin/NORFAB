@@ -22,7 +22,7 @@
       
       
       <link rel="icon" href="../../../images/logo.jpg">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.5">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.7">
     
     
       
@@ -3116,7 +3116,7 @@ nf#
 
     <div class="doc doc-contents first">
 
-        <p>Method to work with Nornir inventory in a runtime.</p>
+        <p>Task to work with Nornir runtime (in-memory) inventory.</p>
 <p>Supported actions:</p>
 <ul>
 <li><code>create_host</code> or <code>create</code> - creates new host or replaces existing host object</li>
@@ -3131,38 +3131,82 @@ nf#
 <li><code>list_hosts_platforms</code> - return a dictionary of hosts' platforms</li>
 <li><code>update_defaults</code> - non recursively update defaults attributes</li>
 </ul>
-<p>:param action: action to perform on inventory
-:param kwargs: argument to use with the calling action</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>action</code>
+            </td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>action to perform on inventory</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>kwargs</code>
+            </td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>argument to use with the calling action</p>
+              </div>
+            </td>
+            <td>
+                  <code>{}</code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
 
             <details class="quote">
               <summary>Source code in <code>norfab\workers\nornir_worker.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1241</span>
-<span class="normal">1242</span>
-<span class="normal">1243</span>
-<span class="normal">1244</span>
-<span class="normal">1245</span>
-<span class="normal">1246</span>
-<span class="normal">1247</span>
-<span class="normal">1248</span>
-<span class="normal">1249</span>
-<span class="normal">1250</span>
-<span class="normal">1251</span>
-<span class="normal">1252</span>
-<span class="normal">1253</span>
-<span class="normal">1254</span>
-<span class="normal">1255</span>
-<span class="normal">1256</span>
-<span class="normal">1257</span>
-<span class="normal">1258</span>
-<span class="normal">1259</span>
-<span class="normal">1260</span>
-<span class="normal">1261</span>
-<span class="normal">1262</span>
-<span class="normal">1263</span>
-<span class="normal">1264</span>
-<span class="normal">1265</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">runtime_inventory</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">action</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1508</span>
+<span class="normal">1509</span>
+<span class="normal">1510</span>
+<span class="normal">1511</span>
+<span class="normal">1512</span>
+<span class="normal">1513</span>
+<span class="normal">1514</span>
+<span class="normal">1515</span>
+<span class="normal">1516</span>
+<span class="normal">1517</span>
+<span class="normal">1518</span>
+<span class="normal">1519</span>
+<span class="normal">1520</span>
+<span class="normal">1521</span>
+<span class="normal">1522</span>
+<span class="normal">1523</span>
+<span class="normal">1524</span>
+<span class="normal">1525</span>
+<span class="normal">1526</span>
+<span class="normal">1527</span>
+<span class="normal">1528</span>
+<span class="normal">1529</span>
+<span class="normal">1530</span>
+<span class="normal">1531</span>
+<span class="normal">1532</span>
+<span class="normal">1533</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">runtime_inventory</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">action</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Method to work with Nornir inventory in a runtime.</span>
+<span class="sd">    Task to work with Nornir runtime (in-memory) inventory.</span>
 
 <span class="sd">    Supported actions:</span>
 
@@ -3178,8 +3222,9 @@ nf#
 <span class="sd">    - `list_hosts_platforms` - return a dictionary of hosts&#39; platforms</span>
 <span class="sd">    - `update_defaults` - non recursively update defaults attributes</span>
 
-<span class="sd">    :param action: action to perform on inventory</span>
-<span class="sd">    :param kwargs: argument to use with the calling action</span>
+<span class="sd">    Args:</span>
+<span class="sd">        action: action to perform on inventory</span>
+<span class="sd">        kwargs: argument to use with the calling action</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># clean up kwargs</span>
     <span class="n">_</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;progress&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
@@ -3276,7 +3321,7 @@ nf#
     <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.top", "toc.follow", "navigation.instant", "navigation.instant.progress", "content.footnote.tooltips", "content.code.copy", "content.code.annotate"], "search": "../../../assets/javascripts/workers/search.f8cc74c7.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../../assets/javascripts/bundle.f1b6f286.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.c8b220af.min.js"></script>
       
     
   </body>
