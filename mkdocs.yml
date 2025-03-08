@@ -1,6 +1,6 @@
 site_description: Network Automations Fabric documentation
 site_name: Network Automations Fabric [NORFAB]
-site_url: https://dmulyalin.github.io/NORFAB/
+site_url: https://docs.norfablabs.com
 extra:
   social:
   - icon: fontawesome/brands/github-alt
