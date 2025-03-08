@@ -1,263 +1,263 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
-         <loc>https://dmulyalin.github.io/NORFAB/</loc>
+         <loc>https://docs.norfablabs.com/</loc>
          <lastmod>2025-03-08</lastmod>
     </url>
     <url>
-         <loc>https://dmulyalin.github.io/NORFAB/api_reference_clients_nfcli_client/</loc>
+         <loc>https://docs.norfablabs.com/api_reference_clients_nfcli_client/</loc>
          <lastmod>2025-03-08</lastmod>
     </url>
     <url>
-         <loc>https://dmulyalin.github.io/NORFAB/api_reference_clients_robot_client/</loc>
+         <loc>https://docs.norfablabs.com/api_reference_clients_robot_client/</loc>
          <lastmod>2025-03-08</lastmod>
     </url>
     <url>
-         <loc>https://dmulyalin.github.io/NORFAB/api_reference_core_norfab_broker/</loc>
+         <loc>https://docs.norfablabs.com/api_reference_core_norfab_broker/</loc>
          <lastmod>2025-03-08</lastmod>
     </url>
     <url>
-         <loc>https://dmulyalin.github.io/NORFAB/api_reference_core_norfab_client/</loc>
+         <loc>https://docs.norfablabs.com/api_reference_core_norfab_client/</loc>
          <lastmod>2025-03-08</lastmod>
     </url>
     <url>
-         <loc>https://dmulyalin.github.io/NORFAB/api_reference_core_norfab_exceptions/</loc>
+         <loc>https://docs.norfablabs.com/api_reference_core_norfab_exceptions/</loc>
          <lastmod>2025-03-08</lastmod>
     </url>
     <url>
-         <loc>https://dmulyalin.github.io/NORFAB/api_reference_core_norfab_nfapi/</loc>
+         <loc>https://docs.norfablabs.com/api_reference_core_norfab_nfapi/</loc>
          <lastmod>2025-03-08</lastmod>
     </url>
     <url>
-         <loc>https://dmulyalin.github.io/NORFAB/api_reference_core_norfab_simple_inventory/</loc>
+         <loc>https://docs.norfablabs.com/api_reference_core_norfab_simple_inventory/</loc>
          <lastmod>2025-03-08</lastmod>
     </url>
     <url>
-         <loc>https://dmulyalin.github.io/NORFAB/api_reference_core_norfab_worker/</loc>
+         <loc>https://docs.norfablabs.com/api_reference_core_norfab_worker/</loc>
          <lastmod>2025-03-08</lastmod>
     </url>
     <url>
-         <loc>https://dmulyalin.github.io/NORFAB/clients_nfcli_overview/</loc>
+         <loc>https://docs.norfablabs.com/clients_nfcli_overview/</loc>
          <lastmod>2025-03-08</lastmod>
     </url>
     <url>
-         <loc>https://dmulyalin.github.io/NORFAB/clients_overview/</loc>
+         <loc>https://docs.norfablabs.com/clients_overview/</loc>
          <lastmod>2025-03-08</lastmod>
     </url>
     <url>
-         <loc>https://dmulyalin.github.io/NORFAB/clients_python_api_overview/</loc>
+         <loc>https://docs.norfablabs.com/clients_python_api_overview/</loc>
          <lastmod>2025-03-08</lastmod>
     </url>
     <url>
-         <loc>https://dmulyalin.github.io/NORFAB/clients_rest_api_overview/</loc>
+         <loc>https://docs.norfablabs.com/clients_rest_api_overview/</loc>
          <lastmod>2025-03-08</lastmod>
     </url>
     <url>
-         <loc>https://dmulyalin.github.io/NORFAB/clients_robot_client_overview/</loc>
+         <loc>https://docs.norfablabs.com/clients_robot_client_overview/</loc>
          <lastmod>2025-03-08</lastmod>
     </url>
     <url>
-         <loc>https://dmulyalin.github.io/NORFAB/norfab_changelog/</loc>
+         <loc>https://docs.norfablabs.com/norfab_changelog/</loc>
          <lastmod>2025-03-08</lastmod>
     </url>
     <url>
-         <loc>https://dmulyalin.github.io/NORFAB/norfab_distributed_deployment/</loc>
+         <loc>https://docs.norfablabs.com/norfab_distributed_deployment/</loc>
          <lastmod>2025-03-08</lastmod>
     </url>
     <url>
-         <loc>https://dmulyalin.github.io/NORFAB/norfab_docker_deployment/</loc>
+         <loc>https://docs.norfablabs.com/norfab_docker_deployment/</loc>
          <lastmod>2025-03-08</lastmod>
     </url>
     <url>
-         <loc>https://dmulyalin.github.io/NORFAB/norfab_getting_started/</loc>
+         <loc>https://docs.norfablabs.com/norfab_getting_started/</loc>
          <lastmod>2025-03-08</lastmod>
     </url>
     <url>
-         <loc>https://dmulyalin.github.io/NORFAB/norfab_help_with_norfab/</loc>
+         <loc>https://docs.norfablabs.com/norfab_help_with_norfab/</loc>
          <lastmod>2025-03-08</lastmod>
     </url>
     <url>
-         <loc>https://dmulyalin.github.io/NORFAB/norfab_installation/</loc>
+         <loc>https://docs.norfablabs.com/norfab_installation/</loc>
          <lastmod>2025-03-08</lastmod>
     </url>
     <url>
-         <loc>https://dmulyalin.github.io/NORFAB/norfab_why_use_norfab/</loc>
+         <loc>https://docs.norfablabs.com/norfab_why_use_norfab/</loc>
          <lastmod>2025-03-08</lastmod>
     </url>
     <url>
-         <loc>https://dmulyalin.github.io/NORFAB/reference_architecture_nfp/</loc>
+         <loc>https://docs.norfablabs.com/reference_architecture_nfp/</loc>
          <lastmod>2025-03-08</lastmod>
     </url>
     <url>
-         <loc>https://dmulyalin.github.io/NORFAB/reference_architecture_norfab/</loc>
+         <loc>https://docs.norfablabs.com/reference_architecture_norfab/</loc>
          <lastmod>2025-03-08</lastmod>
     </url>
     <url>
-         <loc>https://dmulyalin.github.io/NORFAB/reference_norfab_inventory/</loc>
+         <loc>https://docs.norfablabs.com/reference_norfab_inventory/</loc>
          <lastmod>2025-03-08</lastmod>
     </url>
     <url>
-         <loc>https://dmulyalin.github.io/NORFAB/services_overview/</loc>
+         <loc>https://docs.norfablabs.com/services_overview/</loc>
          <lastmod>2025-03-08</lastmod>
     </url>
     <url>
-         <loc>https://dmulyalin.github.io/NORFAB/tags/</loc>
+         <loc>https://docs.norfablabs.com/tags/</loc>
          <lastmod>2025-03-08</lastmod>
     </url>
     <url>
-         <loc>https://dmulyalin.github.io/NORFAB/customization/norfab_hooks/</loc>
+         <loc>https://docs.norfablabs.com/customization/norfab_hooks/</loc>
          <lastmod>2025-03-08</lastmod>
     </url>
     <url>
-         <loc>https://dmulyalin.github.io/NORFAB/customization/service_plugin_local/</loc>
+         <loc>https://docs.norfablabs.com/customization/service_plugin_local/</loc>
          <lastmod>2025-03-08</lastmod>
     </url>
     <url>
-         <loc>https://dmulyalin.github.io/NORFAB/customization/service_plugin_module/</loc>
+         <loc>https://docs.norfablabs.com/customization/service_plugin_module/</loc>
          <lastmod>2025-03-08</lastmod>
     </url>
     <url>
-         <loc>https://dmulyalin.github.io/NORFAB/customization/service_plugin_overview/</loc>
+         <loc>https://docs.norfablabs.com/customization/service_plugin_overview/</loc>
          <lastmod>2025-03-08</lastmod>
     </url>
     <url>
-         <loc>https://dmulyalin.github.io/NORFAB/workers/agent/api_reference_workers_agent_worker/</loc>
+         <loc>https://docs.norfablabs.com/workers/agent/api_reference_workers_agent_worker/</loc>
          <lastmod>2025-03-08</lastmod>
     </url>
     <url>
-         <loc>https://dmulyalin.github.io/NORFAB/workers/agent/services_agent_service/</loc>
+         <loc>https://docs.norfablabs.com/workers/agent/services_agent_service/</loc>
          <lastmod>2025-03-08</lastmod>
     </url>
     <url>
-         <loc>https://dmulyalin.github.io/NORFAB/workers/agent/services_agent_service_inventory/</loc>
+         <loc>https://docs.norfablabs.com/workers/agent/services_agent_service_inventory/</loc>
          <lastmod>2025-03-08</lastmod>
     </url>
     <url>
-         <loc>https://dmulyalin.github.io/NORFAB/workers/agent/services_agent_service_tasks_chat/</loc>
+         <loc>https://docs.norfablabs.com/workers/agent/services_agent_service_tasks_chat/</loc>
          <lastmod>2025-03-08</lastmod>
     </url>
     <url>
-         <loc>https://dmulyalin.github.io/NORFAB/workers/fastapi/api_reference_workers_fastapi_worker/</loc>
+         <loc>https://docs.norfablabs.com/workers/fastapi/api_reference_workers_fastapi_worker/</loc>
          <lastmod>2025-03-08</lastmod>
     </url>
     <url>
-         <loc>https://dmulyalin.github.io/NORFAB/workers/fastapi/services_fastapi_service/</loc>
+         <loc>https://docs.norfablabs.com/workers/fastapi/services_fastapi_service/</loc>
          <lastmod>2025-03-08</lastmod>
     </url>
     <url>
-         <loc>https://dmulyalin.github.io/NORFAB/workers/fastapi/services_fastapi_service_inventory/</loc>
+         <loc>https://docs.norfablabs.com/workers/fastapi/services_fastapi_service_inventory/</loc>
          <lastmod>2025-03-08</lastmod>
     </url>
     <url>
-         <loc>https://dmulyalin.github.io/NORFAB/workers/fastapi/services_fastapi_service_task_auth/</loc>
+         <loc>https://docs.norfablabs.com/workers/fastapi/services_fastapi_service_task_auth/</loc>
          <lastmod>2025-03-08</lastmod>
     </url>
     <url>
-         <loc>https://dmulyalin.github.io/NORFAB/workers/netbox/api_reference_workers_netbox_worker/</loc>
+         <loc>https://docs.norfablabs.com/workers/netbox/api_reference_workers_netbox_worker/</loc>
          <lastmod>2025-03-08</lastmod>
     </url>
     <url>
-         <loc>https://dmulyalin.github.io/NORFAB/workers/netbox/services_netbox_service/</loc>
+         <loc>https://docs.norfablabs.com/workers/netbox/services_netbox_service/</loc>
          <lastmod>2025-03-08</lastmod>
     </url>
     <url>
-         <loc>https://dmulyalin.github.io/NORFAB/workers/netbox/services_netbox_service_inventory/</loc>
+         <loc>https://docs.norfablabs.com/workers/netbox/services_netbox_service_inventory/</loc>
          <lastmod>2025-03-08</lastmod>
     </url>
     <url>
-         <loc>https://dmulyalin.github.io/NORFAB/workers/netbox/services_netbox_service_tasks_get_circuits/</loc>
+         <loc>https://docs.norfablabs.com/workers/netbox/services_netbox_service_tasks_get_circuits/</loc>
          <lastmod>2025-03-08</lastmod>
     </url>
     <url>
-         <loc>https://dmulyalin.github.io/NORFAB/workers/netbox/services_netbox_service_tasks_get_connections/</loc>
+         <loc>https://docs.norfablabs.com/workers/netbox/services_netbox_service_tasks_get_connections/</loc>
          <lastmod>2025-03-08</lastmod>
     </url>
     <url>
-         <loc>https://dmulyalin.github.io/NORFAB/workers/netbox/services_netbox_service_tasks_get_devices/</loc>
+         <loc>https://docs.norfablabs.com/workers/netbox/services_netbox_service_tasks_get_devices/</loc>
          <lastmod>2025-03-08</lastmod>
     </url>
     <url>
-         <loc>https://dmulyalin.github.io/NORFAB/workers/netbox/services_netbox_service_tasks_get_interfaces/</loc>
+         <loc>https://docs.norfablabs.com/workers/netbox/services_netbox_service_tasks_get_interfaces/</loc>
          <lastmod>2025-03-08</lastmod>
     </url>
     <url>
-         <loc>https://dmulyalin.github.io/NORFAB/workers/netbox/services_netbox_service_tasks_get_next_ip/</loc>
+         <loc>https://docs.norfablabs.com/workers/netbox/services_netbox_service_tasks_get_next_ip/</loc>
          <lastmod>2025-03-08</lastmod>
     </url>
     <url>
-         <loc>https://dmulyalin.github.io/NORFAB/workers/netbox/services_netbox_service_tasks_get_nornir_inventory/</loc>
+         <loc>https://docs.norfablabs.com/workers/netbox/services_netbox_service_tasks_get_nornir_inventory/</loc>
          <lastmod>2025-03-08</lastmod>
     </url>
     <url>
-         <loc>https://dmulyalin.github.io/NORFAB/workers/netbox/services_netbox_service_tasks_graphql/</loc>
+         <loc>https://docs.norfablabs.com/workers/netbox/services_netbox_service_tasks_graphql/</loc>
          <lastmod>2025-03-08</lastmod>
     </url>
     <url>
-         <loc>https://dmulyalin.github.io/NORFAB/workers/netbox/services_netbox_service_tasks_rest/</loc>
+         <loc>https://docs.norfablabs.com/workers/netbox/services_netbox_service_tasks_rest/</loc>
          <lastmod>2025-03-08</lastmod>
     </url>
     <url>
-         <loc>https://dmulyalin.github.io/NORFAB/workers/netbox/services_netbox_service_tasks_update_device_facts/</loc>
+         <loc>https://docs.norfablabs.com/workers/netbox/services_netbox_service_tasks_update_device_facts/</loc>
          <lastmod>2025-03-08</lastmod>
     </url>
     <url>
-         <loc>https://dmulyalin.github.io/NORFAB/workers/netbox/services_netbox_service_tasks_update_device_interfaces/</loc>
+         <loc>https://docs.norfablabs.com/workers/netbox/services_netbox_service_tasks_update_device_interfaces/</loc>
          <lastmod>2025-03-08</lastmod>
     </url>
     <url>
-         <loc>https://dmulyalin.github.io/NORFAB/workers/netbox/services_netbox_service_tasks_update_device_ip/</loc>
+         <loc>https://docs.norfablabs.com/workers/netbox/services_netbox_service_tasks_update_device_ip/</loc>
          <lastmod>2025-03-08</lastmod>
     </url>
     <url>
-         <loc>https://dmulyalin.github.io/NORFAB/workers/nornir/api_reference_workers_nornir_worker/</loc>
+         <loc>https://docs.norfablabs.com/workers/nornir/api_reference_workers_nornir_worker/</loc>
          <lastmod>2025-03-08</lastmod>
     </url>
     <url>
-         <loc>https://dmulyalin.github.io/NORFAB/workers/nornir/services_nornir_service/</loc>
+         <loc>https://docs.norfablabs.com/workers/nornir/services_nornir_service/</loc>
          <lastmod>2025-03-08</lastmod>
     </url>
     <url>
-         <loc>https://dmulyalin.github.io/NORFAB/workers/nornir/services_nornir_service_inventory/</loc>
+         <loc>https://docs.norfablabs.com/workers/nornir/services_nornir_service_inventory/</loc>
          <lastmod>2025-03-08</lastmod>
     </url>
     <url>
-         <loc>https://dmulyalin.github.io/NORFAB/workers/nornir/services_nornir_service_jinja2_filters/</loc>
+         <loc>https://docs.norfablabs.com/workers/nornir/services_nornir_service_jinja2_filters/</loc>
          <lastmod>2025-03-08</lastmod>
     </url>
     <url>
-         <loc>https://dmulyalin.github.io/NORFAB/workers/nornir/services_nornir_service_tasks_cfg/</loc>
+         <loc>https://docs.norfablabs.com/workers/nornir/services_nornir_service_tasks_cfg/</loc>
          <lastmod>2025-03-08</lastmod>
     </url>
     <url>
-         <loc>https://dmulyalin.github.io/NORFAB/workers/nornir/services_nornir_service_tasks_cli/</loc>
+         <loc>https://docs.norfablabs.com/workers/nornir/services_nornir_service_tasks_cli/</loc>
          <lastmod>2025-03-08</lastmod>
     </url>
     <url>
-         <loc>https://dmulyalin.github.io/NORFAB/workers/nornir/services_nornir_service_tasks_diagram/</loc>
+         <loc>https://docs.norfablabs.com/workers/nornir/services_nornir_service_tasks_diagram/</loc>
          <lastmod>2025-03-08</lastmod>
     </url>
     <url>
-         <loc>https://dmulyalin.github.io/NORFAB/workers/nornir/services_nornir_service_tasks_file_copy/</loc>
+         <loc>https://docs.norfablabs.com/workers/nornir/services_nornir_service_tasks_file_copy/</loc>
          <lastmod>2025-03-08</lastmod>
     </url>
     <url>
-         <loc>https://dmulyalin.github.io/NORFAB/workers/nornir/services_nornir_service_tasks_network/</loc>
+         <loc>https://docs.norfablabs.com/workers/nornir/services_nornir_service_tasks_network/</loc>
          <lastmod>2025-03-08</lastmod>
     </url>
     <url>
-         <loc>https://dmulyalin.github.io/NORFAB/workers/nornir/services_nornir_service_tasks_parse/</loc>
+         <loc>https://docs.norfablabs.com/workers/nornir/services_nornir_service_tasks_parse/</loc>
          <lastmod>2025-03-08</lastmod>
     </url>
     <url>
-         <loc>https://dmulyalin.github.io/NORFAB/workers/nornir/services_nornir_service_tasks_runtime_inventory/</loc>
+         <loc>https://docs.norfablabs.com/workers/nornir/services_nornir_service_tasks_runtime_inventory/</loc>
          <lastmod>2025-03-08</lastmod>
     </url>
     <url>
-         <loc>https://dmulyalin.github.io/NORFAB/workers/nornir/services_nornir_service_tasks_task/</loc>
+         <loc>https://docs.norfablabs.com/workers/nornir/services_nornir_service_tasks_task/</loc>
          <lastmod>2025-03-08</lastmod>
     </url>
     <url>
-         <loc>https://dmulyalin.github.io/NORFAB/workers/nornir/services_nornir_service_tasks_test/</loc>
+         <loc>https://docs.norfablabs.com/workers/nornir/services_nornir_service_tasks_test/</loc>
          <lastmod>2025-03-08</lastmod>
     </url>
 </urlset>
