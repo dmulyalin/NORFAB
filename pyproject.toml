@@ -9,9 +9,9 @@ authors = ["Denis Mulyalin <d.mulyalin@gmail.com>"]
 maintainers = ["Denis Mulyalin <d.mulyalin@gmail.com>"]
 license = "Apache-2.0 license"
 readme = "README.md"
-homepage = "https://github.com/dmulyalin/norfab"
-repository = "https://github.com/dmulyalin/norfab"
-documentation = "https://dmulyalin.github.io/NORFAB/"
+homepage = "https://github.com/norfablabs/NORFAB"
+repository = "https://github.com/norfablabs/NORFAB"
+documentation = "https://docs.norfablabs.com"
 keywords = ["Network", "Automation", "DevOps"]
 classifiers = [
     "Topic :: Utilities",

@@ -14,7 +14,7 @@
 
 NORFAB is a tool for extreme network automations.
 
-Interested? read [documentation](https://dmulyalin.github.io/NORFAB/) or welcome to [#norfab](https://networktocode.slack.com/archives/C0894SVH7BQ) to have a chat.
+Interested? read [documentation](https://docs.norfablabs.com) or welcome to [#norfab](https://networktocode.slack.com/archives/C0894SVH7BQ) to have a chat.
 
 # The IDEA
 
@@ -65,7 +65,7 @@ to surpass its limitations.
 
 **And many more** [read documentation](https://dmulyalin.github.io/NORFAB/)
 
-[github-discussions-link]:     https://github.com/dmulyalin/norfab/discussions
+[github-discussions-link]:     https://github.com/norfablabs/NORFAB/discussions
 [github-discussions-badge]:    https://img.shields.io/static/v1?label=Discussions&message=Ask&color=blue&logo=github
 [black-badge]:                 https://img.shields.io/badge/code%20style-black-000000.svg
 [black-link]:                  https://github.com/psf/black

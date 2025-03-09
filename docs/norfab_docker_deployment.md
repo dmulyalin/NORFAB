@@ -25,7 +25,7 @@ First, need to clone NorFab repository to the local folder on the docker host:
 
 ```
 cd ~/
-git clone https://github.com/dmulyalin/NORFAB.git norfab
+git clone https://github.com/norfablabs/NORFAB.git norfab
 ```
 
 To build NorFab docker images we are going to use `docker compose` utility, it will create broker and nornir service workers containers:
