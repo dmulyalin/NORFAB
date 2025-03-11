@@ -71,7 +71,7 @@ class CreateHostModel(ClientRunJobArgs):
         return log_error_or_result(result)
 
     class PicleConfig:
-        outputter = Outputters.outputter_rich_json
+        outputter = Outputters.outputter_nested
 
 
 class GroupsUpdateAction(str, Enum):
@@ -140,7 +140,7 @@ class UpdateHostModel(ClientRunJobArgs):
         return log_error_or_result(result)
 
     class PicleConfig:
-        outputter = Outputters.outputter_rich_json
+        outputter = Outputters.outputter_nested
 
 
 class DeleteHostModel(ClientRunJobArgs):
@@ -174,7 +174,7 @@ class DeleteHostModel(ClientRunJobArgs):
         return log_error_or_result(result)
 
     class PicleConfig:
-        outputter = Outputters.outputter_rich_json
+        outputter = Outputters.outputter_nested
 
 
 class ReadHostDataKeyModel(NorniHostsFilters, ClientRunJobArgs):

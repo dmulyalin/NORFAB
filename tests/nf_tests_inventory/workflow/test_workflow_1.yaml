@@ -1,0 +1,22 @@
+name: test_workflow_1
+description: Test workflow 1
+
+steps:
+  step1:
+    service: nornir
+    task: cli
+    kwargs:
+      FC: spine
+      commands:
+        - show version
+        - show ip int brief
+  step2:
+    service: nornir
+    task: cli
+    kwargs:
+      FC: leaf
+      commands:
+        - show hostname
+        - show ntp status
+    run_if_pass_all:
+      - step1

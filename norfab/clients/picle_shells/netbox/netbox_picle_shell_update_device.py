@@ -28,7 +28,7 @@ class NornirServiceCommands(NornirCommonArgs):
         return UpdateDeviceInterfacesCommand.run(*args, **kwargs)
 
     class PicleConfig:
-        outputter = Outputters.outputter_rich_json
+        outputter = Outputters.outputter_nested
 
 
 class UpdateDatasources(BaseModel):
@@ -86,7 +86,7 @@ class UpdateDeviceFactsCommand(NetboxCommonArgs, NetboxClientRunJobArgs):
         return result
 
     class PicleConfig:
-        outputter = Outputters.outputter_rich_json
+        outputter = Outputters.outputter_nested
 
 
 class UpdateDeviceInterfacesCommand(NetboxCommonArgs, NetboxClientRunJobArgs):
@@ -137,7 +137,7 @@ class UpdateDeviceInterfacesCommand(NetboxCommonArgs, NetboxClientRunJobArgs):
         return result
 
     class PicleConfig:
-        outputter = Outputters.outputter_rich_json
+        outputter = Outputters.outputter_nested
 
 
 class UpdateDeviceIPAddressesCommand(NetboxCommonArgs, NetboxClientRunJobArgs):
@@ -188,7 +188,7 @@ class UpdateDeviceIPAddressesCommand(NetboxCommonArgs, NetboxClientRunJobArgs):
         return result
 
     class PicleConfig:
-        outputter = Outputters.outputter_rich_json
+        outputter = Outputters.outputter_nested
 
 
 class UpdateDeviceCommands(BaseModel):

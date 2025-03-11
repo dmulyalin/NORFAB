@@ -35,7 +35,7 @@ plugins:
               members_order: source
               show_signature_annotations: true
               merge_init_into_class: true
-repo_name: dmulyalin/norfab
+repo_name: norfablabs/norfab
 repo_url: https://github.com/norfablabs/NORFAB
 site_author: Denis Mulyalin
 theme:

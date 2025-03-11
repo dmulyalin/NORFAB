@@ -40,6 +40,8 @@ workers:
     - fastapi/common.yaml
   dummy-worker-1:
     - plugins/dummy_worker_inventory.yaml
+  workflow-worker-1:
+    - workflow/common.yaml
     
 # list what entities we want to start on this node
 topology:
@@ -60,6 +62,7 @@ topology:
     - agent-1
     - fastapi-worker-1
     - dummy-worker-1
+    - workflow-worker-1
     
 hooks:
   startup:

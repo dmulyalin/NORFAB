@@ -17,7 +17,7 @@ pip install norfab[nfcli]
 pip install norfab[nornir]
 ```
 
-Above installs NorFab core components plus extas needed to run nfcli anf Nornir service worers. 
+Above installs NorFab core components plus extras needed to run nfcli anf Nornir service workers. 
 
 Once NorFab installed, next step is to create a folder that will hold your environment. Run this command to create NorFab folders and files:
 

@@ -44,7 +44,7 @@ class NornirShowHostsModel(NorniHostsFilters, TabulateTableModel):
     )
 
     class PicleConfig:
-        outputter = Outputters.outputter_rich_json
+        outputter = Outputters.outputter_nested
         pipe = PipeFunctionsModel
 
     @staticmethod
@@ -105,7 +105,7 @@ class ShowWatchDogModel(NorniHostsFilters):
     )
 
     class PicleConfig:
-        outputter = Outputters.outputter_rich_json
+        outputter = Outputters.outputter_nested
 
     @staticmethod
     def get_watchdog_stats(**kwargs):
@@ -130,7 +130,7 @@ class ShowWatchDogModel(NorniHostsFilters):
 
 class NornirShowInventoryModel(NorniHostsFilters, ClientRunJobArgs):
     class PicleConfig:
-        outputter = Outputters.outputter_rich_json
+        outputter = Outputters.outputter_rich_yaml
         pipe = PipeFunctionsModel
 
     @staticmethod
@@ -163,6 +163,10 @@ class NornirShowCommandsModel(BaseModel):
     version: Callable = Field(
         "get_version",
         description="show Nornir service version report",
+        json_schema_extra={
+            "outputter": Outputters.outputter_rich_yaml,
+            "initial_indent": 2,
+        },
     )
     watchdog: ShowWatchDogModel = Field(
         None,
@@ -171,7 +175,7 @@ class NornirShowCommandsModel(BaseModel):
     jobs: NornirJobsShell = Field(None, description="Show Nornir Jobs")
 
     class PicleConfig:
-        outputter = Outputters.outputter_rich_json
+        outputter = Outputters.outputter_nested
         pipe = PipeFunctionsModel
 
     @staticmethod

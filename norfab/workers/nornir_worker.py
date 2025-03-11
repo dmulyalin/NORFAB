@@ -9,7 +9,6 @@ import os
 import hashlib
 import ipaddress
 
-from jinja2 import Environment, FileSystemLoader
 from norfab.core.worker import NFPWorker, Result, WorkerWatchDog
 from norfab.core.inventory import merge_recursively
 from norfab.core.exceptions import UnsupportedPluginError
@@ -595,37 +594,6 @@ class NornirWorker(NFPWorker):
 
         return nr.with_processors(processors)
 
-    def render_jinja2_templates(
-        self, templates: list[str], context: dict, filters: dict = None
-    ) -> str:
-        """
-        Renders a list of Jinja2 templates with the given context and optional filters.
-
-        Args:
-            templates (list[str]): A list of Jinja2 template strings or NorFab file paths.
-            context (dict): A dictionary containing the context variables for rendering the templates.
-            filters (dict, optional): A dictionary of custom Jinja2 filters to be used during rendering.
-
-        Returns:
-            str: The rendered templates concatenated into a single string.
-        """
-        rendered = []
-        filters = filters or {}
-        for template in templates:
-            if template.startswith("nf://"):
-                filepath = self.fetch_jinja2(template)
-                searchpath, filename = os.path.split(filepath)
-                j2env = Environment(loader=FileSystemLoader(searchpath))
-                j2env.filters.update(filters)  # add custom filters
-                renderer = j2env.get_template(filename)
-            else:
-                j2env = Environment(loader="BaseLoader")
-                j2env.filters.update(filters)  # add custom filters
-                renderer = j2env.from_string(template)
-            rendered.append(renderer.render(**context))
-
-        return "\n".join(rendered)
-
     def load_job_data(self, job_data: str):
         """
         Helper function to download job data YAML files and load it.
@@ -1002,7 +970,7 @@ class NornirWorker(NFPWorker):
         if commands:
             commands = commands if isinstance(commands, list) else [commands]
             for host in nr.inventory.hosts.values():
-                rendered = self.render_jinja2_templates(
+                rendered = self.jinja2_render_templates(
                     templates=commands,
                     context={
                         "host": host,
@@ -1054,9 +1022,9 @@ class NornirWorker(NFPWorker):
             config (list): List of commands to send to devices.
             plugin (str, optional): Plugin name to use. Valid options are:
 
-                - netmiko - use Netmiko to confiugre devices
-                - scrapli - use Scrapli to confiugre devices
-                - napalm - use NAPALM to confiugre devices
+                - netmiko - use Netmiko to configure devices
+                - scrapli - use Scrapli to configure devices
+                - napalm - use NAPALM to configure devices
 
             cfg_dry_run (bool, optional): If True, will not send commands to devices but just return them.
             to_dict (bool, optional): If True, returns results as a dictionary. Defaults to True.
@@ -1071,11 +1039,9 @@ class NornirWorker(NFPWorker):
             UnsupportedPluginError: If the specified plugin is not supported.
             FileNotFoundError: If the specified job data file cannot be downloaded.
         """
-        downloaded_cfg = []
         config = config if isinstance(config, list) else [config]
         filters = {k: kwargs.pop(k) for k in list(kwargs.keys()) if k in FFun_functions}
         ret = Result(task=f"{self.name}:cfg", result={} if to_dict else [])
-        timeout = self.current_job["timeout"]
 
         # decide on what send commands task plugin to use
         if plugin == "netmiko":
@@ -1105,7 +1071,7 @@ class NornirWorker(NFPWorker):
 
         # render config using Jinja2 on a per-host basis
         for host in nr.inventory.hosts.values():
-            rendered = self.render_jinja2_templates(
+            rendered = self.jinja2_render_templates(
                 templates=config,
                 context={
                     "host": host,
@@ -1203,7 +1169,7 @@ class NornirWorker(NFPWorker):
         for host_name, host in filtered_nornir.inventory.hosts.items():
             # render suite using Jinja2
             try:
-                rendered_suite = self.render_jinja2_templates(
+                rendered_suite = self.jinja2_render_templates(
                     templates=[suite],
                     context={
                         "host": host,

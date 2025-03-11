@@ -82,13 +82,13 @@ class CacheList(NetboxClientRunJobArgs, NetboxCommonArgs):
             if table:
                 return ret, Outputters.outputter_rich_table
             else:
-                return ret
+                return ret, Outputters.outputter_rich_json
         else:
             return result
 
     class PicleConfig:
         pipe = PipeFunctionsModel
-        outputter = Outputters.outputter_rich_json
+        outputter = Outputters.outputter_nested
 
 
 class CacheClear(NetboxClientRunJobArgs, NetboxCommonArgs):
@@ -125,7 +125,7 @@ class CacheClear(NetboxClientRunJobArgs, NetboxCommonArgs):
         return log_error_or_result(result)
 
     class PicleConfig:
-        outputter = Outputters.outputter_rich_json
+        outputter = Outputters.outputter_nested
 
 
 class CacheGet(NetboxClientRunJobArgs, NetboxCommonArgs):

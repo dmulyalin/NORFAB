@@ -125,7 +125,7 @@ class JobDetailsModel(ClientRunJobArgs):
         return result
 
     class PicleConfig:
-        outputter = Outputters.outputter_rich_json
+        outputter = Outputters.outputter_nested
 
 
 class NornirJobsShell(BaseModel):

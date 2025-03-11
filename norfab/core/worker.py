@@ -21,8 +21,8 @@ from typing import Any, Callable, Dict, List, Optional, Union
 from .exceptions import NorfabJobFailedError
 from .models import NorFabEvent
 from norfab.core.inventory import NorFabInventory
-from jinja2 import Environment
 from jinja2.nodes import Include
+from jinja2 import Environment, FileSystemLoader
 
 log = logging.getLogger(__name__)
 
@@ -161,6 +161,7 @@ class Result:
         task (str): Task function name that produced the results.
         messages (Optional[List[str]]): List of messages produced by the task.
         juuid (Optional[str]): Job UUID associated with the task.
+        resources (Optional[List[str]]): list of resources names worked on by the task.
 
     Methods:
         __repr__(): Returns a string representation of the Result object.
@@ -177,6 +178,7 @@ class Result:
         task: str = None,
         messages: Optional[List[str]] = None,
         juuid: Optional[str] = None,
+        resources: Optional[List[str]] = None,
     ) -> None:
         self.task = task
         self.result = result
@@ -184,6 +186,7 @@ class Result:
         self.errors = errors or []
         self.messages = messages or []
         self.juuid = juuid
+        self.resources = resources or []
 
     def __repr__(self) -> str:
         """
@@ -262,7 +265,7 @@ class Result:
 
 
 # --------------------------------------------------------------------------------------------
-# NIRFAB worker, credits to https://rfc.zeromq.org/spec/9/
+# NORFAB worker
 # --------------------------------------------------------------------------------------------
 
 file_write_lock = threading.Lock()
@@ -626,40 +629,6 @@ class NFPWorker:
         queue_filename (str): The filename for the job queue.
         queue_done_filename (str): The filename for the completed job queue.
         client (NFPClient): The NFP client instance.
-
-    Methods:
-        __init__(self, inventory, broker, service, name, exit_event, log_level=None, log_queue=None, multiplier=6, keepalive=2500):
-            Initializes the NFPWorker instance with the provided parameters.
-        setup_logging(self, log_queue, log_level):
-            Configures logging for the worker.
-        reconnect_to_broker(self):
-            Connects or reconnects the worker to the broker.
-        send_to_broker(self, command, msg=None):
-            Sends a message to the broker with the specified command and optional message content.
-        load_inventory(self):
-            Loads the inventory from the broker for this worker name.
-        worker_exit(self):
-            Method to override in child classes with a set of actions to perform on exit call.
-        get_inventory(self):
-            Method to override in child classes to retrieve worker inventory.
-        get_version(self):
-            Method to override in child classes to retrieve worker version report.
-        destroy(self, message=None):
-            Cleans up and destroys the worker, stopping all threads and connections.
-        is_url(self, url):
-            Checks if the provided URL is in the expected format.
-        fetch_file(self, url, raise_on_fail=False, read=True):
-            Downloads a file from the broker File Sharing Service.
-        fetch_jinja2(self, url):
-            Recursively downloads a Jinja2 template and its included templates.
-        event(self, data, **kwargs):
-            Emits an event to the broker and saves it locally.
-        job_details(self, uuid, data=True, result=True, events=True):
-            Retrieves job details by UUID for completed jobs.
-        job_list(self, pending=True, completed=True, task=None, last=None, client=None, uuid=None):
-            Lists worker jobs, both completed and pending.
-        work(self):
-            Starts the worker's main loop, processing jobs from the queue.
     """
 
     keepaliver = None
@@ -1007,7 +976,39 @@ class NFPWorker:
             log.error(msg)
             return None
 
-    def fetch_jinja2(self, url: str) -> str:
+    def jinja2_render_templates(
+        self, templates: list[str], context: dict = None, filters: dict = None
+    ) -> str:
+        """
+        Renders a list of Jinja2 templates with the given context and optional filters.
+
+        Args:
+            templates (list[str]): A list of Jinja2 template strings or NorFab file paths.
+            context (dict): A dictionary containing the context variables for rendering the templates.
+            filters (dict, optional): A dictionary of custom Jinja2 filters to be used during rendering.
+
+        Returns:
+            str: The rendered templates concatenated into a single string.
+        """
+        rendered = []
+        filters = filters or {}
+        context = context or {}
+        for template in templates:
+            if template.startswith("nf://"):
+                filepath = self.jinja2_fetch_template(template)
+                searchpath, filename = os.path.split(filepath)
+                j2env = Environment(loader=FileSystemLoader(searchpath))
+                j2env.filters.update(filters)  # add custom filters
+                renderer = j2env.get_template(filename)
+            else:
+                j2env = Environment(loader="BaseLoader")
+                j2env.filters.update(filters)  # add custom filters
+                renderer = j2env.from_string(template)
+            rendered.append(renderer.render(**context))
+
+        return "\n".join(rendered)
+
+    def jinja2_fetch_template(self, url: str) -> str:
         """
         Helper function to recursively download a Jinja2 template along with
         other templates referenced using "include" statements.
@@ -1040,7 +1041,7 @@ class NFPWorker:
         for node in parsed_content.find_all(Include):
             include_file = node.template.value
             base_path = os.path.split(url)[0]
-            self.fetch_jinja2(os.path.join(base_path, include_file))
+            self.jinja2_fetch_template(os.path.join(base_path, include_file))
 
         return filepath
 

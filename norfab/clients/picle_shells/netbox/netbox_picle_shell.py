@@ -90,10 +90,15 @@ class NetboxShowCommandsModel(NetboxClientRunJobArgs, NetboxCommonArgs):
     inventory: Callable = Field(
         "get_inventory",
         description="show Netbox inventory data",
+        json_schema_extra={"outputter": Outputters.outputter_rich_yaml},
     )
     version: Callable = Field(
         "get_version",
         description="show Netbox service version report",
+        json_schema_extra={
+            "outputter": Outputters.outputter_rich_yaml,
+            "initial_indent": 2,
+        },
     )
     status: Callable = Field(
         "get_netbox_status",
@@ -105,7 +110,7 @@ class NetboxShowCommandsModel(NetboxClientRunJobArgs, NetboxCommonArgs):
     )
 
     class PicleConfig:
-        outputter = Outputters.outputter_rich_json
+        outputter = Outputters.outputter_nested
         pipe = PipeFunctionsModel
 
     @staticmethod

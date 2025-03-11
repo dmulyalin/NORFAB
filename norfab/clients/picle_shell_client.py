@@ -34,6 +34,7 @@ from .picle_shells.netbox import netbox_picle_shell
 from .picle_shells.agent import agent_picle_shell
 from .picle_shells.fastapi import fastapi_picle_shell
 from .picle_shells.norfab_jobs_shell import NorFabJobsShellCommands
+from .picle_shells.workflow import workflow_picle_shell
 
 NFCLIENT = None
 RICHCONSOLE = Console()
@@ -42,13 +43,6 @@ log = logging.getLogger(__name__)
 # ---------------------------------------------------------------------------------------------
 # HELPER FUNCTIONS
 # ---------------------------------------------------------------------------------------------
-
-
-def print_stats(data: dict):
-    data = yaml.dump(data, default_flow_style=False, sort_keys=False)
-    # add single space indent
-    data = "\n".join([f" {i}" for i in data.splitlines()])
-    RICHCONSOLE.print(data)
 
 
 # ---------------------------------------------------------------------------------------------
@@ -67,7 +61,8 @@ class ShowBrokerModel(BaseModel):
     )
 
     class PicleConfig:
-        outputter = print_stats
+        outputter = Outputters.outputter_rich_yaml
+        outputter_kwargs = {"initial_indent": 2}
 
     @staticmethod
     def run(*args, **kwargs):
@@ -113,22 +108,23 @@ class ShowCommandsModel(BaseModel):
     version: Callable = Field(
         "show_version",
         description="show nfcli client version report",
-        json_schema_extra={"outputter": print_stats},
     )
     jobs: NorFabJobsShellCommands = Field(
         None, description="Show NorFab Jobs for all services"
     )
     broker: ShowBrokerModel = Field(None, description="show broker details")
     workers: ShowWorkersModel = Field(None, description="show workers information")
-    client: Callable = Field(
-        "show_client", description="Show client details", outputter=print_stats
-    )
+    client: Callable = Field("show_client", description="Show client details")
     inventory: Callable = Field(
-        "show_inventory", description="Show NorFab inventory", outputter=print_stats
+        "show_inventory",
+        description="Show NorFab inventory",
+        json_schema_extra={"outputter": Outputters.outputter_rich_yaml},
     )
 
     class PicleConfig:
         pipe = PipeFunctionsModel
+        outputter = Outputters.outputter_rich_yaml
+        outputter_kwargs = {"initial_indent": 2}
 
     @staticmethod
     def show_version():
@@ -205,7 +201,7 @@ class ListFilesModel(BaseModel):
 
     class PicleConfig:
         pipe = PipeFunctionsModel
-        outputter = Outputters.outputter_rich_json
+        outputter = Outputters.outputter_nested
 
 
 class CopyFileModel(BaseModel):
@@ -236,7 +232,7 @@ class ListFileDetails(BaseModel):
 
     class PicleConfig:
         pipe = PipeFunctionsModel
-        outputter = Outputters.outputter_rich_json
+        outputter = Outputters.outputter_nested
 
 
 class FileServiceCommands(BaseModel):
@@ -294,6 +290,9 @@ class NorFabShell(BaseModel):
     )
     fastapi: fastapi_picle_shell.FastAPIServiceCommands = Field(
         None, description="FastAPI service"
+    )
+    workflow: workflow_picle_shell.WorkflowServiceCommands = Field(
+        None, description="Workflow service"
     )
 
     class PicleConfig:

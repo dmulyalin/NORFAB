@@ -32,10 +32,15 @@ class AgentShowCommandsModel(BaseModel):
     inventory: Callable = Field(
         "get_inventory",
         description="show agent inventory data",
+        json_schema_extra={"outputter": Outputters.outputter_rich_yaml},
     )
     version: Callable = Field(
         "get_version",
         description="show agent service version report",
+        json_schema_extra={
+            "outputter": Outputters.outputter_rich_yaml,
+            "initial_indent": 2,
+        },
     )
     status: Callable = Field(
         "get_status",
@@ -43,7 +48,7 @@ class AgentShowCommandsModel(BaseModel):
     )
 
     class PicleConfig:
-        outputter = Outputters.outputter_rich_json
+        outputter = Outputters.outputter_nested
         pipe = PipeFunctionsModel
 
     @staticmethod

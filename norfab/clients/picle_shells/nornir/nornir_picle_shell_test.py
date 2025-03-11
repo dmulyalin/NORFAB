@@ -62,14 +62,14 @@ class NornirTestShell(
 
     @staticmethod
     def source_suite():
-        broker_files = reply = NFCLIENT.get(
+        broker_files = NFCLIENT.get(
             "fss.service.broker", "walk", kwargs={"url": "nf://"}
         )
         return broker_files["results"]
 
     @staticmethod
     def source_job_data():
-        broker_files = reply = NFCLIENT.get(
+        broker_files = NFCLIENT.get(
             "fss.service.broker", "walk", kwargs={"url": "nf://"}
         )
         return broker_files["results"]

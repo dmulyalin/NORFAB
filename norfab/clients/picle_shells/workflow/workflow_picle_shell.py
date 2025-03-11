@@ -11,18 +11,18 @@ from pydantic import (
     Field,
 )
 from ..common import ClientRunJobArgs, log_error_or_result, listen_events
+from .workflow_picle_shell_run import WorkflowRunShell
 from typing import Union, Optional, List, Any, Dict, Callable, Tuple
-from .fastapi_picle_shell_auth import FastAPIAuthCommandsModel
 
-SERVICE = "fastapi"
+SERVICE = "workflow"
 log = logging.getLogger(__name__)
 
 # ---------------------------------------------------------------------------------------------
-# FASTAPI SERVICE SHELL SHOW COMMANDS MODELS
+# WORKFLOW SERVICE SHELL SHOW COMMANDS MODELS
 # ---------------------------------------------------------------------------------------------
 
 
-class FastAPIShowInventoryModel(ClientRunJobArgs):
+class WorkflowShowInventoryModel(ClientRunJobArgs):
     class PicleConfig:
         outputter = Outputters.outputter_rich_yaml
         pipe = PipeFunctionsModel
@@ -33,7 +33,7 @@ class FastAPIShowInventoryModel(ClientRunJobArgs):
         timeout = kwargs.pop("timeout", 600)
 
         result = NFCLIENT.run_job(
-            "fastapi",
+            "workflow",
             "get_inventory",
             kwargs=kwargs,
             workers=workers,
@@ -42,14 +42,14 @@ class FastAPIShowInventoryModel(ClientRunJobArgs):
         return log_error_or_result(result)
 
 
-class FastAPIShowCommandsModel(BaseModel):
-    inventory: FastAPIShowInventoryModel = Field(
+class WorkflowShowCommandsModel(BaseModel):
+    inventory: WorkflowShowInventoryModel = Field(
         None,
-        description="show FastAPI inventory data",
+        description="show workflow workers inventory data",
     )
     version: Callable = Field(
         "get_version",
-        description="show FastAPI service version report",
+        description="show workflow service workers version report",
         json_schema_extra={
             "outputter": Outputters.outputter_rich_yaml,
             "initial_indent": 2,
@@ -63,21 +63,48 @@ class FastAPIShowCommandsModel(BaseModel):
     @staticmethod
     def get_version(**kwargs):
         workers = kwargs.pop("workers", "all")
-        result = NFCLIENT.run_job("fastapi", "get_version", workers=workers)
+        result = NFCLIENT.run_job("workflow", "get_version", workers=workers)
         return log_error_or_result(result)
 
+    @staticmethod
+    def source_workflow():
+        workflow_files = NFCLIENT.get(
+            "fss.service.broker", "walk", kwargs={"url": "nf://"}
+        )
+        return workflow_files["results"]
+
+    @staticmethod
+    @listen_events
+    def run(uuid, *args, **kwargs):
+        workers = kwargs.pop("workers", "any")
+        timeout = kwargs.pop("timeout", 600)
+
+        result = NFCLIENT.run_job(
+            "workflow",
+            "workflow_run",
+            workers=workers,
+            args=args,
+            kwargs=kwargs,
+            uuid=uuid,
+            timeout=timeout,
+        )
+
+        result = log_error_or_result(result)
+
+        return result
+
 
 # ---------------------------------------------------------------------------------------------
-# FASTAPI SERVICE MAIN SHELL MODEL
+# WORKFLOW SERVICE MAIN SHELL MODEL
 # ---------------------------------------------------------------------------------------------
 
 
-class FastAPIServiceCommands(BaseModel):
-    show: FastAPIShowCommandsModel = Field(
-        None, description="Show FastAPI service parameters"
+class WorkflowServiceCommands(BaseModel):
+    run: WorkflowRunShell = Field(None, description="Run workflows")
+    show: WorkflowShowCommandsModel = Field(
+        None, description="Show workflow service workers parameters"
     )
-    auth: FastAPIAuthCommandsModel = Field(None, description="Manage auth tokens")
 
     class PicleConfig:
         subshell = True
-        prompt = "nf[fastapi]#"
+        prompt = "nf[workflow]#"

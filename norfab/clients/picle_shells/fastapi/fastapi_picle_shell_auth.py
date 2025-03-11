@@ -45,7 +45,7 @@ class CreateAuthToken(ClientRunJobArgs):
         return log_error_or_result(result)
 
     class PicleConfig:
-        outputter = Outputters.outputter_rich_json
+        outputter = Outputters.outputter_nested
 
 
 class ListAuthToken(ClientRunJobArgs):
@@ -98,7 +98,7 @@ class DeleteAuthToken(ClientRunJobArgs):
         return log_error_or_result(result)
 
     class PicleConfig:
-        outputter = Outputters.outputter_rich_json
+        outputter = Outputters.outputter_nested
 
 
 class CheckAuthToken(ClientRunJobArgs):
@@ -120,7 +120,7 @@ class CheckAuthToken(ClientRunJobArgs):
         return log_error_or_result(result)
 
     class PicleConfig:
-        outputter = Outputters.outputter_rich_json
+        outputter = Outputters.outputter_nested
 
 
 class FastAPIAuthCommandsModel(BaseModel):
